@@ -5,10 +5,8 @@ import {loadSprite} from './utils';
 export default class VisualDemo extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            person: null,
-            ball: null
-        };
+        this.person = null;
+        this.ball = null;
 
         this.raf = null;
 
@@ -42,15 +40,22 @@ export default class VisualDemo extends React.Component {
             this.raf = window.requestAnimationFrame(this.draw.bind(this));
         }
     }
+    /**
+     * loadSprites
+     *
+     * Load the assets necessary for this canvas view and store them
+     * on the component. This should only be done once, when the
+     * component loads, to avoid flickering during user interaction.
+     */
     loadSprites() {
         const me = this;
 
         // TODO: make these loads concurrent
         return loadSprite('img/person.png').then(function(img) {
-            me.setState({person: img});
+            me.person = img;
             return loadSprite('img/beachball.svg');
         }).then(function(img) {
-            me.setState({ball: img});
+            me.ball = img;
         });
     }
     drawStatic() {
@@ -61,6 +66,8 @@ export default class VisualDemo extends React.Component {
         this.raf = window.requestAnimationFrame(this.draw.bind(this));
     }
     /**
+     * draw
+     *
      * Draw the scene on the canvas.
      */
     draw() {
@@ -75,13 +82,13 @@ export default class VisualDemo extends React.Component {
         this.drawBall(ctx);
     }
     drawPerson(ctx) {
-        ctx.drawImage(this.state.person, 0, 80, 40, 118.2);
+        ctx.drawImage(this.person, 0, 80, 40, 118.2);
     }
     drawBall(ctx) {
         const size = this.props.diameter * 15;
         const dist = this.props.distance * 5;
         ctx.drawImage(
-            this.state.ball,
+            this.ball,
             200 + dist - (size / 2),
             75 - (size / 2),
             size, size);
