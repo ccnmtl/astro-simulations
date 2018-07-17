@@ -8,6 +8,7 @@ export default class HorizonView extends React.Component {
     constructor(props) {
         super(props)
 
+        this.id = 'HorizonView';
         this.start = this.start.bind(this)
         this.stop = this.stop.bind(this)
         this.animate = this.animate.bind(this)
@@ -24,14 +25,21 @@ export default class HorizonView extends React.Component {
             0.1,
             1000
         )
-        //const controls = new THREE.OrbitControls(camera);
+        const controls = new THREE.OrbitControls(
+            camera, document.getElementById(this.id));
+        // Configure the controls - we only need some basic
+        // drag-rotation behavior.
+        controls.enableKeys = false;
+        controls.enablePan = false;
+        controls.enableZoom = false;
+
         const renderer = new THREE.WebGLRenderer({ antialias: true })
         const geometry = new THREE.BoxGeometry(1, 1, 1)
         const material = new THREE.MeshBasicMaterial({ color: '#433F81' })
         const cube = new THREE.Mesh(geometry, material)
 
         camera.position.z = 4
-        //controls.update();
+        controls.update();
         scene.add(cube)
         renderer.setClearColor('#000000')
         renderer.setSize(width, height)
@@ -75,10 +83,9 @@ export default class HorizonView extends React.Component {
 
     render() {
         return (
-            <div
-                style={{ width: '228px', height: '228px' }}
-                ref={(mount) => { this.mount = mount }}
-            />
-        )
+            <div id={this.id}
+                 style={{ width: '228px', height: '228px' }}
+                 ref={(mount) => { this.mount = mount }} />
+        );
     }
 }
