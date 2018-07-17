@@ -5,3 +5,4 @@ node_js:
 install: npm install
 script:
 - cd small-angle-demo && make eslint
+- cd lunar-phase-simulator && make eslint
