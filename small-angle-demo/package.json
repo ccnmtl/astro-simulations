@@ -1,0 +1,38 @@
+{
+  "name": "small-angle-demo",
+  "version": "1.0.0",
+  "description": "Small-Angle Approximation Demonstrator",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "eslint": "eslint src/*.js src/*.jsx"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ccnmtl/astro-interactives.git"
+  },
+  "keywords": [
+    "astronomy"
+  ],
+  "author": "Nik Nyby",
+  "license": "GPL-3.0+",
+  "bugs": {
+    "url": "https://github.com/ccnmtl/astro-interactives/issues"
+  },
+  "homepage": "https://github.com/ccnmtl/astro-interactives#readme",
+  "dependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-react-app": "^3.1.2",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1",
+    "react-mathjax2": "0.0.1"
+  },
+  "devDependencies": {
+    "babel-eslint": "^8.2.6",
+    "eslint": "^5.1.0",
+    "eslint-plugin-react": "^7.10.0",
+    "webpack": "^4.16.1",
+    "webpack-cli": "^3.0.8"
+  }
+}
