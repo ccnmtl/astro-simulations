@@ -18,6 +18,9 @@ babel:
 dev:
 	./node_modules/.bin/webpack --mode development --watch
 
+build:
+	./node_modules/.bin/webpack --mode production
+
 clean:
 	rm -rf $(NODE_MODULES) dist
 
