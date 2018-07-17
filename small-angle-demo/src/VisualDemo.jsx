@@ -5,6 +5,11 @@ import {loadSprite} from './utils';
 export default class VisualDemo extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            person: null,
+            ball: null
+        };
+
         this.raf = null;
 
         // The person avatar's eye level.
@@ -17,12 +22,15 @@ export default class VisualDemo extends React.Component {
         return <canvas id="VisualDemo" width="600" height="200"></canvas>;
     }
     componentDidMount() {
-        // Draw all the items that won't move based on props changes.
-        this.drawStatic();
+        const me = this;
+        this.loadSprites().then(function() {
+            // Draw all the items that won't move based on props changes.
+            me.drawStatic();
 
-        // Draw the scene when this component is initialized.
-        this.draw();
-        window.requestAnimationFrame(this.draw.bind(this));
+            // Draw the scene when this component is initialized.
+            me.draw();
+            window.requestAnimationFrame(me.draw.bind(me));
+        });
     }
     componentDidUpdate(prevProps) {
         if (this.props.distance !== prevProps.distance ||
@@ -33,6 +41,17 @@ export default class VisualDemo extends React.Component {
             //this.draw();
             this.raf = window.requestAnimationFrame(this.draw.bind(this));
         }
+    }
+    loadSprites() {
+        const me = this;
+
+        // TODO: make these loads concurrent
+        return loadSprite('img/person.png').then(function(img) {
+            me.setState({person: img});
+            return loadSprite('img/beachball.svg');
+        }).then(function(img) {
+            me.setState({ball: img});
+        });
     }
     drawStatic() {
         const canvas = document.getElementById('VisualDemo');
@@ -49,30 +68,23 @@ export default class VisualDemo extends React.Component {
         const ctx = canvas.getContext('2d');
 
         // Clear the section of the canvas that gets re-drawn.
-        // TODO: figure out more seamless animation.
         ctx.clearRect(40, 0, canvas.width, canvas.height);
         ctx.beginPath();
 
         this.drawLines(ctx);
         this.drawBall(ctx);
-        //window.requestAnimationFrame(this.draw.bind(this));
     }
     drawPerson(ctx) {
-        loadSprite('img/person.png').then(function(person) {
-            ctx.drawImage(person, 0, 80, 40, 118.2);
-        });
+        ctx.drawImage(this.state.person, 0, 80, 40, 118.2);
     }
     drawBall(ctx) {
-        const me = this;
-        loadSprite('img/beachball.svg').then(function(beachball) {
-            const size = me.props.diameter * 15;
-            const dist = me.props.distance * 5;
-            ctx.drawImage(
-                beachball,
-                200 + dist - (size / 2),
-                75 - (size / 2),
-                size, size);
-        });
+        const size = this.props.diameter * 15;
+        const dist = this.props.distance * 5;
+        ctx.drawImage(
+            this.state.ball,
+            200 + dist - (size / 2),
+            75 - (size / 2),
+            size, size);
     }
     drawLines(ctx) {
         // TODO: clean up the duplicate calculations here.
