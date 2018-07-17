@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {loadSprite} from './utils';
 
 export default class VisualDemo extends React.Component {
     constructor(props) {
@@ -21,6 +22,7 @@ export default class VisualDemo extends React.Component {
 
         // Draw the scene when this component is initialized.
         this.draw();
+        window.requestAnimationFrame(this.draw.bind(this));
     }
     componentDidUpdate(prevProps) {
         if (this.props.distance !== prevProps.distance ||
@@ -53,18 +55,16 @@ export default class VisualDemo extends React.Component {
 
         this.drawLines(ctx);
         this.drawBall(ctx);
+        //window.requestAnimationFrame(this.draw.bind(this));
     }
     drawPerson(ctx) {
-        const person = new Image();
-        person.addEventListener('load', function() {
+        loadSprite('img/person.png').then(function(person) {
             ctx.drawImage(person, 0, 80, 40, 118.2);
-        }, false);
-        person.src = 'img/person.png';
+        });
     }
     drawBall(ctx) {
-        const beachball = new Image();
         const me = this;
-        beachball.addEventListener('load', function() {
+        loadSprite('img/beachball.svg').then(function(beachball) {
             const size = me.props.diameter * 15;
             const dist = me.props.distance * 5;
             ctx.drawImage(
@@ -72,8 +72,7 @@ export default class VisualDemo extends React.Component {
                 200 + dist - (size / 2),
                 75 - (size / 2),
                 size, size);
-        }, false);
-        beachball.src = 'img/beachball.svg';
+        });
     }
     drawLines(ctx) {
         // TODO: clean up the duplicate calculations here.
