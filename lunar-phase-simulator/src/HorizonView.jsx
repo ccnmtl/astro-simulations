@@ -43,34 +43,38 @@ export default class HorizonView extends React.Component {
         controls.maxAzimuthAngle = 0;
 
         const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setPixelRatio(window.devicePixelRatio);
 
         camera.position.z = 8;
         controls.update();
         renderer.setClearColor(0xffffff);
         renderer.setSize(width, height);
 
-        // Draw horizon
-        const texture = new THREE.TextureLoader().load('img/plane.svg');
-        const material = new THREE.MeshBasicMaterial({
-            transparent: true,
-            map: texture,
-            side: THREE.DoubleSide
-        });
-        const geometry = new THREE.CircleGeometry(5, 64);
-        const plane = new THREE.Mesh(geometry, material);
-        plane.rotation.x = -1;
-        scene.add(plane);
-
+        this.drawPlane(scene);
         //this.drawGlobe(scene);
         this.drawStickFigure(scene);
 
         this.scene = scene;
         this.camera = camera;
         this.renderer = renderer;
-        this.material = material;
 
         this.mount.appendChild(this.renderer.domElement);
         this.start();
+    }
+    drawPlane(scene) {
+        const texture = new THREE.TextureLoader().load('img/plane.svg');
+        texture.mapping = THREE.UVMapping;
+        const material = new THREE.MeshBasicMaterial({
+            transparent: true,
+            map: texture,
+            side: THREE.DoubleSide
+        });
+        material.map.minFilter = THREE.LinearFilter;
+        const geometry = new THREE.CircleGeometry(5, 64);
+        const plane = new THREE.Mesh(geometry, material);
+        //plane.scale.set(1000, 1000, 1);
+        plane.rotation.x = -1;
+        scene.add(plane);
     }
     drawGlobe(scene) {
         const geometry = new THREE.SphereGeometry(4.9, 32, 32);
