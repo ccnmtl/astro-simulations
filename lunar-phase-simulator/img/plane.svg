@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   height="128"
+   width="128"
+   version="1.1"
+   id="svg125"
+   sodipodi:docname="plane.svg"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)">
+  <metadata
+     id="metadata129">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="2560"
+     inkscape:window-height="1380"
+     id="namedview127"
+     showgrid="false"
+     inkscape:zoom="6.01"
+     inkscape:cx="128.0116"
+     inkscape:cy="100"
+     inkscape:window-x="0"
+     inkscape:window-y="31"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg125" />
+  <g
+     transform="matrix(0.64015977,0,0,0.64,63.983938,64)"
+     id="g113">
+    <use
+       height="200"
+       transform="translate(-99.95,-100)"
+       width="199.95"
+       xlink:href="#shape0"
+       id="use111"
+       x="0"
+       y="0" />
+  </g>
+  <defs
+     id="defs123">
+    <g
+       id="shape0"
+       transform="translate(99.95,100)">
+      <path
+         d="M 70.7,-70.75 Q 100,-41.45 100,0 100,41.4 70.7,70.7 L 64,76.9 Q 36.8,100 0.05,100 -32.15,100 -57,82.35 -64.15,77.25 -70.7,70.7 -100,41.4 -99.95,0 -100,-41.45 -70.7,-70.75 -64.15,-77.3 -57,-82.35 -32.15,-100 0.05,-100 q 36.75,0 63.95,23.1 3.45,2.9 6.7,6.15"
+         id="path115"
+         inkscape:connector-curvature="0"
+         style="fill:url(#gradient0);fill-rule:evenodd;stroke:none" />
+    </g>
+    <radialGradient
+       cx="0"
+       cy="0"
+       gradientTransform="scale(0.1238)"
+       gradientUnits="userSpaceOnUse"
+       id="gradient0"
+       r="819.20001"
+       spreadMethod="pad">
+      <stop
+         offset="0.0"
+         stop-color="#51c451"
+         id="stop118" />
+      <stop
+         offset="1.0"
+         stop-color="#3aa53a"
+         id="stop120" />
+    </radialGradient>
+  </defs>
+</svg>
