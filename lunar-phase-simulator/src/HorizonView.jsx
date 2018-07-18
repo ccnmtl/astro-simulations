@@ -30,7 +30,7 @@ export default class HorizonView extends React.Component {
         // drag-rotation behavior.
         controls.enableKeys = false;
         controls.enablePan = false;
-        controls.enableZoom = false;
+        //controls.enableZoom = false;
 
         // Only let the user see the top of the scene - no need to
         // flip it completely over.
@@ -63,7 +63,7 @@ export default class HorizonView extends React.Component {
     }
     drawPlane(scene) {
         const texture = new THREE.TextureLoader().load('img/plane.svg');
-        texture.mapping = THREE.UVMapping;
+
         const material = new THREE.MeshBasicMaterial({
             transparent: true,
             map: texture,
@@ -72,7 +72,6 @@ export default class HorizonView extends React.Component {
         material.map.minFilter = THREE.LinearFilter;
         const geometry = new THREE.CircleGeometry(5, 64);
         const plane = new THREE.Mesh(geometry, material);
-        //plane.scale.set(1000, 1000, 1);
         plane.rotation.x = -1;
         scene.add(plane);
     }
