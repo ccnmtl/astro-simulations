@@ -9,7 +9,7 @@ export default class MoonPhaseView extends React.Component {
     }
     render() {
         return <div>
-            <select className="custom-select" defaultValue={1}>
+            <select className="custom-select form-control-sm" defaultValue={1}>
                 <option value={1}>New Moon</option>
                 <option value={2}>Waxing Crescent</option>
                 <option value={3}>First Quarter</option>

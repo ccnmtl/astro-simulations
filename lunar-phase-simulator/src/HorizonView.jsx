@@ -61,16 +61,8 @@ export default class HorizonView extends React.Component {
         plane.rotation.x = -1;
         scene.add(plane);
 
-        // Draw stick figure
-        const spriteMap = new THREE.TextureLoader().load('img/stickfigure.svg');
-        const spriteMaterial = new THREE.SpriteMaterial({
-            map: spriteMap,
-            color: 0xffffff
-        });
-        const sprite = new THREE.Sprite(spriteMaterial);
-        sprite.scale.set(1, 2, 1);
-        sprite.position.y = 1;
-        scene.add(sprite);
+        //this.drawGlobe(scene);
+        this.drawStickFigure(scene);
 
         this.scene = scene;
         this.camera = camera;
@@ -80,7 +72,27 @@ export default class HorizonView extends React.Component {
         this.mount.appendChild(this.renderer.domElement);
         this.start();
     }
-
+    drawGlobe(scene) {
+        const geometry = new THREE.SphereGeometry(4.9, 32, 32);
+        const material = new THREE.MeshBasicMaterial({
+            transparent: true,
+            opacity: 0.2,
+            color: 0x0000ff
+        });
+        const sphere = new THREE.Mesh(geometry, material);
+        scene.add( sphere );
+    }
+    drawStickFigure(scene) {
+        const spriteMap = new THREE.TextureLoader().load('img/stickfigure.svg');
+        const spriteMaterial = new THREE.SpriteMaterial({
+            map: spriteMap,
+            color: 0xffffff
+        });
+        const sprite = new THREE.Sprite(spriteMaterial);
+        sprite.scale.set(1, 2, 1);
+        sprite.position.y = 1;
+        scene.add(sprite);
+    }
     componentWillUnmount() {
         this.stop();
         this.mount.removeChild(this.renderer.domElement);
