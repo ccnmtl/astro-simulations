@@ -12,13 +12,13 @@ eslint: $(JS_SENTINAL)
 test: $(JS_SENTINAL)
 	npm run test
 
-babel:
+babel: $(JS_SENTINAL)
 	npx babel --watch src --out-dir js --presets react-app/prod
 
-dev:
+dev: $(JS_SENTINAL)
 	./node_modules/.bin/webpack --mode development --watch
 
-build:
+build: $(JS_SENTINAL)
 	./node_modules/.bin/webpack --mode production
 
 clean:
