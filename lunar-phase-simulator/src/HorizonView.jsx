@@ -28,8 +28,11 @@ export default class HorizonView extends React.Component {
         const camera = new THREE.OrthographicCamera(
             frustumSize * aspect / -2, frustumSize * aspect / 2,
             frustumSize / 2, frustumSize / -2,
-            0.1, 100
+            1, 100
         );
+        camera.position.set(-6, 0, 2);
+        camera.up = new THREE.Vector3(0, 0, 1);
+
         const controls = new THREE.OrbitControls(camera, this.mount);
         // Configure the controls - we only need some basic
         // drag-rotation behavior.
@@ -39,21 +42,14 @@ export default class HorizonView extends React.Component {
 
         // Only let the user see the top of the scene - no need to
         // flip it completely over.
-        controls.minPolarAngle = degToRad(10);
-        controls.maxPolarAngle = degToRad(90);
-
-        // Don't rotate on the side-to-side axis. For this mouse
-        // movement, the plane must be rotated on its own axis.
-        controls.minAzimuthAngle = degToRad(-45);
-        controls.maxAzimuthAngle = degToRad(-45);
+        controls.minPolarAngle = degToRad(0);
+        controls.maxPolarAngle = degToRad(70);
 
         const renderer = new THREE.WebGLRenderer({antialias: true});
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setClearColor(0xffffff);
         renderer.setSize(width, height);
 
-        camera.position.set(-6, 0, 2);
-        camera.up = new THREE.Vector3(0, 0, 1);
         controls.update();
 
         this.drawPlane(scene);
@@ -62,7 +58,7 @@ export default class HorizonView extends React.Component {
         const sun = this.drawSun(scene);
         const moon = this.drawMoon(scene);
 
-        const dragControls = new THREE.DragControls([sun, moon], camera, renderer.domElement);
+        new THREE.DragControls([sun, moon], camera, renderer.domElement);
 
         this.scene = scene;
         this.camera = camera;
