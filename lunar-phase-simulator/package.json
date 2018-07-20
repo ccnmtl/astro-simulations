@@ -30,6 +30,8 @@
   },
   "devDependencies": {
     "babel-eslint": "^8.2.6",
+    "babel-loader": "^7.1.5",
+    "babel-preset-react": "^6.24.1",
     "eslint": "^5.1.0",
     "eslint-plugin-react": "^7.10.0",
     "webpack": "^4.16.1",

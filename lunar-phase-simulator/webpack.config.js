@@ -2,13 +2,14 @@ const path = require('path');
 const webpack = require('webpack');
 
 module.exports = {
-    entry: './js/main.js',
+    entry: './src/main.jsx',
     mode: 'production',
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: 'bundle.js'
     },
     resolve: {
+        extensions: ['*', '.js', '.jsx'],
         alias: {
             'three/OrbitControls': path.join(__dirname, 'node_modules/three/examples/js/controls/OrbitControls.js'),
             'three/OBJLoader': path.join(__dirname, 'node_modules/three/examples/js/loaders/OBJLoader.js')
@@ -18,5 +19,15 @@ module.exports = {
         new webpack.ProvidePlugin({
             'THREE': 'three'
         })
-    ]
+    ],
+    module: {
+        rules: [
+            {
+                test: /\.(js|jsx)$/,
+                include: path.resolve(__dirname, 'src'),
+                exclude: /node_modules/,
+                use: ['babel-loader']
+            }
+        ]
+    }
 };
