@@ -47,7 +47,15 @@ export default class HorizonView extends React.Component {
         const renderer = new THREE.WebGLRenderer({antialias: true});
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setClearColor(0xffffff);
-        renderer.setSize(width, height);
+
+        // This is an anti-aliasing fix. On my system, anti-aliasing
+        // was working on Firefox, but not Chrome.
+        // Set the renderer size to twice the size of the actual
+        // canvas. The physical dimensions remain at 228x228,
+        // idea came from here: https://stackoverflow.com/a/44460635/173630
+        // The browser then scales this down to the smaller size, smoothing
+        // out all edges.
+        renderer.setSize(width * 2, height * 2, false);
 
         controls.update();
 
@@ -57,7 +65,7 @@ export default class HorizonView extends React.Component {
         const sun = this.drawSun(scene);
         const moon = this.drawMoon(scene);
 
-        const dragControls = new THREE.DragControls(
+        new THREE.DragControls(
             [sun, moon], camera, renderer.domElement);
         //dragControls.enabled = false;
 
@@ -176,7 +184,7 @@ export default class HorizonView extends React.Component {
             <div id={this.id}
                  style={{ width: '228px', height: '228px' }}
                  ref={(mount) => { this.mount = mount }} />
-            <div>Observer's local time: 12:00 pm</div>
+            <div>Observer&amp;s local time: 12:00 pm</div>
             </React.Fragment>
         );
     }
