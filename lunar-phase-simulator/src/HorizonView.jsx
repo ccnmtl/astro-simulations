@@ -58,6 +58,8 @@ export default class HorizonView extends React.Component {
         this.drawPlane(scene);
         this.drawStickFigure(scene);
         this.drawGlobe(scene);
+        this.drawSun(scene);
+        this.drawMoon(scene);
 
         this.scene = scene;
         this.camera = camera;
@@ -114,6 +116,26 @@ export default class HorizonView extends React.Component {
         sprite.scale.set(0.5, 1, 0.5);
         sprite.position.z = 0.4;
         scene.add(sprite);
+    }
+    drawSun(scene) {
+        const material = new THREE.MeshBasicMaterial({
+            color: 0xffdd00,
+            side: THREE.DoubleSide
+        });
+        const geometry = new THREE.CircleGeometry(1, 32);
+        const sun = new THREE.Mesh(geometry, material);
+        sun.position.set(0, 0, 5);
+        scene.add(sun);
+    }
+    drawMoon(scene) {
+        const material = new THREE.MeshBasicMaterial({
+            color: 0xbbbbbb,
+            side: THREE.DoubleSide
+        });
+        const geometry = new THREE.CircleGeometry(1, 32);
+        const moon = new THREE.Mesh(geometry, material);
+        moon.position.set(0, -3, 4);
+        scene.add(moon);
     }
     componentWillUnmount() {
         this.stop();
