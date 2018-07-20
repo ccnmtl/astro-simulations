@@ -1,8 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import * as THREE from 'three';
 import 'three/OrbitControls';
 import 'three/DragControls';
-import {degToRad} from './utils';
 
 // three.js/react integration based on:
 // https://stackoverflow.com/a/46412546/173630
@@ -30,8 +30,7 @@ export default class HorizonView extends React.Component {
             frustumSize / 2, frustumSize / -2,
             1, 1000
         );
-        camera.position.set(-60, 0, 20);
-        camera.up = new THREE.Vector3(0, 0, 1);
+        camera.position.set(-60, 20, 0);
 
         const controls = new THREE.OrbitControls(camera, this.mount);
         // Configure the controls - we only need some basic
@@ -42,8 +41,8 @@ export default class HorizonView extends React.Component {
 
         // Only let the user see the top of the scene - no need to
         // flip it completely over.
-        controls.minPolarAngle = degToRad(0);
-        controls.maxPolarAngle = degToRad(70);
+        controls.minPolarAngle = THREE.Math.degToRad(0);
+        controls.maxPolarAngle = THREE.Math.degToRad(70);
 
         const renderer = new THREE.WebGLRenderer({antialias: true});
         renderer.setPixelRatio(window.devicePixelRatio);
@@ -60,7 +59,7 @@ export default class HorizonView extends React.Component {
 
         const dragControls = new THREE.DragControls(
             [sun, moon], camera, renderer.domElement);
-        dragControls.enabled = false;
+        //dragControls.enabled = false;
 
 
         this.scene = scene;
@@ -80,6 +79,7 @@ export default class HorizonView extends React.Component {
         material.map.minFilter = THREE.LinearFilter;
         const geometry = new THREE.CircleGeometry(50, 64);
         const plane = new THREE.Mesh(geometry, material);
+        plane.rotation.x = THREE.Math.degToRad(-90);
         scene.add(plane);
     }
     drawGlobe(scene) {
@@ -96,16 +96,19 @@ export default class HorizonView extends React.Component {
 
         const lineMaterial = new THREE.LineBasicMaterial({color: 0xffffff});
         const lineGeometry = new THREE.CircleGeometry(50, 64);
-        const celestialEquator = new THREE.Line(lineGeometry, lineMaterial);
-        celestialEquator.rotation.x = degToRad(90);
-        scene.add(celestialEquator);
 
+        // A north-south line
         const observersMeridian = new THREE.Line(lineGeometry, lineMaterial);
-        observersMeridian.rotation.y = degToRad(90);
+        observersMeridian.rotation.y = THREE.Math.degToRad(90);
         scene.add(observersMeridian);
 
+        // An east-west line
+        const celestialEquator = new THREE.Line(lineGeometry, lineMaterial);
+        celestialEquator.rotation.z = THREE.Math.degToRad(90);
+        scene.add(celestialEquator);
+
         const line3 = new THREE.Line(lineGeometry, lineMaterial);
-        line3.rotation.x = degToRad(-50);
+        line3.rotation.x = THREE.Math.degToRad(40);
         scene.add(line3);
     }
     drawStickFigure(scene) {
@@ -116,7 +119,7 @@ export default class HorizonView extends React.Component {
         });
         const sprite = new THREE.Sprite(spriteMaterial);
         sprite.scale.set(5, 10, 5);
-        sprite.position.z = 4;
+        sprite.position.y = 4;
         scene.add(sprite);
     }
     drawSun(scene) {
@@ -126,7 +129,8 @@ export default class HorizonView extends React.Component {
         });
         const geometry = new THREE.CircleGeometry(5, 32);
         const sun = new THREE.Mesh(geometry, material);
-        sun.position.set(0, 0, 50);
+        sun.rotation.x = THREE.Math.degToRad(90);
+        sun.position.set(0, 50, 0);
         scene.add(sun);
         return sun;
     }
@@ -137,7 +141,8 @@ export default class HorizonView extends React.Component {
         });
         const geometry = new THREE.CircleGeometry(5, 32);
         const moon = new THREE.Mesh(geometry, material);
-        moon.position.set(0, -30, 40);
+        moon.rotation.x = THREE.Math.degToRad(90);
+        moon.position.set(0, 40, 30);
         scene.add(moon);
         return moon;
     }
@@ -167,9 +172,17 @@ export default class HorizonView extends React.Component {
 
     render() {
         return (
+            <React.Fragment>
             <div id={this.id}
                  style={{ width: '228px', height: '228px' }}
                  ref={(mount) => { this.mount = mount }} />
+            <div>Observer's local time: 12:00 pm</div>
+            </React.Fragment>
         );
     }
 }
+
+HorizonView.propTypes = {
+    sunPos: PropTypes.number.isRequired,
+    moonPos: PropTypes.number.isRequired
+};

@@ -25,14 +25,4 @@ const loadSprite = function(src) {
     });
 }
 
-// Converts from degrees to radians.
-const degToRad = function(degrees) {
-  return degrees * Math.PI / 180;
-};
-
-// Converts from radians to degrees.
-const radToDeg = function(radians) {
-  return radians * 180 / Math.PI;
-};
-
-export {forceFloat, loadSprite, degToRad, radToDeg};
+export {forceFloat, loadSprite};

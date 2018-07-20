@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {loadSprite} from './utils';
 
 export default class MoonPhaseView extends React.Component {
@@ -48,3 +49,8 @@ export default class MoonPhaseView extends React.Component {
         ctx.drawImage(this.moon, 0, 0, 228, 215);
     }
 }
+
+MoonPhaseView.propTypes = {
+    sunPos: PropTypes.number.isRequired,
+    moonPos: PropTypes.number.isRequired
+};

@@ -34,5 +34,6 @@ export default class MainView extends React.Component {
 }
 
 MainView.propTypes = {
-    angle: PropTypes.number.isRequired
+    sunPos: PropTypes.number.isRequired,
+    moonPos: PropTypes.number.isRequired
 };
