@@ -1,6 +1,7 @@
 import React from 'react';
 import * as THREE from 'three';
 import 'three/OrbitControls';
+import 'three/DragControls';
 import {degToRad} from './utils';
 
 // three.js/react integration based on:
@@ -58,8 +59,10 @@ export default class HorizonView extends React.Component {
         this.drawPlane(scene);
         this.drawStickFigure(scene);
         this.drawGlobe(scene);
-        this.drawSun(scene);
-        this.drawMoon(scene);
+        const sun = this.drawSun(scene);
+        const moon = this.drawMoon(scene);
+
+        const dragControls = new THREE.DragControls([sun, moon], camera, renderer.domElement);
 
         this.scene = scene;
         this.camera = camera;
@@ -122,20 +125,22 @@ export default class HorizonView extends React.Component {
             color: 0xffdd00,
             side: THREE.DoubleSide
         });
-        const geometry = new THREE.CircleGeometry(1, 32);
+        const geometry = new THREE.CircleGeometry(0.5, 32);
         const sun = new THREE.Mesh(geometry, material);
         sun.position.set(0, 0, 5);
         scene.add(sun);
+        return sun;
     }
     drawMoon(scene) {
         const material = new THREE.MeshBasicMaterial({
             color: 0xbbbbbb,
             side: THREE.DoubleSide
         });
-        const geometry = new THREE.CircleGeometry(1, 32);
+        const geometry = new THREE.CircleGeometry(0.5, 32);
         const moon = new THREE.Mesh(geometry, material);
         moon.position.set(0, -3, 4);
         scene.add(moon);
+        return moon;
     }
     componentWillUnmount() {
         this.stop();
