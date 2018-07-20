@@ -102,7 +102,12 @@ export default class HorizonView extends React.Component {
         sphere.rotation.x = -1;
         scene.add(sphere);
 
-        const lineMaterial = new THREE.LineBasicMaterial({color: 0xffffff});
+        const lineMaterial = new THREE.LineBasicMaterial({
+            transparent: true,
+            opacity: 0.5,
+            color: 0xffffff,
+            linewidth: 1.5
+        });
         const lineGeometry = new THREE.CircleGeometry(50, 64);
 
         // A north-south line
@@ -115,7 +120,11 @@ export default class HorizonView extends React.Component {
         celestialEquator.rotation.z = THREE.Math.degToRad(90);
         scene.add(celestialEquator);
 
-        const line3 = new THREE.Line(lineGeometry, lineMaterial);
+        const thickLineMaterial = new THREE.LineBasicMaterial({
+            color: 0xffffff,
+            linewidth: 3
+        });
+        const line3 = new THREE.Line(lineGeometry, thickLineMaterial);
         line3.rotation.x = THREE.Math.degToRad(40);
         scene.add(line3);
     }
@@ -184,7 +193,7 @@ export default class HorizonView extends React.Component {
             <div id={this.id}
                  style={{ width: '228px', height: '228px' }}
                  ref={(mount) => { this.mount = mount }} />
-            <div>Observer&amp;s local time: 12:00 pm</div>
+            <div>Observer&apos;s local time: 12:00 pm</div>
             </React.Fragment>
         );
     }
