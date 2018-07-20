@@ -1,6 +1,8 @@
 import React from 'react';
 import * as THREE from 'three';
 import 'three/OrbitControls';
+import 'three/DragControls';
+import {degToRad} from './utils';
 
 // three.js/react integration based on:
 // https://stackoverflow.com/a/46412546/173630
@@ -18,41 +20,48 @@ export default class HorizonView extends React.Component {
         const width = this.mount.clientWidth;
         const height = this.mount.clientHeight;
 
+        // well, since it's a square for now the aspect will be 1.
+        const aspect = width / height;
+        const frustumSize = 100;
+
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(
-            75,
-            width / height,
-            0.1,
-            1000
+        const camera = new THREE.OrthographicCamera(
+            frustumSize * aspect / -2, frustumSize * aspect / 2,
+            frustumSize / 2, frustumSize / -2,
+            1, 1000
         );
+        camera.position.set(-60, 0, 20);
+        camera.up = new THREE.Vector3(0, 0, 1);
+
         const controls = new THREE.OrbitControls(camera, this.mount);
         // Configure the controls - we only need some basic
         // drag-rotation behavior.
         controls.enableKeys = false;
         controls.enablePan = false;
-        //controls.enableZoom = false;
+        controls.enableZoom = false;
 
         // Only let the user see the top of the scene - no need to
         // flip it completely over.
-        controls.minPolarAngle = Math.PI / 4;
-        controls.maxPolarAngle = Math.PI - 1.2;
+        controls.minPolarAngle = degToRad(0);
+        controls.maxPolarAngle = degToRad(70);
 
-        // Don't rotate on the side-to-side axis. For this mouse
-        // movement, the plane must be rotated on its own axis.
-        controls.minAzimuthAngle = 0;
-        controls.maxAzimuthAngle = 0;
-
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        const renderer = new THREE.WebGLRenderer({antialias: true});
         renderer.setPixelRatio(window.devicePixelRatio);
-
-        camera.position.z = 8;
-        controls.update();
         renderer.setClearColor(0xffffff);
         renderer.setSize(width, height);
 
+        controls.update();
+
         this.drawPlane(scene);
-        //this.drawGlobe(scene);
         this.drawStickFigure(scene);
+        this.drawGlobe(scene);
+        const sun = this.drawSun(scene);
+        const moon = this.drawMoon(scene);
+
+        const dragControls = new THREE.DragControls(
+            [sun, moon], camera, renderer.domElement);
+        dragControls.enabled = false;
+
 
         this.scene = scene;
         this.camera = camera;
@@ -63,27 +72,41 @@ export default class HorizonView extends React.Component {
     }
     drawPlane(scene) {
         const texture = new THREE.TextureLoader().load('img/plane.svg');
-
         const material = new THREE.MeshBasicMaterial({
             transparent: true,
             map: texture,
             side: THREE.DoubleSide
         });
         material.map.minFilter = THREE.LinearFilter;
-        const geometry = new THREE.CircleGeometry(5, 64);
+        const geometry = new THREE.CircleGeometry(50, 64);
         const plane = new THREE.Mesh(geometry, material);
-        plane.rotation.x = -1;
         scene.add(plane);
     }
     drawGlobe(scene) {
-        const geometry = new THREE.SphereGeometry(4.9, 32, 32);
+        const geometry = new THREE.SphereGeometry(50, 64, 64);
         const material = new THREE.MeshBasicMaterial({
             transparent: true,
-            opacity: 0.2,
-            color: 0x0000ff
+            opacity: 0.1,
+            color: 0x0000ff,
+            depthWrite: false
         });
         const sphere = new THREE.Mesh(geometry, material);
-        scene.add( sphere );
+        sphere.rotation.x = -1;
+        scene.add(sphere);
+
+        const lineMaterial = new THREE.LineBasicMaterial({color: 0xffffff});
+        const lineGeometry = new THREE.CircleGeometry(50, 64);
+        const celestialEquator = new THREE.Line(lineGeometry, lineMaterial);
+        celestialEquator.rotation.x = degToRad(90);
+        scene.add(celestialEquator);
+
+        const observersMeridian = new THREE.Line(lineGeometry, lineMaterial);
+        observersMeridian.rotation.y = degToRad(90);
+        scene.add(observersMeridian);
+
+        const line3 = new THREE.Line(lineGeometry, lineMaterial);
+        line3.rotation.x = degToRad(-50);
+        scene.add(line3);
     }
     drawStickFigure(scene) {
         const spriteMap = new THREE.TextureLoader().load('img/stickfigure.svg');
@@ -92,9 +115,31 @@ export default class HorizonView extends React.Component {
             color: 0xffffff
         });
         const sprite = new THREE.Sprite(spriteMaterial);
-        sprite.scale.set(1, 2, 1);
-        sprite.position.y = 1;
+        sprite.scale.set(5, 10, 5);
+        sprite.position.z = 4;
         scene.add(sprite);
+    }
+    drawSun(scene) {
+        const material = new THREE.MeshBasicMaterial({
+            color: 0xffdd00,
+            side: THREE.DoubleSide
+        });
+        const geometry = new THREE.CircleGeometry(5, 32);
+        const sun = new THREE.Mesh(geometry, material);
+        sun.position.set(0, 0, 50);
+        scene.add(sun);
+        return sun;
+    }
+    drawMoon(scene) {
+        const material = new THREE.MeshBasicMaterial({
+            color: 0xbbbbbb,
+            side: THREE.DoubleSide
+        });
+        const geometry = new THREE.CircleGeometry(5, 32);
+        const moon = new THREE.Mesh(geometry, material);
+        moon.position.set(0, -30, 40);
+        scene.add(moon);
+        return moon;
     }
     componentWillUnmount() {
         this.stop();

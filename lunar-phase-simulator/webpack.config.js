@@ -12,6 +12,7 @@ module.exports = {
         extensions: ['*', '.js', '.jsx'],
         alias: {
             'three/OrbitControls': path.join(__dirname, 'node_modules/three/examples/js/controls/OrbitControls.js'),
+            'three/DragControls': path.join(__dirname, 'node_modules/three/examples/js/controls/DragControls.js'),
             'three/OBJLoader': path.join(__dirname, 'node_modules/three/examples/js/loaders/OBJLoader.js')
         }
     },
