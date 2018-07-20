@@ -22,15 +22,15 @@ export default class HorizonView extends React.Component {
 
         // well, since it's a square for now the aspect will be 1.
         const aspect = width / height;
-        const frustumSize = 10;
+        const frustumSize = 100;
 
         const scene = new THREE.Scene();
         const camera = new THREE.OrthographicCamera(
             frustumSize * aspect / -2, frustumSize * aspect / 2,
             frustumSize / 2, frustumSize / -2,
-            1, 100
+            1, 1000
         );
-        camera.position.set(-6, 0, 2);
+        camera.position.set(-60, 0, 20);
         camera.up = new THREE.Vector3(0, 0, 1);
 
         const controls = new THREE.OrbitControls(camera, this.mount);
@@ -58,7 +58,10 @@ export default class HorizonView extends React.Component {
         const sun = this.drawSun(scene);
         const moon = this.drawMoon(scene);
 
-        new THREE.DragControls([sun, moon], camera, renderer.domElement);
+        const dragControls = new THREE.DragControls(
+            [sun, moon], camera, renderer.domElement);
+        dragControls.enabled = false;
+
 
         this.scene = scene;
         this.camera = camera;
@@ -75,12 +78,12 @@ export default class HorizonView extends React.Component {
             side: THREE.DoubleSide
         });
         material.map.minFilter = THREE.LinearFilter;
-        const geometry = new THREE.CircleGeometry(5, 64);
+        const geometry = new THREE.CircleGeometry(50, 64);
         const plane = new THREE.Mesh(geometry, material);
         scene.add(plane);
     }
     drawGlobe(scene) {
-        const geometry = new THREE.SphereGeometry(5, 64, 64);
+        const geometry = new THREE.SphereGeometry(50, 64, 64);
         const material = new THREE.MeshBasicMaterial({
             transparent: true,
             opacity: 0.1,
@@ -92,7 +95,7 @@ export default class HorizonView extends React.Component {
         scene.add(sphere);
 
         const lineMaterial = new THREE.LineBasicMaterial({color: 0xffffff});
-        const lineGeometry = new THREE.CircleGeometry(5, 64);
+        const lineGeometry = new THREE.CircleGeometry(50, 64);
         const celestialEquator = new THREE.Line(lineGeometry, lineMaterial);
         celestialEquator.rotation.x = degToRad(90);
         scene.add(celestialEquator);
@@ -112,8 +115,8 @@ export default class HorizonView extends React.Component {
             color: 0xffffff
         });
         const sprite = new THREE.Sprite(spriteMaterial);
-        sprite.scale.set(0.5, 1, 0.5);
-        sprite.position.z = 0.4;
+        sprite.scale.set(5, 10, 5);
+        sprite.position.z = 4;
         scene.add(sprite);
     }
     drawSun(scene) {
@@ -121,9 +124,9 @@ export default class HorizonView extends React.Component {
             color: 0xffdd00,
             side: THREE.DoubleSide
         });
-        const geometry = new THREE.CircleGeometry(0.5, 32);
+        const geometry = new THREE.CircleGeometry(5, 32);
         const sun = new THREE.Mesh(geometry, material);
-        sun.position.set(0, 0, 5);
+        sun.position.set(0, 0, 50);
         scene.add(sun);
         return sun;
     }
@@ -132,9 +135,9 @@ export default class HorizonView extends React.Component {
             color: 0xbbbbbb,
             side: THREE.DoubleSide
         });
-        const geometry = new THREE.CircleGeometry(0.5, 32);
+        const geometry = new THREE.CircleGeometry(5, 32);
         const moon = new THREE.Mesh(geometry, material);
-        moon.position.set(0, -3, 4);
+        moon.position.set(0, -30, 40);
         scene.add(moon);
         return moon;
     }
