@@ -9,18 +9,19 @@ class LunarPhaseSim extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            // The angle offset of the avatar on Earth. 0 to 360.
-            angle: 0
+            sunPos: 0,
+            moonPos: 0
         };
         this.handleInputChange = this.handleInputChange.bind(this);
     }
     render() {
         return <div className="row">
             <div className="col-8">
-                <MainView angle={this.state.angle} />
+                <MainView
+                    sunPos={this.state.sunPos}
+                    moonPos={this.state.moonPos} />
 
                 <div className="row">
-
 
                     <div className="col">
                         <h4>Animation and Time Controls</h4>
@@ -81,20 +82,21 @@ class LunarPhaseSim extends React.Component {
                         </div>
                     </div>
 
-
-
-
                 </div>
             </div>
 
             <div className="col-4">
                 <div>
                     <h4>Moon Phase</h4>
-                    <MoonPhaseView />
+                    <MoonPhaseView
+                        sunPos={this.state.sunPos}
+                        moonPos={this.state.moonPos} />
                 </div>
                 <div>
                     <h4>Horizon Diagram</h4>
-                    <HorizonView />
+                    <HorizonView
+                        sunPos={this.state.sunPos}
+                        moonPos={this.state.moonPos} />
                 </div>
             </div>
         </div>;
