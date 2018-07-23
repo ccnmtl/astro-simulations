@@ -17,7 +17,17 @@ export default class MainView extends React.Component {
         const ctx = canvas.getContext('2d');
 
         this.drawStatic(ctx, canvas);
-        this.drawMoon(ctx);
+
+        const me = this;
+        loadSprite('img/moon.svg').then(function(img) {
+            me.moon = img;
+            me.drawMoon(img);
+        });
+    }
+    componentDidUpdate(prevProps) {
+        if (this.props.moonPos !== prevProps.moonPos) {
+            this.drawMoon(this.moon);
+        }
     }
     drawStatic(ctx, canvas) {
         ctx.rect(0, 0, canvas.width, canvas.height);
@@ -33,19 +43,29 @@ export default class MainView extends React.Component {
         ctx.arc(370, 230, 200, 0, Math.PI * 2, true);
         ctx.stroke();
     }
-    drawMoon(ctx) {
-        loadSprite('img/moon.svg').then(function(img) {
-            ctx.drawImage(
-                img,
-                160, 220,
-                20, 20);
+    drawMoon(img) {
+        const canvas = document.getElementById(this.id);
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(
+            img,
+            // x
+            200 * Math.cos(this.props.moonPos) + 360,
+            // y
+            200 * Math.sin(this.props.moonPos) + 220,
+            // Width and height
+            20, 20);
 
-            // Shade half of the moon
-            ctx.beginPath();
-            ctx.arc(170, 230, 10, Math.PI + (Math.PI / 2), Math.PI / 2);
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
-            ctx.fill();
-        });
+        // Shade half of the moon
+        ctx.beginPath();
+        ctx.arc(
+            // x
+            200 * Math.cos(this.props.moonPos) + 370,
+            // y
+            200 * Math.sin(this.props.moonPos) + 230,
+            10,
+            Math.PI + (Math.PI / 2), Math.PI / 2);
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+        ctx.fill();
     }
 }
 

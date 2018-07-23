@@ -10,7 +10,7 @@ class LunarPhaseSim extends React.Component {
         super(props);
         this.state = {
             sunPos: 0,
-            moonPos: 0,
+            moonPos: -Math.PI,
             isPlaying: false
         };
         this.handleInputChange = this.handleInputChange.bind(this);
