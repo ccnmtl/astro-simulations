@@ -10,11 +10,16 @@ class LunarPhaseSim extends React.Component {
         super(props);
         this.state = {
             sunPos: 0,
-            moonPos: 0
+            moonPos: 0,
+            isPlaying: false
         };
         this.handleInputChange = this.handleInputChange.bind(this);
     }
     render() {
+        let startBtnText = 'Start Animation';
+        if (this.state.isPlaying) {
+            startBtnText = 'Pause Animation';
+        }
         return <div className="row">
             <div className="col-8">
                 <MainView
@@ -25,8 +30,9 @@ class LunarPhaseSim extends React.Component {
 
                     <div className="col">
                         <h4>Animation and Time Controls</h4>
-                        <button type="button" className="btn btn-primary btn-sm">
-                            Start Animation
+                        <button type="button" className="btn btn-primary btn-sm"
+                                onClick={this.onStartClick.bind(this)}>
+                            {startBtnText}
                         </button>
                         <form className="form-inline">
                             <label htmlFor="diamRange">Animation rate:</label>
@@ -101,12 +107,33 @@ class LunarPhaseSim extends React.Component {
             </div>
         </div>;
     }
+    incrementAngle(n) {
+        if (n > 360) {
+            return 0;
+        }
+        return n + 0.02;
+    }
+    animate() {
+        const me = this;
+        this.setState(prevState => ({
+            moonPos: me.incrementAngle(prevState.moonPos),
+            sunPos: me.incrementAngle(prevState.sunPos)
+        }));
+    }
     handleInputChange(event) {
         const target = event.target;
 
         this.setState({
             [target.name]: forceFloat(target.value)
         });
+    }
+    onStartClick() {
+        if (!this.state.isPlaying) {
+            this.anim = setInterval(() => this.animate(), 20);
+        } else {
+            clearInterval(this.anim);
+        }
+        this.setState({isPlaying: !this.state.isPlaying});
     }
 }
 
