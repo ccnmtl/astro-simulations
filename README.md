@@ -21,7 +21,7 @@ Here are instructions on how to develop and make changes to these interactives.
 The procedure above relies on [make](https://www.gnu.org/software/make/), a pretty typical unix utility on Linux and Mac. So, you can either get that working on Windows, or you can just go without it with the following steps:
 * Install [node.js](https://nodejs.org/en/)
 * Clone this repository
-* Go into one of the interactives, e.g.: `cd astro-interactives/lunar-phase-simulator`
+* Go into one of the interactives, e.g.: `cd astro-interactives\lunar-phase-simulator`
 * Run `npm install`
 * Run `.\node_modules\.bin\webpack --mode development --watch`
 * Open the `lunar-phase-simulator\index.html` file in your web browser.
