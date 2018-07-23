@@ -37,8 +37,14 @@ export default class MainView extends React.Component {
         loadSprite('img/moon.svg').then(function(img) {
             ctx.drawImage(
                 img,
-                150, 210,
-                40, 40);
+                160, 220,
+                20, 20);
+
+            // Shade half of the moon
+            ctx.beginPath();
+            ctx.arc(170, 230, 10, Math.PI + (Math.PI / 2), Math.PI / 2);
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+            ctx.fill();
         });
     }
 }
