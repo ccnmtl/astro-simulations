@@ -14,6 +14,7 @@ export default class HorizonView extends React.Component {
         this.start = this.start.bind(this);
         this.stop = this.stop.bind(this);
         this.animate = this.animate.bind(this);
+        this.t = 0;
     }
 
     componentDidMount() {
@@ -62,13 +63,12 @@ export default class HorizonView extends React.Component {
         this.drawPlane(scene);
         this.drawStickFigure(scene);
         this.drawGlobe(scene);
-        const sun = this.drawSun(scene);
-        const moon = this.drawMoon(scene);
+        this.sun = this.drawSun(scene);
+        this.moon = this.drawMoon(scene);
 
         new THREE.DragControls(
-            [sun, moon], camera, renderer.domElement);
+            [this.sun, this.moon], camera, renderer.domElement);
         //dragControls.enabled = false;
-
 
         this.scene = scene;
         this.camera = camera;
@@ -120,13 +120,14 @@ export default class HorizonView extends React.Component {
         celestialEquator.rotation.z = THREE.Math.degToRad(90);
         scene.add(celestialEquator);
 
+        // The sun and moon will orbit along this next line.
         const thickLineMaterial = new THREE.LineBasicMaterial({
             color: 0xffffff,
             linewidth: 3
         });
-        const line3 = new THREE.Line(lineGeometry, thickLineMaterial);
-        line3.rotation.x = THREE.Math.degToRad(40);
-        scene.add(line3);
+        const orbitLine = new THREE.Line(lineGeometry, thickLineMaterial);
+        orbitLine.rotation.x = THREE.Math.degToRad(40);
+        scene.add(orbitLine);
     }
     drawStickFigure(scene) {
         const spriteMap = new THREE.TextureLoader().load('img/stickfigure.svg');
@@ -146,8 +147,7 @@ export default class HorizonView extends React.Component {
         });
         const geometry = new THREE.CircleGeometry(5, 32);
         const sun = new THREE.Mesh(geometry, material);
-        sun.rotation.x = THREE.Math.degToRad(90);
-        sun.position.set(0, 50, 0);
+        sun.position.set(50, 1, 0);
         scene.add(sun);
         return sun;
     }
@@ -158,8 +158,7 @@ export default class HorizonView extends React.Component {
         });
         const geometry = new THREE.CircleGeometry(5, 32);
         const moon = new THREE.Mesh(geometry, material);
-        moon.rotation.x = THREE.Math.degToRad(90);
-        moon.position.set(0, 40, 30);
+        moon.position.set(0, 1, 50);
         scene.add(moon);
         return moon;
     }
@@ -179,6 +178,16 @@ export default class HorizonView extends React.Component {
     }
 
     animate() {
+        this.t += 0.01;
+
+        this.sun.position.x = 50 * Math.cos(this.t);
+        this.sun.position.z = 50 * Math.sin(this.t);
+        this.sun.rotation.y = -this.t + THREE.Math.degToRad(90);
+
+        this.moon.position.x = 50 * Math.cos(this.t + 0.5);
+        this.moon.position.z = 50 * Math.sin(this.t + 0.5);
+        this.moon.rotation.y = (-this.t - 0.5) + THREE.Math.degToRad(90);
+
         this.renderScene();
         this.frameId = window.requestAnimationFrame(this.animate);
     }
