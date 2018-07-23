@@ -66,8 +66,16 @@ export default class HorizonView extends React.Component {
         this.sun = this.drawSun(scene);
         this.moon = this.drawMoon(scene);
 
-        new THREE.DragControls(
-            [this.sun, this.moon], camera, renderer.domElement);
+        this.orbitGroup = new THREE.Group();
+        this.orbitGroup.add(this.sun);
+        this.orbitGroup.add(this.moon);
+        this.orbitGroup.add(this.orbitLine);
+        scene.add(this.orbitGroup);
+
+        this.orbitGroup.rotation.x = THREE.Math.degToRad(-50);
+
+        /*new THREE.DragControls(
+            [this.sun, this.moon], camera, renderer.domElement);*/
         //dragControls.enabled = false;
 
         this.scene = scene;
@@ -125,9 +133,8 @@ export default class HorizonView extends React.Component {
             color: 0xffffff,
             linewidth: 3
         });
-        const orbitLine = new THREE.LineLoop(lineGeometry, thickLineMaterial);
-        orbitLine.rotation.x = THREE.Math.degToRad(40);
-        scene.add(orbitLine);
+        this.orbitLine = new THREE.LineLoop(lineGeometry, thickLineMaterial);
+        this.orbitLine.rotation.x = THREE.Math.degToRad(90);
     }
     drawStickFigure(scene) {
         const spriteMap = new THREE.TextureLoader().load('img/stickfigure.svg');
@@ -140,7 +147,7 @@ export default class HorizonView extends React.Component {
         sprite.position.y = 4;
         scene.add(sprite);
     }
-    drawSun(scene) {
+    drawSun() {
         const material = new THREE.MeshBasicMaterial({
             color: 0xffdd00,
             side: THREE.DoubleSide
@@ -157,10 +164,9 @@ export default class HorizonView extends React.Component {
         group.add(sun);
         group.add(border);
         group.position.set(50, 1, 0);
-        scene.add(group);
         return group;
     }
-    drawMoon(scene) {
+    drawMoon() {
         const material = new THREE.MeshBasicMaterial({
             color: 0xbbbbbb,
             side: THREE.DoubleSide
@@ -177,7 +183,6 @@ export default class HorizonView extends React.Component {
         group.add(moon);
         group.add(border);
         group.position.set(50, 1, 0);
-        scene.add(group);
         return group;
     }
     componentWillUnmount() {
