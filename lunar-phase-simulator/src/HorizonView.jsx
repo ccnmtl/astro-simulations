@@ -111,12 +111,12 @@ export default class HorizonView extends React.Component {
         const lineGeometry = new THREE.CircleGeometry(50, 64);
 
         // A north-south line
-        const observersMeridian = new THREE.Line(lineGeometry, lineMaterial);
+        const observersMeridian = new THREE.LineLoop(lineGeometry, lineMaterial);
         observersMeridian.rotation.y = THREE.Math.degToRad(90);
         scene.add(observersMeridian);
 
         // An east-west line
-        const celestialEquator = new THREE.Line(lineGeometry, lineMaterial);
+        const celestialEquator = new THREE.LineLoop(lineGeometry, lineMaterial);
         celestialEquator.rotation.z = THREE.Math.degToRad(90);
         scene.add(celestialEquator);
 
@@ -125,7 +125,7 @@ export default class HorizonView extends React.Component {
             color: 0xffffff,
             linewidth: 3
         });
-        const orbitLine = new THREE.Line(lineGeometry, thickLineMaterial);
+        const orbitLine = new THREE.LineLoop(lineGeometry, thickLineMaterial);
         orbitLine.rotation.x = THREE.Math.degToRad(40);
         scene.add(orbitLine);
     }
@@ -146,10 +146,19 @@ export default class HorizonView extends React.Component {
             side: THREE.DoubleSide
         });
         const geometry = new THREE.CircleGeometry(5, 32);
+        const edges = new THREE.EdgesGeometry(geometry);
+        const border = new THREE.LineLoop(edges, new THREE.LineBasicMaterial(
+            {color: 0x000000, linewidth: 3}
+        ));
+
         const sun = new THREE.Mesh(geometry, material);
-        sun.position.set(50, 1, 0);
-        scene.add(sun);
-        return sun;
+        const group = new THREE.Group();
+
+        group.add(sun);
+        group.add(border);
+        group.position.set(50, 1, 0);
+        scene.add(group);
+        return group;
     }
     drawMoon(scene) {
         const material = new THREE.MeshBasicMaterial({
@@ -157,10 +166,19 @@ export default class HorizonView extends React.Component {
             side: THREE.DoubleSide
         });
         const geometry = new THREE.CircleGeometry(5, 32);
+        const edges = new THREE.EdgesGeometry(geometry);
+        const border = new THREE.LineLoop(edges, new THREE.LineBasicMaterial(
+            {color: 0x000000, linewidth: 3}
+        ));
+
         const moon = new THREE.Mesh(geometry, material);
-        moon.position.set(0, 1, 50);
-        scene.add(moon);
-        return moon;
+        const group = new THREE.Group();
+
+        group.add(moon);
+        group.add(border);
+        group.position.set(50, 1, 0);
+        scene.add(group);
+        return group;
     }
     componentWillUnmount() {
         this.stop();
