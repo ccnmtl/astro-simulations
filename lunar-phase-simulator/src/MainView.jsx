@@ -16,7 +16,7 @@ export default class MainView extends React.Component {
         const canvas = document.getElementById(this.id);
         const ctx = canvas.getContext('2d');
 
-        this.drawStatic(ctx, canvas);
+        this.drawBg(ctx, canvas);
 
         const me = this;
         loadSprite('img/moon.svg').then(function(img) {
@@ -29,7 +29,7 @@ export default class MainView extends React.Component {
             this.drawMoon(this.moon);
         }
     }
-    drawStatic(ctx, canvas) {
+    drawBg(ctx, canvas) {
         ctx.rect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = 'black';
         ctx.fill();
