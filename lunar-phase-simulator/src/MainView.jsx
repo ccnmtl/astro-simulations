@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {loadSprite} from './utils';
 
 export default class MainView extends React.Component {
     constructor(props) {
@@ -12,12 +13,13 @@ export default class MainView extends React.Component {
         return <canvas id={this.id} width="600" height="460"></canvas>;
     }
     componentDidMount() {
-        this.drawStatic();
-    }
-    drawStatic() {
         const canvas = document.getElementById(this.id);
         const ctx = canvas.getContext('2d');
 
+        this.drawStatic(ctx, canvas);
+        this.drawMoon(ctx);
+    }
+    drawStatic(ctx, canvas) {
         ctx.rect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = 'black';
         ctx.fill();
@@ -30,6 +32,14 @@ export default class MainView extends React.Component {
         ctx.beginPath();
         ctx.arc(370, 230, 200, 0, Math.PI * 2, true);
         ctx.stroke();
+    }
+    drawMoon(ctx) {
+        loadSprite('img/moon.svg').then(function(img) {
+            ctx.drawImage(
+                img,
+                150, 210,
+                40, 40);
+        });
     }
 }
 
