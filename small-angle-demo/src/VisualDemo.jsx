@@ -50,12 +50,12 @@ export default class VisualDemo extends React.Component {
     loadSprites() {
         const me = this;
 
-        // TODO: make these loads concurrent
-        return loadSprite('img/person.png').then(function(img) {
-            me.person = img;
-            return loadSprite('img/beachball.svg');
-        }).then(function(img) {
-            me.ball = img;
+        return Promise.all([
+            loadSprite('img/person.png'),
+            loadSprite('img/beachball.svg')
+        ]).then(values => {
+            me.person = values[0];
+            me.ball = values[1];
         });
     }
     drawStatic() {
