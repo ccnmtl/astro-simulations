@@ -8,33 +8,39 @@ export default class MainView extends React.Component {
         this.ball = null;
         this.raf = null;
         this.id = 'MainView'
+        this.canvas = null;
+        this.ctx = null;
     }
     render() {
         return <canvas id={this.id} width="600" height="460"></canvas>;
     }
     componentDidMount() {
-        const canvas = document.getElementById(this.id);
-        const ctx = canvas.getContext('2d');
+        this.canvas = document.getElementById(this.id);
+        this.ctx = this.canvas.getContext('2d');
 
-        this.drawBg(ctx, canvas);
+        this.drawBg(this.ctx, this.canvas);
+        this.drawOrbit(this.ctx);
 
         const me = this;
         loadSprite('img/moon.svg').then(function(img) {
             me.moon = img;
-            me.drawMoon(img);
+            me.drawMoon(me.ctx, img);
         });
     }
     componentDidUpdate(prevProps) {
         if (this.props.moonPos !== prevProps.moonPos) {
-            this.drawMoon(this.moon);
+            this.draw(this.ctx, this.canvas);
         }
     }
     drawBg(ctx, canvas) {
         ctx.rect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = 'black';
         ctx.fill();
-
-        this.drawOrbit(ctx);
+    }
+    draw() {
+        this.drawBg(this.ctx, this.canvas);
+        this.drawOrbit(this.ctx);
+        this.drawMoon(this.ctx, this.moon);
     }
     drawOrbit(ctx) {
         ctx.lineWidth = 0.8;
@@ -43,9 +49,7 @@ export default class MainView extends React.Component {
         ctx.arc(370, 230, 200, 0, Math.PI * 2, true);
         ctx.stroke();
     }
-    drawMoon(img) {
-        const canvas = document.getElementById(this.id);
-        const ctx = canvas.getContext('2d');
+    drawMoon(ctx, img) {
         ctx.drawImage(
             img,
             // x
