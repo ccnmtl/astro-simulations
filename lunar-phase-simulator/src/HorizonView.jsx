@@ -8,7 +8,7 @@ import 'three/DragControls';
 // https://stackoverflow.com/a/46412546/173630
 export default class HorizonView extends React.Component {
     constructor(props) {
-        super(props)
+        super(props);
 
         this.id = 'HorizonView';
         this.start = this.start.bind(this);

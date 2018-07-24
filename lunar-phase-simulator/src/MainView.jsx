@@ -1,62 +1,75 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {loadSprite} from './utils';
+import * as PIXI from 'pixi.js';
 
 export default class MainView extends React.Component {
     constructor(props) {
         super(props);
-        this.ball = null;
-        this.raf = null;
-        this.id = 'MainView'
-        this.canvas = null;
-        this.ctx = null;
+        this.id = 'MainView';
+        this.resources = {};
+
+        this.start = this.start.bind(this);
+        this.stop = this.stop.bind(this);
+        this.animate = this.animate.bind(this);
     }
+    // react/PIXI integration from:
+    // https://www.protectator.ch/post/pixijs-v4-in-a-react-component
     render() {
-        return <canvas id={this.id} width="600" height="460"></canvas>;
+        return (
+            <div id={this.id}
+                 ref={(thisDiv) => {this.gameCanvas = thisDiv}} />
+        );
     }
     componentDidMount() {
-        this.canvas = document.getElementById(this.id);
-        this.ctx = this.canvas.getContext('2d');
+        this.app = new PIXI.Application(600, 460);
+        this.gameCanvas.appendChild(this.app.view);
+        this.app.start();
 
-        this.drawBg(this.ctx, this.canvas);
-        this.drawOrbit(this.ctx);
+        const loader = new PIXI.loaders.Loader();
+        loader.add('moon', 'img/moon.svg')
+              .add('earth', 'img/earth.svg')
+              .add('avatar', 'img/white-stickfigure.svg')
+              .add('highlight', 'img/circle-highlight.svg');
 
         const me = this;
-        this.loadSprites().then(() => {
-            me.drawMoon(me.ctx, me.moon);
-            me.drawEarth(me.ctx, me.earth, me.avatar);
-        });
-    }
-    loadSprites() {
-        const me = this;
+        loader.load((loader, resources) => {
+            me.resources = resources;
 
-        return Promise.all([
-            loadSprite('img/moon.svg'),
-            loadSprite('img/earth.svg'),
-            loadSprite('img/white-stickfigure.svg'),
-            loadSprite('img/circle-highlight.svg')
-        ]).then(values => {
-            me.moon = values[0];
-            me.earth = values[1];
-            me.avatar = values[2];
-            me.highlight = values[3];
+            me.moon = me.drawMoon(resources.moon);
+            me.moon.on('click', function() {
+                console.log('moon');
+            });
+
+            me.earth = me.drawEarth(resources.earth, resources.avatar);
+            me.earth.on('click', function() {
+                console.log('earth');
+            });
+
+            me.start();
         });
     }
-    componentDidUpdate(prevProps) {
-        if (this.props.moonPos !== prevProps.moonPos) {
-            this.draw(this.ctx, this.canvas);
+    componentWillUnmount() {
+        this.app.stop();
+    }
+    start() {
+        if (!this.frameId) {
+            this.frameId = requestAnimationFrame(this.animate);
         }
     }
-    drawBg(ctx, canvas) {
-        ctx.rect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = 'black';
-        ctx.fill();
+    stop() {
+        cancelAnimationFrame(this.frameId)
+    }
+    animate() {
+        this.moon.x = 200 * Math.cos(-this.props.moonPos) + 360;
+        this.moon.y = 200 * Math.sin(-this.props.moonPos) + 220;
+        this.earth.rotation = -this.props.observerAngle;
+
+        this.frameId = window.requestAnimationFrame(this.animate);
     }
     draw() {
-        this.drawBg(this.ctx, this.canvas);
-        this.drawOrbit(this.ctx);
-        this.drawMoon(this.ctx, this.moon);
-        this.drawEarth(this.ctx, this.earth, this.avatar);
+        //this.drawOrbit(this.ctx);
+        this.drawMoon(this.resources.moon);
+        this.drawEarth(this.resources.earth, this.resources.avatar);
     }
     drawOrbit(ctx) {
         ctx.lineWidth = 0.8;
@@ -65,41 +78,46 @@ export default class MainView extends React.Component {
         ctx.arc(370, 230, 200, 0, Math.PI * 2, true);
         ctx.stroke();
     }
-    drawMoon(ctx, img) {
-        ctx.drawImage(
-            img,
-            // x
-            200 * Math.cos(this.props.moonPos) + 360,
-            // y
-            200 * Math.sin(this.props.moonPos) + 220,
-            // Width and height
-            20, 20);
+    drawMoon(moonResource) {
+        const moon = new PIXI.Sprite(moonResource.texture);
+        moon.interactive = true;
+        moon.buttonMode = true;
+        moon.width = 20;
+        moon.height = 20;
+        moon.x = 200 * Math.cos(-this.props.moonPos) + 360;
+        moon.y = 200 * Math.sin(-this.props.moonPos) + 220;
 
-        // Shade half of the moon
-        ctx.beginPath();
-        ctx.arc(
-            // x
-            200 * Math.cos(this.props.moonPos) + 370,
-            // y
-            200 * Math.sin(this.props.moonPos) + 230,
-            10,
-            Math.PI + (Math.PI / 2), Math.PI / 2);
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
-        ctx.fill();
+        // Rotate around the center
+        moon.anchor.x = 0.5;
+        moon.anchor.y = 0.5;
+
+        // Add the moon to the scene we are building
+        this.app.stage.addChild(moon);
+
+        return moon;
     }
     /*
      * The earth's rotation in this view is determined by observerAngle.
      */
-    drawEarth(ctx, earth, avatar) {
-        ctx.drawImage(
-            earth,
-            370 - 35, 230 - 35,
-            70, 70);
+    drawEarth(earthResource) {
+        const earth = new PIXI.Sprite(earthResource.texture);
+        earth.interactive = true;
+        earth.buttonMode = true;
+        earth.width = 70;
+        earth.height = 70;
+        earth.x = 370 - 35;
+        earth.y = 230 - 35;
 
-        ctx.drawImage(
-            avatar,
-            308, 220,
-            36, 17);
+        // Rotate around the center
+        earth.anchor.x = 0.5;
+        earth.anchor.y = 0.5;
+
+        earth.rotation = -this.props.observerAngle;
+
+        // Add the earth to the scene we are building
+        this.app.stage.addChild(earth);
+
+        return earth;
     }
 }
 
