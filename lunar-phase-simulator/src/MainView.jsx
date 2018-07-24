@@ -22,9 +22,22 @@ export default class MainView extends React.Component {
         this.drawOrbit(this.ctx);
 
         const me = this;
-        loadSprite('img/moon.svg').then(function(img) {
-            me.moon = img;
-            me.drawMoon(me.ctx, img);
+        this.loadSprites().then(() => {
+            me.drawMoon(me.ctx, me.moon);
+            me.drawEarth(me.ctx, me.earth, me.avatar);
+        });
+    }
+    loadSprites() {
+        const me = this;
+
+        return Promise.all([
+            loadSprite('img/moon.svg'),
+            loadSprite('img/earth.svg'),
+            loadSprite('img/white-stickfigure.svg')
+        ]).then(values => {
+            me.moon = values[0];
+            me.earth = values[1];
+            me.avatar = values[2];
         });
     }
     componentDidUpdate(prevProps) {
@@ -41,6 +54,7 @@ export default class MainView extends React.Component {
         this.drawBg(this.ctx, this.canvas);
         this.drawOrbit(this.ctx);
         this.drawMoon(this.ctx, this.moon);
+        this.drawEarth(this.ctx, this.earth, this.avatar);
     }
     drawOrbit(ctx) {
         ctx.lineWidth = 0.8;
@@ -70,6 +84,17 @@ export default class MainView extends React.Component {
             Math.PI + (Math.PI / 2), Math.PI / 2);
         ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
         ctx.fill();
+    }
+    drawEarth(ctx, earth, avatar) {
+        ctx.drawImage(
+            earth,
+            370 - 35, 230 - 35,
+            70, 70);
+
+        ctx.drawImage(
+            avatar,
+            308, 220,
+            36, 17);
     }
 }
 
