@@ -26,5 +26,5 @@ The procedure above relies on [make](https://www.gnu.org/software/make/), a pret
 * Clone this repository
 * Go into one of the interactives, e.g.: `cd astro-interactives\lunar-phase-simulator`
 * Run `npm install`
-* Run `.\node_modules\.bin\webpack --mode development --watch`
+* Run `npm run dev`
 * Open the `lunar-phase-simulator\index.html` file in your web browser.
