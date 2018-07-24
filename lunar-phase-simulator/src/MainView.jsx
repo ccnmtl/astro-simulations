@@ -87,6 +87,9 @@ export default class MainView extends React.Component {
         ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
         ctx.fill();
     }
+    /*
+     * The earth's rotation in this view is determined by sunPos.
+     */
     drawEarth(ctx, earth, avatar) {
         ctx.drawImage(
             earth,

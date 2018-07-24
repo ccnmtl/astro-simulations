@@ -70,7 +70,7 @@ export default class HorizonView extends React.Component {
         this.orbitGroup = new THREE.Group();
         this.orbitGroup.add(this.sun);
         this.orbitGroup.add(this.moon);
-        this.orbitGroup.add(this.orbitLine);
+        this.orbitGroup.add(this.celestialEquator);
         this.orbitGroup.rotation.x = THREE.Math.degToRad(-50);
         scene.add(this.orbitGroup);
 
@@ -124,17 +124,17 @@ export default class HorizonView extends React.Component {
         scene.add(observersMeridian);
 
         // An east-west line
-        const celestialEquator = new THREE.LineLoop(lineGeometry, lineMaterial);
-        celestialEquator.rotation.z = THREE.Math.degToRad(90);
-        scene.add(celestialEquator);
+        const zenithEquator = new THREE.LineLoop(lineGeometry, lineMaterial);
+        zenithEquator.rotation.z = THREE.Math.degToRad(90);
+        scene.add(zenithEquator);
 
         // The sun and moon will orbit along this next line.
         const thickLineMaterial = new THREE.LineBasicMaterial({
             color: 0xffffff,
             linewidth: 3
         });
-        this.orbitLine = new THREE.LineLoop(lineGeometry, thickLineMaterial);
-        this.orbitLine.rotation.x = THREE.Math.degToRad(90);
+        this.celestialEquator = new THREE.LineLoop(lineGeometry, thickLineMaterial);
+        this.celestialEquator.rotation.x = THREE.Math.degToRad(90);
     }
     drawStickFigure(scene) {
         const spriteMap = new THREE.TextureLoader().load('img/stickfigure.svg');
