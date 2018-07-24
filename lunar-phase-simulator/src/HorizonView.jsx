@@ -224,13 +224,13 @@ export default class HorizonView extends React.Component {
         // Convert from radian to angle, since it's easier to deal
         // with.
         const angle = THREE.Math.radToDeg(sunPos);
-        let seconds = 3600;
-        const d1 = new Date('1/1/2018 00:00');
-        return d1;
+        const seconds = angle / (360 / 24) * 3600;
+        const d1 = new Date('1/1/2018 6:00 AM');
+        return new Date(d1.getTime() + (seconds * 1000));
     }
 
     render() {
-        const time = this.getTime(this.props.sunPos).toString();
+        const time = this.getTime(this.props.sunPos).toLocaleTimeString();
         return (
             <React.Fragment>
             <div id={this.id}
