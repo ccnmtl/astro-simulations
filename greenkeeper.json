@@ -1,0 +1,10 @@
+{
+  "groups": {
+    "default": {
+      "packages": [
+        "lunar-phase-simulator/package.json",
+        "small-angle-demo/package.json"
+      ]
+    }
+  }
+}
