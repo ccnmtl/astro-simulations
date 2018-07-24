@@ -62,8 +62,8 @@ export default class HorizonView extends React.Component {
         this.drawPlane(scene);
         this.drawStickFigure(scene);
         this.drawGlobe(scene);
-        this.sun = this.drawSun(scene);
         this.moon = this.drawMoon(scene);
+        this.sun = this.drawSun(scene);
 
         // Put the sun, moon, and orbit line into a group so I can
         // rotate them all on the same axis.
@@ -201,13 +201,15 @@ export default class HorizonView extends React.Component {
     }
 
     animate() {
-        this.sun.position.x = 50 * Math.cos(this.props.sunPos);
-        this.sun.position.z = 50 * Math.sin(this.props.sunPos);
-        this.sun.rotation.y = (-this.props.sunPos) + THREE.Math.degToRad(90);
+        this.sun.position.x = 50 * Math.cos(this.props.observerAngle);
+        this.sun.position.z = 50 * Math.sin(this.props.observerAngle);
+        this.sun.rotation.y = -this.props.observerAngle +
+                              THREE.Math.degToRad(90);
 
-        this.moon.position.x = 50 * Math.cos(this.props.moonPos);
-        this.moon.position.z = 50 * Math.sin(this.props.moonPos);
-        this.moon.rotation.y = -this.props.moonPos + THREE.Math.degToRad(90);
+        this.moon.position.x = 50 * Math.cos(this.props.observerAngle);
+        this.moon.position.z = 50 * Math.sin(this.props.observerAngle);
+        this.moon.rotation.y = -this.props.observerAngle +
+                               THREE.Math.degToRad(90);
 
         this.renderScene();
         this.frameId = window.requestAnimationFrame(this.animate);
@@ -220,17 +222,18 @@ export default class HorizonView extends React.Component {
     /*
      * Returns the time, given the angle of the sun.
      */
-    getTime(sunPos) {
+    getTime(observerAngle) {
         // Convert from radian to angle, since it's easier to deal
         // with.
-        const angle = THREE.Math.radToDeg(sunPos);
+        const angle = THREE.Math.radToDeg(observerAngle);
         const seconds = angle / (360 / 24) * 3600;
         const d1 = new Date('1/1/2018 6:00 AM');
         return new Date(d1.getTime() + (seconds * 1000));
     }
 
     render() {
-        const time = this.getTime(this.props.sunPos).toLocaleTimeString();
+        const time = this.getTime(this.props.observerAngle)
+                         .toLocaleTimeString();
         return (
             <React.Fragment>
             <div id={this.id}
@@ -243,6 +246,6 @@ export default class HorizonView extends React.Component {
 }
 
 HorizonView.propTypes = {
-    sunPos: PropTypes.number.isRequired,
+    observerAngle: PropTypes.number.isRequired,
     moonPos: PropTypes.number.isRequired
 };

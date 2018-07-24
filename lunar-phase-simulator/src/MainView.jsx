@@ -88,7 +88,7 @@ export default class MainView extends React.Component {
         ctx.fill();
     }
     /*
-     * The earth's rotation in this view is determined by sunPos.
+     * The earth's rotation in this view is determined by observerAngle.
      */
     drawEarth(ctx, earth, avatar) {
         ctx.drawImage(
@@ -104,6 +104,6 @@ export default class MainView extends React.Component {
 }
 
 MainView.propTypes = {
-    sunPos: PropTypes.number.isRequired,
+    observerAngle: PropTypes.number.isRequired,
     moonPos: PropTypes.number.isRequired
 };
