@@ -33,11 +33,13 @@ export default class MainView extends React.Component {
         return Promise.all([
             loadSprite('img/moon.svg'),
             loadSprite('img/earth.svg'),
-            loadSprite('img/white-stickfigure.svg')
+            loadSprite('img/white-stickfigure.svg'),
+            loadSprite('img/circle-highlight.svg')
         ]).then(values => {
             me.moon = values[0];
             me.earth = values[1];
             me.avatar = values[2];
+            me.highlight = values[3];
         });
     }
     componentDidUpdate(prevProps) {
