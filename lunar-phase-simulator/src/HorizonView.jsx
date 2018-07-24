@@ -14,7 +14,6 @@ export default class HorizonView extends React.Component {
         this.start = this.start.bind(this);
         this.stop = this.stop.bind(this);
         this.animate = this.animate.bind(this);
-        this.t = 0;
     }
 
     componentDidMount() {
@@ -66,13 +65,14 @@ export default class HorizonView extends React.Component {
         this.sun = this.drawSun(scene);
         this.moon = this.drawMoon(scene);
 
+        // Put the sun, moon, and orbit line into a group so I can
+        // rotate them all on the same axis.
         this.orbitGroup = new THREE.Group();
         this.orbitGroup.add(this.sun);
         this.orbitGroup.add(this.moon);
         this.orbitGroup.add(this.orbitLine);
-        scene.add(this.orbitGroup);
-
         this.orbitGroup.rotation.x = THREE.Math.degToRad(-50);
+        scene.add(this.orbitGroup);
 
         /*new THREE.DragControls(
             [this.sun, this.moon], camera, renderer.domElement);*/
@@ -201,15 +201,13 @@ export default class HorizonView extends React.Component {
     }
 
     animate() {
-        this.t += 0.02;
+        this.sun.position.x = 50 * Math.cos(0.5 + this.props.sunPos);
+        this.sun.position.z = 50 * Math.sin(0.5 + this.props.sunPos);
+        this.sun.rotation.y = (-this.props.sunPos - 0.5) + THREE.Math.degToRad(90);
 
-        this.sun.position.x = 50 * Math.cos(this.t + 0.5);
-        this.sun.position.z = 50 * Math.sin(this.t + 0.5);
-        this.sun.rotation.y = (-this.t - 0.5) + THREE.Math.degToRad(90);
-
-        this.moon.position.x = 50 * Math.cos(this.t);
-        this.moon.position.z = 50 * Math.sin(this.t);
-        this.moon.rotation.y = -this.t+ THREE.Math.degToRad(90);
+        this.moon.position.x = 50 * Math.cos(this.props.moonPos);
+        this.moon.position.z = 50 * Math.sin(this.props.moonPos);
+        this.moon.rotation.y = -this.props.moonPos + THREE.Math.degToRad(90);
 
         this.renderScene();
         this.frameId = window.requestAnimationFrame(this.animate);

@@ -6,6 +6,8 @@
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "webpack-serve",
+    "dev": "webpack --mode development --watch",
     "eslint": "eslint src/*.js src/*.jsx"
   },
   "repository": {
@@ -35,6 +37,7 @@
     "eslint": "^5.1.0",
     "eslint-plugin-react": "^7.10.0",
     "webpack": "^4.16.1",
-    "webpack-cli": "^3.0.8"
+    "webpack-cli": "^3.0.8",
+    "webpack-serve": "^2.0.2"
   }
 }

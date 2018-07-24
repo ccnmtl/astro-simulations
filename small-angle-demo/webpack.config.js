@@ -3,7 +3,7 @@ const webpack = require('webpack');
 
 module.exports = {
     entry: './src/main.jsx',
-    mode: 'production',
+    mode: process.env.WEBPACK_SERVE ? 'development' : 'production',
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: 'bundle.js'
