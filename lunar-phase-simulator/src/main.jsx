@@ -120,7 +120,7 @@ class LunarPhaseSim extends React.Component {
             moonPos: me.incrementAngle(prevState.moonPos),
             sunPos: me.incrementAngle(prevState.sunPos)
         }));
-        requestAnimationFrame(this.animate.bind(this));
+        this.raf = requestAnimationFrame(this.animate.bind(this));
     }
     handleInputChange(event) {
         const target = event.target;
@@ -132,10 +132,11 @@ class LunarPhaseSim extends React.Component {
     onStartClick() {
         if (!this.state.isPlaying) {
             this.raf = requestAnimationFrame(this.animate.bind(this));
+            this.setState({isPlaying: true});
         } else {
             cancelAnimationFrame(this.raf);
+            this.setState({isPlaying: false});
         }
-        this.setState({isPlaying: !this.state.isPlaying});
     }
 }
 
