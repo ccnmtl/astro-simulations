@@ -201,9 +201,9 @@ export default class HorizonView extends React.Component {
     }
 
     animate() {
-        this.sun.position.x = 50 * Math.cos(0.5 + this.props.sunPos);
-        this.sun.position.z = 50 * Math.sin(0.5 + this.props.sunPos);
-        this.sun.rotation.y = (-this.props.sunPos - 0.5) + THREE.Math.degToRad(90);
+        this.sun.position.x = 50 * Math.cos(this.props.sunPos);
+        this.sun.position.z = 50 * Math.sin(this.props.sunPos);
+        this.sun.rotation.y = (-this.props.sunPos) + THREE.Math.degToRad(90);
 
         this.moon.position.x = 50 * Math.cos(this.props.moonPos);
         this.moon.position.z = 50 * Math.sin(this.props.moonPos);
@@ -217,13 +217,26 @@ export default class HorizonView extends React.Component {
         this.renderer.render(this.scene, this.camera);
     }
 
+    /*
+     * Returns the time, given the angle of the sun.
+     */
+    getTime(sunPos) {
+        // Convert from radian to angle, since it's easier to deal
+        // with.
+        const angle = THREE.Math.radToDeg(sunPos);
+        let seconds = 3600;
+        const d1 = new Date('1/1/2018 00:00');
+        return d1;
+    }
+
     render() {
+        const time = this.getTime(this.props.sunPos).toString();
         return (
             <React.Fragment>
             <div id={this.id}
                  style={{ width: '228px', height: '228px' }}
                  ref={(mount) => { this.mount = mount }} />
-            <div>Observer&apos;s local time: 12:00 pm</div>
+            <div>Observer&apos;s local time: {time}</div>
             </React.Fragment>
         );
     }

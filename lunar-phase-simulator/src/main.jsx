@@ -9,7 +9,7 @@ class LunarPhaseSim extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            sunPos: 0,
+            sunPos: Math.PI / 2,
             moonPos: -Math.PI,
             isPlaying: false
         };
