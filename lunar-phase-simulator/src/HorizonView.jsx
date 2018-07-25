@@ -88,9 +88,7 @@ export default class HorizonView extends React.Component {
     drawPlane(scene) {
         const texture = new THREE.TextureLoader().load('img/plane.svg');
         const material = new THREE.MeshBasicMaterial({
-            transparent: true,
-            map: texture,
-            side: THREE.DoubleSide
+            map: texture
         });
         material.map.minFilter = THREE.LinearFilter;
         const geometry = new THREE.CircleGeometry(50, 64);
@@ -99,16 +97,26 @@ export default class HorizonView extends React.Component {
         scene.add(plane);
     }
     drawGlobe(scene) {
-        const geometry = new THREE.SphereGeometry(50, 64, 64);
-        const material = new THREE.MeshBasicMaterial({
+        var domeGeometry = new THREE.SphereGeometry(50, 64, 64, 0, Math.PI * 2, 0, Math.PI / 2);
+        const nightDomeMaterial = new THREE.MeshBasicMaterial({
             transparent: true,
-            opacity: 0.1,
-            color: 0x0000ff,
-            depthWrite: false
+            opacity: 0.6,
+            color: 0x000000,
+            side: THREE.DoubleSide
         });
-        const sphere = new THREE.Mesh(geometry, material);
-        sphere.rotation.x = -1;
-        scene.add(sphere);
+        const nightDome = new THREE.Mesh(domeGeometry, nightDomeMaterial);
+        nightDome.rotation.x = Math.PI;
+        scene.add(nightDome);
+
+        const dayDomeMaterial = new THREE.MeshBasicMaterial({
+            transparent: true,
+            opacity: 0.4,
+            color: 0x90c0ff,
+            depthWrite: false,
+            side: THREE.DoubleSide
+        });
+        const dayDome = new THREE.Mesh(domeGeometry, dayDomeMaterial);
+        scene.add(dayDome);
 
         const lineMaterial = new THREE.LineBasicMaterial({
             transparent: true,
@@ -206,10 +214,9 @@ export default class HorizonView extends React.Component {
         this.sun.rotation.y = -this.props.observerAngle +
                               THREE.Math.degToRad(90);
 
-        this.moon.position.x = 50 * Math.cos(this.props.observerAngle);
-        this.moon.position.z = 50 * Math.sin(this.props.observerAngle);
-        this.moon.rotation.y = -this.props.observerAngle +
-                               THREE.Math.degToRad(90);
+        this.moon.position.x = 50 * Math.cos(this.props.moonObserverPos);
+        this.moon.position.z = 50 * Math.sin(this.props.moonObserverPos);
+        this.moon.rotation.y = -this.props.moonObserverPos + THREE.Math.degToRad(90);
 
         this.renderScene();
         this.frameId = window.requestAnimationFrame(this.animate);
@@ -247,5 +254,5 @@ export default class HorizonView extends React.Component {
 
 HorizonView.propTypes = {
     observerAngle: PropTypes.number.isRequired,
-    moonPos: PropTypes.number.isRequired
+    moonObserverPos: PropTypes.number.isRequired
 };

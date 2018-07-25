@@ -10,7 +10,8 @@ class LunarPhaseSim extends React.Component {
         super(props);
         this.state = {
             observerAngle: Math.PI / 2,
-            moonPos: Math.PI / 2,
+            moonObserverPos: Math.PI / 2,
+            moonPhase: Math.PI / 2,
             isPlaying: false
         };
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -25,7 +26,10 @@ class LunarPhaseSim extends React.Component {
             <div className="col-8">
                 <MainView
                     observerAngle={this.state.observerAngle}
-                    moonPos={this.state.moonPos} />
+                    moonPhase={this.state.moonPhase}
+                    onObserverAngleUpdate={this.onObserverAngleUpdate.bind(this)}
+                    onMoonPosUpdate={this.onMoonPosUpdate.bind(this)}
+                />
 
                 <div className="row">
 
@@ -97,13 +101,13 @@ class LunarPhaseSim extends React.Component {
                     <h4>Moon Phase</h4>
                     <MoonPhaseView
                         observerAngle={this.state.observerAngle}
-                        moonPos={this.state.moonPos} />
+                        moonPhase={this.state.moonPhase} />
                 </div>
                 <div>
                     <h4>Horizon Diagram</h4>
                     <HorizonView
                         observerAngle={this.state.observerAngle}
-                        moonPos={this.state.moonPos} />
+                        moonObserverPos={this.state.moonObserverPos} />
                 </div>
             </div>
         </div>;
@@ -114,7 +118,7 @@ class LunarPhaseSim extends React.Component {
         }
         return n + 0.02;
     }
-    incrementMoonAngle(n) {
+    incrementMoonPhaseAngle(n) {
         if (n > 360) {
             return 0;
         }
@@ -124,7 +128,7 @@ class LunarPhaseSim extends React.Component {
         const me = this;
         this.setState(prevState => ({
             observerAngle: me.incrementAngle(prevState.observerAngle),
-            moonPos: me.incrementMoonAngle(prevState.moonPos)
+            moonPhase: me.incrementMoonPhaseAngle(prevState.moonPhase)
         }));
         this.raf = requestAnimationFrame(this.animate.bind(this));
     }
@@ -143,6 +147,21 @@ class LunarPhaseSim extends React.Component {
             cancelAnimationFrame(this.raf);
             this.setState({isPlaying: false});
         }
+    }
+    onObserverAngleUpdate(newAngle) {
+        cancelAnimationFrame(this.raf);
+        this.setState({
+            isPlaying: false,
+            observerAngle: newAngle
+        });
+    }
+    onMoonPosUpdate(newAngle) {
+        cancelAnimationFrame(this.raf);
+        this.setState({
+            isPlaying: false,
+            moonObserverPos: newAngle,
+            moonPhase: newAngle
+        });
     }
 }
 
