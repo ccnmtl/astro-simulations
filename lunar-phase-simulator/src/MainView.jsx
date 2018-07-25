@@ -8,6 +8,8 @@ export default class MainView extends React.Component {
         super(props);
         this.resources = {};
 
+        this.orbitCenter = new PIXI.Point(370, 230);
+
         this.start = this.start.bind(this);
         this.stop = this.stop.bind(this);
         this.animate = this.animate.bind(this);
@@ -98,9 +100,11 @@ export default class MainView extends React.Component {
         cancelAnimationFrame(this.frameId)
     }
     animate() {
-        this.moon.x = 200 * Math.cos(-this.props.moonPhase) + 370;
-        this.moon.y = 200 * Math.sin(-this.props.moonPhase) + 230;
-        this.earth.rotation = -this.props.observerAngle;
+        this.moon.x = 200 * Math.cos(-this.props.moonPhase) +
+                      this.orbitCenter.x;
+        this.moon.y = 200 * Math.sin(-this.props.moonPhase) +
+                      this.orbitCenter.y;
+        this.earth.rotation = -this.props.observerAngle + degToRad(90);
 
         this.frameId = window.requestAnimationFrame(this.animate);
     }
@@ -112,7 +116,7 @@ export default class MainView extends React.Component {
         const graphics = new PIXI.Graphics();
         graphics.lineColor = 0xffffff;
         graphics.lineWidth = 1;
-        graphics.drawCircle(370, 230, 200);
+        graphics.drawCircle(this.orbitCenter.x, this.orbitCenter.y, 200);
         this.app.stage.addChild(graphics);
     }
     drawMoon(moonResource) {
@@ -138,37 +142,37 @@ export default class MainView extends React.Component {
      * The earth's rotation in this view is determined by observerAngle.
      */
     drawEarth(earthResource, avatarResource) {
+        const earthContainer = new PIXI.Container();
+        earthContainer.pivot = this.orbitCenter;
+        earthContainer.name = 'earth';
+        earthContainer.buttonMode = true;
+        earthContainer.interactive = true;
+        earthContainer.position = this.orbitCenter;
+        earthContainer.rotation = -this.props.observerAngle + degToRad(90);
+
         const earth = new PIXI.Sprite(earthResource.texture);
-        earth.name = 'earth';
-        earth.interactive = true;
-        earth.buttonMode = true;
         earth.width = 70;
         earth.height = 70;
-        earth.x = 370;
-        earth.y = 230;
+        earth.position = this.orbitCenter;
 
         // Rotate around the center of the scene
-        earth.anchor.x = 0.5;
-        earth.anchor.y = 0.5;
-
-        earth.rotation = -this.props.observerAngle;
+        earth.anchor.set(0.5);
+        earthContainer.addChild(earth);
 
         const avatar = new PIXI.Sprite(avatarResource.texture);
-        avatar.width = 17;
-        avatar.height = 36;
-        avatar.x = 370;
-        avatar.y = 230;
+        avatar.width = 36;
+        avatar.height = 17;
+        avatar.position = this.orbitCenter;
+        avatar.position.x -= 40;
 
         // Rotate around the center of the scene
-        avatar.anchor.x = 0.5;
-        avatar.anchor.y = 0.5;
-        avatar.rotation = -this.props.observerAngle;
-        earth.addChild(avatar);
+        avatar.anchor.set(0.5);
+        earthContainer.addChild(avatar);
 
         // Add the earth to the scene we are building
-        this.app.stage.addChild(earth);
+        this.app.stage.addChild(earthContainer);
 
-        return earth;
+        return earthContainer;
     }
     drawText() {
         const sunlightText = new PIXI.Text('Sunlight', {
