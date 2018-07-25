@@ -12,7 +12,8 @@ class LunarPhaseSim extends React.Component {
             observerAngle: Math.PI / 2,
             moonObserverPos: Math.PI / 2,
             moonPhase: Math.PI / 2,
-            isPlaying: false
+            isPlaying: false,
+            animationRate: 1
         };
         this.handleInputChange = this.handleInputChange.bind(this);
         this.raf = null;
@@ -41,12 +42,12 @@ class LunarPhaseSim extends React.Component {
                         </button>
                         <form className="form-inline">
                             <label htmlFor="diamRange">Animation rate:</label>
-                            <input name="diameter" id="diamRange"
+                            <input name="animationRate"
                                    className="custom-range ml-2"
-                                   value={this.state.diameter}
-                                   onChange={this.handleInputChange}
-                                   type="range" step="0.1"
-                                   min="1" max="3" />
+                                   value={this.state.animationRate}
+                                   onChange={this.onAnimationRateChange.bind(this)}
+                                   type="range" step="0.01"
+                                   min="0.1" max="5" />
                         </form>
                     </div>
 
@@ -116,13 +117,13 @@ class LunarPhaseSim extends React.Component {
         if (n > 360) {
             return 0;
         }
-        return n + 0.02;
+        return n + 0.02 * this.state.animationRate;
     }
     incrementMoonPhaseAngle(n) {
         if (n > 360) {
             return 0;
         }
-        return n + 0.001;
+        return n + 0.001 * this.state.animationRate;
     }
     animate() {
         const me = this;
@@ -162,6 +163,9 @@ class LunarPhaseSim extends React.Component {
             moonObserverPos: newAngle,
             moonPhase: newAngle
         });
+    }
+    onAnimationRateChange(e) {
+        this.setState({animationRate: forceFloat(e.target.value)});
     }
 }
 
