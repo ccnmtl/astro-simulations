@@ -8,7 +8,7 @@ import 'three/DragControls';
 // https://stackoverflow.com/a/46412546/173630
 export default class HorizonView extends React.Component {
     constructor(props) {
-        super(props)
+        super(props);
 
         this.id = 'HorizonView';
         this.start = this.start.bind(this);
@@ -62,15 +62,15 @@ export default class HorizonView extends React.Component {
         this.drawPlane(scene);
         this.drawStickFigure(scene);
         this.drawGlobe(scene);
-        this.sun = this.drawSun(scene);
         this.moon = this.drawMoon(scene);
+        this.sun = this.drawSun(scene);
 
         // Put the sun, moon, and orbit line into a group so I can
         // rotate them all on the same axis.
         this.orbitGroup = new THREE.Group();
         this.orbitGroup.add(this.sun);
         this.orbitGroup.add(this.moon);
-        this.orbitGroup.add(this.orbitLine);
+        this.orbitGroup.add(this.celestialEquator);
         this.orbitGroup.rotation.x = THREE.Math.degToRad(-50);
         scene.add(this.orbitGroup);
 
@@ -124,17 +124,17 @@ export default class HorizonView extends React.Component {
         scene.add(observersMeridian);
 
         // An east-west line
-        const celestialEquator = new THREE.LineLoop(lineGeometry, lineMaterial);
-        celestialEquator.rotation.z = THREE.Math.degToRad(90);
-        scene.add(celestialEquator);
+        const zenithEquator = new THREE.LineLoop(lineGeometry, lineMaterial);
+        zenithEquator.rotation.z = THREE.Math.degToRad(90);
+        scene.add(zenithEquator);
 
         // The sun and moon will orbit along this next line.
         const thickLineMaterial = new THREE.LineBasicMaterial({
             color: 0xffffff,
             linewidth: 3
         });
-        this.orbitLine = new THREE.LineLoop(lineGeometry, thickLineMaterial);
-        this.orbitLine.rotation.x = THREE.Math.degToRad(90);
+        this.celestialEquator = new THREE.LineLoop(lineGeometry, thickLineMaterial);
+        this.celestialEquator.rotation.x = THREE.Math.degToRad(90);
     }
     drawStickFigure(scene) {
         const spriteMap = new THREE.TextureLoader().load('img/stickfigure.svg');
@@ -201,13 +201,15 @@ export default class HorizonView extends React.Component {
     }
 
     animate() {
-        this.sun.position.x = 50 * Math.cos(0.5 + this.props.sunPos);
-        this.sun.position.z = 50 * Math.sin(0.5 + this.props.sunPos);
-        this.sun.rotation.y = (-this.props.sunPos - 0.5) + THREE.Math.degToRad(90);
+        this.sun.position.x = 50 * Math.cos(this.props.observerAngle);
+        this.sun.position.z = 50 * Math.sin(this.props.observerAngle);
+        this.sun.rotation.y = -this.props.observerAngle +
+                              THREE.Math.degToRad(90);
 
-        this.moon.position.x = 50 * Math.cos(this.props.moonPos);
-        this.moon.position.z = 50 * Math.sin(this.props.moonPos);
-        this.moon.rotation.y = -this.props.moonPos + THREE.Math.degToRad(90);
+        this.moon.position.x = 50 * Math.cos(this.props.observerAngle);
+        this.moon.position.z = 50 * Math.sin(this.props.observerAngle);
+        this.moon.rotation.y = -this.props.observerAngle +
+                               THREE.Math.degToRad(90);
 
         this.renderScene();
         this.frameId = window.requestAnimationFrame(this.animate);
@@ -217,19 +219,33 @@ export default class HorizonView extends React.Component {
         this.renderer.render(this.scene, this.camera);
     }
 
+    /*
+     * Returns the time, given the angle of the sun.
+     */
+    getTime(observerAngle) {
+        // Convert from radian to angle, since it's easier to deal
+        // with.
+        const angle = THREE.Math.radToDeg(observerAngle);
+        const seconds = angle / (360 / 24) * 3600;
+        const d1 = new Date('1/1/2018 6:00 AM');
+        return new Date(d1.getTime() + (seconds * 1000));
+    }
+
     render() {
+        const time = this.getTime(this.props.observerAngle)
+                         .toLocaleTimeString();
         return (
             <React.Fragment>
             <div id={this.id}
                  style={{ width: '228px', height: '228px' }}
                  ref={(mount) => { this.mount = mount }} />
-            <div>Observer&apos;s local time: 12:00 pm</div>
+            <div>Observer&apos;s local time: {time}</div>
             </React.Fragment>
         );
     }
 }
 
 HorizonView.propTypes = {
-    sunPos: PropTypes.number.isRequired,
+    observerAngle: PropTypes.number.isRequired,
     moonPos: PropTypes.number.isRequired
 };

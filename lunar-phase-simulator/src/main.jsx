@@ -9,8 +9,8 @@ class LunarPhaseSim extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            sunPos: 0,
-            moonPos: -Math.PI,
+            observerAngle: Math.PI / 2,
+            moonPos: Math.PI / 2,
             isPlaying: false
         };
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -24,7 +24,7 @@ class LunarPhaseSim extends React.Component {
         return <div className="row">
             <div className="col-8">
                 <MainView
-                    sunPos={this.state.sunPos}
+                    observerAngle={this.state.observerAngle}
                     moonPos={this.state.moonPos} />
 
                 <div className="row">
@@ -96,13 +96,13 @@ class LunarPhaseSim extends React.Component {
                 <div>
                     <h4>Moon Phase</h4>
                     <MoonPhaseView
-                        sunPos={this.state.sunPos}
+                        observerAngle={this.state.observerAngle}
                         moonPos={this.state.moonPos} />
                 </div>
                 <div>
                     <h4>Horizon Diagram</h4>
                     <HorizonView
-                        sunPos={this.state.sunPos}
+                        observerAngle={this.state.observerAngle}
                         moonPos={this.state.moonPos} />
                 </div>
             </div>
@@ -114,11 +114,17 @@ class LunarPhaseSim extends React.Component {
         }
         return n + 0.02;
     }
+    incrementMoonAngle(n) {
+        if (n > 360) {
+            return 0;
+        }
+        return n + 0.001;
+    }
     animate() {
         const me = this;
         this.setState(prevState => ({
-            moonPos: me.incrementAngle(prevState.moonPos),
-            sunPos: me.incrementAngle(prevState.sunPos)
+            observerAngle: me.incrementAngle(prevState.observerAngle),
+            moonPos: me.incrementMoonAngle(prevState.moonPos)
         }));
         this.raf = requestAnimationFrame(this.animate.bind(this));
     }

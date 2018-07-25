@@ -44,13 +44,35 @@ export default class MoonPhaseView extends React.Component {
         ctx.fill();
 
         this.drawMoon(ctx);
+        let phase = 0;
+        this.drawPhase(ctx, canvas, phase);
     }
     drawMoon(ctx) {
         ctx.drawImage(this.moon, 0, 0, 228, 215);
     }
+    // Shade the moon
+    drawPhase(ctx, canvas, phase) {
+        //ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+        const radius = 100;
+
+        ctx.beginPath();
+        ctx.arc(radius, radius, radius, -Math.PI/2, Math.PI/2, true);
+        ctx.closePath();
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+        ctx.fill();
+
+        ctx.translate( radius, radius );
+        ctx.scale( phase, 1 );
+        ctx.translate( -radius, -radius );
+        ctx.beginPath();
+        ctx.arc(radius, radius, radius, -Math.PI/2, Math.PI/2, true);
+        ctx.closePath();
+        ctx.fillStyle = phase > 0 ? 'rgba(255, 255, 255, 0.6)' : 'rgba(0, 0, 0, 0.6)';
+        ctx.fill();
+    }
 }
 
 MoonPhaseView.propTypes = {
-    sunPos: PropTypes.number.isRequired,
+    observerAngle: PropTypes.number.isRequired,
     moonPos: PropTypes.number.isRequired
 };
