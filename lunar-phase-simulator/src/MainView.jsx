@@ -6,7 +6,14 @@ import {degToRad} from './utils';
 export default class MainView extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            isHoveringOnEarth: false,
+            isHoveringOnMoon: false
+        };
+
         this.resources = {};
+
+        this.orbitCenter = new PIXI.Point(370, 230);
 
         this.start = this.start.bind(this);
         this.stop = this.stop.bind(this);
@@ -55,7 +62,7 @@ export default class MainView extends React.Component {
         this.app.loader.load((loader, resources) => {
             me.resources = resources;
 
-            me.moon = me.drawMoon(resources.moon);
+            me.moon = me.drawMoon(resources.moon, resources.highlight);
             me.moon
               // events for drag start
               .on('mousedown', me.onDragStart)
@@ -69,7 +76,11 @@ export default class MainView extends React.Component {
               .on('mousemove', me.onMoonDragMove)
               .on('touchmove', me.onMoonDragMove);
 
-            me.earth = me.drawEarth(resources.earth, resources.avatar);
+            me.earth = me.drawEarth(
+                resources.earth,
+                resources.avatar,
+                resources.highlight);
+
             me.earth
               // events for drag start
               .on('mousedown', me.onDragStart)
@@ -98,77 +109,100 @@ export default class MainView extends React.Component {
         cancelAnimationFrame(this.frameId)
     }
     animate() {
-        this.moon.x = 200 * Math.cos(-this.props.moonPhase) + 370;
-        this.moon.y = 200 * Math.sin(-this.props.moonPhase) + 230;
-        this.earth.rotation = -this.props.observerAngle;
+        this.moon.position = this.getMoonPos(this.props.moonPhase);
+
+        if (this.state.isHoveringOnMoon || this.draggingMoon) {
+            this.moonHighlight.visible = true;
+        } else {
+            this.moonHighlight.visible = false;
+        }
+
+
+        this.earth.rotation = -this.props.observerAngle + degToRad(90);
+
+        if (this.state.isHoveringOnEarth || this.draggingEarth) {
+            this.earthHighlight.visible = true;
+        } else {
+            this.earthHighlight.visible = false;
+        }
 
         this.frameId = window.requestAnimationFrame(this.animate);
-    }
-    draw() {
-        this.drawMoon(this.resources.moon);
-        this.drawEarth(this.resources.earth, this.resources.avatar);
     }
     drawOrbit() {
         const graphics = new PIXI.Graphics();
         graphics.lineColor = 0xffffff;
         graphics.lineWidth = 1;
-        graphics.drawCircle(370, 230, 200);
+        graphics.drawCircle(this.orbitCenter.x, this.orbitCenter.y, 200);
         this.app.stage.addChild(graphics);
     }
-    drawMoon(moonResource) {
+    drawMoon(moonResource, highlightResource) {
+        const pos = this.getMoonPos(this.props.moonPhase);
+
+        const moonContainer = new PIXI.Container();
+        moonContainer.name = 'moon';
+        moonContainer.buttonMode = true;
+        moonContainer.interactive = true;
+        moonContainer.position = pos;
+        moonContainer.position = this.orbitCenter;
+
         const moon = new PIXI.Sprite(moonResource.texture);
-        moon.name = 'moon';
-        moon.interactive = true;
-        moon.buttonMode = true;
         moon.width = 20;
         moon.height = 20;
-        moon.x = 200 * Math.cos(-this.props.moonPhase) + 370;
-        moon.y = 200 * Math.sin(-this.props.moonPhase) + 230;
+        moon.anchor.set(0.5);
+        moonContainer.addChild(moon);
 
-        // Rotate around the center of the scene
-        moon.anchor.x = 0.5;
-        moon.anchor.y = 0.5;
+        const highlight = new PIXI.Sprite(highlightResource.texture);
+        highlight.visible = false;
+        highlight.width = 30;
+        highlight.height = 30;
+        highlight.anchor.set(0.5);
+        this.moonHighlight = highlight;
+        moonContainer.addChild(highlight);
 
-        // Add the moon to the scene we are building
-        this.app.stage.addChild(moon);
+        this.app.stage.addChild(moonContainer);
 
-        return moon;
+        return moonContainer;
     }
     /*
      * The earth's rotation in this view is determined by observerAngle.
      */
-    drawEarth(earthResource, avatarResource) {
+    drawEarth(earthResource, avatarResource, highlightResource) {
+        const earthContainer = new PIXI.Container();
+        earthContainer.pivot = this.orbitCenter;
+        earthContainer.name = 'earth';
+        earthContainer.buttonMode = true;
+        earthContainer.interactive = true;
+        earthContainer.position = this.orbitCenter;
+        earthContainer.rotation = -this.props.observerAngle + degToRad(90);
+
         const earth = new PIXI.Sprite(earthResource.texture);
-        earth.name = 'earth';
-        earth.interactive = true;
-        earth.buttonMode = true;
         earth.width = 70;
         earth.height = 70;
-        earth.x = 370;
-        earth.y = 230;
-
-        // Rotate around the center of the scene
-        earth.anchor.x = 0.5;
-        earth.anchor.y = 0.5;
-
-        earth.rotation = -this.props.observerAngle;
+        earth.position = this.orbitCenter;
+        earth.anchor.set(0.5);
+        earthContainer.addChild(earth);
 
         const avatar = new PIXI.Sprite(avatarResource.texture);
-        avatar.width = 17;
-        avatar.height = 36;
-        avatar.x = 370;
-        avatar.y = 230;
+        avatar.width = 36;
+        avatar.height = 17;
+        avatar.position = this.orbitCenter;
+        avatar.position.x -= 40;
+        avatar.anchor.set(0.5);
+        earthContainer.addChild(avatar);
 
-        // Rotate around the center of the scene
-        avatar.anchor.x = 0.5;
-        avatar.anchor.y = 0.5;
-        avatar.rotation = -this.props.observerAngle;
-        earth.addChild(avatar);
+        const highlight = new PIXI.Sprite(highlightResource.texture);
+        highlight.visible = false;
+        highlight.width = 100;
+        highlight.height = 100;
+        highlight.position = this.orbitCenter;
+        highlight.anchor.set(0.5);
+        this.earthHighlight = highlight;
+        earthContainer.addChild(highlight);
 
         // Add the earth to the scene we are building
-        this.app.stage.addChild(earth);
+        this.app.stage.addChild(earthContainer);
 
-        return earth;
+        return earthContainer;
     }
     drawText() {
         const sunlightText = new PIXI.Text('Sunlight', {
@@ -222,7 +256,16 @@ export default class MainView extends React.Component {
         // set the interaction data to null
         this.data = null;
     }
-    onEarthDragMove() {
+    onEarthDragMove(e) {
+        if (e.target && e.target.name === 'earth' &&
+            !this.state.isHoveringOnEarth
+        ) {
+            this.setState({isHoveringOnEarth: true});
+        }
+        if (!e.target && this.state.isHoveringOnEarth) {
+            this.setState({isHoveringOnEarth: false});
+        }
+
         if (this.draggingEarth) {
             const newPosition = this.data.getLocalPosition(this.app.stage);
             const diff = [
@@ -240,7 +283,16 @@ export default class MainView extends React.Component {
             this.props.onObserverAngleUpdate(-vAngle);
         }
     }
-    onMoonDragMove() {
+    onMoonDragMove(e) {
+        if (e.target && e.target.name === 'moon' &&
+            !this.state.isHoveringOnMoon
+        ) {
+            this.setState({isHoveringOnMoon: true});
+        }
+        if (!e.target && this.state.isHoveringOnMoon) {
+            this.setState({isHoveringOnMoon: false});
+        }
+
         if (this.draggingMoon) {
             const newPosition = this.data.getLocalPosition(this.app.stage);
             const diff = [
@@ -257,6 +309,11 @@ export default class MainView extends React.Component {
 
             this.props.onMoonPosUpdate(-vAngle);
         }
+    }
+    getMoonPos(phase) {
+        return new PIXI.Point(
+            200 * Math.cos(-phase) + this.orbitCenter.x,
+            200 * Math.sin(-phase) + this.orbitCenter.y);
     }
 }
 

@@ -124,24 +124,27 @@ export default class HorizonView extends React.Component {
             color: 0xffffff,
             linewidth: 1.5
         });
-        const lineGeometry = new THREE.CircleGeometry(50, 64);
+
+        const discGeometry = new THREE.CircleGeometry(50, 64);
 
         // A north-south line
-        const observersMeridian = new THREE.LineLoop(lineGeometry, lineMaterial);
+        const observersMeridian = new THREE.LineLoop(
+            discGeometry, lineMaterial);
         observersMeridian.rotation.y = THREE.Math.degToRad(90);
         scene.add(observersMeridian);
 
-        // An east-west line
-        const zenithEquator = new THREE.LineLoop(lineGeometry, lineMaterial);
+        // An east-west line at the top of the observer's globe
+        const zenithEquator = new THREE.LineLoop(discGeometry, lineMaterial);
         zenithEquator.rotation.z = THREE.Math.degToRad(90);
         scene.add(zenithEquator);
 
-        // The sun and moon will orbit along this next line.
+        // The sun and moon orbit along this next line.
         const thickLineMaterial = new THREE.LineBasicMaterial({
             color: 0xffffff,
             linewidth: 3
         });
-        this.celestialEquator = new THREE.LineLoop(lineGeometry, thickLineMaterial);
+        this.celestialEquator = new THREE.LineLoop(
+            discGeometry, thickLineMaterial);
         this.celestialEquator.rotation.x = THREE.Math.degToRad(90);
     }
     drawStickFigure(scene) {
