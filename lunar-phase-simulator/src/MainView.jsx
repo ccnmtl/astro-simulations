@@ -12,9 +12,10 @@ export default class MainView extends React.Component {
         this.stop = this.stop.bind(this);
         this.animate = this.animate.bind(this);
 
-        this.onEarthDragStart = this.onEarthDragStart.bind(this);
-        this.onEarthDragEnd = this.onEarthDragEnd.bind(this);
+        this.onDragStart = this.onDragStart.bind(this);
+        this.onDragEnd = this.onDragEnd.bind(this);
         this.onEarthDragMove = this.onEarthDragMove.bind(this);
+        this.onMoonDragMove = this.onMoonDragMove.bind(this);
     }
     // react/PIXI integration from:
     // https://www.protectator.ch/post/pixijs-v4-in-a-react-component
@@ -54,20 +55,29 @@ export default class MainView extends React.Component {
             me.resources = resources;
 
             me.moon = me.drawMoon(resources.moon);
-            me.moon.on('click', function() {
-                console.log('moon');
-            });
+            me.moon
+              // events for drag start
+              .on('mousedown', me.onDragStart)
+              .on('touchstart', me.onDragStart)
+              // events for drag end
+              .on('mouseup', me.onDragEnd)
+              .on('mouseupoutside', me.onDragEnd)
+              .on('touchend', me.onDragEnd)
+              .on('touchendoutside', me.onDragEnd)
+              // events for drag move
+              .on('mousemove', me.onMoonDragMove)
+              .on('touchmove', me.onMoonDragMove);
 
             me.earth = me.drawEarth(resources.earth, resources.avatar);
             me.earth
               // events for drag start
-              .on('mousedown', me.onEarthDragStart)
-              .on('touchstart', me.onEarthDragStart)
+              .on('mousedown', me.onDragStart)
+              .on('touchstart', me.onDragStart)
               // events for drag end
-              .on('mouseup', me.onEarthDragEnd)
-              .on('mouseupoutside', me.onEarthDragEnd)
-              .on('touchend', me.onEarthDragEnd)
-              .on('touchendoutside', me.onEarthDragEnd)
+              .on('mouseup', me.onDragEnd)
+              .on('mouseupoutside', me.onDragEnd)
+              .on('touchend', me.onDragEnd)
+              .on('touchendoutside', me.onDragEnd)
               // events for drag move
               .on('mousemove', me.onEarthDragMove)
               .on('touchmove', me.onEarthDragMove);
@@ -106,6 +116,7 @@ export default class MainView extends React.Component {
     }
     drawMoon(moonResource) {
         const moon = new PIXI.Sprite(moonResource.texture);
+        moon.name = 'moon';
         moon.interactive = true;
         moon.buttonMode = true;
         moon.width = 20;
@@ -127,6 +138,7 @@ export default class MainView extends React.Component {
      */
     drawEarth(earthResource, avatarResource) {
         const earth = new PIXI.Sprite(earthResource.texture);
+        earth.name = 'earth';
         earth.interactive = true;
         earth.buttonMode = true;
         earth.width = 70;
@@ -169,20 +181,25 @@ export default class MainView extends React.Component {
         sunlightText.position.y = 270;
         this.app.stage.addChild(sunlightText);
     }
-    onEarthDragStart(event) {
+    onDragStart(event) {
         this.data = event.data;
         this.dragStartPos = this.data.getLocalPosition(this.app.stage);
 
-        this.dragging = true;
+        if (event.target.name === 'earth') {
+            this.draggingEarth = true;
+        } else if (event.target.name === 'moon') {
+            this.draggingMoon = true;
+        }
     }
-    onEarthDragEnd() {
-        this.dragging = false;
+    onDragEnd() {
+        this.draggingEarth = false;
+        this.draggingMoon = false;
 
         // set the interaction data to null
         this.data = null;
     }
     onEarthDragMove() {
-        if (this.dragging) {
+        if (this.draggingEarth) {
             const newPosition = this.data.getLocalPosition(this.app.stage);
             const diff = [
                 this.dragStartPos.x - newPosition.x,
@@ -199,10 +216,29 @@ export default class MainView extends React.Component {
             this.props.onObserverAngleUpdate(-vAngle);
         }
     }
+    onMoonDragMove() {
+        if (this.draggingMoon) {
+            const newPosition = this.data.getLocalPosition(this.app.stage);
+            const diff = [
+                this.dragStartPos.x - newPosition.x,
+                this.dragStartPos.y - newPosition.y
+            ];
+
+            // This angle starts at the center of the earth. It's the
+            // difference, in radians, between where the cursor was and
+            // where it is now.
+            const vAngle =
+                Math.atan2(diff[1], diff[0]) -
+                Math.atan2(this.dragStartPos.y, this.dragStartPos.x);
+
+            this.props.onMoonPosUpdate(-vAngle);
+        }
+    }
 }
 
 MainView.propTypes = {
     observerAngle: PropTypes.number.isRequired,
     moonPos: PropTypes.number.isRequired,
-    onObserverAngleUpdate: PropTypes.func.isRequired
+    onObserverAngleUpdate: PropTypes.func.isRequired,
+    onMoonPosUpdate: PropTypes.func.isRequired
 };
