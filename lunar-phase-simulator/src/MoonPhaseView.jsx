@@ -74,5 +74,5 @@ export default class MoonPhaseView extends React.Component {
 
 MoonPhaseView.propTypes = {
     observerAngle: PropTypes.number.isRequired,
-    moonPos: PropTypes.number.isRequired
+    moonPhase: PropTypes.number.isRequired
 };

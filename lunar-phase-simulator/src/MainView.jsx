@@ -98,8 +98,8 @@ export default class MainView extends React.Component {
         cancelAnimationFrame(this.frameId)
     }
     animate() {
-        this.moon.x = 200 * Math.cos(-this.props.moonPos) + 370;
-        this.moon.y = 200 * Math.sin(-this.props.moonPos) + 230;
+        this.moon.x = 200 * Math.cos(-this.props.moonPhase) + 370;
+        this.moon.y = 200 * Math.sin(-this.props.moonPhase) + 230;
         this.earth.rotation = -this.props.observerAngle;
 
         this.frameId = window.requestAnimationFrame(this.animate);
@@ -122,8 +122,8 @@ export default class MainView extends React.Component {
         moon.buttonMode = true;
         moon.width = 20;
         moon.height = 20;
-        moon.x = 200 * Math.cos(-this.props.moonPos) + 370;
-        moon.y = 200 * Math.sin(-this.props.moonPos) + 230;
+        moon.x = 200 * Math.cos(-this.props.moonPhase) + 370;
+        moon.y = 200 * Math.sin(-this.props.moonPhase) + 230;
 
         // Rotate around the center of the scene
         moon.anchor.x = 0.5;
@@ -262,7 +262,7 @@ export default class MainView extends React.Component {
 
 MainView.propTypes = {
     observerAngle: PropTypes.number.isRequired,
-    moonPos: PropTypes.number.isRequired,
+    moonPhase: PropTypes.number.isRequired,
     onObserverAngleUpdate: PropTypes.func.isRequired,
     onMoonPosUpdate: PropTypes.func.isRequired
 };
