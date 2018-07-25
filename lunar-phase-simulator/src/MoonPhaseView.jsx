@@ -56,7 +56,7 @@ export default class MoonPhaseView extends React.Component {
         const radius = 100;
 
         ctx.beginPath();
-        ctx.arc(radius, radius, radius, -Math.PI/2, Math.PI/2, true);
+        ctx.arc(radius + 14, radius + 8, radius, -Math.PI/2, Math.PI/2, true);
         ctx.closePath();
         ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
         ctx.fill();

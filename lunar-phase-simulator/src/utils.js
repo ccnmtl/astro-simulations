@@ -25,4 +25,8 @@ const loadSprite = function(src) {
     });
 }
 
-export {forceFloat, loadSprite};
+const degToRad = function(degrees) {
+    return degrees * Math.PI / 180;
+};
+
+export {forceFloat, loadSprite, degToRad};

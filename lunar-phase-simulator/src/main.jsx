@@ -118,7 +118,7 @@ class LunarPhaseSim extends React.Component {
         if (n > 360) {
             return 0;
         }
-        return n + 0.001;
+        return n + 0.02;
     }
     animate() {
         const me = this;
