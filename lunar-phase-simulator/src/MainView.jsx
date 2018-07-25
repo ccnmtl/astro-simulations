@@ -43,6 +43,7 @@ export default class MainView extends React.Component {
         this.el.appendChild(this.app.view);
 
         this.drawText();
+        this.drawArrows();
         this.drawOrbit();
 
         this.app.loader.add('moon', 'img/moon.svg')
@@ -173,13 +174,36 @@ export default class MainView extends React.Component {
         const sunlightText = new PIXI.Text('Sunlight', {
             fontFamily: 'Arial',
             fontSize: 28,
-            fill: 0xf0f000,
+            fontWeight: 'bold',
+            fill: 0xffff80,
             align: 'center'
         });
         sunlightText.rotation = degToRad(-90);
-        sunlightText.position.x = 20;
+        sunlightText.position.x = 14;
         sunlightText.position.y = 270;
         this.app.stage.addChild(sunlightText);
+    }
+    drawArrows() {
+        for (let i = 1; i < 8; i++) {
+            let line = new PIXI.Graphics();
+            line.lineColor = 0xffff80;
+            line.lineWidth = 2;
+
+            line.moveTo(60, i * 50 + 30);
+            line.lineTo(120, i * 50 + 30);
+
+            // Draw the arrowhead
+            let arrowhead = new PIXI.Graphics()
+                                    .beginFill(0xffff80)
+                                    .drawPolygon([
+                                        110, i * 50 + 26,
+                                        110, i * 50 + 34,
+                                        123, i * 50 + 30
+                                    ]);
+
+            this.app.stage.addChild(line);
+            this.app.stage.addChild(arrowhead);
+        }
     }
     onDragStart(event) {
         this.data = event.data;
@@ -224,7 +248,7 @@ export default class MainView extends React.Component {
                 this.dragStartPos.y - newPosition.y
             ];
 
-            // This angle starts at the center of the earth. It's the
+            // This angle starts at the center of the orbit. It's the
             // difference, in radians, between where the cursor was and
             // where it is now.
             const vAngle =
