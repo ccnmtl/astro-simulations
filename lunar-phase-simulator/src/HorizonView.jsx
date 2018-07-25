@@ -206,10 +206,9 @@ export default class HorizonView extends React.Component {
         this.sun.rotation.y = -this.props.observerAngle +
                               THREE.Math.degToRad(90);
 
-        this.moon.position.x = 50 * Math.cos(this.props.observerAngle);
-        this.moon.position.z = 50 * Math.sin(this.props.observerAngle);
-        this.moon.rotation.y = -this.props.observerAngle +
-                               THREE.Math.degToRad(90);
+        this.moon.position.x = 50 * Math.cos(this.props.moonPos);
+        this.moon.position.z = 50 * Math.sin(this.props.moonPos);
+        this.moon.rotation.y = -this.props.moonPos + THREE.Math.degToRad(90);
 
         this.renderScene();
         this.frameId = window.requestAnimationFrame(this.animate);
