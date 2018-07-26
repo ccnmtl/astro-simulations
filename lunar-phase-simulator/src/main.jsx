@@ -15,9 +15,12 @@ class LunarPhaseSim extends React.Component {
             // moonPhase.
             moonObserverPos: Math.PI / 2,
             isPlaying: false,
-            animationRate: 1
+            animationRate: 1,
+            showAngle: false
         };
         this.raf = null;
+
+        this.handleInputChange = this.handleInputChange.bind(this);
     }
     render() {
         let startBtnText = 'Start Animation';
@@ -106,8 +109,13 @@ class LunarPhaseSim extends React.Component {
                     <div className="col">
                         <h4>Diagram Options</h4>
                         <div className="custom-control custom-checkbox">
-                            <input type="checkbox" className="custom-control-input" id="customCheck1" />
-                            <label className="custom-control-label" htmlFor="customCheck1">
+                            <input type="checkbox" className="custom-control-input"
+                                   name="showAngle"
+                                   onChange={this.handleInputChange}
+                                   checked={this.state.showAngle}
+                                   id="showAngleToggle" />
+                            <label className="custom-control-label"
+                                   htmlFor="showAngleToggle">
                                 Show angle
                             </label>
                         </div>
@@ -139,7 +147,8 @@ class LunarPhaseSim extends React.Component {
                     <h4>Horizon Diagram</h4>
                     <HorizonView
                         observerAngle={this.state.observerAngle}
-                        moonObserverPos={this.state.moonObserverPos} />
+                        moonObserverPos={this.state.moonObserverPos}
+                        showAngle={this.state.showAngle} />
                 </div>
             </div>
         </div>;
@@ -292,6 +301,16 @@ class LunarPhaseSim extends React.Component {
             observerAngle: observerAngle,
             moonPhase: moonPhase,
             moonObserverPos: this.getMoonObserverPos(observerAngle, moonPhase)
+        });
+    }
+    handleInputChange(event) {
+        const target = event.target;
+        const value = target.type === 'checkbox' ?
+                      target.checked : target.value;
+        const name = target.name;
+
+        this.setState({
+            [name]: value
         });
     }
 }
