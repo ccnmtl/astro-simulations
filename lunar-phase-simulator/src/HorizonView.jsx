@@ -125,16 +125,20 @@ export default class HorizonView extends React.Component {
             linewidth: 1.5
         });
 
-        const discGeometry = new THREE.CircleGeometry(50, 64);
+        // The EdgesGeometry is necessary to fix a problem when
+        // drawing lines on CircleGeometry.
+        // https://stackoverflow.com/q/51525988/173630
+        const discGeometry = new THREE.EdgesGeometry(
+            new THREE.CircleGeometry(50, 64));
 
         // A north-south line
-        const observersMeridian = new THREE.LineLoop(
+        const observersMeridian = new THREE.LineSegments(
             discGeometry, lineMaterial);
         observersMeridian.rotation.y = THREE.Math.degToRad(90);
         scene.add(observersMeridian);
 
         // An east-west line at the top of the observer's globe
-        const zenithEquator = new THREE.LineLoop(discGeometry, lineMaterial);
+        const zenithEquator = new THREE.LineSegments(discGeometry, lineMaterial);
         zenithEquator.rotation.z = THREE.Math.degToRad(90);
         scene.add(zenithEquator);
 
@@ -143,7 +147,7 @@ export default class HorizonView extends React.Component {
             color: 0xffffff,
             linewidth: 3
         });
-        this.celestialEquator = new THREE.LineLoop(
+        this.celestialEquator = new THREE.LineSegments(
             discGeometry, thickLineMaterial);
         this.celestialEquator.rotation.x = THREE.Math.degToRad(90);
     }
