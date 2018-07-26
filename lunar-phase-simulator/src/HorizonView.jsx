@@ -108,14 +108,14 @@ export default class HorizonView extends React.Component {
         nightDome.rotation.x = Math.PI;
         scene.add(nightDome);
 
-        const dayDomeMaterial = new THREE.MeshBasicMaterial({
+        this.skyMaterial = new THREE.MeshBasicMaterial({
             transparent: true,
             opacity: 0.4,
             color: 0x90c0ff,
             depthWrite: false,
             side: THREE.DoubleSide
         });
-        const dayDome = new THREE.Mesh(domeGeometry, dayDomeMaterial);
+        const dayDome = new THREE.Mesh(domeGeometry, this.skyMaterial);
         scene.add(dayDome);
 
         const lineMaterial = new THREE.LineBasicMaterial({
@@ -154,12 +154,11 @@ export default class HorizonView extends React.Component {
     drawStickFigure(scene) {
         const spriteMap = new THREE.TextureLoader().load('img/stickfigure.svg');
         const spriteMaterial = new THREE.SpriteMaterial({
-            map: spriteMap,
-            color: 0xffffff
+            map: spriteMap
         });
         const sprite = new THREE.Sprite(spriteMaterial);
         sprite.scale.set(5, 10, 5);
-        sprite.position.y = 4;
+        sprite.position.y = 4.5;
         scene.add(sprite);
     }
     drawSun() {
@@ -221,6 +220,8 @@ export default class HorizonView extends React.Component {
         this.sun.rotation.y = -this.props.observerAngle +
                               THREE.Math.degToRad(90);
 
+        this.skyMaterial.color.setHex(this.getSkyColor(this.props.observerAngle));
+
         this.moon.position.x = 50 * Math.cos(this.props.moonObserverPos);
         this.moon.position.z = 50 * Math.sin(this.props.moonObserverPos);
         this.moon.rotation.y = -this.props.moonObserverPos + THREE.Math.degToRad(90);
@@ -243,6 +244,18 @@ export default class HorizonView extends React.Component {
         const seconds = angle / (360 / 24) * 3600;
         const d1 = new Date('1/1/2018 6:00 AM');
         return new Date(d1.getTime() + (seconds * 1000));
+    }
+    /*
+     * Given the observer angle, return what color the sky should
+     * be. It fades between blue and black.
+     *
+     * Returns a hex value.
+     */
+    getSkyColor(angle) {
+        if (angle < 0 || angle > Math.PI) {
+            return 0x000000;
+        }
+        return 0x90c0ff;
     }
 
     render() {
