@@ -145,12 +145,6 @@ export default class MainView extends React.Component {
         moonContainer.position = pos;
         moonContainer.position = this.orbitCenter;
 
-        const moon = new PIXI.Sprite(moonResource.texture);
-        moon.width = 20;
-        moon.height = 20;
-        moon.anchor.set(0.5);
-        moonContainer.addChild(moon);
-
         const highlight = new PIXI.Sprite(highlightResource.texture);
         highlight.visible = false;
         highlight.width = 30;
@@ -158,6 +152,12 @@ export default class MainView extends React.Component {
         highlight.anchor.set(0.5);
         this.moonHighlight = highlight;
         moonContainer.addChild(highlight);
+
+        const moon = new PIXI.Sprite(moonResource.texture);
+        moon.width = 20;
+        moon.height = 20;
+        moon.anchor.set(0.5);
+        moonContainer.addChild(moon);
 
         this.app.stage.addChild(moonContainer);
 
@@ -175,6 +175,15 @@ export default class MainView extends React.Component {
         earthContainer.position = this.orbitCenter;
         earthContainer.rotation = -this.props.observerAngle + degToRad(90);
 
+        const highlight = new PIXI.Sprite(highlightResource.texture);
+        highlight.visible = false;
+        highlight.width = 100;
+        highlight.height = 100;
+        highlight.position = this.orbitCenter;
+        highlight.anchor.set(0.5);
+        this.earthHighlight = highlight;
+        earthContainer.addChild(highlight);
+
         const earth = new PIXI.Sprite(earthResource.texture);
         earth.width = 70;
         earth.height = 70;
@@ -189,15 +198,6 @@ export default class MainView extends React.Component {
         avatar.position.x -= 40;
         avatar.anchor.set(0.5);
         earthContainer.addChild(avatar);
-
-        const highlight = new PIXI.Sprite(highlightResource.texture);
-        highlight.visible = false;
-        highlight.width = 100;
-        highlight.height = 100;
-        highlight.position = this.orbitCenter;
-        highlight.anchor.set(0.5);
-        this.earthHighlight = highlight;
-        earthContainer.addChild(highlight);
 
         // Add the earth to the scene we are building
         this.app.stage.addChild(earthContainer);
