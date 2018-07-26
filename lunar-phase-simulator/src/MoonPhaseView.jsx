@@ -5,6 +5,9 @@ import {loadSprite, forceNumber, degToRad} from './utils';
 export default class MoonPhaseView extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            isHidden: false
+        }
         this.id = 'MoonPhaseView'
         this.moon = null;
         this.frameId = null;
@@ -17,6 +20,9 @@ export default class MoonPhaseView extends React.Component {
     render() {
         return <div>
             <select className="custom-select"
+                    style={{
+                        visibility: this.state.isHidden ? 'hidden' : 'visible'
+                    }}
                     onChange={this.onMoonPhaseUpdate.bind(this)}
                     defaultValue={degToRad(180)}>
                 <option value={degToRad(180)}>New Moon</option>
@@ -28,8 +34,19 @@ export default class MoonPhaseView extends React.Component {
                 <option value={degToRad(90)}>Third Quarter</option>
                 <option value={degToRad(135)}>Waning Crescent</option>
             </select>
-            <canvas className="mt-1" id={this.id}
-                    width="228" height="215"></canvas>
+            <canvas
+                style={{
+                     visibility: this.state.isHidden ? 'hidden' : 'visible'
+                }}
+                className="mt-1" id={this.id}
+                width="228" height="215"></canvas>
+            <div className="text-right">
+                <button type="button"
+                        onClick={this.onHideShowToggle.bind(this)}
+                        className="btn btn-primary btn-sm">
+                    {this.state.isHidden ? 'Show' : 'Hide'}
+                </button>
+            </div>
         </div>;
     }
     componentDidMount() {
@@ -125,6 +142,9 @@ export default class MoonPhaseView extends React.Component {
     }
     onMoonPhaseUpdate(e) {
         this.props.onMoonPhaseUpdate(forceNumber(e.target.value));
+    }
+    onHideShowToggle() {
+        this.setState({isHidden: !this.state.isHidden});
     }
 }
 
