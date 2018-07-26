@@ -108,14 +108,14 @@ export default class HorizonView extends React.Component {
         nightDome.rotation.x = Math.PI;
         scene.add(nightDome);
 
-        const dayDomeMaterial = new THREE.MeshBasicMaterial({
+        this.skyMaterial = new THREE.MeshBasicMaterial({
             transparent: true,
             opacity: 0.4,
             color: 0x90c0ff,
             depthWrite: false,
             side: THREE.DoubleSide
         });
-        const dayDome = new THREE.Mesh(domeGeometry, dayDomeMaterial);
+        const dayDome = new THREE.Mesh(domeGeometry, this.skyMaterial);
         scene.add(dayDome);
 
         const lineMaterial = new THREE.LineBasicMaterial({
@@ -220,6 +220,7 @@ export default class HorizonView extends React.Component {
         this.sun.position.z = 50 * Math.sin(this.props.observerAngle);
         this.sun.rotation.y = -this.props.observerAngle +
                               THREE.Math.degToRad(90);
+        //this.skyMaterial.color = THREE.Color(0x000000);
 
         this.moon.position.x = 50 * Math.cos(this.props.moonObserverPos);
         this.moon.position.z = 50 * Math.sin(this.props.moonObserverPos);

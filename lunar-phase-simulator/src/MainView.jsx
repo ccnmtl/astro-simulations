@@ -192,15 +192,26 @@ export default class MainView extends React.Component {
         earthContainer.addChild(earth);
 
         const avatar = new PIXI.Sprite(avatarResource.texture);
-        avatar.width = 36;
-        avatar.height = 17;
+        avatar.width = 27;
+        avatar.height = 12.75;
         avatar.position = this.orbitCenter;
-        avatar.position.x -= 40;
+        avatar.position.x -= 42;
         avatar.anchor.set(0.5);
         earthContainer.addChild(avatar);
 
         // Add the earth to the scene we are building
         this.app.stage.addChild(earthContainer);
+
+        // Shade the right half of the earth. Don't add this to the
+        // container because it doesn't rotate with the earth.
+        const shade = new PIXI.Graphics();
+        shade.beginFill(0x000000);
+        shade.alpha = 0.7;
+        shade.drawRect(
+            this.orbitCenter.x,
+            this.orbitCenter.y - 60,
+            60, 120);
+        this.app.stage.addChild(shade);
 
         return earthContainer;
     }
