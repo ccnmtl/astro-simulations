@@ -62,8 +62,9 @@ export default class MainView extends React.Component {
         this.app.loader.load((loader, resources) => {
             me.resources = resources;
 
-            me.moon = me.drawMoon(resources.moon, resources.highlight);
-            me.moon
+            me.moonContainer = me.drawMoon(
+                resources.moon, resources.highlight);
+            me.moonContainer
               // events for drag start
               .on('mousedown', me.onDragStart)
               .on('touchstart', me.onDragStart)
@@ -109,7 +110,15 @@ export default class MainView extends React.Component {
         cancelAnimationFrame(this.frameId)
     }
     animate() {
-        this.moon.position = this.getMoonPos(this.props.moonPhase);
+        this.moonContainer.position = this.getMoonPos(this.props.moonPhase);
+
+        // Rotate the moon about the earth, but not the shade from the
+        // sun.
+        const moon = this.moonContainer.children.find(el => {
+            return el.name === 'moonObj';
+        });
+        moon.rotation = -this.props.moonPhase;
+
 
         if (this.state.isHoveringOnMoon || this.draggingMoon) {
             this.moonHighlight.visible = true;
@@ -154,6 +163,7 @@ export default class MainView extends React.Component {
         moonContainer.addChild(highlight);
 
         const moon = new PIXI.Sprite(moonResource.texture);
+        moon.name = 'moonObj';
         moon.width = 20;
         moon.height = 20;
         moon.anchor.set(0.5);
@@ -161,6 +171,8 @@ export default class MainView extends React.Component {
 
         // Shade the right half of the moon. This follows the moon
         // along its orbit.
+        // Although the position of this object follows the moon, it
+        // doesn't rotate with the moon.
         const shade = new PIXI.Graphics();
         shade.beginFill(0x000000);
         shade.alpha = 0.7;
