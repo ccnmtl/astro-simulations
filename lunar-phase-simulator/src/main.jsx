@@ -54,21 +54,51 @@ class LunarPhaseSim extends React.Component {
 
                     <div className="col">
                         Increment animation:
-                        <form className="form">
-                            <div className="form-group">
-                                <label>Day:</label>
-                                <button type="button" className="btn btn-secondary btn-sm ml-2">-</button>
-                                <button type="button" className="btn btn-secondary btn-sm ml-1">+</button>
-                            </div>
-                            <div className="form-group">
-                                <label>Hour:</label>
-                                <button type="button" className="btn btn-secondary btn-sm ml-2">-</button>
-                                <button type="button" className="btn btn-secondary btn-sm ml-1">+</button>
-                            </div>
-                            <div className="form-group">
-                                <label>Minute:</label>
-                                <button type="button" className="btn btn-secondary btn-sm ml-2">-</button>
-                                <button type="button" className="btn btn-secondary btn-sm ml-1">+</button>
+                        <form className="form container increment-area">
+                            <div className="row">
+                                <div className="col">
+                                    <div className="form-group text-right">
+                                        <label>Day:</label>
+                                    </div>
+                                    <div className="form-group text-right">
+                                        <label>Hour:</label>
+                                    </div>
+                                    <div className="form-group text-right">
+                                        <label>Minute:</label>
+                                    </div>
+                                </div>
+                                <div className="col">
+                                    <div className="form-group">
+                                        <button
+                                            type="button"
+                                            onClick={this.onDecrementDay.bind(this)}
+                                            className="btn btn-outline-primary btn-sm">-</button>
+                                        <button
+                                            type="button"
+                                            onClick={this.onIncrementDay.bind(this)}
+                                            className="btn btn-outline-primary btn-sm ml-1">+</button>
+                                    </div>
+                                    <div className="form-group">
+                                        <button
+                                            type="button"
+                                            onClick={this.onDecrementHour.bind(this)}
+                                            className="btn btn-outline-primary btn-sm">-</button>
+                                        <button
+                                            type="button"
+                                            onClick={this.onIncrementHour.bind(this)}
+                                            className="btn btn-outline-primary btn-sm ml-1">+</button>
+                                    </div>
+                                    <div className="form-group">
+                                        <button
+                                            type="button"
+                                            onClick={this.onDecrementMinute.bind(this)}
+                                            className="btn btn-outline-primary btn-sm">-</button>
+                                        <button
+                                            type="button"
+                                            onClick={this.onIncrementMinute.bind(this)}
+                                            className="btn btn-outline-primary btn-sm ml-1">+</button>
+                                    </div>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -114,17 +144,35 @@ class LunarPhaseSim extends React.Component {
             </div>
         </div>;
     }
-    incrementAngle(n) {
-        const newAngle = n + 0.03 * this.state.animationRate;
+    incrementAngle(n, useAnimationRate=true) {
+        const newAngle = n + 0.03 * (
+            useAnimationRate ? this.state.animationRate : 1);
         if (newAngle > Math.PI * 2) {
-            return 0;
+            return newAngle - Math.PI * 2;
         }
         return newAngle;
     }
-    incrementMoonPhaseAngle(n) {
-        const newAngle = n + 0.001 * this.state.animationRate;
+    decrementAngle(n, useAnimationRate=true) {
+        const newAngle = n - 0.03 * (
+            useAnimationRate ? this.state.animationRate : 1);
+        if (newAngle < 0) {
+            return newAngle + Math.PI * 2;
+        }
+        return newAngle;
+    }
+    incrementMoonPhaseAngle(n, useAnimationRate=true) {
+        const newAngle = n + 0.001 * (
+            useAnimationRate ? this.state.animationRate : 1);
         if (newAngle > Math.PI * 2) {
-            return 0;
+            return newAngle - Math.PI * 2;
+        }
+        return newAngle;
+    }
+    decrementMoonPhaseAngle(n, useAnimationRate=true) {
+        const newAngle = n - 0.001 * (
+            useAnimationRate ? this.state.animationRate : 1);
+        if (newAngle < 0) {
+            return newAngle + Math.PI * 2;
         }
         return newAngle;
     }
@@ -133,8 +181,8 @@ class LunarPhaseSim extends React.Component {
         this.setState(prevState => ({
             observerAngle: me.incrementAngle(prevState.observerAngle),
             moonPhase: me.incrementMoonPhaseAngle(prevState.moonPhase),
-            moonObserverPos: prevState.observerAngle + (Math.PI) -
-                             prevState.moonPhase
+            moonObserverPos: me.getMoonObserverPos(
+                prevState.observerAngle, prevState.moonPhase)
         }));
         this.raf = requestAnimationFrame(this.animate.bind(this));
     }
@@ -164,6 +212,76 @@ class LunarPhaseSim extends React.Component {
     }
     onAnimationRateChange(e) {
         this.setState({animationRate: forceNumber(e.target.value)});
+    }
+    getMoonObserverPos(observerAngle, moonPhase) {
+        return observerAngle + Math.PI - moonPhase;
+    }
+    // TODO: can probably refactor this into something better
+    onDecrementDay() {
+        const observerAngle = this.decrementAngle(
+            this.state.observerAngle - 1, false);
+        const moonPhase = this.decrementMoonPhaseAngle(
+            this.state.moonPhase - 1, false);
+        this.setState({
+            observerAngle: observerAngle,
+            moonPhase: moonPhase,
+            moonObserverPos: this.getMoonObserverPos(observerAngle, moonPhase)
+        });
+    }
+    onIncrementDay() {
+        const observerAngle = this.incrementAngle(
+            this.state.observerAngle + 1, false);
+        const moonPhase = this.incrementMoonPhaseAngle(
+            this.state.moonPhase + 1, false);
+        this.setState({
+            observerAngle: observerAngle,
+            moonPhase: moonPhase,
+            moonObserverPos: this.getMoonObserverPos(observerAngle, moonPhase)
+        });
+    }
+    onDecrementHour() {
+        const observerAngle = this.decrementAngle(
+            this.state.observerAngle - 0.1, false);
+        const moonPhase = this.decrementMoonPhaseAngle(
+            this.state.moonPhase - 0.1, false);
+        this.setState({
+            observerAngle: observerAngle,
+            moonPhase: moonPhase,
+            moonObserverPos: this.getMoonObserverPos(observerAngle, moonPhase)
+        });
+    }
+    onIncrementHour() {
+        const observerAngle = this.incrementAngle(
+            this.state.observerAngle + 0.1, false);
+        const moonPhase = this.incrementMoonPhaseAngle(
+            this.state.moonPhase + 0.1, false);
+        this.setState({
+            observerAngle: observerAngle,
+            moonPhase: moonPhase,
+            moonObserverPos: this.getMoonObserverPos(observerAngle, moonPhase)
+        });
+    }
+    onDecrementMinute() {
+        const observerAngle = this.decrementAngle(
+            this.state.observerAngle - 0.01, false);
+        const moonPhase = this.decrementMoonPhaseAngle(
+            this.state.moonPhase - 0.01, false);
+        this.setState({
+            observerAngle: observerAngle,
+            moonPhase: moonPhase,
+            moonObserverPos: this.getMoonObserverPos(observerAngle, moonPhase)
+        });
+    }
+    onIncrementMinute() {
+        const observerAngle = this.incrementAngle(
+            this.state.observerAngle + 0.01, false);
+        const moonPhase = this.incrementMoonPhaseAngle(
+            this.state.moonPhase + 0.01, false);
+        this.setState({
+            observerAngle: observerAngle,
+            moonPhase: moonPhase,
+            moonObserverPos: this.getMoonObserverPos(observerAngle, moonPhase)
+        });
     }
 }
 

@@ -154,12 +154,11 @@ export default class HorizonView extends React.Component {
     drawStickFigure(scene) {
         const spriteMap = new THREE.TextureLoader().load('img/stickfigure.svg');
         const spriteMaterial = new THREE.SpriteMaterial({
-            map: spriteMap,
-            color: 0xffffff
+            map: spriteMap
         });
         const sprite = new THREE.Sprite(spriteMaterial);
         sprite.scale.set(5, 10, 5);
-        sprite.position.y = 4;
+        sprite.position.y = 4.5;
         scene.add(sprite);
     }
     drawSun() {
