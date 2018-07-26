@@ -159,8 +159,15 @@ export default class MainView extends React.Component {
         moon.anchor.set(0.5);
         moonContainer.addChild(moon);
 
-        this.app.stage.addChild(moonContainer);
+        // Shade the right half of the moon. This follows the moon
+        // along its orbit.
+        const shade = new PIXI.Graphics();
+        shade.beginFill(0x000000);
+        shade.alpha = 0.7;
+        shade.arc(0, 0, 10, degToRad(-90), degToRad(90));
+        moonContainer.addChild(shade);
 
+        this.app.stage.addChild(moonContainer);
         return moonContainer;
     }
     /*
