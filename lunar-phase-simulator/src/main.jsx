@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import MainView from './MainView';
 import MoonPhaseView from './MoonPhaseView';
 import HorizonView from './HorizonView';
-import {forceFloat} from './utils';
+import {forceNumber} from './utils';
 
 class LunarPhaseSim extends React.Component {
     constructor(props) {
@@ -17,7 +17,6 @@ class LunarPhaseSim extends React.Component {
             isPlaying: false,
             animationRate: 1
         };
-        this.handleInputChange = this.handleInputChange.bind(this);
         this.raf = null;
     }
     render() {
@@ -116,15 +115,9 @@ class LunarPhaseSim extends React.Component {
         </div>;
     }
     incrementAngle(n) {
-        if (n > 360) {
-            return 0;
-        }
-        return n + 0.02 * this.state.animationRate;
+        return n + 0.03 * this.state.animationRate;
     }
     incrementMoonPhaseAngle(n) {
-        if (n > 360) {
-            return 0;
-        }
         return n + 0.001 * this.state.animationRate;
     }
     animate() {
@@ -136,13 +129,6 @@ class LunarPhaseSim extends React.Component {
                              prevState.moonPhase
         }));
         this.raf = requestAnimationFrame(this.animate.bind(this));
-    }
-    handleInputChange(event) {
-        const target = event.target;
-
-        this.setState({
-            [target.name]: forceFloat(target.value)
-        });
     }
     onStartClick() {
         if (!this.state.isPlaying) {
@@ -169,7 +155,7 @@ class LunarPhaseSim extends React.Component {
         });
     }
     onAnimationRateChange(e) {
-        this.setState({animationRate: forceFloat(e.target.value)});
+        this.setState({animationRate: forceNumber(e.target.value)});
     }
 }
 

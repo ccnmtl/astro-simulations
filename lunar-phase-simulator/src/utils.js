@@ -1,13 +1,12 @@
 /*
- * Force a value into a float. This is currently capped to 2 decimal
- * places.
+ * Force a value into a number.
  */
-const forceFloat = function(n) {
+const forceNumber = function(n) {
     n = Number(n);
     if (isNaN(n) || typeof n === 'undefined') {
         n = 0;
     }
-    return Math.round(n * 100) / 100;
+    return n;
 };
 
 /**
@@ -29,4 +28,4 @@ const degToRad = function(degrees) {
     return degrees * Math.PI / 180;
 };
 
-export {forceFloat, loadSprite, degToRad};
+export {forceNumber, loadSprite, degToRad};
