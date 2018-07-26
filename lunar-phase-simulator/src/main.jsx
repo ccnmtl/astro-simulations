@@ -132,8 +132,8 @@ class LunarPhaseSim extends React.Component {
                 <div>
                     <h4>Moon Phase</h4>
                     <MoonPhaseView
-                        observerAngle={this.state.observerAngle}
-                        moonPhase={this.state.moonPhase} />
+                        moonPhase={this.state.moonPhase}
+                        onMoonPhaseUpdate={this.onMoonPhaseUpdate.bind(this)} />
                 </div>
                 <div>
                     <h4>Horizon Diagram</h4>
@@ -206,12 +206,23 @@ class LunarPhaseSim extends React.Component {
         cancelAnimationFrame(this.raf);
         this.setState({
             isPlaying: false,
-            moonObserverPos: newAngle,
-            moonPhase: newAngle
+            moonPhase: newAngle,
+            moonObserverPos: newAngle
+        });
+    }
+    onMoonPhaseUpdate(newPhase) {
+        cancelAnimationFrame(this.raf);
+        this.setState({
+            isPlaying: false,
+            moonPhase: newPhase,
+            moonObserverPos: this.getMoonObserverPos(
+                this.state.observerAngle, newPhase)
         });
     }
     onAnimationRateChange(e) {
-        this.setState({animationRate: forceNumber(e.target.value)});
+        this.setState({
+            animationRate: forceNumber(e.target.value)
+        });
     }
     getMoonObserverPos(observerAngle, moonPhase) {
         return observerAngle + Math.PI - moonPhase;
@@ -221,7 +232,7 @@ class LunarPhaseSim extends React.Component {
         const observerAngle = this.decrementAngle(
             this.state.observerAngle - 1, false);
         const moonPhase = this.decrementMoonPhaseAngle(
-            this.state.moonPhase - 1, false);
+            this.state.moonPhase - 0.1, false);
         this.setState({
             observerAngle: observerAngle,
             moonPhase: moonPhase,
@@ -232,7 +243,7 @@ class LunarPhaseSim extends React.Component {
         const observerAngle = this.incrementAngle(
             this.state.observerAngle + 1, false);
         const moonPhase = this.incrementMoonPhaseAngle(
-            this.state.moonPhase + 1, false);
+            this.state.moonPhase + 0.1, false);
         this.setState({
             observerAngle: observerAngle,
             moonPhase: moonPhase,
@@ -243,7 +254,7 @@ class LunarPhaseSim extends React.Component {
         const observerAngle = this.decrementAngle(
             this.state.observerAngle - 0.1, false);
         const moonPhase = this.decrementMoonPhaseAngle(
-            this.state.moonPhase - 0.1, false);
+            this.state.moonPhase - 0.01, false);
         this.setState({
             observerAngle: observerAngle,
             moonPhase: moonPhase,
@@ -254,7 +265,7 @@ class LunarPhaseSim extends React.Component {
         const observerAngle = this.incrementAngle(
             this.state.observerAngle + 0.1, false);
         const moonPhase = this.incrementMoonPhaseAngle(
-            this.state.moonPhase + 0.1, false);
+            this.state.moonPhase + 0.01, false);
         this.setState({
             observerAngle: observerAngle,
             moonPhase: moonPhase,
@@ -265,7 +276,7 @@ class LunarPhaseSim extends React.Component {
         const observerAngle = this.decrementAngle(
             this.state.observerAngle - 0.01, false);
         const moonPhase = this.decrementMoonPhaseAngle(
-            this.state.moonPhase - 0.01, false);
+            this.state.moonPhase - 0.001, false);
         this.setState({
             observerAngle: observerAngle,
             moonPhase: moonPhase,
@@ -276,7 +287,7 @@ class LunarPhaseSim extends React.Component {
         const observerAngle = this.incrementAngle(
             this.state.observerAngle + 0.01, false);
         const moonPhase = this.incrementMoonPhaseAngle(
-            this.state.moonPhase + 0.01, false);
+            this.state.moonPhase + 0.001, false);
         this.setState({
             observerAngle: observerAngle,
             moonPhase: moonPhase,
