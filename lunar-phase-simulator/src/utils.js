@@ -24,6 +24,9 @@ const loadSprite = function(src) {
     });
 }
 
+/*
+ * Convert degrees to radians.
+ */
 const degToRad = function(degrees) {
     return degrees * Math.PI / 180;
 };

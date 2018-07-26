@@ -115,10 +115,18 @@ class LunarPhaseSim extends React.Component {
         </div>;
     }
     incrementAngle(n) {
-        return n + 0.03 * this.state.animationRate;
+        const newAngle = n + 0.03 * this.state.animationRate;
+        if (newAngle > Math.PI * 2) {
+            return 0;
+        }
+        return newAngle;
     }
     incrementMoonPhaseAngle(n) {
-        return n + 0.001 * this.state.animationRate;
+        const newAngle = n + 0.001 * this.state.animationRate;
+        if (newAngle > Math.PI * 2) {
+            return 0;
+        }
+        return newAngle;
     }
     animate() {
         const me = this;
