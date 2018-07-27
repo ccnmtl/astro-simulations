@@ -288,7 +288,8 @@ export default class MainView extends React.Component {
     }
     onEarthMove(e) {
         if (e.target && e.target.name === 'earth' &&
-            !this.state.isHoveringOnEarth
+            !this.state.isHoveringOnEarth &&
+            !this.draggingMoon
         ) {
             this.setState({isHoveringOnEarth: true});
         }
@@ -312,7 +313,8 @@ export default class MainView extends React.Component {
     }
     onMoonMove(e) {
         if (e.target && e.target.name === 'moon' &&
-            !this.state.isHoveringOnMoon
+            !this.state.isHoveringOnMoon &&
+            !this.draggingEarth
         ) {
             this.setState({isHoveringOnMoon: true});
         }
