@@ -11,7 +11,8 @@ JavaScript/HTML ports of the Flash originals, found here: [http://astro.unl.edu/
 
 ## Development guide
 
-Here are instructions on how to develop and make changes to these interactives.
+Here are instructions on how to develop and make changes to these interactives. If you're using Windows, replace the forward slashes with back-slashes.
+
 
 * Install [node.js](https://nodejs.org/en/)
 * Clone this repository
@@ -21,4 +22,4 @@ Here are instructions on how to develop and make changes to these interactives.
 * Open the `lunar-phase-simulator/index.html` file in your web browser.
 * * If you see CORS errors in the JS console because of the image loading, you have a few options. A) try another browser. B) run a local web server (I use nginx). I've set up an `npm run serve` command in the interactives which uses [webpack-serve](https://github.com/webpack-contrib/webpack-serve), but there are issues with that at the moment. Once those issues are resolved this will be the best way of running these interactives.
 
-If you're using Windows, replace the forward slashes with back-slashes.
+For some background info, see the [How to animate graphical JavaScript programs](https://compiled.ctl.columbia.edu/articles/how-to-animate-graphical-javascript-programs/) blog post.
