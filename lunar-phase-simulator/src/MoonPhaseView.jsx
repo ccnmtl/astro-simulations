@@ -1,6 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {loadSprite, forceNumber, degToRad} from './utils';
+import {
+    loadSprite, forceNumber, degToRad, getPercentIlluminated,
+    roundToOnePlace
+} from './utils';
 
 export default class MoonPhaseView extends React.Component {
     constructor(props) {
@@ -19,27 +22,33 @@ export default class MoonPhaseView extends React.Component {
     }
     render() {
         return <div>
-            <select className="custom-select"
-                    style={{
-                        visibility: this.state.isHidden ? 'hidden' : 'visible'
-                    }}
-                    onChange={this.onMoonPhaseUpdate.bind(this)}
-                    defaultValue={degToRad(180)}>
-                <option value={degToRad(180)}>New Moon</option>
-                <option value={degToRad(180 + 45)}>Waxing Crescent</option>
-                <option value={degToRad(270)}>First Quarter</option>
-                <option value={degToRad(270 + 45)}>Waxing Gibbous</option>
-                <option value={degToRad(0)}>Full Moon</option>
-                <option value={degToRad(45)}>Waning Gibbous</option>
-                <option value={degToRad(90)}>Third Quarter</option>
-                <option value={degToRad(135)}>Waning Crescent</option>
-            </select>
-            <canvas
-                style={{
-                     visibility: this.state.isHidden ? 'hidden' : 'visible'
-                }}
-                className="mt-1" id={this.id}
-                width="228" height="215"></canvas>
+            <div style={{
+                visibility: this.state.isHidden ? 'hidden' : 'visible'
+            }}>
+                <select className="custom-select"
+                        onChange={this.onMoonPhaseUpdate.bind(this)}
+                        defaultValue={degToRad(180)}>
+                    <option value={degToRad(180)}>New Moon</option>
+                    <option value={degToRad(180 + 45)}>Waxing Crescent</option>
+                    <option value={degToRad(270)}>First Quarter</option>
+                    <option value={degToRad(270 + 45)}>Waxing Gibbous</option>
+                    <option value={degToRad(0)}>Full Moon</option>
+                    <option value={degToRad(45)}>Waning Gibbous</option>
+                    <option value={degToRad(90)}>Third Quarter</option>
+                    <option value={degToRad(135)}>Waning Crescent</option>
+                </select>
+                <canvas
+                    className="mt-1" id={this.id}
+                    width="228" height="215"></canvas>
+                <div className="text-center">
+                    {
+                        roundToOnePlace(getPercentIlluminated(
+                            this.props.moonPhase - Math.PI))
+                    }% illuminated
+                </div>
+                <div className="text-center">Time since new moon:</div>
+                <div className="text-center">0 hours</div>
+            </div>
             <div className="text-right">
                 <button type="button"
                         onClick={this.onHideShowToggle.bind(this)}

@@ -31,4 +31,16 @@ const degToRad = function(degrees) {
     return degrees * Math.PI / 180;
 };
 
-export {forceNumber, loadSprite, degToRad};
+const getPercentIlluminated = function(moonPhase) {
+    const percent = (1 - Math.cos(moonPhase)) / 2;
+    return percent * 100;
+}
+
+const roundToOnePlace = function(n) {
+    return Math.round(n * 10) / 10;
+}
+
+export {
+    forceNumber, loadSprite, degToRad, getPercentIlluminated,
+    roundToOnePlace
+};

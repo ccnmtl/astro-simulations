@@ -4,6 +4,9 @@ node_js:
 - '10'
 install: npm install
 script:
-- cd small-angle-demo && make eslint
+- cd small-angle-demo 
+- make eslint
 - cd ..
-- cd lunar-phase-simulator && make eslint
+- cd lunar-phase-simulator 
+- make eslint
+- npm run test
