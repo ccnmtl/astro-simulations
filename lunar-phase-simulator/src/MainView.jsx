@@ -21,8 +21,8 @@ export default class MainView extends React.Component {
 
         this.onDragStart = this.onDragStart.bind(this);
         this.onDragEnd = this.onDragEnd.bind(this);
-        this.onEarthDragMove = this.onEarthDragMove.bind(this);
-        this.onMoonDragMove = this.onMoonDragMove.bind(this);
+        this.onEarthMove = this.onEarthMove.bind(this);
+        this.onMoonMove = this.onMoonMove.bind(this);
     }
     // react/PIXI integration from:
     // https://www.protectator.ch/post/pixijs-v4-in-a-react-component
@@ -74,8 +74,8 @@ export default class MainView extends React.Component {
               .on('touchend', me.onDragEnd)
               .on('touchendoutside', me.onDragEnd)
               // events for drag move
-              .on('mousemove', me.onMoonDragMove)
-              .on('touchmove', me.onMoonDragMove);
+              .on('mousemove', me.onMoonMove)
+              .on('touchmove', me.onMoonMove);
 
             me.earth = me.drawEarth(
                 resources.earth,
@@ -92,8 +92,8 @@ export default class MainView extends React.Component {
               .on('touchend', me.onDragEnd)
               .on('touchendoutside', me.onDragEnd)
               // events for drag move
-              .on('mousemove', me.onEarthDragMove)
-              .on('touchmove', me.onEarthDragMove);
+              .on('mousemove', me.onEarthMove)
+              .on('touchmove', me.onEarthMove);
 
             me.start();
         });
@@ -135,7 +135,7 @@ export default class MainView extends React.Component {
             this.earthHighlight.visible = false;
         }
 
-        this.frameId = window.requestAnimationFrame(this.animate);
+        this.frameId = requestAnimationFrame(this.animate);
     }
     drawOrbit() {
         const graphics = new PIXI.Graphics();
@@ -196,8 +196,8 @@ export default class MainView extends React.Component {
 
         const highlight = new PIXI.Sprite(highlightResource.texture);
         highlight.visible = false;
-        highlight.width = 100;
-        highlight.height = 100;
+        highlight.width = 90;
+        highlight.height = 90;
         highlight.position = this.orbitCenter;
         highlight.anchor.set(0.5);
         this.earthHighlight = highlight;
@@ -286,7 +286,7 @@ export default class MainView extends React.Component {
         // set the interaction data to null
         this.data = null;
     }
-    onEarthDragMove(e) {
+    onEarthMove(e) {
         if (e.target && e.target.name === 'earth' &&
             !this.state.isHoveringOnEarth
         ) {
@@ -298,22 +298,19 @@ export default class MainView extends React.Component {
 
         if (this.draggingEarth) {
             const newPosition = this.data.getLocalPosition(this.app.stage);
-            const diff = [
-                this.dragStartPos.x - newPosition.x,
-                this.dragStartPos.y - newPosition.y
-            ];
 
             // This angle starts at the center of the earth. It's the
             // difference, in radians, between where the cursor was and
             // where it is now.
             const vAngle =
-                Math.atan2(diff[1], diff[0]) -
-                Math.atan2(this.dragStartPos.y, this.dragStartPos.x);
-
+                Math.atan2(newPosition.y - this.orbitCenter.y,
+                           newPosition.x - this.orbitCenter.x) -
+                Math.atan2(this.dragStartPos.y - this.orbitCenter.y,
+                           this.dragStartPos.x - this.orbitCenter.x);
             this.props.onObserverAngleUpdate(-vAngle);
         }
     }
-    onMoonDragMove(e) {
+    onMoonMove(e) {
         if (e.target && e.target.name === 'moon' &&
             !this.state.isHoveringOnMoon
         ) {
@@ -325,17 +322,13 @@ export default class MainView extends React.Component {
 
         if (this.draggingMoon) {
             const newPosition = this.data.getLocalPosition(this.app.stage);
-            const diff = [
-                this.dragStartPos.x - newPosition.x,
-                this.dragStartPos.y - newPosition.y
-            ];
 
             // This angle starts at the center of the orbit. It's the
             // difference, in radians, between where the cursor was and
             // where it is now.
             const vAngle =
-                Math.atan2(diff[1], diff[0]) -
-                Math.atan2(this.dragStartPos.y, this.dragStartPos.x);
+                Math.atan2(newPosition.y - this.orbitCenter.y,
+                           newPosition.x - this.orbitCenter.x);
 
             this.props.onMoonPosUpdate(-vAngle);
         }
