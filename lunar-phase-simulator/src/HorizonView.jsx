@@ -10,6 +10,10 @@ export default class HorizonView extends React.Component {
     constructor(props) {
         super(props);
 
+        this.state = {
+            isHidden: false
+        };
+
         this.id = 'HorizonView';
         this.start = this.start.bind(this);
         this.stop = this.stop.bind(this);
@@ -319,11 +323,27 @@ export default class HorizonView extends React.Component {
         return (
             <React.Fragment>
             <div id={this.id}
-                 style={{ width: '228px', height: '228px' }}
+                 style={{
+                     width: '228px',
+                     height: '228px',
+                     visibility: this.state.isHidden ? 'hidden' : 'visible'
+                 }}
                  ref={(mount) => { this.mount = mount }} />
-            <div>Observer&apos;s local time: {time}</div>
+            <div style={{
+                visibility: this.state.isHidden ? 'hidden' : 'visible'
+            }}>Observer&apos;s local time: {time}</div>
+            <div className="text-right">
+                <button type="button"
+                        onClick={this.onHideShowToggle.bind(this)}
+                        className="btn btn-primary btn-sm">
+                    {this.state.isHidden ? 'Show' : 'Hide'}
+                </button>
+            </div>
             </React.Fragment>
         );
+    }
+    onHideShowToggle() {
+        this.setState({isHidden: !this.state.isHidden});
     }
 }
 
