@@ -1,7 +1,7 @@
 {
-  "name": "lunar-phase-simulator",
+  "name": "sun-motion-simulator",
   "version": "1.0.0",
-  "description": "Lunar Phase Simulator",
+  "description": "Motions of the Sun Simulator",
   "private": true,
   "main": "main.js",
   "scripts": {
@@ -9,7 +9,7 @@
     "serve": "webpack-serve --no-hot-client --no-hmr --no-reload ./webpack.config.js",
     "dev": "webpack --mode development --watch",
     "build": "webpack --mode production",
-    "eslint": "eslint src/*.js src/*.jsx"
+    "eslint": "eslint src/*.jsx"
   },
   "repository": {
     "type": "git",

@@ -28,7 +28,7 @@ class LunarPhaseSim extends React.Component {
             startBtnText = 'Pause Animation';
         }
         return <div className="row">
-            <div className="col-8">
+            <div className="col-lg-8">
                 <MainView
                     observerAngle={this.state.observerAngle}
                     moonPhase={this.state.moonPhase}
@@ -136,7 +136,7 @@ class LunarPhaseSim extends React.Component {
                 </div>
             </div>
 
-            <div className="col-4">
+            <div className="col-lg-4">
                 <div>
                     <h4>Moon Phase</h4>
                     <MoonPhaseView

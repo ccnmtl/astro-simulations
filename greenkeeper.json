@@ -3,7 +3,8 @@
     "default": {
       "packages": [
         "lunar-phase-simulator/package.json",
-        "small-angle-demo/package.json"
+        "small-angle-demo/package.json",
+        "sun-motion-simulator/package.json"
       ]
     }
   }

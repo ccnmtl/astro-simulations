@@ -10,3 +10,7 @@ script:
 - cd lunar-phase-simulator 
 - make eslint
 - npm run test
+- cd ..
+- cd sun-motion-simulator
+- npm install
+- npm run eslint
