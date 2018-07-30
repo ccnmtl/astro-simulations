@@ -3,12 +3,17 @@ import ReactDOM from 'react-dom';
 import MainView from './MainView';
 import MoonPhaseView from './MoonPhaseView';
 import HorizonView from './HorizonView';
-import {forceNumber} from './utils';
+import {degToRad, forceNumber} from './utils';
 
 class LunarPhaseSim extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            /*
+             * observerAngle refers to the angle of the observer on
+             * the MainView. This is effectively the sun's position in
+             * the sky.
+             */
             observerAngle: Math.PI / 2,
             moonPhase: Math.PI,
             // moonObserverPos is a function of observerAngle and
@@ -170,7 +175,7 @@ class LunarPhaseSim extends React.Component {
     decrementAngle(n, dec) {
         const newAngle = n - dec;
         if (newAngle < 0) {
-            return newAngle + Math.PI;
+            return newAngle + Math.PI * 2;
         }
         return newAngle;
     }
@@ -246,7 +251,7 @@ class LunarPhaseSim extends React.Component {
     // TODO: can probably refactor this into something better
     onDecrementDay() {
         const observerAngle = this.decrementAngle(
-            this.state.observerAngle, 1);
+            this.state.observerAngle, degToRad(360));
         const moonPhase = this.decrementMoonPhaseAngle(
             this.state.moonPhase, 0.1);
         this.setState({
@@ -257,7 +262,7 @@ class LunarPhaseSim extends React.Component {
     }
     onIncrementDay() {
         const observerAngle = this.incrementAngle(
-            this.state.observerAngle, 1);
+            this.state.observerAngle, degToRad(360));
         const moonPhase = this.incrementMoonPhaseAngle(
             this.state.moonPhase, 0.1);
         this.setState({
@@ -268,7 +273,7 @@ class LunarPhaseSim extends React.Component {
     }
     onDecrementHour() {
         const observerAngle = this.decrementAngle(
-            this.state.observerAngle, 0.1);
+            this.state.observerAngle, degToRad(360 / 24));
         const moonPhase = this.decrementMoonPhaseAngle(
             this.state.moonPhase, 0.01);
         this.setState({
@@ -279,7 +284,7 @@ class LunarPhaseSim extends React.Component {
     }
     onIncrementHour() {
         const observerAngle = this.incrementAngle(
-            this.state.observerAngle, 0.1);
+            this.state.observerAngle, degToRad(360 / 24));
         const moonPhase = this.incrementMoonPhaseAngle(
             this.state.moonPhase, 0.01);
         this.setState({
@@ -290,7 +295,7 @@ class LunarPhaseSim extends React.Component {
     }
     onDecrementMinute() {
         const observerAngle = this.decrementAngle(
-            this.state.observerAngle, 0.01);
+            this.state.observerAngle, degToRad(360 / 24 / 60));
         const moonPhase = this.decrementMoonPhaseAngle(
             this.state.moonPhase, 0.001);
         this.setState({
@@ -301,7 +306,7 @@ class LunarPhaseSim extends React.Component {
     }
     onIncrementMinute() {
         const observerAngle = this.incrementAngle(
-            this.state.observerAngle, 0.01);
+            this.state.observerAngle, degToRad(360 / 24 / 60));
         const moonPhase = this.incrementMoonPhaseAngle(
             this.state.moonPhase, 0.001);
         this.setState({
