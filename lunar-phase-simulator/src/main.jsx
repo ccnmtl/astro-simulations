@@ -16,7 +16,8 @@ class LunarPhaseSim extends React.Component {
             moonObserverPos: Math.PI / 2,
             isPlaying: false,
             animationRate: 1,
-            showAngle: false
+            showAngle: false,
+            showTimeTickmarks: false
         };
         this.raf = null;
 
@@ -32,6 +33,8 @@ class LunarPhaseSim extends React.Component {
                 <MainView
                     observerAngle={this.state.observerAngle}
                     moonPhase={this.state.moonPhase}
+                    showAngle={this.state.showAngle}
+                    showTimeTickmarks={this.state.showTimeTickmarks}
                     onObserverAngleUpdate={this.onObserverAngleUpdate.bind(this)}
                     onMoonPosUpdate={this.onMoonPosUpdate.bind(this)}
                 />
@@ -126,8 +129,12 @@ class LunarPhaseSim extends React.Component {
                             </label>
                         </div>
                         <div className="custom-control custom-checkbox">
-                            <input type="checkbox" className="custom-control-input" id="customCheck3" />
-                            <label className="custom-control-label" htmlFor="customCheck3">
+                            <input type="checkbox" className="custom-control-input"
+                                   name="showTimeTickmarks"
+                                   onChange={this.handleInputChange}
+                                   checked={this.state.showTimeTickmarks}
+                                   id="showTimeTickmarksToggle" />
+                            <label className="custom-control-label" htmlFor="showTimeTickmarksToggle">
                                 Show time tickmarks
                             </label>
                         </div>
