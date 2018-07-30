@@ -187,7 +187,7 @@ export default class MoonPhaseView extends React.Component {
         }
 
         // Full Moon
-        if (Math.abs(phase) < 22.5 / 2) {
+        if (Math.abs(phase) < 22.5) {
             return 0;
         }
 
