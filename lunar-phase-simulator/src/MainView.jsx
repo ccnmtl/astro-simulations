@@ -229,11 +229,12 @@ export default class MainView extends React.Component {
         earth.height = 70;
         earth.position = this.orbitCenter;
         earth.anchor.set(0.5);
+        earth.rotation = -0.9;
         earthContainer.addChild(earth);
 
         const avatar = new PIXI.Sprite(avatarResource.texture);
-        avatar.width = 27;
-        avatar.height = 12.75;
+        avatar.width = 27 * 0.9;
+        avatar.height = 12.75 * 0.9;
         avatar.position = this.orbitCenter;
         avatar.position.x -= 42;
         avatar.anchor.set(0.5);
