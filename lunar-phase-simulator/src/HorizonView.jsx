@@ -3,6 +3,11 @@ import PropTypes from 'prop-types';
 import * as THREE from 'three';
 import 'three/OrbitControls';
 import 'three/DragControls';
+import 'three/CopyShader';  // For FXAAShader
+import 'three/FXAAShader';
+import 'three/EffectComposer';
+import 'three/RenderPass';
+import 'three/ShaderPass';
 
 // three.js/react integration based on:
 // https://stackoverflow.com/a/46412546/173630
@@ -48,18 +53,22 @@ export default class HorizonView extends React.Component {
         controls.minPolarAngle = THREE.Math.degToRad(0);
         controls.maxPolarAngle = THREE.Math.degToRad(70);
 
-        const renderer = new THREE.WebGLRenderer({antialias: true});
+        const renderer = new THREE.WebGLRenderer({
+            antialias: true,
+            canvas: document.getElementById(this.id + 'Canvas')
+        });
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setClearColor(0xffffff);
 
-        // This is an anti-aliasing fix. On my system, anti-aliasing
-        // was working on Firefox, but not Chrome.
-        // Set the renderer size to twice the size of the actual
-        // canvas. The physical dimensions remain at 228x228,
-        // idea came from here: https://stackoverflow.com/a/44460635/173630
-        // The browser then scales this down to the smaller size, smoothing
-        // out all edges.
-        renderer.setSize(width * 2, height * 2, false);
+        const dpr = window.devicePixelRatio;
+        const composer = new THREE.EffectComposer(renderer);
+        composer.addPass(new THREE.RenderPass(scene, camera));
+        const shaderPass = new THREE.ShaderPass(THREE.FXAAShader);
+        shaderPass.uniforms.resolution.value = new THREE.Vector2(
+            1 / (width * 2 * dpr), 1 / (height * 2 * dpr));
+        shaderPass.renderToScreen = true;
+        composer.setSize(width * 4 * dpr, height * 4 * dpr);
+        composer.addPass(shaderPass);
 
         controls.update();
 
@@ -87,6 +96,7 @@ export default class HorizonView extends React.Component {
         this.scene = scene;
         this.camera = camera;
         this.renderer = renderer;
+        this.composer = composer;
 
         this.mount.appendChild(this.renderer.domElement);
         this.start();
@@ -129,7 +139,7 @@ export default class HorizonView extends React.Component {
             transparent: true,
             opacity: 0.5,
             color: 0xffffff,
-            linewidth: 2
+            linewidth: 4
         });
 
         // The EdgesGeometry is necessary to fix a problem when
@@ -152,7 +162,7 @@ export default class HorizonView extends React.Component {
         // The sun and moon orbit along this next line.
         const thickLineMaterial = new THREE.LineBasicMaterial({
             color: 0xffffff,
-            linewidth: 4
+            linewidth: 8
         });
         this.celestialEquator = new THREE.LineSegments(
             discGeometry, thickLineMaterial);
@@ -290,7 +300,12 @@ export default class HorizonView extends React.Component {
     }
 
     renderScene() {
-        this.renderer.render(this.scene, this.camera);
+        // To disable the shader pass, replace the call to composer.render()
+        // with this one:
+        //
+        // this.renderer.render(this.scene, this.camera);
+        //
+        this.composer.render();
     }
 
     /*
@@ -328,7 +343,9 @@ export default class HorizonView extends React.Component {
                      height: '228px',
                      visibility: this.state.isHidden ? 'hidden' : 'visible'
                  }}
-                 ref={(mount) => { this.mount = mount }} />
+                 ref={(mount) => { this.mount = mount }}>
+                <canvas id={this.id + 'Canvas'} width={228 * 2} height={228 * 2} />
+            </div>
             <div style={{
                 visibility: this.state.isHidden ? 'hidden' : 'visible'
             }}>Observer&apos;s local time: {time}</div>

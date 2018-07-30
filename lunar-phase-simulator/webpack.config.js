@@ -13,7 +13,11 @@ module.exports = {
         alias: {
             'three/OrbitControls': path.join(__dirname, 'node_modules/three/examples/js/controls/OrbitControls.js'),
             'three/DragControls': path.join(__dirname, 'node_modules/three/examples/js/controls/DragControls.js'),
-            'three/OBJLoader': path.join(__dirname, 'node_modules/three/examples/js/loaders/OBJLoader.js')
+            'three/CopyShader': path.join(__dirname, 'node_modules/three/examples/js/shaders/CopyShader.js'),
+            'three/FXAAShader': path.join(__dirname, 'node_modules/three/examples/js/shaders/FXAAShader.js'),
+            'three/EffectComposer': path.join(__dirname, 'node_modules/three/examples/js/postprocessing/EffectComposer.js'),
+            'three/RenderPass': path.join(__dirname, 'node_modules/three/examples/js/postprocessing/RenderPass.js'),
+            'three/ShaderPass': path.join(__dirname, 'node_modules/three/examples/js/postprocessing/ShaderPass.js')
         }
     },
     plugins: [
