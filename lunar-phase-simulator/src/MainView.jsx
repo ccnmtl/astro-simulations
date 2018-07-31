@@ -54,9 +54,10 @@ export default class MainView extends React.Component {
         this.drawOrbit();
 
         this.app.loader.add('moon', 'img/moon.svg')
-              .add('earth', 'img/earth.svg')
-              .add('avatar', 'img/white-stickfigure.svg')
-              .add('highlight', 'img/circle-highlight.svg');
+            .add('earth', 'img/earth.svg')
+            .add('avatar', 'img/white-stickfigure.svg')
+            .add('highlight', 'img/circle-highlight.svg')
+            .add('timeCompass', 'img/time-compass.svg');
 
         const me = this;
         this.app.loader.load((loader, resources) => {
@@ -94,6 +95,8 @@ export default class MainView extends React.Component {
               // events for drag move
               .on('mousemove', me.onEarthMove)
               .on('touchmove', me.onEarthMove);
+
+            me.timeCompass = me.drawTimeCompass(resources.timeCompass);
 
             me.start();
         });
@@ -135,6 +138,12 @@ export default class MainView extends React.Component {
             this.earthHighlight.visible = false;
         }
 
+        if (this.props.showTimeTickmarks) {
+            this.timeCompass.visible = true;
+        } else {
+            this.timeCompass.visible = false;
+        }
+
         this.frameId = requestAnimationFrame(this.animate);
     }
     drawOrbit() {
@@ -143,6 +152,18 @@ export default class MainView extends React.Component {
         graphics.lineWidth = 1;
         graphics.drawCircle(this.orbitCenter.x, this.orbitCenter.y, 200);
         this.app.stage.addChild(graphics);
+    }
+    drawTimeCompass(timeCompassResource) {
+        const timeCompass = new PIXI.Sprite(timeCompassResource.texture);
+        timeCompass.name = 'timeCompass';
+        timeCompass.width = 410 * 0.8;
+        timeCompass.height = 260 * 0.8;
+        timeCompass.position = this.orbitCenter;
+        timeCompass.anchor.set(0.5);
+        timeCompass.visible = false;
+
+        this.app.stage.addChild(timeCompass);
+        return timeCompass;
     }
     drawMoon(moonResource, highlightResource) {
         const pos = this.getMoonPos(this.props.moonPhase);
@@ -208,11 +229,12 @@ export default class MainView extends React.Component {
         earth.height = 70;
         earth.position = this.orbitCenter;
         earth.anchor.set(0.5);
+        earth.rotation = -0.9;
         earthContainer.addChild(earth);
 
         const avatar = new PIXI.Sprite(avatarResource.texture);
-        avatar.width = 27;
-        avatar.height = 12.75;
+        avatar.width = 27 * 0.9;
+        avatar.height = 12.75 * 0.9;
         avatar.position = this.orbitCenter;
         avatar.position.x -= 42;
         avatar.anchor.set(0.5);
@@ -346,5 +368,7 @@ MainView.propTypes = {
     observerAngle: PropTypes.number.isRequired,
     moonPhase: PropTypes.number.isRequired,
     onObserverAngleUpdate: PropTypes.func.isRequired,
-    onMoonPosUpdate: PropTypes.func.isRequired
+    onMoonPosUpdate: PropTypes.func.isRequired,
+    showAngle: PropTypes.bool.isRequired,
+    showTimeTickmarks: PropTypes.bool.isRequired
 };
