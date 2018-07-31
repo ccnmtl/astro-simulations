@@ -30,7 +30,7 @@
     "pixi.js": "^4.8.1",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
-    "three": "^0.94.0"
+    "three": "^0.95.0"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.6",
