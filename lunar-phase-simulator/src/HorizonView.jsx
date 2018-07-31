@@ -117,9 +117,9 @@ export default class HorizonView extends React.Component {
             50, 64, 64, 0, Math.PI * 2, 0, Math.PI / 2);
         const nightDomeMaterial = new THREE.MeshBasicMaterial({
             transparent: true,
-            opacity: 0.6,
+            opacity: 0.8,
             color: 0x000000,
-            side: THREE.DoubleSide
+            side: THREE.BackSide
         });
         const nightDome = new THREE.Mesh(domeGeometry, nightDomeMaterial);
         nightDome.rotation.x = Math.PI;
@@ -127,10 +127,11 @@ export default class HorizonView extends React.Component {
 
         this.skyMaterial = new THREE.MeshBasicMaterial({
             transparent: true,
-            opacity: 0.4,
+            opacity: 0.8,
             color: 0x90c0ff,
             depthWrite: false,
-            side: THREE.DoubleSide
+            // Don't shade the green plane within the dome
+            side: THREE.BackSide
         });
         const dayDome = new THREE.Mesh(domeGeometry, this.skyMaterial);
         scene.add(dayDome);
