@@ -164,13 +164,15 @@ export default class HorizonView extends React.Component {
         this.celestialEquator.rotation.x = THREE.Math.degToRad(90);
     }
     drawStickFigure(scene) {
+        const geometry = new THREE.BoxGeometry(5, 5 / (20 / 51.05), 0.01);
         const spriteMap = new THREE.TextureLoader().load('img/stickfigure.svg');
-        const spriteMaterial = new THREE.SpriteMaterial({
+        const spriteMaterial = new THREE.MeshBasicMaterial({
+            transparent: true,
             map: spriteMap
         });
-        const sprite = new THREE.Sprite(spriteMaterial);
-        sprite.scale.set(5, 5 / (20 / 51.05), 5);
+        const sprite = new THREE.Mesh(geometry, spriteMaterial);
         sprite.position.y = 4.5;
+        sprite.rotation.y = THREE.Math.degToRad(90);
         scene.add(sprite);
     }
     drawSun() {
