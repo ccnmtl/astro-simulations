@@ -30,3 +30,4 @@ There's also the [Conversion Guide](https://ccnmtl.github.io/astro-interactives/
 ### Development links
 Here are some links that may be helpful for development.
 * [WebGL Setup and Installation](https://webglfundamentals.org/webgl/lessons/webgl-setup-and-installation.html)
+* [Three.js Fundamentals](https://threejsfundamentals.org/)
