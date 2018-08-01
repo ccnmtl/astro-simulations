@@ -18,9 +18,7 @@ class SunMotionSim extends React.Component {
         return (
             <div className="row">
                 <div className="col-lg-5">
-                    <HorizonView
-                        observerAngle={0}
-                        moonObserverPos={0} />
+                    <HorizonView observerAngle={0} />
                     <div>
                         <h5>Information</h5>
                         <p>
