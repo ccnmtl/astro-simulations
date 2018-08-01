@@ -3,6 +3,11 @@ import PropTypes from 'prop-types';
 import * as THREE from 'three';
 import 'three/OrbitControls';
 import 'three/DragControls';
+import 'three/CopyShader';
+import 'three/FXAAShader';
+import 'three/EffectComposer';
+import 'three/RenderPass';
+import 'three/ShaderPass';
 
 // three.js/react integration based on:
 // https://stackoverflow.com/a/46412546/173630
@@ -44,44 +49,47 @@ export default class HorizonView extends React.Component {
         controls.minPolarAngle = THREE.Math.degToRad(0);
         controls.maxPolarAngle = THREE.Math.degToRad(70);
 
-        const renderer = new THREE.WebGLRenderer({antialias: true});
+        const renderer = new THREE.WebGLRenderer({
+            antialias: true,
+            canvas: document.getElementById(this.id + 'Canvas')
+        });
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setClearColor(0xffffff);
 
-        // This is an anti-aliasing fix. On my system, anti-aliasing
-        // was working on Firefox, but not Chrome.
-        // Set the renderer size to twice the size of the actual
-        // canvas. The physical dimensions remain at 228x228,
-        // idea came from here: https://stackoverflow.com/a/44460635/173630
-        // The browser then scales this down to the smaller size, smoothing
-        // out all edges.
-        renderer.setSize(width * 2, height * 2, false);
+        const dpr = window.devicePixelRatio;
+        const composer = new THREE.EffectComposer(renderer);
+        composer.addPass(new THREE.RenderPass(scene, camera));
+        const shaderPass = new THREE.ShaderPass(THREE.FXAAShader);
+        shaderPass.uniforms.resolution.value = new THREE.Vector2(
+            1 / (width * 2 * dpr), 1 / (height * 2 * dpr));
+        shaderPass.renderToScreen = true;
+        composer.setSize(width * 4 * dpr, height * 4 * dpr);
+        composer.addPass(shaderPass);
 
         controls.update();
 
         this.drawPlane(scene);
         this.drawStickFigure(scene);
         this.drawGlobe(scene);
-        this.moon = this.drawMoon(scene);
         this.sun = this.drawSun(scene);
 
-        // Put the sun, moon, and orbit line into a group so I can
+        // Put the sun and orbit line into a group so I can
         // rotate them all on the same axis.
         this.orbitGroup = new THREE.Group();
         this.orbitGroup.add(this.sun);
-        this.orbitGroup.add(this.moon);
         this.orbitGroup.add(this.celestialEquator);
         this.orbitGroup.add(this.angleEllipse);
         this.orbitGroup.rotation.x = THREE.Math.degToRad(-50);
         scene.add(this.orbitGroup);
 
         /*new THREE.DragControls(
-            [this.sun, this.moon], camera, renderer.domElement);*/
+            [this.sun], camera, renderer.domElement);*/
         //dragControls.enabled = false;
 
         this.scene = scene;
         this.camera = camera;
         this.renderer = renderer;
+        this.composer = composer;
 
         this.mount.appendChild(this.renderer.domElement);
         this.start();
@@ -102,9 +110,9 @@ export default class HorizonView extends React.Component {
             50, 64, 64, 0, Math.PI * 2, 0, Math.PI / 2);
         const nightDomeMaterial = new THREE.MeshBasicMaterial({
             transparent: true,
-            opacity: 0.6,
+            opacity: 0.8,
             color: 0x000000,
-            side: THREE.DoubleSide
+            side: THREE.BackSide
         });
         const nightDome = new THREE.Mesh(domeGeometry, nightDomeMaterial);
         nightDome.rotation.x = Math.PI;
@@ -112,10 +120,10 @@ export default class HorizonView extends React.Component {
 
         this.skyMaterial = new THREE.MeshBasicMaterial({
             transparent: true,
-            opacity: 0.4,
+            opacity: 0.8,
             color: 0x90c0ff,
             depthWrite: false,
-            side: THREE.DoubleSide
+            side: THREE.BackSide
         });
         const dayDome = new THREE.Mesh(domeGeometry, this.skyMaterial);
         scene.add(dayDome);
@@ -144,7 +152,7 @@ export default class HorizonView extends React.Component {
         zenithEquator.rotation.z = THREE.Math.degToRad(90);
         scene.add(zenithEquator);
 
-        // The sun and moon orbit along this next line.
+        // The sun orbits along this next line.
         const thickLineMaterial = new THREE.LineBasicMaterial({
             color: 0xffffff,
             linewidth: 4
@@ -154,13 +162,15 @@ export default class HorizonView extends React.Component {
         this.celestialEquator.rotation.x = THREE.Math.degToRad(90);
     }
     drawStickFigure(scene) {
+        const geometry = new THREE.BoxGeometry(5, 5 / (20 / 51.05), 0.01);
         const spriteMap = new THREE.TextureLoader().load('img/stickfigure.svg');
-        const spriteMaterial = new THREE.SpriteMaterial({
+        const spriteMaterial = new THREE.MeshBasicMaterial({
+            transparent: true,
             map: spriteMap
         });
-        const sprite = new THREE.Sprite(spriteMaterial);
-        sprite.scale.set(5, 10, 5);
+        const sprite = new THREE.Mesh(geometry, spriteMaterial);
         sprite.position.y = 4.5;
+        sprite.rotation.y = THREE.Math.degToRad(90);
         scene.add(sprite);
     }
     drawSun() {
@@ -183,28 +193,8 @@ export default class HorizonView extends React.Component {
         group.position.set(50, 1, 0);
         return group;
     }
-    drawMoon() {
-        const material = new THREE.MeshBasicMaterial({
-            color: 0xbbbbbb,
-            side: THREE.DoubleSide
-        });
-        const geometry = new THREE.CircleGeometry(5, 32);
-        const edges = new THREE.EdgesGeometry(geometry);
-        const border = new THREE.LineLoop(edges, new THREE.LineBasicMaterial({
-            color: 0x000000,
-            linewidth: 3
-        }));
-
-        const moon = new THREE.Mesh(geometry, material);
-        const group = new THREE.Group();
-
-        group.add(moon);
-        group.add(border);
-        group.position.set(50, 1, 0);
-        return group;
-    }
-    updateAngleGeometry(ellipse, observerAngle, moonObserverPos) {
-        const angleDiff = Math.abs(observerAngle - moonObserverPos);
+    updateAngleGeometry(ellipse, observerAngle,) {
+        const angleDiff = Math.abs(observerAngle);
         const curve = new THREE.EllipseCurve(
             0,  0,    // ax, aY
             50, 50,   // xRadius, yRadius
@@ -241,16 +231,13 @@ export default class HorizonView extends React.Component {
 
         this.skyMaterial.color.setHex(this.getSkyColor(this.props.observerAngle));
 
-        this.moon.position.x = 50 * Math.cos(this.props.moonObserverPos);
-        this.moon.position.z = 50 * Math.sin(this.props.moonObserverPos);
-        this.moon.rotation.y = -this.props.moonObserverPos + THREE.Math.degToRad(90);
-
         this.renderScene();
         this.frameId = window.requestAnimationFrame(this.animate);
     }
 
     renderScene() {
-        this.renderer.render(this.scene, this.camera);
+        this.composer.render();
+        //this.renderer.render(this.scene, this.camera);
     }
 
     /*
@@ -286,13 +273,14 @@ export default class HorizonView extends React.Component {
                      width: '400px',
                      height: '400px'
                  }}
-                 ref={(mount) => { this.mount = mount }} />
+                 ref={(mount) => { this.mount = mount }}>
+                <canvas id={this.id + 'Canvas'} width={800} height={800} />
+            </div>
             </React.Fragment>
         );
     }
 }
 
 HorizonView.propTypes = {
-    observerAngle: PropTypes.number.isRequired,
-    moonObserverPos: PropTypes.number.isRequired
+    observerAngle: PropTypes.number.isRequired
 };

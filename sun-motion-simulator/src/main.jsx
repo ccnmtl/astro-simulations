@@ -1,6 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import HorizonView from './HorizonView';
+import AnimationControls from './AnimationControls';
+import GeneralSettings from './GeneralSettings';
+import TimeLocationControls from './TimeLocationControls';
 
 class SunMotionSim extends React.Component {
     constructor(props) {
@@ -12,16 +15,10 @@ class SunMotionSim extends React.Component {
         this.frameId = null;
     }
     render() {
-        let startBtnText = 'Start Animation';
-        if (this.state.isPlaying) {
-            startBtnText = 'Stop Animation';
-        }
         return (
             <div className="row">
                 <div className="col-lg-5">
-                    <HorizonView
-                        observerAngle={0}
-                        moonObserverPos={0} />
+                    <HorizonView observerAngle={0} />
                     <div>
                         <h5>Information</h5>
                         <p>
@@ -31,7 +28,7 @@ class SunMotionSim extends React.Component {
                         <div className="row small">
                             <div className="col card">
                                 <div className="card-body">
-                                    <h5>Advanced</h5>
+                                    <h6>Advanced</h6>
                                     <div>
                                         Sun&apos;s hour angle: 0h 41m
                                     </div>
@@ -70,70 +67,19 @@ class SunMotionSim extends React.Component {
                         </div>
                     </div>
                 </div>
-                <div className="col-lg-5">
-                    <div style={{height: '200px'}}>
-                        <h5>Time and Location Controls</h5>
+
+            <div className="col-lg-6">
+                <TimeLocationControls />
+
+                <div className="row">
+                    <div className="col-6">
+                        <AnimationControls isPlaying={this.state.isPlaying} />
                     </div>
-                    <div className="row">
-                        <div className="col-6">
-                            <h5>Animation Controls</h5>
-                            <button type="button" className="btn btn-primary btn-sm">
-                                {startBtnText}
-                            </button>
-                            <label>Animation mode:</label>
-                            <label>Animation speed:</label> 3.0 hrs/sec
-                            <input className="custom-range" type="range" />
-                        </div>
-                        <div className="col-4">
-                            <h5>General Settings</h5>
-                            <div className="custom-control custom-checkbox">
-                                <input type="checkbox" className="custom-control-input"
-                                       name="showAngle"
-                                       id="showAngleToggle" />
-                                <label className="custom-control-label"
-                                       htmlFor="showAngleToggle">
-                                    Show the sun&apos;s declination circle
-                                </label>
-                            </div>
-                            <div className="custom-control custom-checkbox">
-                                <input type="checkbox" className="custom-control-input"
-                                       name="showAngle"
-                                       id="showAngleToggle" />
-                                <label className="custom-control-label"
-                                       htmlFor="showAngleToggle">
-                                    Show the ecliptic
-                                </label>
-                            </div>
-                            <div className="custom-control custom-checkbox">
-                                <input type="checkbox" className="custom-control-input"
-                                       name="showAngle"
-                                       id="showAngleToggle" />
-                                <label className="custom-control-label"
-                                       htmlFor="showAngleToggle">
-                                    Show month labels
-                                </label>
-                            </div>
-                            <div className="custom-control custom-checkbox">
-                                <input type="checkbox" className="custom-control-input"
-                                       name="showAngle"
-                                       id="showAngleToggle" />
-                                <label className="custom-control-label"
-                                       htmlFor="showAngleToggle">
-                                    Show underside of celestial sphere
-                                </label>
-                            </div>
-                            <div className="custom-control custom-checkbox">
-                                <input type="checkbox" className="custom-control-input"
-                                       name="showAngle"
-                                       id="showAngleToggle" />
-                                <label className="custom-control-label"
-                                       htmlFor="showAngleToggle">
-                                    Show stickfigure and its shadow
-                                </label>
-                            </div>
-                        </div>
+                    <div className="col-4">
+                        <GeneralSettings />
                     </div>
                 </div>
+            </div>
             </div>
         );
     }
