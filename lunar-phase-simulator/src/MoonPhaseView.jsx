@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {
     loadSprite, forceNumber, degToRad, getPercentIlluminated,
-    roundToOnePlace, getPhaseSlot
+    roundToOnePlace, getPhaseSlot, getTimeSinceNewMoon, formatInterval
 } from './utils';
 
 export default class MoonPhaseView extends React.Component {
@@ -22,6 +22,8 @@ export default class MoonPhaseView extends React.Component {
     }
     render() {
         const phaseSlot = getPhaseSlot(this.props.moonPhase);
+        const timeSinceNewMoon = Math.round(
+            getTimeSinceNewMoon(this.props.moonPhase));
         return <div>
             <div style={{
                 visibility: this.state.isHidden ? 'hidden' : 'visible'
@@ -48,7 +50,9 @@ export default class MoonPhaseView extends React.Component {
                     }% illuminated
                 </div>
                 <div className="text-center">Time since new moon:</div>
-                <div className="text-center">0 hours</div>
+                <div className="text-center">
+                    {formatInterval(timeSinceNewMoon)}
+                </div>
             </div>
             <div className="text-right">
                 <button type="button"

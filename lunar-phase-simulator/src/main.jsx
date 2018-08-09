@@ -15,7 +15,7 @@ class LunarPhaseSim extends React.Component {
              * the sky.
              */
             observerAngle: Math.PI / 2,
-            moonPhase: Math.PI,
+            moonPhase: -Math.PI,
             // moonObserverPos is a function of observerAngle and
             // moonPhase.
             moonObserverPos: Math.PI / 2,
