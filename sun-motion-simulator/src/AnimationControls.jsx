@@ -11,7 +11,9 @@ export default class AnimationControls extends React.Component {
             <React.Fragment>
                 <h5>Animation Controls</h5>
 
-                <button type="button" className="btn btn-primary btn-sm">
+                <button type="button"
+                        className="btn btn-primary btn-sm"
+                        onClick={this.props.onStartClick}>
                     {startBtnText}
                 </button>
 
@@ -39,5 +41,6 @@ export default class AnimationControls extends React.Component {
 }
 
 AnimationControls.propTypes = {
-    isPlaying: PropTypes.bool.isRequired
+    isPlaying: PropTypes.bool.isRequired,
+    onStartClick: PropTypes.func.isRequired
 };

@@ -9,10 +9,22 @@ class SunMotionSim extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentDateTime: new Date(),
-            isPlaying: false
+            observerDateTime: new Date('May 27, 12:00'),
+            observerLatitude: 40.8,
+            isPlaying: false,
+
+            // General settings
+            showDeclinationCircle: true,
+            showEcliptic: true,
+            showMonthLabels: false,
+            showUnderside: true,
+            showStickfigure: true
         };
+
         this.frameId = null;
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.animate = this.animate.bind(this);
+        this.onStartClick = this.onStartClick.bind(this);
     }
     render() {
         return (
@@ -73,15 +85,46 @@ class SunMotionSim extends React.Component {
 
                 <div className="row">
                     <div className="col-6">
-                        <AnimationControls isPlaying={this.state.isPlaying} />
+                        <AnimationControls
+                            isPlaying={this.state.isPlaying}
+                            onStartClick={this.onStartClick}
+                        />
                     </div>
                     <div className="col-4">
-                        <GeneralSettings />
+                        <GeneralSettings
+                            showDeclinationCircle={this.state.showDeclinationCircle}
+                            showEcliptic={this.state.showEcliptic}
+                            showMonthLabels={this.state.showMonthLabels}
+                            showUnderside={this.state.showUnderside}
+                            showStickfigure={this.state.showStickfigure}
+                            onInputChange={this.handleInputChange} />
                     </div>
                 </div>
             </div>
             </div>
         );
+    }
+    handleInputChange(event) {
+        const target = event.target;
+        const value = target.type === 'checkbox' ?
+                      target.checked : target.value;
+        const name = target.name;
+
+        this.setState({
+            [name]: value
+        });
+    }
+    animate() {
+        this.frameId = requestAnimationFrame(this.animate);
+    }
+    onStartClick() {
+        if (!this.state.isPlaying) {
+            this.frameId = requestAnimationFrame(this.animate);
+            this.setState({isPlaying: true});
+        } else {
+            cancelAnimationFrame(this.frameId);
+            this.setState({isPlaying: false});
+        }
     }
 }
 
