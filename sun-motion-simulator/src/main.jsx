@@ -9,7 +9,8 @@ class SunMotionSim extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            currentDateTime: new Date(),
+            observerDateTime: new Date('May 27, 12:00'),
+            observerLatitude: 40.8,
             isPlaying: false,
 
             // General settings
@@ -19,8 +20,11 @@ class SunMotionSim extends React.Component {
             showUnderside: true,
             showStickfigure: true
         };
+
         this.frameId = null;
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.animate = this.animate.bind(this);
+        this.onStartClick = this.onStartClick.bind(this);
     }
     render() {
         return (
@@ -81,7 +85,10 @@ class SunMotionSim extends React.Component {
 
                 <div className="row">
                     <div className="col-6">
-                        <AnimationControls isPlaying={this.state.isPlaying} />
+                        <AnimationControls
+                            isPlaying={this.state.isPlaying}
+                            onStartClick={this.onStartClick}
+                        />
                     </div>
                     <div className="col-4">
                         <GeneralSettings
@@ -106,6 +113,18 @@ class SunMotionSim extends React.Component {
         this.setState({
             [name]: value
         });
+    }
+    animate() {
+        this.frameId = requestAnimationFrame(this.animate);
+    }
+    onStartClick() {
+        if (!this.state.isPlaying) {
+            this.frameId = requestAnimationFrame(this.animate);
+            this.setState({isPlaying: true});
+        } else {
+            cancelAnimationFrame(this.frameId);
+            this.setState({isPlaying: false});
+        }
     }
 }
 
