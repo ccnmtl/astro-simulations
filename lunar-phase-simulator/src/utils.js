@@ -132,7 +132,39 @@ const getPhaseSlot = function(moonPhase) {
     return null;
 }
 
+/*
+ * Given the moon phase (some point along the moon's 360-degree
+ * orbit), return the time, in hours, since it's been a New Moon (180
+ * degrees).
+ *
+ * The moon's synodic period is 29.530589 days, or 708.734136 hours,
+ * so that's how long it takes for the moon to complete its orbit
+ * around the earth. So, this time interval can be computed with the
+ * moonPhase value.
+ */
+const getTimeSinceNewMoon = function(phase) {
+    return (phase + Math.PI) / ((Math.PI * 2) / 708.734136);
+}
+
+/*
+ * Given a time interval in hours, shorten it by displaying days and
+ * hours.
+ */
+const formatInterval = function(i) {
+    const quotient = Math.floor(i / 24);
+    const remainder = i % 24;
+
+    const quotientPlural = quotient === 1 ? '' : 's';
+    const remainderPlural = remainder === 1 ? '' : 's';
+
+    if (quotient) {
+        return `${quotient} day${quotientPlural}, ${remainder} hour${remainderPlural}`;
+    } else {
+        return `${remainder} hour${remainderPlural}`;
+    }
+}
+
 export {
     forceNumber, loadSprite, degToRad, radToDeg, getPercentIlluminated,
-    roundToOnePlace, getPhaseSlot
+    roundToOnePlace, getPhaseSlot, getTimeSinceNewMoon, formatInterval
 };
