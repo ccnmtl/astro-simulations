@@ -10,9 +10,17 @@ class SunMotionSim extends React.Component {
         super(props);
         this.state = {
             currentDateTime: new Date(),
-            isPlaying: false
+            isPlaying: false,
+
+            // General settings
+            showDeclinationCircle: true,
+            showEcliptic: true,
+            showMonthLabels: false,
+            showUnderside: true,
+            showStickfigure: true
         };
         this.frameId = null;
+        this.handleInputChange = this.handleInputChange.bind(this);
     }
     render() {
         return (
@@ -76,12 +84,28 @@ class SunMotionSim extends React.Component {
                         <AnimationControls isPlaying={this.state.isPlaying} />
                     </div>
                     <div className="col-4">
-                        <GeneralSettings />
+                        <GeneralSettings
+                            showDeclinationCircle={this.state.showDeclinationCircle}
+                            showEcliptic={this.state.showEcliptic}
+                            showMonthLabels={this.state.showMonthLabels}
+                            showUnderside={this.state.showUnderside}
+                            showStickfigure={this.state.showStickfigure}
+                            onInputChange={this.handleInputChange} />
                     </div>
                 </div>
             </div>
             </div>
         );
+    }
+    handleInputChange(event) {
+        const target = event.target;
+        const value = target.type === 'checkbox' ?
+                      target.checked : target.value;
+        const name = target.name;
+
+        this.setState({
+            [name]: value
+        });
     }
 }
 
