@@ -27,7 +27,7 @@ export default class HorizonView extends React.Component {
 
         // well, since it's a square for now the aspect will be 1.
         const aspect = width / height;
-        const frustumSize = 100;
+        const frustumSize = 120;
 
         const scene = new THREE.Scene();
         const camera = new THREE.OrthographicCamera(
@@ -35,7 +35,7 @@ export default class HorizonView extends React.Component {
             frustumSize / 2, frustumSize / -2,
             1, 1000
         );
-        camera.position.set(-60, 20, 0);
+        camera.position.set(-60, 60, 80);
 
         const controls = new THREE.OrbitControls(camera, this.mount);
         // Configure the controls - we only need some basic
@@ -54,7 +54,7 @@ export default class HorizonView extends React.Component {
             canvas: document.getElementById(this.id + 'Canvas')
         });
         renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.setClearColor(0xffffff);
+        renderer.setClearColor(0x000000);
 
         const dpr = window.devicePixelRatio;
         const composer = new THREE.EffectComposer(renderer);
@@ -77,7 +77,10 @@ export default class HorizonView extends React.Component {
         // rotate them all on the same axis.
         this.orbitGroup = new THREE.Group();
         this.orbitGroup.add(this.sun);
+        this.orbitGroup.add(this.sunDeclination);
         this.orbitGroup.add(this.celestialEquator);
+        this.orbitGroup.add(this.primeHourCircle);
+        this.orbitGroup.add(this.ecliptic);
         this.orbitGroup.add(this.angleEllipse);
         this.orbitGroup.rotation.x = THREE.Math.degToRad(-50);
         scene.add(this.orbitGroup);
@@ -111,7 +114,7 @@ export default class HorizonView extends React.Component {
         const nightDomeMaterial = new THREE.MeshBasicMaterial({
             transparent: true,
             opacity: 0.8,
-            color: 0x000000,
+            color: 0x303030,
             side: THREE.BackSide
         });
         const nightDome = new THREE.Mesh(domeGeometry, nightDomeMaterial);
@@ -153,13 +156,35 @@ export default class HorizonView extends React.Component {
         scene.add(zenithEquator);
 
         // The sun orbits along this next line.
-        const thickLineMaterial = new THREE.LineBasicMaterial({
-            color: 0xffffff,
-            linewidth: 4
+        const yellowMaterial = new THREE.LineBasicMaterial({
+            color: 0xffff00,
+            linewidth: 8
+        });
+        this.sunDeclination = new THREE.LineSegments(
+            discGeometry, yellowMaterial);
+        this.sunDeclination.position.y = 20;
+        this.sunDeclination.rotation.x = THREE.Math.degToRad(90);
+
+        const blueMaterial = new THREE.LineBasicMaterial({
+            color: 0x7080ff,
+            linewidth: 8
         });
         this.celestialEquator = new THREE.LineSegments(
-            discGeometry, thickLineMaterial);
+            discGeometry, blueMaterial);
         this.celestialEquator.rotation.x = THREE.Math.degToRad(90);
+
+        this.primeHourCircle = new THREE.LineSegments(
+            discGeometry, blueMaterial);
+        this.primeHourCircle.rotation.z = THREE.Math.degToRad(90);
+
+        const thickWhiteMaterial = new THREE.LineBasicMaterial({
+            color: 0xffffff,
+            linewidth: 8
+        });
+        this.ecliptic = new THREE.LineSegments(
+            discGeometry, thickWhiteMaterial);
+        this.ecliptic.rotation.x = THREE.Math.degToRad(75);
+        this.ecliptic.rotation.y = THREE.Math.degToRad(5);
     }
     drawStickFigure(scene) {
         const geometry = new THREE.BoxGeometry(5, 5 / (20 / 51.05), 0.01);
@@ -170,7 +195,6 @@ export default class HorizonView extends React.Component {
         });
         const sprite = new THREE.Mesh(geometry, spriteMaterial);
         sprite.position.y = 4.5;
-        sprite.rotation.y = THREE.Math.degToRad(90);
         scene.add(sprite);
     }
     drawSun() {
@@ -178,7 +202,7 @@ export default class HorizonView extends React.Component {
             color: 0xffdd00,
             side: THREE.DoubleSide
         });
-        const geometry = new THREE.CircleGeometry(5, 32);
+        const geometry = new THREE.CircleGeometry(3, 32);
         const edges = new THREE.EdgesGeometry(geometry);
         const border = new THREE.LineLoop(edges, new THREE.LineBasicMaterial({
             color: 0x000000,
@@ -193,8 +217,8 @@ export default class HorizonView extends React.Component {
         group.position.set(50, 1, 0);
         return group;
     }
-    updateAngleGeometry(ellipse, observerAngle,) {
-        const angleDiff = Math.abs(observerAngle);
+    updateAngleGeometry(ellipse, angle) {
+        const angleDiff = Math.abs(angle);
         const curve = new THREE.EllipseCurve(
             0,  0,    // ax, aY
             50, 50,   // xRadius, yRadius
@@ -224,12 +248,12 @@ export default class HorizonView extends React.Component {
     }
 
     animate() {
-        this.sun.position.x = 50 * Math.cos(this.props.observerAngle);
-        this.sun.position.z = 50 * Math.sin(this.props.observerAngle);
-        this.sun.rotation.y = -this.props.observerAngle +
+        this.sun.position.x = 50 * Math.cos(this.props.sunDeclinationAngle);
+        this.sun.position.z = 50 * Math.sin(this.props.sunDeclinationAngle);
+        this.sun.rotation.y = -this.props.sunDeclinationAngle +
                               THREE.Math.degToRad(90);
 
-        this.skyMaterial.color.setHex(this.getSkyColor(this.props.observerAngle));
+        this.skyMaterial.color.setHex(this.getSkyColor(this.props.sunDeclinationAngle));
 
         this.renderScene();
         this.frameId = window.requestAnimationFrame(this.animate);
@@ -243,10 +267,10 @@ export default class HorizonView extends React.Component {
     /*
      * Returns the time, given the angle of the sun.
      */
-    getTime(observerAngle) {
+    getTime(sunAngle) {
         // Convert from radian to angle, since it's easier to deal
         // with.
-        const angle = THREE.Math.radToDeg(observerAngle);
+        const angle = THREE.Math.radToDeg(sunAngle);
         const seconds = angle / (360 / 24) * 3600;
         const d1 = new Date('1/1/2018 6:00 AM');
         return new Date(d1.getTime() + (seconds * 1000));
@@ -269,12 +293,8 @@ export default class HorizonView extends React.Component {
         return (
             <React.Fragment>
             <div id={this.id}
-                 style={{
-                     width: '400px',
-                     height: '400px'
-                 }}
                  ref={(mount) => { this.mount = mount }}>
-                <canvas id={this.id + 'Canvas'} width={800} height={800} />
+                <canvas id={this.id + 'Canvas'} width={860} height={860} />
             </div>
             </React.Fragment>
         );
@@ -282,5 +302,5 @@ export default class HorizonView extends React.Component {
 }
 
 HorizonView.propTypes = {
-    observerAngle: PropTypes.number.isRequired
+    sunDeclinationAngle: PropTypes.number.isRequired
 };

@@ -8,9 +8,10 @@ import TimeLocationControls from './TimeLocationControls';
 class SunMotionSim extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
+        this.initialState = {
             observerDateTime: new Date('May 27, 12:00'),
             observerLatitude: 40.8,
+            sunDeclinationAngle: Math.PI / 2,
             isPlaying: false,
 
             // General settings
@@ -20,6 +21,7 @@ class SunMotionSim extends React.Component {
             showUnderside: true,
             showStickfigure: true
         };
+        this.state = this.initialState;
 
         this.frameId = null;
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -27,10 +29,25 @@ class SunMotionSim extends React.Component {
         this.onStartClick = this.onStartClick.bind(this);
     }
     render() {
-        return (
-            <div className="row">
+        return <React.Fragment>
+            <nav className="navbar navbar-expand-md navbar-light bg-light d-flex justify-content-between">
+                <span className="navbar-brand mb-0 h1">Motions of the Sun Simulator</span>
+
+                <ul className="navbar-nav">
+                    <li className="nav-item">
+                        <a className="nav-link" href="#" onClick={this.onResetClick.bind(this)}>Reset</a>
+                    </li>
+                    <li className="nav-item">
+                        <a className="nav-link" href="#" data-toggle="modal" data-target="#helpModal">Help</a>
+                    </li>
+                    <li className="nav-item">
+                        <a className="nav-link" href="#" data-toggle="modal" data-target="#aboutModal">About</a>
+                    </li>
+                </ul>
+            </nav>
+            <div className="row mt-2">
                 <div className="col-lg-5">
-                    <HorizonView observerAngle={0} />
+                    <HorizonView sunDeclinationAngle={this.state.sunDeclinationAngle} />
                     <div>
                         <h5>Information</h5>
                         <p>
@@ -102,7 +119,7 @@ class SunMotionSim extends React.Component {
                 </div>
             </div>
             </div>
-        );
+        </React.Fragment>;
     }
     handleInputChange(event) {
         const target = event.target;
@@ -125,6 +142,10 @@ class SunMotionSim extends React.Component {
             cancelAnimationFrame(this.frameId);
             this.setState({isPlaying: false});
         }
+    }
+    onResetClick(e) {
+        e.preventDefault();
+        this.setState(this.initialState);
     }
 }
 
