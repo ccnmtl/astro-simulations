@@ -37,6 +37,16 @@ export default class HorizonView extends React.Component {
         );
         camera.position.set(-60, 60, 80);
 
+        // Lights
+        const ambient = new THREE.AmbientLight(0x808080);
+        scene.add(ambient);
+
+        const light = new THREE.DirectionalLight(0xffffff);
+        light.position.set(3, 4, 5);
+        light.target.position.set(0, 0, 0);
+        light.castShadow = true;
+        scene.add(light);
+
         const controls = new THREE.OrbitControls(camera, this.mount);
         // Configure the controls - we only need some basic
         // drag-rotation behavior.
@@ -55,6 +65,8 @@ export default class HorizonView extends React.Component {
         });
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setClearColor(0x000000);
+
+        renderer.shadowMap.enabled = true;
 
         const dpr = window.devicePixelRatio;
         const composer = new THREE.EffectComposer(renderer);
@@ -76,7 +88,12 @@ export default class HorizonView extends React.Component {
         // Put the sun and orbit line into a group so I can
         // rotate them all on the same axis.
         this.orbitGroup = new THREE.Group();
-        this.orbitGroup.add(this.sun);
+
+        this.sunGroup = new THREE.Group();
+        this.sunGroup.add(this.sun);
+        this.sunGroup.add(this.light);
+        this.orbitGroup.add(this.sunGroup);
+
         this.orbitGroup.add(this.sunDeclination);
         this.orbitGroup.add(this.celestialEquator);
         this.orbitGroup.add(this.primeHourCircle);
@@ -99,12 +116,14 @@ export default class HorizonView extends React.Component {
     }
     drawPlane(scene) {
         const texture = new THREE.TextureLoader().load('img/plane.svg');
-        const material = new THREE.MeshBasicMaterial({
+        const material = new THREE.MeshLambertMaterial({
             map: texture
         });
         material.map.minFilter = THREE.LinearFilter;
         const geometry = new THREE.CircleGeometry(50, 64);
         const plane = new THREE.Mesh(geometry, material);
+        plane.castShadow = false;
+        plane.receiveShadow = true;
         plane.rotation.x = THREE.Math.degToRad(-90);
         scene.add(plane);
     }
@@ -187,14 +206,22 @@ export default class HorizonView extends React.Component {
         this.ecliptic.rotation.y = THREE.Math.degToRad(5);
     }
     drawStickFigure(scene) {
-        const geometry = new THREE.BoxGeometry(5, 5 / (20 / 51.05), 0.01);
+        const geometry = new THREE.BoxGeometry(7, 14, 0.01);
         const spriteMap = new THREE.TextureLoader().load('img/stickfigure.svg');
-        const spriteMaterial = new THREE.MeshBasicMaterial({
+        const spriteMaterial = new THREE.MeshLambertMaterial({
             transparent: true,
             map: spriteMap
         });
+        const depthMaterial = new THREE.MeshDepthMaterial({
+            depthPacking: THREE.RGBADepthPacking,
+            map: spriteMap,
+            alphaTest: 0.5
+        });
         const sprite = new THREE.Mesh(geometry, spriteMaterial);
-        sprite.position.y = 4.5;
+        sprite.customDepthMaterial = depthMaterial;
+        sprite.castShadow = true;
+        sprite.receiveShadow = true;
+        sprite.position.y = 6.5;
         scene.add(sprite);
     }
     drawSun() {
