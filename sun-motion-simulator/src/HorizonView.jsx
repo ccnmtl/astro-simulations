@@ -37,16 +37,6 @@ export default class HorizonView extends React.Component {
         );
         camera.position.set(-60, 60, 80);
 
-        // Lights
-        const ambient = new THREE.AmbientLight(0x808080);
-        scene.add(ambient);
-
-        const light = new THREE.DirectionalLight(0xffffff);
-        light.position.set(3, 4, 5);
-        light.target.position.set(0, 0, 0);
-        light.castShadow = true;
-        scene.add(light);
-
         const controls = new THREE.OrbitControls(camera, this.mount);
         // Configure the controls - we only need some basic
         // drag-rotation behavior.
@@ -65,8 +55,18 @@ export default class HorizonView extends React.Component {
         });
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setClearColor(0x000000);
-
         renderer.shadowMap.enabled = true;
+
+        // Lights
+        const ambient = new THREE.AmbientLight(0x808080);
+        scene.add(ambient);
+
+        const light = new THREE.DirectionalLight(0xffffff);
+        light.position.set(0, 35, 30);
+        light.castShadow = true;
+        //const lightCamera = new THREE.CameraHelper( light.shadow.camera );
+        scene.add(light);
+        //scene.add(lightCamera);
 
         const dpr = window.devicePixelRatio;
         const composer = new THREE.EffectComposer(renderer);
@@ -81,7 +81,11 @@ export default class HorizonView extends React.Component {
         controls.update();
 
         this.drawPlane(scene);
-        this.drawStickFigure(scene);
+
+        const stickFigure = this.drawStickFigure();
+        scene.add(stickFigure);
+        light.target = stickFigure;
+
         this.drawGlobe(scene);
         this.sun = this.drawSun(scene);
 
@@ -205,7 +209,7 @@ export default class HorizonView extends React.Component {
         this.ecliptic.rotation.x = THREE.Math.degToRad(75);
         this.ecliptic.rotation.y = THREE.Math.degToRad(5);
     }
-    drawStickFigure(scene) {
+    drawStickFigure() {
         const geometry = new THREE.BoxGeometry(7, 14, 0.01);
         const spriteMap = new THREE.TextureLoader().load('img/stickfigure.svg');
         const spriteMaterial = new THREE.MeshLambertMaterial({
@@ -220,9 +224,9 @@ export default class HorizonView extends React.Component {
         const sprite = new THREE.Mesh(geometry, spriteMaterial);
         sprite.customDepthMaterial = depthMaterial;
         sprite.castShadow = true;
-        sprite.receiveShadow = true;
+        sprite.receiveShadow = false;
         sprite.position.y = 6.5;
-        scene.add(sprite);
+        return sprite;
     }
     drawSun() {
         const material = new THREE.MeshBasicMaterial({
