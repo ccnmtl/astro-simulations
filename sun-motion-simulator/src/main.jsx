@@ -99,7 +99,9 @@ class SunMotionSim extends React.Component {
                 </div>
 
             <div className="col-lg-6">
-                <TimeLocationControls />
+                <TimeLocationControls
+                    observerDateTime={this.state.observerDateTime}
+                    observerLatitude={this.state.observerLatitude} />
 
                 <div className="row">
                     <div className="col-6">
