@@ -4,6 +4,7 @@ import HorizonView from './HorizonView';
 import AnimationControls from './AnimationControls';
 import GeneralSettings from './GeneralSettings';
 import TimeLocationControls from './TimeLocationControls';
+import {forceNumber} from './utils';
 
 class SunMotionSim extends React.Component {
     constructor(props) {
@@ -28,6 +29,7 @@ class SunMotionSim extends React.Component {
         this.handleInputChange = this.handleInputChange.bind(this);
         this.animate = this.animate.bind(this);
         this.onStartClick = this.onStartClick.bind(this);
+        this.onLatitudeUpdate = this.onLatitudeUpdate.bind(this);
     }
     render() {
         return <React.Fragment>
@@ -101,7 +103,8 @@ class SunMotionSim extends React.Component {
             <div className="col-lg-6">
                 <TimeLocationControls
                     observerDateTime={this.state.observerDateTime}
-                    observerLatitude={this.state.observerLatitude} />
+                    observerLatitude={this.state.observerLatitude}
+                    onLatitudeUpdate={this.onLatitudeUpdate} />
 
                 <div className="row">
                     <div className="col-6">
@@ -157,6 +160,9 @@ class SunMotionSim extends React.Component {
     onResetClick(e) {
         e.preventDefault();
         this.setState(this.initialState);
+    }
+    onLatitudeUpdate(latitude) {
+        this.setState({observerLatitude: forceNumber(latitude)});
     }
 }
 

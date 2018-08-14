@@ -1,8 +1,29 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import * as PIXI from 'pixi.js';
+import {roundToOnePlace} from './utils';
 
 export default class TimeLocationControls extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            isDraggingLatitude: false
+        }
+
+        this.resources = {};
+
+        this.start = this.start.bind(this);
+        this.stop = this.stop.bind(this);
+        this.animate = this.animate.bind(this);
+
+        this.onLatDragStart = this.onLatDragStart.bind(this);
+        this.onLatDragEnd = this.onLatDragEnd.bind(this);
+        this.onLatMove = this.onLatMove.bind(this);
+
+        this.loader = new PIXI.loaders.Loader();
+        this.loader.add('clock', 'img/clock.png')
+            .add('earthmap', 'img/earthmap.png');
+    }
     render() {
         return (
             <React.Fragment>
@@ -49,6 +70,8 @@ export default class TimeLocationControls extends React.Component {
                                 <label>
                                     The observer&apos;s latitude:
                                     <input type="number"
+                                           value={roundToOnePlace(this.props.observerLatitude)}
+                                           onChange={this.props.onLatitudeUpdate}
                                            min="-90" max="90"
                                            className="form-control form-control-sm ml-2" />&deg; N
                                 </label>
@@ -62,7 +85,6 @@ export default class TimeLocationControls extends React.Component {
     }
     componentDidMount() {
         const me = this;
-        const loader = new PIXI.loaders.Loader();
 
         const calendarPickerApp = new PIXI.Application({
             width: 500,
@@ -82,7 +104,7 @@ export default class TimeLocationControls extends React.Component {
         });
         this.timePicker.appendChild(timePickerApp.view);
 
-        const latitudePickerApp = new PIXI.Application({
+        this.latitudePickerApp = new PIXI.Application({
             backgroundColor: 0xffffff,
             // Make this width an odd number so centering the map doesn't
             // cause width pixel artifacts when drawing border.
@@ -92,18 +114,39 @@ export default class TimeLocationControls extends React.Component {
             sharedTicker: true,
             forceCanvas: true
         });
-        this.latitudePicker.appendChild(latitudePickerApp.view);
+        this.latitudePicker.appendChild(this.latitudePickerApp.view);
 
-        loader.add('clock', 'img/clock.png')
-              .add('earthmap', 'img/earthmap.png');
-
-        loader.load((loader, resources) => {
+        this.loader.load((loader, resources) => {
             me.resources = resources;
 
             me.drawTimeScene(timePickerApp, resources.clock);
 
-            me.drawLatitudeScene(latitudePickerApp, resources.earthmap);
+            me.drawLatitudeScene(me.latitudePickerApp, resources.earthmap);
+
+            //me.start();
         });
+    }
+    componentDidUpdate(prevProps) {
+        if (prevProps.observerLatitude !== this.props.observerLatitude) {
+            this.drawLatitudeScene(this.latitudePickerApp, this.resources.earthmap);
+        }
+    }
+    componentWillUnmount() {
+        this.calendarPickerApp.stop();
+        this.timePickerApp.stop();
+        this.latitudePickerApp.stop();
+    }
+    start() {
+        if (!this.frameId) {
+            this.frameId = requestAnimationFrame(this.animate);
+        }
+    }
+    stop() {
+        cancelAnimationFrame(this.frameId)
+    }
+    animate() {
+        this.drawLatitudeScene(this.latitudePickerApp, this.resources.earthmap);
+        this.frameId = requestAnimationFrame(this.animate);
     }
     /**
      * Draw a centered sprite on the given pixi application.
@@ -141,36 +184,74 @@ export default class TimeLocationControls extends React.Component {
         picker.interactive = true;
         picker.buttonMode = true;
 
-        const vertCenter = app.view.height / 2;
+        const currentLatitude = this.latitudeToLocalPos(
+            this.props.observerLatitude,
+            bg.height)
 
-        const line = new PIXI.Graphics();
-        line.lineStyle(2, 0x000000);
-        line.moveTo(0, vertCenter);
-        line.lineTo(app.view.width, vertCenter);
+        const line = new PIXI.Graphics()
+                             .lineStyle(2, 0x000000)
+                             .moveTo(0, currentLatitude)
+                             .lineTo(app.view.width, currentLatitude);
         picker.addChild(line);
 
         const arrowhead1 = new PIXI.Graphics()
                                    .beginFill(0x000000)
                                    .drawPolygon([
-                                       0, vertCenter - 7,
-                                       0, vertCenter + 7,
-                                       10, vertCenter
+                                       0, currentLatitude - 7,
+                                       0, currentLatitude + 7,
+                                       10, currentLatitude
                                    ]);
         const arrowhead2 = new PIXI.Graphics()
                                    .beginFill(0x000000)
                                    .drawPolygon([
-                                       app.view.width, vertCenter - 7,
-                                       app.view.width, vertCenter + 7,
-                                       app.view.width - 10, vertCenter
+                                       app.view.width, currentLatitude - 7,
+                                       app.view.width, currentLatitude + 7,
+                                       app.view.width - 10, currentLatitude
                                    ]);
         picker.addChild(arrowhead1);
         picker.addChild(arrowhead2);
 
+        picker
+        // events for drag start
+            .on('mousedown', this.onLatDragStart)
+            .on('touchstart', this.onLatDragStart)
+        // events for drag end
+            .on('mouseup', this.onLatDragEnd)
+            .on('mouseupoutside', this.onLatDragEnd)
+            .on('touchend', this.onLatDragEnd)
+            .on('touchendoutside', this.onLatDragEnd)
+        // events for drag move
+            .on('mousemove', this.onLatMove)
+            .on('touchmove', this.onLatMove);
+
         app.stage.addChild(picker);
+    }
+    onLatDragStart() {
+        this.setState({isDraggingLatitude: true});
+    }
+    onLatDragEnd() {
+        this.setState({isDraggingLatitude: false});
+    }
+    onLatMove(e) {
+        if (this.state.isDraggingLatitude) {
+            const pos = e.data.getLocalPosition(this.latitudePickerApp.stage);
+            const lat = this.localPosToLatitude(pos.y, 140);
+            this.props.onLatitudeUpdate(lat);
+        }
+    }
+    /**
+     * Convert a latitude to Canvas-style co-ordinates.
+     */
+    latitudeToLocalPos(latitude, canvasHeight) {
+        return (canvasHeight / 2) - ((canvasHeight / 180) * latitude);
+    }
+    localPosToLatitude(pos, canvasHeight) {
+        return 90 - (pos / canvasHeight) * 180;
     }
 }
 
 TimeLocationControls.propTypes = {
     observerDateTime: PropTypes.object.isRequired,
-    observerLatitude: PropTypes.number.isRequired
+    observerLatitude: PropTypes.number.isRequired,
+    onLatitudeUpdate: PropTypes.func.isRequired
 };
