@@ -4,7 +4,7 @@ import HorizonView from './HorizonView';
 import AnimationControls from './AnimationControls';
 import GeneralSettings from './GeneralSettings';
 import TimeLocationControls from './TimeLocationControls';
-import {forceNumber} from './utils';
+import {forceNumber, roundToOnePlace} from './utils';
 
 class SunMotionSim extends React.Component {
     constructor(props) {
@@ -58,7 +58,7 @@ class SunMotionSim extends React.Component {
                     <div>
                         <h5>Information</h5>
                         <p>
-                            The horizon diagram is shown for an observer at latitude 40.8&deg; N
+                            The horizon diagram is shown for an observer at latitude {roundToOnePlace(this.state.observerLatitude)}&deg; N
                             on 27 May at 12:00 (12:00 PM).
                         </p>
                         <div className="row small">

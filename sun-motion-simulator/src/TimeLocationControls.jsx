@@ -23,6 +23,7 @@ export default class TimeLocationControls extends React.Component {
             .add('earthmap', 'img/earthmap.png');
     }
     render() {
+        const latUnit = this.props.observerLatitude > 0 ? 'N' : 'S';
         return (
             <React.Fragment>
                 <h5>Time and Location Controls</h5>
@@ -75,7 +76,8 @@ export default class TimeLocationControls extends React.Component {
                                            value={roundToOnePlace(this.props.observerLatitude)}
                                            onChange={this.props.onLatitudeUpdate}
                                            min="-90" max="90"
-                                           className="form-control form-control-sm ml-2" />&deg; N
+                                           className="form-control form-control-sm ml-2" />
+            &deg;{latUnit}
                                 </label>
                             </div>
                             <div ref={(el) => {this.latitudePicker = el}}></div>
@@ -122,7 +124,7 @@ export default class TimeLocationControls extends React.Component {
         this.loader.load((loader, resources) => {
             me.resources = resources;
 
-            me.drawTimeScene(timePickerApp, resources.clock);
+            me.drawClockScene(timePickerApp, resources.clock);
 
             this.lPicker = me.drawLatitudeScene(
                 me.latitudePickerApp, resources.earthmap);
@@ -130,9 +132,13 @@ export default class TimeLocationControls extends React.Component {
     }
     componentDidUpdate(prevProps) {
         if (prevProps.observerLatitude !== this.props.observerLatitude) {
+            // Update the latitude picker.
             const latPos = this.latitudeToLocalPos(
                 this.props.observerLatitude, 126)
             this.lPicker.position.y = latPos;
+        }
+        if (prevProps.observerDateTime !== this.props.observerDateTime) {
+            // Update the clock.
         }
     }
     componentWillUnmount() {
@@ -155,13 +161,63 @@ export default class TimeLocationControls extends React.Component {
         app.stage.addChild(sprite);
         return sprite;
     }
-    drawTimeScene(app, resource) {
+    drawClockScene(app, resource) {
         const bg = this.drawBackground(app, resource);
         // Scale down the clock to fit the container.
         bg.width = app.view.width;
         bg.height = app.view.height;
         bg.position.x = 0;
         bg.position.y = 0;
+
+        const center = new PIXI.Point(app.view.width / 2, app.view.height / 2);
+
+        // Draw a thin border around the clock
+        const border = new PIXI.Graphics()
+                               .lineStyle(1, 0x000000)
+                               .drawCircle(center.x, center.y, 96.5);
+        app.stage.addChild(border);
+
+        // Draw the hour hand
+        //
+        // Unlike Sprites, Graphics objects have no anchor attribute,
+        // so must be centered and rotated with "pivot". I've only
+        // gotten this to pivot around the center point by putting
+        // the object in a Container.
+        // I'm not completely sure if this is necessary but it works.
+        //
+        // * http://www.html5gamedevs.com/topic/37296-scaling-rectangle-from-center-and-transform-origin/
+        // * https://github.com/pixijs/pixi.js/issues/3269#issuecomment-413224102
+        //
+        const hourContainer = new PIXI.Container();
+        hourContainer.interactive = true;
+        hourContainer.buttonMode = true;
+        const hourHand = new PIXI.Graphics()
+                                 .beginFill(0x000000)
+                                 .drawRoundedRect(
+                                     0, 0,
+                                     8, bg.height / 4.5,
+                                     5);
+        hourContainer.addChild(hourHand);
+        hourContainer.position.set(100, 100);
+        hourContainer.pivot = new PIXI.Point(4, 2);
+        hourContainer.rotation = 0;
+        app.stage.addChild(hourContainer);
+
+        // Draw the minute hand
+        const minuteContainer = new PIXI.Container();
+        minuteContainer.interactive = true;
+        minuteContainer.buttonMode = true;
+        const minuteHand = new PIXI.Graphics()
+                                 .beginFill(0x666666)
+                                 .drawRoundedRect(
+                                     0, 0,
+                                     4, bg.height / 2.4,
+                                     4);
+        minuteContainer.addChild(minuteHand);
+        minuteContainer.position.set(100, 100);
+        minuteContainer.pivot = new PIXI.Point(2, 2);
+        minuteContainer.rotation = Math.PI;
+        app.stage.addChild(minuteContainer);
     }
     drawLatitudeScene(app, resource) {
         const bg = this.drawBackground(app, resource);
