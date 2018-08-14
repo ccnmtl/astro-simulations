@@ -62,11 +62,10 @@ export default class HorizonView extends React.Component {
         scene.add(ambient);
 
         const light = new THREE.DirectionalLight(0xffffff);
-        light.position.set(0, 35, 30);
+        this.light = light;
+        light.position.set(50, 1, 0);
         light.castShadow = true;
-        //const lightCamera = new THREE.CameraHelper( light.shadow.camera );
         scene.add(light);
-        //scene.add(lightCamera);
 
         const dpr = window.devicePixelRatio;
         const composer = new THREE.EffectComposer(renderer);
@@ -93,10 +92,8 @@ export default class HorizonView extends React.Component {
         // rotate them all on the same axis.
         this.orbitGroup = new THREE.Group();
 
-        this.sunGroup = new THREE.Group();
-        this.sunGroup.add(this.sun);
-        this.sunGroup.add(this.light);
-        this.orbitGroup.add(this.sunGroup);
+        this.orbitGroup.add(this.sun);
+        this.orbitGroup.add(this.light);
 
         this.orbitGroup.add(this.sunDeclination);
         this.orbitGroup.add(this.celestialEquator);
@@ -283,6 +280,10 @@ export default class HorizonView extends React.Component {
         this.sun.position.z = 50 * Math.sin(this.props.sunDeclinationAngle);
         this.sun.rotation.y = -this.props.sunDeclinationAngle +
                               THREE.Math.degToRad(90);
+        this.light.position.x = 50 * Math.cos(this.props.sunDeclinationAngle);
+        this.light.position.z = 50 * Math.sin(this.props.sunDeclinationAngle);
+        this.light.rotation.y = -this.props.sunDeclinationAngle +
+                                THREE.Math.degToRad(90);
 
         this.skyMaterial.color.setHex(this.getSkyColor(this.props.sunDeclinationAngle));
 
@@ -323,10 +324,11 @@ export default class HorizonView extends React.Component {
     render() {
         return (
             <React.Fragment>
-            <div id={this.id}
-                 ref={(mount) => { this.mount = mount }}>
-                <canvas id={this.id + 'Canvas'} width={860} height={860} />
-            </div>
+                <div id={this.id}
+                     ref={(mount) => { this.mount = mount }}>
+                    <canvas
+                        id={this.id + 'Canvas'} width={860} height={860} />
+                </div>
             </React.Fragment>
         );
     }

@@ -13,6 +13,7 @@ class SunMotionSim extends React.Component {
             observerLatitude: 40.8,
             sunDeclinationAngle: Math.PI / 2,
             isPlaying: false,
+            animationRate: 1,
 
             // General settings
             showDeclinationCircle: true,
@@ -46,7 +47,7 @@ class SunMotionSim extends React.Component {
                 </ul>
             </nav>
             <div className="row mt-2">
-                <div className="col-lg-5">
+                <div className="col">
                     <HorizonView sunDeclinationAngle={this.state.sunDeclinationAngle} />
                     <div>
                         <h5>Information</h5>
@@ -131,7 +132,15 @@ class SunMotionSim extends React.Component {
             [name]: value
         });
     }
+    incrementSunDeclinationAngle(n, inc) {
+        return (n + inc) % (Math.PI * 2);
+    }
     animate() {
+        const me = this;
+        this.setState(prevState => ({
+            sunDeclinationAngle: me.incrementSunDeclinationAngle(
+                prevState.sunDeclinationAngle, 0.01 * this.state.animationRate)
+        }));
         this.frameId = requestAnimationFrame(this.animate);
     }
     onStartClick() {

@@ -6,6 +6,7 @@
  
         <link rel="stylesheet" href="../css/bootstrap.min.css">
         <style type="text/css">
+        #HorizonView,
         #HorizonView>canvas {
             width: 430px;
             height: 430px;
@@ -16,6 +17,73 @@
         <div class="container">
             <div id="sim-container"></div>
         </div>
+
+        <div class="modal" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="helpModalLabel">Help</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            This simulator models the motions of the
+                            sun in the sky using a horizon diagram,
+                            demonstrating daily and seasonal changes
+                            in the sun's position.
+                        </p>
+                        <p>
+                            The upper left panel shows the horizon
+                            diagram visualization. This is a
+                            representation of the sky as if it were a
+                            large sphere centered on an observer (the
+                            stickfigure). The location and local time
+                            for this observer are set in the
+                            <strong>Time and Location
+                            Controls</strong> panel.
+                        </p>
+                        <p>
+                            The <strong>General Settings</strong>
+                            panel allows one to show or hide various
+                            features of the horizon diagram, as well
+                            as controlling the behavior when dragging
+                            the sun disk on the horizon diagram.
+                        </p>
+                        <p>
+                            When animating, this simulator can run
+                            continuously (as if in fast forward) or it
+                            can step by day. Stepping by day keeps the
+                            time of day fixed as the day of year
+                            changes. For example, one can use this
+                            mode to see the path the noon time sun
+                            traces over the year.
+                        </p>                        
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="aboutModal" tabindex="-1" role="dialog" aria-labelledby="aboutModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="aboutModalLabel">About</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            See <a
+                            href="https://github.com/ccnmtl/astro-interactives">github.com/ccnmtl/astro-interactives</a>
+                            for more info.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>        
 
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
