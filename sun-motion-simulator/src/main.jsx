@@ -30,6 +30,8 @@ class SunMotionSim extends React.Component {
         this.animate = this.animate.bind(this);
         this.onStartClick = this.onStartClick.bind(this);
         this.onLatitudeUpdate = this.onLatitudeUpdate.bind(this);
+        this.onDayUpdate = this.onDayUpdate.bind(this);
+        this.onMonthUpdate = this.onMonthUpdate.bind(this);
     }
     render() {
         return <React.Fragment>
@@ -106,7 +108,9 @@ class SunMotionSim extends React.Component {
                 <TimeLocationControls
                     observerDateTime={this.state.observerDateTime}
                     observerLatitude={this.state.observerLatitude}
-                    onLatitudeUpdate={this.onLatitudeUpdate} />
+                    onLatitudeUpdate={this.onLatitudeUpdate}
+                    onDayUpdate={this.onDayUpdate}
+                    onMonthUpdate={this.onMonthUpdate} />
 
                 <div className="row">
                     <div className="col-6">
@@ -165,6 +169,10 @@ class SunMotionSim extends React.Component {
     }
     onLatitudeUpdate(latitude) {
         this.setState({observerLatitude: forceNumber(latitude)});
+    }
+    onDayUpdate() {
+    }
+    onMonthUpdate() {
     }
 }
 

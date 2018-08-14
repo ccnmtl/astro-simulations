@@ -31,22 +31,26 @@ export default class TimeLocationControls extends React.Component {
                         <label>
                             The day of year:
                             <input type="number"
+                                   value={this.props.observerDateTime.getDate()}
+                                   onChange={this.props.onDayUpdate}
                                    min="1" max="31"
                                    className="form-control form-control-sm ml-2" />
                         </label>
-                        <select className="form-control form-control-sm ml-2">
-                            <option>January</option>
-                            <option>February</option>
-                            <option>March</option>
-                            <option>April</option>
-                            <option>May</option>
-                            <option>June</option>
-                            <option>July</option>
-                            <option>August</option>
-                            <option>September</option>
-                            <option>October</option>
-                            <option>November</option>
-                            <option>December</option>
+                        <select className="form-control form-control-sm ml-2"
+                                onChange={this.props.onMonthUpdate}
+                                value={this.props.observerDateTime.getMonth()}>
+                            <option value={0}>January</option>
+                            <option value={1}>February</option>
+                            <option value={2}>March</option>
+                            <option value={3}>April</option>
+                            <option value={4}>May</option>
+                            <option value={5}>June</option>
+                            <option value={6}>July</option>
+                            <option value={7}>August</option>
+                            <option value={8}>September</option>
+                            <option value={9}>October</option>
+                            <option value={10}>November</option>
+                            <option value={11}>December</option>
                         </select>
                     </div>
                     <div ref={(el) => {this.calendarPicker = el}}></div>
@@ -94,6 +98,7 @@ export default class TimeLocationControls extends React.Component {
         this.calendarPicker.appendChild(calendarPickerApp.view);
 
         const timePickerApp = new PIXI.Application({
+            backgroundColor: 0xffffff,
             width: 200,
             height: 200,
             sharedLoader: true,
@@ -134,7 +139,6 @@ export default class TimeLocationControls extends React.Component {
         this.stop();
     }
     stop() {
-        cancelAnimationFrame(this.frameId)
         this.calendarPickerApp.stop();
         this.timePickerApp.stop();
         this.latitudePickerApp.stop();
@@ -250,5 +254,7 @@ export default class TimeLocationControls extends React.Component {
 TimeLocationControls.propTypes = {
     observerDateTime: PropTypes.object.isRequired,
     observerLatitude: PropTypes.number.isRequired,
-    onLatitudeUpdate: PropTypes.func.isRequired
+    onLatitudeUpdate: PropTypes.func.isRequired,
+    onDayUpdate: PropTypes.func.isRequired,
+    onMonthUpdate: PropTypes.func.isRequired
 };
