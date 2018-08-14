@@ -12,9 +12,7 @@ export default class TimeLocationControls extends React.Component {
 
         this.resources = {};
 
-        this.start = this.start.bind(this);
         this.stop = this.stop.bind(this);
-        this.animate = this.animate.bind(this);
 
         this.onLatDragStart = this.onLatDragStart.bind(this);
         this.onLatDragEnd = this.onLatDragEnd.bind(this);
@@ -121,32 +119,25 @@ export default class TimeLocationControls extends React.Component {
 
             me.drawTimeScene(timePickerApp, resources.clock);
 
-            me.drawLatitudeScene(me.latitudePickerApp, resources.earthmap);
-
-            //me.start();
+            this.lPicker = me.drawLatitudeScene(
+                me.latitudePickerApp, resources.earthmap);
         });
     }
     componentDidUpdate(prevProps) {
         if (prevProps.observerLatitude !== this.props.observerLatitude) {
-            this.drawLatitudeScene(this.latitudePickerApp, this.resources.earthmap);
+            const latPos = this.latitudeToLocalPos(
+                this.props.observerLatitude, 126)
+            this.lPicker.position.y = latPos;
         }
     }
     componentWillUnmount() {
-        this.calendarPickerApp.stop();
-        this.timePickerApp.stop();
-        this.latitudePickerApp.stop();
-    }
-    start() {
-        if (!this.frameId) {
-            this.frameId = requestAnimationFrame(this.animate);
-        }
+        this.stop();
     }
     stop() {
         cancelAnimationFrame(this.frameId)
-    }
-    animate() {
-        this.drawLatitudeScene(this.latitudePickerApp, this.resources.earthmap);
-        this.frameId = requestAnimationFrame(this.animate);
+        this.calendarPickerApp.stop();
+        this.timePickerApp.stop();
+        this.latitudePickerApp.stop();
     }
     /**
      * Draw a centered sprite on the given pixi application.
@@ -184,29 +175,28 @@ export default class TimeLocationControls extends React.Component {
         picker.interactive = true;
         picker.buttonMode = true;
 
-        const currentLatitude = this.latitudeToLocalPos(
-            this.props.observerLatitude,
-            bg.height)
+        // 90 deg N
+        const pickerTop = (app.view.height - bg.height) / 2;
 
         const line = new PIXI.Graphics()
                              .lineStyle(2, 0x000000)
-                             .moveTo(0, currentLatitude)
-                             .lineTo(app.view.width, currentLatitude);
+                             .moveTo(0, pickerTop)
+                             .lineTo(app.view.width, pickerTop);
         picker.addChild(line);
 
         const arrowhead1 = new PIXI.Graphics()
                                    .beginFill(0x000000)
                                    .drawPolygon([
-                                       0, currentLatitude - 7,
-                                       0, currentLatitude + 7,
-                                       10, currentLatitude
+                                       0, pickerTop - 7,
+                                       0, pickerTop + 7,
+                                       10, pickerTop
                                    ]);
         const arrowhead2 = new PIXI.Graphics()
                                    .beginFill(0x000000)
                                    .drawPolygon([
-                                       app.view.width, currentLatitude - 7,
-                                       app.view.width, currentLatitude + 7,
-                                       app.view.width - 10, currentLatitude
+                                       app.view.width, pickerTop - 7,
+                                       app.view.width, pickerTop + 7,
+                                       app.view.width - 10, pickerTop
                                    ]);
         picker.addChild(arrowhead1);
         picker.addChild(arrowhead2);
@@ -224,7 +214,13 @@ export default class TimeLocationControls extends React.Component {
             .on('mousemove', this.onLatMove)
             .on('touchmove', this.onLatMove);
 
+        const latPos = this.latitudeToLocalPos(
+            this.props.observerLatitude,
+            bg.height)
+        picker.position.y = latPos;
+
         app.stage.addChild(picker);
+        return picker;
     }
     onLatDragStart() {
         this.setState({isDraggingLatitude: true});
@@ -235,7 +231,7 @@ export default class TimeLocationControls extends React.Component {
     onLatMove(e) {
         if (this.state.isDraggingLatitude) {
             const pos = e.data.getLocalPosition(this.latitudePickerApp.stage);
-            const lat = this.localPosToLatitude(pos.y, 140);
+            const lat = this.localPosToLatitude(pos.y, 126);
             this.props.onLatitudeUpdate(lat);
         }
     }
@@ -246,7 +242,8 @@ export default class TimeLocationControls extends React.Component {
         return (canvasHeight / 2) - ((canvasHeight / 180) * latitude);
     }
     localPosToLatitude(pos, canvasHeight) {
-        return 90 - (pos / canvasHeight) * 180;
+        return Math.max(-90, Math.min(
+            90, 90 - (pos / canvasHeight) * 180));
     }
 }
 

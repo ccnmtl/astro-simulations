@@ -50,7 +50,9 @@ class SunMotionSim extends React.Component {
             </nav>
             <div className="row mt-2">
                 <div className="col">
-                    <HorizonView sunDeclinationAngle={this.state.sunDeclinationAngle} />
+                    <HorizonView
+                        observerLatitude={this.state.observerLatitude}
+                        sunDeclinationAngle={this.state.sunDeclinationAngle} />
                     <div>
                         <h5>Information</h5>
                         <p>

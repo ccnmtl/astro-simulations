@@ -47,7 +47,7 @@ export default class HorizonView extends React.Component {
         // Only let the user see the top of the scene - no need to
         // flip it completely over.
         controls.minPolarAngle = THREE.Math.degToRad(0);
-        controls.maxPolarAngle = THREE.Math.degToRad(70);
+        controls.maxPolarAngle = THREE.Math.degToRad(85);
 
         const renderer = new THREE.WebGLRenderer({
             antialias: true,
@@ -100,7 +100,8 @@ export default class HorizonView extends React.Component {
         this.orbitGroup.add(this.primeHourCircle);
         this.orbitGroup.add(this.ecliptic);
         this.orbitGroup.add(this.angleEllipse);
-        this.orbitGroup.rotation.x = THREE.Math.degToRad(-50);
+        this.orbitGroup.rotation.x =
+            THREE.Math.degToRad(this.props.observerLatitude) - (Math.PI / 2);
         scene.add(this.orbitGroup);
 
         /*new THREE.DragControls(
@@ -287,6 +288,9 @@ export default class HorizonView extends React.Component {
 
         this.skyMaterial.color.setHex(this.getSkyColor(this.props.sunDeclinationAngle));
 
+        this.orbitGroup.rotation.x =
+            THREE.Math.degToRad(this.props.observerLatitude) - (Math.PI / 2);
+
         this.renderScene();
         this.frameId = window.requestAnimationFrame(this.animate);
     }
@@ -335,5 +339,6 @@ export default class HorizonView extends React.Component {
 }
 
 HorizonView.propTypes = {
+    observerLatitude: PropTypes.number.isRequired,
     sunDeclinationAngle: PropTypes.number.isRequired
 };
