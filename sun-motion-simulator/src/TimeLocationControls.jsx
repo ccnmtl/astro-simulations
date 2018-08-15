@@ -23,7 +23,7 @@ export default class TimeLocationControls extends React.Component {
             .add('earthmap', 'img/earthmap.png');
     }
     render() {
-        const latUnit = this.props.observerLatitude > 0 ? 'N' : 'S';
+        const latUnit = this.props.latitude > 0 ? 'N' : 'S';
         return (
             <React.Fragment>
                 <h5>Time and Location Controls</h5>
@@ -32,14 +32,14 @@ export default class TimeLocationControls extends React.Component {
                         <label>
                             The day of year:
                             <input type="number"
-                                   value={this.props.observerDateTime.getDate()}
+                                   value={this.props.dateTime.getDate()}
                                    onChange={this.props.onDayUpdate}
                                    min="1" max="31"
                                    className="form-control form-control-sm ml-2" />
                         </label>
                         <select className="form-control form-control-sm ml-2"
                                 onChange={this.props.onMonthUpdate}
-                                value={this.props.observerDateTime.getMonth()}>
+                                value={this.props.dateTime.getMonth()}>
                             <option value={0}>January</option>
                             <option value={1}>February</option>
                             <option value={2}>March</option>
@@ -73,7 +73,7 @@ export default class TimeLocationControls extends React.Component {
                                 <label>
                                     The observer&apos;s latitude:
                                     <input type="number"
-                                           value={roundToOnePlace(this.props.observerLatitude)}
+                                           value={roundToOnePlace(this.props.latitude)}
                                            onChange={this.props.onLatitudeUpdate}
                                            min="-90" max="90"
                                            className="form-control form-control-sm ml-2" />
@@ -131,14 +131,15 @@ export default class TimeLocationControls extends React.Component {
         });
     }
     componentDidUpdate(prevProps) {
-        if (prevProps.observerLatitude !== this.props.observerLatitude) {
+        if (prevProps.latitude !== this.props.latitude) {
             // Update the latitude picker.
             const latPos = this.latitudeToLocalPos(
-                this.props.observerLatitude, 126)
+                this.props.latitude, 126)
             this.lPicker.position.y = latPos;
         }
-        if (prevProps.observerDateTime !== this.props.observerDateTime) {
+        if (prevProps.dateTime !== this.props.dateTime) {
             // Update the clock.
+            console.log(this.props.dateTime);
         }
     }
     componentWillUnmount() {
@@ -202,6 +203,7 @@ export default class TimeLocationControls extends React.Component {
         hourContainer.pivot = new PIXI.Point(4, 2);
         hourContainer.rotation = 0;
         app.stage.addChild(hourContainer);
+        this.hourHand = hourContainer;
 
         // Draw the minute hand
         const minuteContainer = new PIXI.Container();
@@ -218,6 +220,7 @@ export default class TimeLocationControls extends React.Component {
         minuteContainer.pivot = new PIXI.Point(2, 2);
         minuteContainer.rotation = Math.PI;
         app.stage.addChild(minuteContainer);
+        this.minuteHand = minuteContainer;
     }
     drawLatitudeScene(app, resource) {
         const bg = this.drawBackground(app, resource);
@@ -275,7 +278,7 @@ export default class TimeLocationControls extends React.Component {
             .on('touchmove', this.onLatMove);
 
         const latPos = this.latitudeToLocalPos(
-            this.props.observerLatitude,
+            this.props.latitude,
             bg.height)
         picker.position.y = latPos;
 
@@ -308,8 +311,8 @@ export default class TimeLocationControls extends React.Component {
 }
 
 TimeLocationControls.propTypes = {
-    observerDateTime: PropTypes.object.isRequired,
-    observerLatitude: PropTypes.number.isRequired,
+    dateTime: PropTypes.object.isRequired,
+    latitude: PropTypes.number.isRequired,
     onLatitudeUpdate: PropTypes.func.isRequired,
     onDayUpdate: PropTypes.func.isRequired,
     onMonthUpdate: PropTypes.func.isRequired

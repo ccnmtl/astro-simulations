@@ -10,8 +10,8 @@ class SunMotionSim extends React.Component {
     constructor(props) {
         super(props);
         this.initialState = {
-            observerDateTime: new Date('May 27, 12:00'),
-            observerLatitude: 40.8,
+            dateTime: new Date('May 27, 12:00'),
+            latitude: 40.8,
             sunDeclinationAngle: Math.PI / 2,
             isPlaying: false,
             animationRate: 1,
@@ -53,12 +53,12 @@ class SunMotionSim extends React.Component {
             <div className="row mt-2">
                 <div className="col">
                     <HorizonView
-                        observerLatitude={this.state.observerLatitude}
+                        latitude={this.state.latitude}
                         sunDeclinationAngle={this.state.sunDeclinationAngle} />
                     <div>
                         <h5>Information</h5>
                         <p>
-                            The horizon diagram is shown for an observer at latitude {roundToOnePlace(this.state.observerLatitude)}&deg; N
+                            The horizon diagram is shown for an observer at latitude {roundToOnePlace(this.state.latitude)}&deg; N
                             on 27 May at 12:00 (12:00 PM).
                         </p>
                         <div className="row small">
@@ -106,8 +106,8 @@ class SunMotionSim extends React.Component {
 
             <div className="col-lg-6">
                 <TimeLocationControls
-                    observerDateTime={this.state.observerDateTime}
-                    observerLatitude={this.state.observerLatitude}
+                    dateTime={this.state.dateTime}
+                    latitude={this.state.latitude}
                     onLatitudeUpdate={this.onLatitudeUpdate}
                     onDayUpdate={this.onDayUpdate}
                     onMonthUpdate={this.onMonthUpdate} />
@@ -168,7 +168,7 @@ class SunMotionSim extends React.Component {
         this.setState(this.initialState);
     }
     onLatitudeUpdate(latitude) {
-        this.setState({observerLatitude: forceNumber(latitude)});
+        this.setState({latitude: forceNumber(latitude)});
     }
     onDayUpdate() {
     }

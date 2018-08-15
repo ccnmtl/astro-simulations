@@ -101,7 +101,7 @@ export default class HorizonView extends React.Component {
         this.orbitGroup.add(this.ecliptic);
         this.orbitGroup.add(this.angleEllipse);
         this.orbitGroup.rotation.x =
-            THREE.Math.degToRad(this.props.observerLatitude) - (Math.PI / 2);
+            THREE.Math.degToRad(this.props.latitude) - (Math.PI / 2);
         scene.add(this.orbitGroup);
 
         /*new THREE.DragControls(
@@ -289,7 +289,7 @@ export default class HorizonView extends React.Component {
         this.skyMaterial.color.setHex(this.getSkyColor(this.props.sunDeclinationAngle));
 
         this.orbitGroup.rotation.x =
-            THREE.Math.degToRad(this.props.observerLatitude) - (Math.PI / 2);
+            THREE.Math.degToRad(this.props.latitude) - (Math.PI / 2);
 
         this.renderScene();
         this.frameId = window.requestAnimationFrame(this.animate);
@@ -339,6 +339,6 @@ export default class HorizonView extends React.Component {
 }
 
 HorizonView.propTypes = {
-    observerLatitude: PropTypes.number.isRequired,
+    latitude: PropTypes.number.isRequired,
     sunDeclinationAngle: PropTypes.number.isRequired
 };
