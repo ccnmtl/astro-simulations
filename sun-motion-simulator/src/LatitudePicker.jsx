@@ -3,12 +3,7 @@ import PropTypes from 'prop-types';
 import * as PIXI from 'pixi.js';
 import {roundToOnePlace} from './utils';
 
-/**
- * This component contains the day picker, time picker, and latitude
- * picker. These could probably be split out into their own
- * components.
- */
-export default class TimeLocationControls extends React.Component {
+export default class LatitudePicker extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -24,95 +19,29 @@ export default class TimeLocationControls extends React.Component {
         this.onLatMove = this.onLatMove.bind(this);
 
         this.loader = new PIXI.loaders.Loader();
-        this.loader.add('clock', 'img/clock.png')
-            .add('earthmap', 'img/earthmap.png');
+        this.loader.add('earthmap', 'img/earthmap.png');
     }
     render() {
         const latUnit = this.props.latitude > 0 ? 'N' : 'S';
         return (
-            <React.Fragment>
-                <h5>Time and Location Controls</h5>
-                <form className="form">
-                    <div className="form-inline">
-                        <label>
-                            The day of year:
-                            <input type="number"
-                                   value={this.props.dateTime.getDate()}
-                                   onChange={this.props.onDayUpdate}
-                                   min="1" max="31"
-                                   className="form-control form-control-sm ml-2" />
-                        </label>
-                        <select className="form-control form-control-sm ml-2"
-                                onChange={this.props.onMonthUpdate}
-                                value={this.props.dateTime.getMonth()}>
-                            <option value={0}>January</option>
-                            <option value={1}>February</option>
-                            <option value={2}>March</option>
-                            <option value={3}>April</option>
-                            <option value={4}>May</option>
-                            <option value={5}>June</option>
-                            <option value={6}>July</option>
-                            <option value={7}>August</option>
-                            <option value={8}>September</option>
-                            <option value={9}>October</option>
-                            <option value={10}>November</option>
-                            <option value={11}>December</option>
-                        </select>
-                    </div>
-                    <div ref={(el) => {this.calendarPicker = el}}></div>
-
-                    <div className="row">
-                        <div className="col">
-                            <div className="form-inline">
-                                <label>
-                                    The time of day:
-                                    <input type="time"
-                                           className="form-control form-control-sm ml-2" />
-                                </label>
-                            </div>
-                            <div ref={(el) => {this.timePicker = el}}></div>
-                        </div>
-
-                        <div className="col">
-                            <div className="form-inline">
-                                <label>
-                                    The observer&apos;s latitude:
-                                    <input type="number"
-                                           value={roundToOnePlace(this.props.latitude)}
-                                           onChange={this.props.onLatitudeUpdate}
-                                           min="-90" max="90"
-                                           className="form-control form-control-sm ml-2" />
+            <div className="col">
+                <div className="form-inline">
+                    <label>
+                        The observer&apos;s latitude:
+                        <input type="number"
+                               value={roundToOnePlace(this.props.latitude)}
+                               onChange={this.props.onLatitudeUpdate}
+                               min="-90" max="90"
+                               className="form-control form-control-sm ml-2" />
             &deg;{latUnit}
-                                </label>
-                            </div>
-                            <div ref={(el) => {this.latitudePicker = el}}></div>
-                        </div>
-                    </div>
-                </form>
-            </React.Fragment>
+                    </label>
+                </div>
+                <div ref={(el) => {this.latitudePicker = el}}></div>
+            </div>
         );
     }
     componentDidMount() {
         const me = this;
-
-        const calendarPickerApp = new PIXI.Application({
-            width: 500,
-            height: 40,
-            sharedLoader: true,
-            sharedTicker: true,
-            forceCanvas: true
-        });
-        this.calendarPicker.appendChild(calendarPickerApp.view);
-
-        const timePickerApp = new PIXI.Application({
-            backgroundColor: 0xffffff,
-            width: 200,
-            height: 200,
-            sharedLoader: true,
-            sharedTicker: true,
-            forceCanvas: true
-        });
-        this.timePicker.appendChild(timePickerApp.view);
 
         this.latitudePickerApp = new PIXI.Application({
             backgroundColor: 0xffffff,
@@ -129,8 +58,6 @@ export default class TimeLocationControls extends React.Component {
         this.loader.load((loader, resources) => {
             me.resources = resources;
 
-            me.drawClockScene(timePickerApp, resources.clock);
-
             this.lPicker = me.drawLatitudeScene(
                 me.latitudePickerApp, resources.earthmap);
         });
@@ -142,17 +69,12 @@ export default class TimeLocationControls extends React.Component {
                 this.props.latitude, 126)
             this.lPicker.position.y = latPos;
         }
-        if (prevProps.dateTime !== this.props.dateTime) {
-            // Update the clock.
-            console.log(this.props.dateTime);
-        }
     }
     componentWillUnmount() {
         this.stop();
     }
     stop() {
         this.calendarPickerApp.stop();
-        this.timePickerApp.stop();
         this.latitudePickerApp.stop();
     }
     /**
@@ -315,10 +237,7 @@ export default class TimeLocationControls extends React.Component {
     }
 }
 
-TimeLocationControls.propTypes = {
-    dateTime: PropTypes.object.isRequired,
+LatitudePicker.propTypes = {
     latitude: PropTypes.number.isRequired,
-    onLatitudeUpdate: PropTypes.func.isRequired,
-    onDayUpdate: PropTypes.func.isRequired,
-    onMonthUpdate: PropTypes.func.isRequired
+    onLatitudeUpdate: PropTypes.func.isRequired
 };

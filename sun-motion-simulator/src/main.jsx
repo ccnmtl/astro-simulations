@@ -3,7 +3,9 @@ import ReactDOM from 'react-dom';
 import HorizonView from './HorizonView';
 import AnimationControls from './AnimationControls';
 import GeneralSettings from './GeneralSettings';
-import TimeLocationControls from './TimeLocationControls';
+import DatePicker from './DatePicker';
+import LatitudePicker from './LatitudePicker';
+import TimePicker from './TimePicker';
 import {forceNumber, roundToOnePlace} from './utils';
 
 class SunMotionSim extends React.Component {
@@ -30,8 +32,7 @@ class SunMotionSim extends React.Component {
         this.animate = this.animate.bind(this);
         this.onStartClick = this.onStartClick.bind(this);
         this.onLatitudeUpdate = this.onLatitudeUpdate.bind(this);
-        this.onDayUpdate = this.onDayUpdate.bind(this);
-        this.onMonthUpdate = this.onMonthUpdate.bind(this);
+        this.onDateTimeUpdate = this.onDateTimeUpdate.bind(this);
     }
     render() {
         return <React.Fragment>
@@ -104,32 +105,45 @@ class SunMotionSim extends React.Component {
                     </div>
                 </div>
 
-            <div className="col-lg-6">
-                <TimeLocationControls
-                    dateTime={this.state.dateTime}
-                    latitude={this.state.latitude}
-                    onLatitudeUpdate={this.onLatitudeUpdate}
-                    onDayUpdate={this.onDayUpdate}
-                    onMonthUpdate={this.onMonthUpdate} />
+                <div className="col-lg-6">
+                    <h5>Time and Location Controls</h5>
+                    <form className="form">
+                        <DatePicker
+                            dateTime={this.state.dateTime}
+                            onDateTimeUpdate={this.onDateTimeUpdate} />
+                        <div className="row">
+                            <div className="col">
+                                <TimePicker
+                                    dateTime={this.state.dateTime}
+                                    onDateTimeUpdate={this.onDateTimeUpdate} />
+                            </div>
 
-                <div className="row">
-                    <div className="col-6">
-                        <AnimationControls
-                            isPlaying={this.state.isPlaying}
-                            onStartClick={this.onStartClick}
-                        />
-                    </div>
-                    <div className="col-4">
-                        <GeneralSettings
-                            showDeclinationCircle={this.state.showDeclinationCircle}
-                            showEcliptic={this.state.showEcliptic}
-                            showMonthLabels={this.state.showMonthLabels}
-                            showUnderside={this.state.showUnderside}
-                            showStickfigure={this.state.showStickfigure}
-                            onInputChange={this.handleInputChange} />
+                            <div className="col">
+                                <LatitudePicker
+                                    latitude={this.state.latitude}
+                                    onLatitudeUpdate={this.onLatitudeUpdate} />
+                            </div>
+                        </div>
+                    </form>
+
+                    <div className="row">
+                        <div className="col-6">
+                            <AnimationControls
+                                isPlaying={this.state.isPlaying}
+                                onStartClick={this.onStartClick}
+                            />
+                        </div>
+                        <div className="col-4">
+                            <GeneralSettings
+                                showDeclinationCircle={this.state.showDeclinationCircle}
+                                showEcliptic={this.state.showEcliptic}
+                                showMonthLabels={this.state.showMonthLabels}
+                                showUnderside={this.state.showUnderside}
+                                showStickfigure={this.state.showStickfigure}
+                                onInputChange={this.handleInputChange} />
+                        </div>
                     </div>
                 </div>
-            </div>
             </div>
         </React.Fragment>;
     }
@@ -170,9 +184,7 @@ class SunMotionSim extends React.Component {
     onLatitudeUpdate(latitude) {
         this.setState({latitude: forceNumber(latitude)});
     }
-    onDayUpdate() {
-    }
-    onMonthUpdate() {
+    onDateTimeUpdate() {
     }
 }
 
