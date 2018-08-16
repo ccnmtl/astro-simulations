@@ -47,7 +47,7 @@ export default class HorizonView extends React.Component {
         // Only let the user see the top of the scene - no need to
         // flip it completely over.
         controls.minPolarAngle = THREE.Math.degToRad(0);
-        controls.maxPolarAngle = THREE.Math.degToRad(70);
+        controls.maxPolarAngle = THREE.Math.degToRad(85);
 
         const renderer = new THREE.WebGLRenderer({
             antialias: true,
@@ -62,11 +62,10 @@ export default class HorizonView extends React.Component {
         scene.add(ambient);
 
         const light = new THREE.DirectionalLight(0xffffff);
-        light.position.set(0, 35, 30);
+        this.light = light;
+        light.position.set(50, 1, 0);
         light.castShadow = true;
-        //const lightCamera = new THREE.CameraHelper( light.shadow.camera );
         scene.add(light);
-        //scene.add(lightCamera);
 
         const dpr = window.devicePixelRatio;
         const composer = new THREE.EffectComposer(renderer);
@@ -93,17 +92,16 @@ export default class HorizonView extends React.Component {
         // rotate them all on the same axis.
         this.orbitGroup = new THREE.Group();
 
-        this.sunGroup = new THREE.Group();
-        this.sunGroup.add(this.sun);
-        this.sunGroup.add(this.light);
-        this.orbitGroup.add(this.sunGroup);
+        this.orbitGroup.add(this.sun);
+        this.orbitGroup.add(this.light);
 
         this.orbitGroup.add(this.sunDeclination);
         this.orbitGroup.add(this.celestialEquator);
         this.orbitGroup.add(this.primeHourCircle);
         this.orbitGroup.add(this.ecliptic);
         this.orbitGroup.add(this.angleEllipse);
-        this.orbitGroup.rotation.x = THREE.Math.degToRad(-50);
+        this.orbitGroup.rotation.x =
+            THREE.Math.degToRad(this.props.latitude) - (Math.PI / 2);
         scene.add(this.orbitGroup);
 
         /*new THREE.DragControls(
@@ -283,8 +281,15 @@ export default class HorizonView extends React.Component {
         this.sun.position.z = 50 * Math.sin(this.props.sunDeclinationAngle);
         this.sun.rotation.y = -this.props.sunDeclinationAngle +
                               THREE.Math.degToRad(90);
+        this.light.position.x = 50 * Math.cos(this.props.sunDeclinationAngle);
+        this.light.position.z = 50 * Math.sin(this.props.sunDeclinationAngle);
+        this.light.rotation.y = -this.props.sunDeclinationAngle +
+                                THREE.Math.degToRad(90);
 
         this.skyMaterial.color.setHex(this.getSkyColor(this.props.sunDeclinationAngle));
+
+        this.orbitGroup.rotation.x =
+            THREE.Math.degToRad(this.props.latitude) - (Math.PI / 2);
 
         this.renderScene();
         this.frameId = window.requestAnimationFrame(this.animate);
@@ -323,15 +328,17 @@ export default class HorizonView extends React.Component {
     render() {
         return (
             <React.Fragment>
-            <div id={this.id}
-                 ref={(mount) => { this.mount = mount }}>
-                <canvas id={this.id + 'Canvas'} width={860} height={860} />
-            </div>
+                <div id={this.id}
+                     ref={(mount) => { this.mount = mount }}>
+                    <canvas
+                        id={this.id + 'Canvas'} width={860} height={860} />
+                </div>
             </React.Fragment>
         );
     }
 }
 
 HorizonView.propTypes = {
+    latitude: PropTypes.number.isRequired,
     sunDeclinationAngle: PropTypes.number.isRequired
 };

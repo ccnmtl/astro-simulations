@@ -4,15 +4,17 @@ import HorizonView from './HorizonView';
 import AnimationControls from './AnimationControls';
 import GeneralSettings from './GeneralSettings';
 import TimeLocationControls from './TimeLocationControls';
+import {forceNumber, roundToOnePlace} from './utils';
 
 class SunMotionSim extends React.Component {
     constructor(props) {
         super(props);
         this.initialState = {
-            observerDateTime: new Date('May 27, 12:00'),
-            observerLatitude: 40.8,
+            dateTime: new Date('May 27, 12:00'),
+            latitude: 40.8,
             sunDeclinationAngle: Math.PI / 2,
             isPlaying: false,
+            animationRate: 1,
 
             // General settings
             showDeclinationCircle: true,
@@ -27,6 +29,9 @@ class SunMotionSim extends React.Component {
         this.handleInputChange = this.handleInputChange.bind(this);
         this.animate = this.animate.bind(this);
         this.onStartClick = this.onStartClick.bind(this);
+        this.onLatitudeUpdate = this.onLatitudeUpdate.bind(this);
+        this.onDayUpdate = this.onDayUpdate.bind(this);
+        this.onMonthUpdate = this.onMonthUpdate.bind(this);
     }
     render() {
         return <React.Fragment>
@@ -46,12 +51,14 @@ class SunMotionSim extends React.Component {
                 </ul>
             </nav>
             <div className="row mt-2">
-                <div className="col-lg-5">
-                    <HorizonView sunDeclinationAngle={this.state.sunDeclinationAngle} />
+                <div className="col">
+                    <HorizonView
+                        latitude={this.state.latitude}
+                        sunDeclinationAngle={this.state.sunDeclinationAngle} />
                     <div>
                         <h5>Information</h5>
                         <p>
-                            The horizon diagram is shown for an observer at latitude 40.8&deg; N
+                            The horizon diagram is shown for an observer at latitude {roundToOnePlace(this.state.latitude)}&deg; N
                             on 27 May at 12:00 (12:00 PM).
                         </p>
                         <div className="row small">
@@ -98,7 +105,12 @@ class SunMotionSim extends React.Component {
                 </div>
 
             <div className="col-lg-6">
-                <TimeLocationControls />
+                <TimeLocationControls
+                    dateTime={this.state.dateTime}
+                    latitude={this.state.latitude}
+                    onLatitudeUpdate={this.onLatitudeUpdate}
+                    onDayUpdate={this.onDayUpdate}
+                    onMonthUpdate={this.onMonthUpdate} />
 
                 <div className="row">
                     <div className="col-6">
@@ -131,7 +143,15 @@ class SunMotionSim extends React.Component {
             [name]: value
         });
     }
+    incrementSunDeclinationAngle(n, inc) {
+        return (n + inc) % (Math.PI * 2);
+    }
     animate() {
+        const me = this;
+        this.setState(prevState => ({
+            sunDeclinationAngle: me.incrementSunDeclinationAngle(
+                prevState.sunDeclinationAngle, 0.01 * this.state.animationRate)
+        }));
         this.frameId = requestAnimationFrame(this.animate);
     }
     onStartClick() {
@@ -146,6 +166,13 @@ class SunMotionSim extends React.Component {
     onResetClick(e) {
         e.preventDefault();
         this.setState(this.initialState);
+    }
+    onLatitudeUpdate(latitude) {
+        this.setState({latitude: forceNumber(latitude)});
+    }
+    onDayUpdate() {
+    }
+    onMonthUpdate() {
     }
 }
 
