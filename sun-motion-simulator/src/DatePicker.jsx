@@ -36,13 +36,17 @@ export default class DatePicker extends React.Component {
     }
     componentDidMount() {
         const calendarPickerApp = new PIXI.Application({
-            width: 500,
-            height: 40,
+            backgroundColor: 0xffffff,
+            width: 520,
+            height: 35,
             sharedLoader: true,
             sharedTicker: true,
             forceCanvas: true
         });
         this.calendarPicker.appendChild(calendarPickerApp.view);
+        this.drawCalendarScene(calendarPickerApp);
+    }
+    drawCalendarScene() {
     }
 }
 

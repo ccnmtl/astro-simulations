@@ -6,7 +6,7 @@ import GeneralSettings from './GeneralSettings';
 import DatePicker from './DatePicker';
 import LatitudePicker from './LatitudePicker';
 import Clock from './Clock';
-import {forceNumber, roundToOnePlace} from './utils';
+import {forceNumber, roundToOnePlace, timeToAngle} from './utils';
 
 class SunMotionSim extends React.Component {
     constructor(props) {
@@ -163,26 +163,20 @@ class SunMotionSim extends React.Component {
     incrementSunDeclinationAngle(n, inc) {
         return (n + inc) % (Math.PI * 2);
     }
-    /**
-     * Get the sun's angle in the sky, given a JavaScript Date object.
-     *
-     * This function only pays attention to the time part of the Date
-     * object, not the date.
-     */
-    getSunAngle(dateTime) {
-        const hours = dateTime.getHours();
-        const minutes = dateTime.getMinutes();
-        return (((hours + (minutes / 60)) / 24) * (Math.PI * 2))
-             - (Math.PI / 2);
+    componentDidUpdate(prevProps, prevState) {
+        if (prevState.dateTime !== this.state.dateTime) {
+            // sunDeclinationAngle is derived from the dateTime, so always
+            // keep that up to date.
+            this.setState({
+                sunDeclinationAngle: timeToAngle(new Date(
+                    this.state.dateTime.getTime()))
+            });
+        }
     }
     animate() {
-        const me = this;
         this.setState(prevState => ({
             dateTime: new Date(prevState.dateTime.getTime() + (
-                100000 * this.state.animationRate)),
-            sunDeclinationAngle: me.getSunAngle(new Date(
-                prevState.dateTime.getTime() + (
-                    100000 * this.state.animationRate)))
+                100000 * this.state.animationRate))
         }));
         this.frameId = requestAnimationFrame(this.animate);
     }
@@ -202,7 +196,8 @@ class SunMotionSim extends React.Component {
     onLatitudeUpdate(latitude) {
         this.setState({latitude: forceNumber(latitude)});
     }
-    onDateTimeUpdate() {
+    onDateTimeUpdate(dateTime) {
+        this.setState({dateTime: dateTime});
     }
     onAnimationRateUpdate(e) {
         this.setState({animationRate: forceNumber(e.target.value)});

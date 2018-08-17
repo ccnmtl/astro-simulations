@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import * as PIXI from 'pixi.js';
+import {hourAngleToTime, minuteAngleToTime} from './utils';
 
 export default class Clock extends React.Component {
     constructor(props) {
@@ -19,6 +20,8 @@ export default class Clock extends React.Component {
 
         this.loader = new PIXI.loaders.Loader();
         this.loader.add('clock', 'img/clock.png');
+
+        this.center = new PIXI.Point(100, 100);
     }
     render() {
         let hours = this.props.dateTime.getHours();
@@ -54,6 +57,7 @@ export default class Clock extends React.Component {
             sharedTicker: true,
             forceCanvas: true
         });
+        this.timePickerApp = timePickerApp;
         this.timePicker.appendChild(timePickerApp.view);
 
         this.loader.load((loader, resources) => {
@@ -126,7 +130,7 @@ export default class Clock extends React.Component {
                                      8, bg.height / 4.5,
                                      5);
         hourContainer.addChild(hourHand);
-        hourContainer.position.set(100, 100);
+        hourContainer.position.set(this.center.x, this.center.y);
         hourContainer.pivot = new PIXI.Point(4, 5);
         hourContainer.rotation = 0;
         app.stage.addChild(hourContainer);
@@ -143,7 +147,7 @@ export default class Clock extends React.Component {
                                      4, bg.height / 2.3,
                                      4);
         minuteContainer.addChild(minuteHand);
-        minuteContainer.position.set(100, 100);
+        minuteContainer.position.set(this.center.x, this.center.y);
         minuteContainer.pivot = new PIXI.Point(2, 5);
         minuteContainer.rotation = Math.PI;
         app.stage.addChild(minuteContainer);
@@ -152,7 +156,7 @@ export default class Clock extends React.Component {
         // Draw brown circle at the center
         const cog = new PIXI.Graphics()
                             .beginFill(0x80522d)
-                            .drawCircle(100, 100, 3);
+                            .drawCircle(this.center.x, this.center.y, 3);
         app.stage.addChild(cog);
 
         // Set up events
@@ -183,7 +187,9 @@ export default class Clock extends React.Component {
             .on('touchmove', this.onHourMove);
     }
 
-    onMinuteDragStart() {
+    onMinuteDragStart(e) {
+        this.dragStartPos = e.data.getLocalPosition(this.timePickerApp.stage);
+        this.dragStartTime = this.props.dateTime;
         this.setState({isDraggingMinute: true});
     }
     onMinuteDragEnd() {
@@ -191,11 +197,25 @@ export default class Clock extends React.Component {
     }
     onMinuteMove(e) {
         if (this.state.isDraggingMinute) {
-            console.log('minute', e);
+            const pos = e.data.getLocalPosition(this.timePickerApp.stage);
+
+            const vAngle = Math.atan2(pos.y - this.center.y,
+                                      pos.x - this.center.x) -
+                           Math.atan2(this.dragStartPos.y - this.center.y,
+                                      this.dragStartPos.x - this.center.x);
+
+            const minute = minuteAngleToTime(vAngle);
+
+            const newTime = new Date(
+                this.dragStartTime.getTime() + (minute * 60 * 1000));
+
+            this.props.onDateTimeUpdate(newTime);
         }
     }
 
-    onHourDragStart() {
+    onHourDragStart(e) {
+        this.dragStartPos = e.data.getLocalPosition(this.timePickerApp.stage);
+        this.dragStartTime = this.props.dateTime;
         this.setState({isDraggingHour: true});
     }
     onHourDragEnd() {
@@ -203,7 +223,19 @@ export default class Clock extends React.Component {
     }
     onHourMove(e) {
         if (this.state.isDraggingHour) {
-            console.log('hour', e);
+            const pos = e.data.getLocalPosition(this.timePickerApp.stage);
+
+            const vAngle = Math.atan2(pos.y - this.center.y,
+                                      pos.x - this.center.x) -
+                           Math.atan2(this.dragStartPos.y - this.center.y,
+                                      this.dragStartPos.x - this.center.x);
+
+            const hour = hourAngleToTime(vAngle);
+
+            const newTime = new Date(
+                this.dragStartTime.getTime() + (hour * 3600 * 1000));
+
+            this.props.onDateTimeUpdate(newTime);
         }
     }
 }
