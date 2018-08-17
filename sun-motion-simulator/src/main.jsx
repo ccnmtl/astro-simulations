@@ -60,7 +60,7 @@ class SunMotionSim extends React.Component {
                         <h5>Information</h5>
                         <p>
                             The horizon diagram is shown for an observer at latitude {roundToOnePlace(this.state.latitude)}&deg; N
-                            on 27 May at 12:00 (12:00 PM).
+                            on {this.state.dateTime.toLocaleString()}
                         </p>
                         <div className="row small">
                             <div className="col card">
@@ -160,11 +160,25 @@ class SunMotionSim extends React.Component {
     incrementSunDeclinationAngle(n, inc) {
         return (n + inc) % (Math.PI * 2);
     }
+    /**
+     * Get the sun's angle in the sky, given a JavaScript Date object.
+     *
+     * This function only pays attention to the time part of the Date
+     * object, not the date.
+     */
+    getSunAngle(dateTime) {
+        const hours = dateTime.getHours();
+        const minutes = dateTime.getMinutes();
+        return (((hours + (minutes / 60)) / 24) * (Math.PI * 2))
+             - (Math.PI / 2);
+    }
     animate() {
         const me = this;
         this.setState(prevState => ({
-            sunDeclinationAngle: me.incrementSunDeclinationAngle(
-                prevState.sunDeclinationAngle, 0.01 * this.state.animationRate)
+            dateTime: new Date(prevState.dateTime.getTime() + 10000),
+            sunDeclinationAngle: me.getSunAngle(new Date(prevState.dateTime.getTime() + 10000))
+            //sunDeclinationAngle: me.incrementSunDeclinationAngle(
+            //    prevState.sunDeclinationAngle, 0.01 * this.state.animationRate)
         }));
         this.frameId = requestAnimationFrame(this.animate);
     }

@@ -21,11 +21,22 @@ export default class TimePicker extends React.Component {
         this.loader.add('clock', 'img/clock.png');
     }
     render() {
+        let hours = this.props.dateTime.getHours();
+        if (hours < 10) {
+            hours = '0' + hours;
+        }
+        let minutes = this.props.dateTime.getMinutes();
+        if (minutes < 10) {
+            minutes = '0' + minutes;
+        }
+
         return <React.Fragment>
             <div className="form-inline">
                 <label>
                     The time of day:
                     <input type="time"
+                           value={`${hours}:${minutes}`}
+                           onChange={this.props.onDateTimeUpdate}
                            className="form-control form-control-sm ml-2" />
                 </label>
             </div>
@@ -54,7 +65,7 @@ export default class TimePicker extends React.Component {
     componentDidUpdate(prevProps) {
         if (prevProps.dateTime !== this.props.dateTime) {
             // Update the clock.
-            console.log(this.props.dateTime);
+            //console.log(this.props.dateTime);
         }
     }
     componentWillUnmount() {
@@ -134,7 +145,7 @@ export default class TimePicker extends React.Component {
 
         // Draw brown circle at the center
         const cog = new PIXI.Graphics()
-                            .beginFill(0xa0522d)
+                            .beginFill(0x80522d)
                             .drawCircle(100, 100, 3);
         app.stage.addChild(cog);
 
