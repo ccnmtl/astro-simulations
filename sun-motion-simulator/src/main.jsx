@@ -3,7 +3,9 @@ import ReactDOM from 'react-dom';
 import HorizonView from './HorizonView';
 import AnimationControls from './AnimationControls';
 import GeneralSettings from './GeneralSettings';
-import TimeLocationControls from './TimeLocationControls';
+import DatePicker from './DatePicker';
+import LatitudePicker from './LatitudePicker';
+import TimePicker from './TimePicker';
 import {forceNumber, roundToOnePlace} from './utils';
 
 class SunMotionSim extends React.Component {
@@ -30,8 +32,8 @@ class SunMotionSim extends React.Component {
         this.animate = this.animate.bind(this);
         this.onStartClick = this.onStartClick.bind(this);
         this.onLatitudeUpdate = this.onLatitudeUpdate.bind(this);
-        this.onDayUpdate = this.onDayUpdate.bind(this);
-        this.onMonthUpdate = this.onMonthUpdate.bind(this);
+        this.onDateTimeUpdate = this.onDateTimeUpdate.bind(this);
+        this.onAnimationRateUpdate = this.onAnimationRateUpdate.bind(this);
     }
     render() {
         return <React.Fragment>
@@ -59,7 +61,7 @@ class SunMotionSim extends React.Component {
                         <h5>Information</h5>
                         <p>
                             The horizon diagram is shown for an observer at latitude {roundToOnePlace(this.state.latitude)}&deg; N
-                            on 27 May at 12:00 (12:00 PM).
+                            on {this.state.dateTime.toLocaleString()}
                         </p>
                         <div className="row small">
                             <div className="col card">
@@ -104,32 +106,47 @@ class SunMotionSim extends React.Component {
                     </div>
                 </div>
 
-            <div className="col-lg-6">
-                <TimeLocationControls
-                    dateTime={this.state.dateTime}
-                    latitude={this.state.latitude}
-                    onLatitudeUpdate={this.onLatitudeUpdate}
-                    onDayUpdate={this.onDayUpdate}
-                    onMonthUpdate={this.onMonthUpdate} />
+                <div className="col-lg-6">
+                    <h5>Time and Location Controls</h5>
+                    <form className="form">
+                        <DatePicker
+                            dateTime={this.state.dateTime}
+                            onDateTimeUpdate={this.onDateTimeUpdate} />
+                        <div className="row">
+                            <div className="col">
+                                <TimePicker
+                                    dateTime={this.state.dateTime}
+                                    onDateTimeUpdate={this.onDateTimeUpdate} />
+                            </div>
 
-                <div className="row">
-                    <div className="col-6">
-                        <AnimationControls
-                            isPlaying={this.state.isPlaying}
-                            onStartClick={this.onStartClick}
-                        />
-                    </div>
-                    <div className="col-4">
-                        <GeneralSettings
-                            showDeclinationCircle={this.state.showDeclinationCircle}
-                            showEcliptic={this.state.showEcliptic}
-                            showMonthLabels={this.state.showMonthLabels}
-                            showUnderside={this.state.showUnderside}
-                            showStickfigure={this.state.showStickfigure}
-                            onInputChange={this.handleInputChange} />
+                            <div className="col">
+                                <LatitudePicker
+                                    latitude={this.state.latitude}
+                                    onLatitudeUpdate={this.onLatitudeUpdate} />
+                            </div>
+                        </div>
+                    </form>
+
+                    <div className="row">
+                        <div className="col-6">
+                            <AnimationControls
+                                isPlaying={this.state.isPlaying}
+                                onStartClick={this.onStartClick}
+                                animationRate={this.state.animationRate}
+                                onAnimationRateUpdate={this.onAnimationRateUpdate}
+                            />
+                        </div>
+                        <div className="col-4">
+                            <GeneralSettings
+                                showDeclinationCircle={this.state.showDeclinationCircle}
+                                showEcliptic={this.state.showEcliptic}
+                                showMonthLabels={this.state.showMonthLabels}
+                                showUnderside={this.state.showUnderside}
+                                showStickfigure={this.state.showStickfigure}
+                                onInputChange={this.handleInputChange} />
+                        </div>
                     </div>
                 </div>
-            </div>
             </div>
         </React.Fragment>;
     }
@@ -146,11 +163,26 @@ class SunMotionSim extends React.Component {
     incrementSunDeclinationAngle(n, inc) {
         return (n + inc) % (Math.PI * 2);
     }
+    /**
+     * Get the sun's angle in the sky, given a JavaScript Date object.
+     *
+     * This function only pays attention to the time part of the Date
+     * object, not the date.
+     */
+    getSunAngle(dateTime) {
+        const hours = dateTime.getHours();
+        const minutes = dateTime.getMinutes();
+        return (((hours + (minutes / 60)) / 24) * (Math.PI * 2))
+             - (Math.PI / 2);
+    }
     animate() {
         const me = this;
         this.setState(prevState => ({
-            sunDeclinationAngle: me.incrementSunDeclinationAngle(
-                prevState.sunDeclinationAngle, 0.01 * this.state.animationRate)
+            dateTime: new Date(prevState.dateTime.getTime() + (
+                100000 * this.state.animationRate)),
+            sunDeclinationAngle: me.getSunAngle(new Date(
+                prevState.dateTime.getTime() + (
+                    100000 * this.state.animationRate)))
         }));
         this.frameId = requestAnimationFrame(this.animate);
     }
@@ -170,9 +202,10 @@ class SunMotionSim extends React.Component {
     onLatitudeUpdate(latitude) {
         this.setState({latitude: forceNumber(latitude)});
     }
-    onDayUpdate() {
+    onDateTimeUpdate() {
     }
-    onMonthUpdate() {
+    onAnimationRateUpdate(e) {
+        this.setState({animationRate: forceNumber(e.target.value)});
     }
 }
 
