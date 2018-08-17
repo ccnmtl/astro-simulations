@@ -46,7 +46,39 @@ export default class DatePicker extends React.Component {
         this.calendarPicker.appendChild(calendarPickerApp.view);
         this.drawCalendarScene(calendarPickerApp);
     }
-    drawCalendarScene() {
+    drawCalendarScene(app) {
+        let months = [
+            'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug',
+            'Sep', 'Oct', 'Nov', 'Dec'
+        ];
+
+        let offset = 10;
+        months = months.map(month => {
+            const text = new PIXI.Text(month, {
+                fontFamily: 'Arial',
+                fontSize: 14,
+                fill: 0x000000,
+                align: 'center'
+            });
+            text.position.y = 20;
+            text.position.x = offset;
+            text.cacheAsBitmap = true;
+
+            const line = new PIXI.Graphics()
+                                 .lineStyle(1)
+                                 .moveTo(offset - 8, 22)
+                                 .lineTo(offset - 8, 34);
+            line.cacheAsBitmap = true;
+
+            offset += 40;
+            return [line, text];
+        });
+        months.forEach(month => {
+            month.forEach(e => {
+                app.stage.addChild(e);
+            });
+
+        });
     }
 }
 
