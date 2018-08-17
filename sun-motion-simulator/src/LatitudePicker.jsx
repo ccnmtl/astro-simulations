@@ -89,66 +89,6 @@ export default class LatitudePicker extends React.Component {
         app.stage.addChild(sprite);
         return sprite;
     }
-    drawClockScene(app, resource) {
-        const bg = this.drawBackground(app, resource);
-        // Scale down the clock to fit the container.
-        bg.width = app.view.width;
-        bg.height = app.view.height;
-        bg.position.x = 0;
-        bg.position.y = 0;
-
-        const center = new PIXI.Point(app.view.width / 2, app.view.height / 2);
-
-        // Draw a thin border around the clock
-        const border = new PIXI.Graphics()
-                               .lineStyle(1, 0x000000)
-                               .drawCircle(center.x, center.y, 96.5);
-        app.stage.addChild(border);
-
-        // Draw the hour hand
-        //
-        // Unlike Sprites, Graphics objects have no anchor attribute,
-        // so must be centered and rotated with "pivot". I've only
-        // gotten this to pivot around the center point by putting
-        // the object in a Container.
-        // I'm not completely sure if this is necessary but it works.
-        //
-        // * http://www.html5gamedevs.com/topic/37296-scaling-rectangle-from-center-and-transform-origin/
-        // * https://github.com/pixijs/pixi.js/issues/3269#issuecomment-413224102
-        //
-        const hourContainer = new PIXI.Container();
-        hourContainer.interactive = true;
-        hourContainer.buttonMode = true;
-        const hourHand = new PIXI.Graphics()
-                                 .beginFill(0x000000)
-                                 .drawRoundedRect(
-                                     0, 0,
-                                     8, bg.height / 4.5,
-                                     5);
-        hourContainer.addChild(hourHand);
-        hourContainer.position.set(100, 100);
-        hourContainer.pivot = new PIXI.Point(4, 2);
-        hourContainer.rotation = 0;
-        app.stage.addChild(hourContainer);
-        this.hourHand = hourContainer;
-
-        // Draw the minute hand
-        const minuteContainer = new PIXI.Container();
-        minuteContainer.interactive = true;
-        minuteContainer.buttonMode = true;
-        const minuteHand = new PIXI.Graphics()
-                                 .beginFill(0x666666)
-                                 .drawRoundedRect(
-                                     0, 0,
-                                     4, bg.height / 2.4,
-                                     4);
-        minuteContainer.addChild(minuteHand);
-        minuteContainer.position.set(100, 100);
-        minuteContainer.pivot = new PIXI.Point(2, 2);
-        minuteContainer.rotation = Math.PI;
-        app.stage.addChild(minuteContainer);
-        this.minuteHand = minuteContainer;
-    }
     drawLatitudeScene(app, resource) {
         const bg = this.drawBackground(app, resource);
 

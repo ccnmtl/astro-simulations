@@ -65,7 +65,13 @@ export default class TimePicker extends React.Component {
     componentDidUpdate(prevProps) {
         if (prevProps.dateTime !== this.props.dateTime) {
             // Update the clock.
-            //console.log(this.props.dateTime);
+            const minutes = this.props.dateTime.getMinutes();
+            this.minuteHand.rotation = (minutes / 60) * (Math.PI * 2)
+                                     - Math.PI;
+
+            const hours = this.props.dateTime.getHours();
+            this.hourHand.rotation = ((hours + (minutes / 60)) / 24) * (
+                Math.PI * 2) - Math.PI;
         }
     }
     componentWillUnmount() {
