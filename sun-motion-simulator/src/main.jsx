@@ -33,6 +33,7 @@ class SunMotionSim extends React.Component {
         this.onStartClick = this.onStartClick.bind(this);
         this.onLatitudeUpdate = this.onLatitudeUpdate.bind(this);
         this.onDateTimeUpdate = this.onDateTimeUpdate.bind(this);
+        this.onAnimationRateUpdate = this.onAnimationRateUpdate.bind(this);
     }
     render() {
         return <React.Fragment>
@@ -131,6 +132,8 @@ class SunMotionSim extends React.Component {
                             <AnimationControls
                                 isPlaying={this.state.isPlaying}
                                 onStartClick={this.onStartClick}
+                                animationRate={this.state.animationRate}
+                                onAnimationRateUpdate={this.onAnimationRateUpdate}
                             />
                         </div>
                         <div className="col-4">
@@ -175,10 +178,11 @@ class SunMotionSim extends React.Component {
     animate() {
         const me = this;
         this.setState(prevState => ({
-            dateTime: new Date(prevState.dateTime.getTime() + 10000),
-            sunDeclinationAngle: me.getSunAngle(new Date(prevState.dateTime.getTime() + 10000))
-            //sunDeclinationAngle: me.incrementSunDeclinationAngle(
-            //    prevState.sunDeclinationAngle, 0.01 * this.state.animationRate)
+            dateTime: new Date(prevState.dateTime.getTime() + (
+                100000 * this.state.animationRate)),
+            sunDeclinationAngle: me.getSunAngle(new Date(
+                prevState.dateTime.getTime() + (
+                    100000 * this.state.animationRate)))
         }));
         this.frameId = requestAnimationFrame(this.animate);
     }
@@ -199,6 +203,9 @@ class SunMotionSim extends React.Component {
         this.setState({latitude: forceNumber(latitude)});
     }
     onDateTimeUpdate() {
+    }
+    onAnimationRateUpdate(e) {
+        this.setState({animationRate: forceNumber(e.target.value)});
     }
 }
 

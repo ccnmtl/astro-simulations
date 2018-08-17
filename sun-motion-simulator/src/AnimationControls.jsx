@@ -34,7 +34,10 @@ export default class AnimationControls extends React.Component {
                 </div>
 
                 <label>Animation speed:</label> 3.0 hrs/sec
-                <input className="custom-range" type="range" />
+                <input className="custom-range" type="range"
+                       min={0.01} max={10} step={0.01}
+                       value={this.props.animationRate}
+                       onChange={this.props.onAnimationRateUpdate} />
             </React.Fragment>
         );
     }
@@ -42,5 +45,7 @@ export default class AnimationControls extends React.Component {
 
 AnimationControls.propTypes = {
     isPlaying: PropTypes.bool.isRequired,
-    onStartClick: PropTypes.func.isRequired
+    animationRate: PropTypes.number.isRequired,
+    onStartClick: PropTypes.func.isRequired,
+    onAnimationRateUpdate: PropTypes.func.isRequired,
 };
