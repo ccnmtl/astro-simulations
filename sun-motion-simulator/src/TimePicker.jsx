@@ -5,6 +5,17 @@ import * as PIXI from 'pixi.js';
 export default class TimePicker extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            isDraggingMinute: false,
+            isDraggingHour: false
+        };
+
+        this.onMinuteDragStart = this.onMinuteDragStart.bind(this);
+        this.onMinuteDragEnd = this.onMinuteDragEnd.bind(this);
+        this.onMinuteMove = this.onMinuteMove.bind(this);
+        this.onHourDragStart = this.onHourDragStart.bind(this);
+        this.onHourDragEnd = this.onHourDragEnd.bind(this);
+        this.onHourMove = this.onHourMove.bind(this);
 
         this.loader = new PIXI.loaders.Loader();
         this.loader.add('clock', 'img/clock.png');
@@ -126,6 +137,57 @@ export default class TimePicker extends React.Component {
                             .beginFill(0xa0522d)
                             .drawCircle(100, 100, 3);
         app.stage.addChild(cog);
+
+        // Set up events
+        minuteContainer
+        // events for drag start
+            .on('mousedown', this.onMinuteDragStart)
+            .on('touchstart', this.onMinuteDragStart)
+        // events for drag end
+            .on('mouseup', this.onMinuteDragEnd)
+            .on('mouseupoutside', this.onMinuteDragEnd)
+            .on('touchend', this.onMinuteDragEnd)
+            .on('touchendoutside', this.onMinuteDragEnd)
+        // events for drag move
+            .on('mousemove', this.onMinuteMove)
+            .on('touchmove', this.onMinuteMove);
+
+        hourContainer
+        // events for drag start
+            .on('mousedown', this.onHourDragStart)
+            .on('touchstart', this.onHourDragStart)
+        // events for drag end
+            .on('mouseup', this.onHourDragEnd)
+            .on('mouseupoutside', this.onHourDragEnd)
+            .on('touchend', this.onHourDragEnd)
+            .on('touchendoutside', this.onHourDragEnd)
+        // events for drag move
+            .on('mousemove', this.onHourMove)
+            .on('touchmove', this.onHourMove);
+    }
+
+    onMinuteDragStart() {
+        this.setState({isDraggingMinute: true});
+    }
+    onMinuteDragEnd() {
+        this.setState({isDraggingMinute: false});
+    }
+    onMinuteMove(e) {
+        if (this.state.isDraggingMinute) {
+            console.log('minute', e);
+        }
+    }
+
+    onHourDragStart() {
+        this.setState({isDraggingHour: true});
+    }
+    onHourDragEnd() {
+        this.setState({isDraggingHour: false});
+    }
+    onHourMove(e) {
+        if (this.state.isDraggingHour) {
+            console.log('hour', e);
+        }
     }
 }
 
