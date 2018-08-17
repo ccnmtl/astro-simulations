@@ -33,6 +33,8 @@ class SunMotionSim extends React.Component {
         this.onStartClick = this.onStartClick.bind(this);
         this.onLatitudeUpdate = this.onLatitudeUpdate.bind(this);
         this.onDateTimeUpdate = this.onDateTimeUpdate.bind(this);
+        this.onDayUpdate = this.onDayUpdate.bind(this);
+        this.onMonthUpdate = this.onMonthUpdate.bind(this);
         this.onAnimationRateUpdate = this.onAnimationRateUpdate.bind(this);
     }
     render() {
@@ -111,7 +113,8 @@ class SunMotionSim extends React.Component {
                     <form className="form">
                         <DatePicker
                             dateTime={this.state.dateTime}
-                            onDateTimeUpdate={this.onDateTimeUpdate} />
+                            onDayUpdate={this.onDayUpdate}
+                            onMonthUpdate={this.onMonthUpdate} />
                         <div className="row">
                             <div className="col">
                                 <Clock
@@ -198,6 +201,18 @@ class SunMotionSim extends React.Component {
     }
     onDateTimeUpdate(dateTime) {
         this.setState({dateTime: dateTime});
+    }
+    onDayUpdate(e) {
+        const newDay = forceNumber(e.target.value);
+        const d = new Date(this.state.dateTime);
+        d.setDate(newDay);
+        this.setState({dateTime: d});
+    }
+    onMonthUpdate(e) {
+        const newMonth = forceNumber(e.target.value);
+        const d = new Date(this.state.dateTime);
+        d.setMonth(newMonth);
+        this.setState({dateTime: d});
     }
     onAnimationRateUpdate(e) {
         this.setState({animationRate: forceNumber(e.target.value)});
