@@ -5,7 +5,7 @@ import AnimationControls from './AnimationControls';
 import GeneralSettings from './GeneralSettings';
 import DatePicker from './DatePicker';
 import LatitudePicker from './LatitudePicker';
-import TimePicker from './TimePicker';
+import Clock from './Clock';
 import {forceNumber, roundToOnePlace} from './utils';
 
 class SunMotionSim extends React.Component {
@@ -114,7 +114,7 @@ class SunMotionSim extends React.Component {
                             onDateTimeUpdate={this.onDateTimeUpdate} />
                         <div className="row">
                             <div className="col">
-                                <TimePicker
+                                <Clock
                                     dateTime={this.state.dateTime}
                                     onDateTimeUpdate={this.onDateTimeUpdate} />
                             </div>

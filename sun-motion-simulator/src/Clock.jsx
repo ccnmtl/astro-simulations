@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import * as PIXI from 'pixi.js';
 
-export default class TimePicker extends React.Component {
+export default class Clock extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -208,7 +208,7 @@ export default class TimePicker extends React.Component {
     }
 }
 
-TimePicker.propTypes = {
+Clock.propTypes = {
     dateTime: PropTypes.object.isRequired,
     onDateTimeUpdate: PropTypes.func.isRequired
 };
