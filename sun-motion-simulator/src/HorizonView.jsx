@@ -63,7 +63,7 @@ export default class HorizonView extends React.Component {
 
         const light = new THREE.DirectionalLight(0xffffff);
         this.light = light;
-        light.position.set(50, 1, 0);
+        light.position.set(50, 20, 0);
         light.castShadow = true;
         scene.add(light);
 
@@ -81,9 +81,9 @@ export default class HorizonView extends React.Component {
 
         this.drawPlane(scene);
 
-        const stickFigure = this.drawStickFigure();
-        scene.add(stickFigure);
-        light.target = stickFigure;
+        this.stickFigure = this.drawStickFigure();
+        scene.add(this.stickFigure);
+        light.target = this.stickFigure;
 
         this.drawGlobe(scene);
         this.sun = this.drawSun(scene);
@@ -181,8 +181,11 @@ export default class HorizonView extends React.Component {
             color: 0xffff00,
             linewidth: 8
         });
+
+        const declinationGeometry = new THREE.EdgesGeometry(
+            new THREE.CircleGeometry(46, 64));
         this.sunDeclination = new THREE.LineSegments(
-            discGeometry, yellowMaterial);
+            declinationGeometry, yellowMaterial);
         this.sunDeclination.position.y = 20;
         this.sunDeclination.rotation.x = THREE.Math.degToRad(90);
 
@@ -243,7 +246,7 @@ export default class HorizonView extends React.Component {
 
         group.add(sun);
         group.add(border);
-        group.position.set(50, 1, 0);
+        group.position.y = 20;
         return group;
     }
     updateAngleGeometry(ellipse, angle) {
@@ -277,12 +280,12 @@ export default class HorizonView extends React.Component {
     }
 
     animate() {
-        this.sun.position.x = 50 * Math.cos(this.props.sunDeclinationAngle);
-        this.sun.position.z = 50 * Math.sin(this.props.sunDeclinationAngle);
+        this.sun.position.x = 46.25 * Math.cos(this.props.sunDeclinationAngle);
+        this.sun.position.z = 46.25 * Math.sin(this.props.sunDeclinationAngle);
         this.sun.rotation.y = -this.props.sunDeclinationAngle +
                               THREE.Math.degToRad(90);
-        this.light.position.x = 50 * Math.cos(this.props.sunDeclinationAngle);
-        this.light.position.z = 50 * Math.sin(this.props.sunDeclinationAngle);
+        this.light.position.x = 46 * Math.cos(this.props.sunDeclinationAngle);
+        this.light.position.z = 46 * Math.sin(this.props.sunDeclinationAngle);
         this.light.rotation.y = -this.props.sunDeclinationAngle +
                                 THREE.Math.degToRad(90);
 
@@ -290,6 +293,10 @@ export default class HorizonView extends React.Component {
 
         this.orbitGroup.rotation.x =
             THREE.Math.degToRad(this.props.latitude) - (Math.PI / 2);
+
+        this.sunDeclination.visible = this.props.showDeclinationCircle;
+        this.ecliptic.visible = this.props.showEcliptic;
+        this.stickFigure.visible = this.props.showStickfigure;
 
         this.renderScene();
         this.frameId = window.requestAnimationFrame(this.animate);
@@ -340,5 +347,10 @@ export default class HorizonView extends React.Component {
 
 HorizonView.propTypes = {
     latitude: PropTypes.number.isRequired,
-    sunDeclinationAngle: PropTypes.number.isRequired
+    sunDeclinationAngle: PropTypes.number.isRequired,
+    showDeclinationCircle: PropTypes.bool.isRequired,
+    showEcliptic: PropTypes.bool.isRequired,
+    showMonthLabels: PropTypes.bool.isRequired,
+    showStickfigure: PropTypes.bool.isRequired,
+    showUnderside: PropTypes.bool.isRequired
 };
