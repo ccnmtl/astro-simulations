@@ -10,10 +10,6 @@ export default class LatitudePicker extends React.Component {
             isDraggingLatitude: false
         }
 
-        this.resources = {};
-
-        this.stop = this.stop.bind(this);
-
         this.onLatDragStart = this.onLatDragStart.bind(this);
         this.onLatDragEnd = this.onLatDragEnd.bind(this);
         this.onLatMove = this.onLatMove.bind(this);
@@ -71,10 +67,6 @@ export default class LatitudePicker extends React.Component {
         }
     }
     componentWillUnmount() {
-        this.stop();
-    }
-    stop() {
-        this.calendarPickerApp.stop();
         this.latitudePickerApp.stop();
     }
     /**
