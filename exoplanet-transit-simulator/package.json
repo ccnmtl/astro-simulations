@@ -1,0 +1,51 @@
+{
+  "name": "exoplanet-transit-simulator",
+  "version": "1.0.0",
+  "description": "Exoplanet Transit Simulator",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "test": "jest",
+    "serve": "webpack-serve --no-hot-client --no-hmr --no-reload ./webpack.config.js",
+    "dev": "webpack --mode development --watch",
+    "build": "webpack --mode production",
+    "eslint": "eslint src/*.jsx"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ccnmtl/astro-interactives.git"
+  },
+  "keywords": [
+    "astronomy"
+  ],
+  "author": "Nik Nyby",
+  "license": "GPL-3.0+",
+  "bugs": {
+    "url": "https://github.com/ccnmtl/astro-interactives/issues"
+  },
+  "homepage": "https://github.com/ccnmtl/astro-interactives#readme",
+  "dependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-react-app": "^3.1.2",
+    "pixi.js": "^4.8.1",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1"
+  },
+  "devDependencies": {
+    "babel-eslint": "^8.2.6",
+    "babel-loader": "^7.1.5",
+    "babel-preset-react": "^6.24.1",
+    "eslint": "^5.1.0",
+    "eslint-plugin-react": "^7.10.0",
+    "jest": "^23.4.1",
+    "webpack": "^4.16.1",
+    "webpack-cli": "^3.0.8",
+    "webpack-serve": "^2.0.2"
+  },
+  "babel": {
+    "presets": [
+      "env",
+      "react"
+    ]
+  }
+}
