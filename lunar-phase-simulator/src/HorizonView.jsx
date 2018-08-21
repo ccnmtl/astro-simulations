@@ -107,13 +107,13 @@ export default class HorizonView extends React.Component {
             map: texture
         });
         material.map.minFilter = THREE.LinearFilter;
-        const geometry = new THREE.CircleGeometry(50, 64);
+        const geometry = new THREE.CircleBufferGeometry(50, 64);
         const plane = new THREE.Mesh(geometry, material);
         plane.rotation.x = THREE.Math.degToRad(-90);
         scene.add(plane);
     }
     drawGlobe(scene) {
-        var domeGeometry = new THREE.SphereGeometry(
+        var domeGeometry = new THREE.SphereBufferGeometry(
             50, 64, 64, 0, Math.PI * 2, 0, Math.PI / 2);
         const nightDomeMaterial = new THREE.MeshBasicMaterial({
             transparent: true,
@@ -147,7 +147,7 @@ export default class HorizonView extends React.Component {
         // drawing lines on CircleGeometry.
         // https://stackoverflow.com/q/51525988/173630
         const discGeometry = new THREE.EdgesGeometry(
-            new THREE.CircleGeometry(50, 64));
+            new THREE.CircleBufferGeometry(50, 64));
 
         // A north-south line
         const observersMeridian = new THREE.LineSegments(
@@ -184,7 +184,7 @@ export default class HorizonView extends React.Component {
             color: 0xffdd00,
             side: THREE.DoubleSide
         });
-        const geometry = new THREE.CircleGeometry(5, 32);
+        const geometry = new THREE.CircleBufferGeometry(5, 32);
         const edges = new THREE.EdgesGeometry(geometry);
         const border = new THREE.LineLoop(edges, new THREE.LineBasicMaterial({
             color: 0x000000,
@@ -204,7 +204,7 @@ export default class HorizonView extends React.Component {
             color: 0xbbbbbb,
             side: THREE.DoubleSide
         });
-        const geometry = new THREE.CircleGeometry(5, 32);
+        const geometry = new THREE.CircleBufferGeometry(5, 32);
         const edges = new THREE.EdgesGeometry(geometry);
         const border = new THREE.LineLoop(edges, new THREE.LineBasicMaterial({
             color: 0x000000,
@@ -274,15 +274,15 @@ export default class HorizonView extends React.Component {
     }
 
     animate() {
-        this.sun.position.x = 50 * Math.cos(this.props.observerAngle);
-        this.sun.position.z = 50 * Math.sin(this.props.observerAngle);
+        this.sun.position.x = 50.25 * Math.cos(this.props.observerAngle);
+        this.sun.position.z = 50.25 * Math.sin(this.props.observerAngle);
         this.sun.rotation.y = -this.props.observerAngle +
                               THREE.Math.degToRad(90);
 
         this.skyMaterial.color.setHex(this.getSkyColor(this.props.observerAngle));
 
-        this.moon.position.x = 50 * Math.cos(this.props.moonObserverPos);
-        this.moon.position.z = 50 * Math.sin(this.props.moonObserverPos);
+        this.moon.position.x = 50.25 * Math.cos(this.props.moonObserverPos);
+        this.moon.position.z = 50.25 * Math.sin(this.props.moonObserverPos);
         this.moon.rotation.y = -this.props.moonObserverPos + THREE.Math.degToRad(90);
 
         if (this.props.showAngle) {

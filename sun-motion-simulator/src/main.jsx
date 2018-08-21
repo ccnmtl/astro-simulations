@@ -34,6 +34,7 @@ class SunMotionSim extends React.Component {
         this.onLatitudeUpdate = this.onLatitudeUpdate.bind(this);
         this.onDateTimeUpdate = this.onDateTimeUpdate.bind(this);
         this.onDayUpdate = this.onDayUpdate.bind(this);
+        this.onDateControlUpdate = this.onDateControlUpdate.bind(this);
         this.onMonthUpdate = this.onMonthUpdate.bind(this);
         this.onAnimationRateUpdate = this.onAnimationRateUpdate.bind(this);
     }
@@ -58,6 +59,11 @@ class SunMotionSim extends React.Component {
                 <div className="col">
                     <HorizonView
                         latitude={this.state.latitude}
+                        showDeclinationCircle={this.state.showDeclinationCircle}
+                        showEcliptic={this.state.showEcliptic}
+                        showMonthLabels={this.state.showMonthLabels}
+                        showStickfigure={this.state.showStickfigure}
+                        showUnderside={this.state.showUnderside}
                         sunDeclinationAngle={this.state.sunDeclinationAngle} />
                     <div>
                         <h5>Information</h5>
@@ -114,7 +120,8 @@ class SunMotionSim extends React.Component {
                         <DatePicker
                             dateTime={this.state.dateTime}
                             onDayUpdate={this.onDayUpdate}
-                            onMonthUpdate={this.onMonthUpdate} />
+                            onMonthUpdate={this.onMonthUpdate}
+                            onDateControlUpdate={this.onDateControlUpdate} />
                         <div className="row">
                             <div className="col">
                                 <Clock
@@ -202,17 +209,33 @@ class SunMotionSim extends React.Component {
     onDateTimeUpdate(dateTime) {
         this.setState({dateTime: dateTime});
     }
+    /**
+     * Handle the update for the <input type="number">
+     */
     onDayUpdate(e) {
         const newDay = forceNumber(e.target.value);
         const d = new Date(this.state.dateTime);
         d.setDate(newDay);
         this.setState({dateTime: d});
     }
+    /**
+     * Handle the update for the month select box.
+     */
     onMonthUpdate(e) {
         const newMonth = forceNumber(e.target.value);
         const d = new Date(this.state.dateTime);
         d.setMonth(newMonth);
         this.setState({dateTime: d});
+    }
+    /**
+     * Handle the update for the date picker.
+     *
+     * All the control-specific logic is handled in DatePicker.jsx.
+     */
+    onDateControlUpdate(newDate) {
+        newDate.setHours(this.state.dateTime.getHours());
+        newDate.setMinutes(this.state.dateTime.getMinutes());
+        this.setState({dateTime: newDate});
     }
     onAnimationRateUpdate(e) {
         this.setState({animationRate: forceNumber(e.target.value)});

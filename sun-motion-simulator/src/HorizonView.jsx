@@ -63,7 +63,9 @@ export default class HorizonView extends React.Component {
 
         const light = new THREE.DirectionalLight(0xffffff);
         this.light = light;
-        light.position.set(50, 1, 0);
+        this.light.position.x = 46 * Math.cos(this.props.sunDeclinationAngle);
+        this.light.position.y = 20;
+        this.light.position.z = 46 * Math.sin(this.props.sunDeclinationAngle);
         light.castShadow = true;
         scene.add(light);
 
@@ -81,9 +83,9 @@ export default class HorizonView extends React.Component {
 
         this.drawPlane(scene);
 
-        const stickFigure = this.drawStickFigure();
-        scene.add(stickFigure);
-        light.target = stickFigure;
+        this.stickFigure = this.drawStickFigure();
+        scene.add(this.stickFigure);
+        light.target = this.stickFigure;
 
         this.drawGlobe(scene);
         this.sun = this.drawSun(scene);
@@ -122,7 +124,7 @@ export default class HorizonView extends React.Component {
             map: texture
         });
         material.map.minFilter = THREE.LinearFilter;
-        const geometry = new THREE.CircleGeometry(50, 64);
+        const geometry = new THREE.CircleBufferGeometry(50, 64);
         const plane = new THREE.Mesh(geometry, material);
         plane.castShadow = false;
         plane.receiveShadow = true;
@@ -130,7 +132,7 @@ export default class HorizonView extends React.Component {
         scene.add(plane);
     }
     drawGlobe(scene) {
-        var domeGeometry = new THREE.SphereGeometry(
+        var domeGeometry = new THREE.SphereBufferGeometry(
             50, 64, 64, 0, Math.PI * 2, 0, Math.PI / 2);
         const nightDomeMaterial = new THREE.MeshBasicMaterial({
             transparent: true,
@@ -163,7 +165,7 @@ export default class HorizonView extends React.Component {
         // drawing lines on CircleGeometry.
         // https://stackoverflow.com/q/51525988/173630
         const discGeometry = new THREE.EdgesGeometry(
-            new THREE.CircleGeometry(50, 64));
+            new THREE.CircleBufferGeometry(50, 64));
 
         // A north-south line
         const observersMeridian = new THREE.LineSegments(
@@ -181,8 +183,11 @@ export default class HorizonView extends React.Component {
             color: 0xffff00,
             linewidth: 8
         });
+
+        const declinationGeometry = new THREE.EdgesGeometry(
+            new THREE.CircleBufferGeometry(46, 64));
         this.sunDeclination = new THREE.LineSegments(
-            discGeometry, yellowMaterial);
+            declinationGeometry, yellowMaterial);
         this.sunDeclination.position.y = 20;
         this.sunDeclination.rotation.x = THREE.Math.degToRad(90);
 
@@ -194,8 +199,10 @@ export default class HorizonView extends React.Component {
             discGeometry, blueMaterial);
         this.celestialEquator.rotation.x = THREE.Math.degToRad(90);
 
+        const primeHourGeometry = new THREE.EdgesGeometry(
+            new THREE.CircleBufferGeometry(50, 64, 0, Math.PI));
         this.primeHourCircle = new THREE.LineSegments(
-            discGeometry, blueMaterial);
+            primeHourGeometry, blueMaterial);
         this.primeHourCircle.rotation.z = THREE.Math.degToRad(90);
 
         const thickWhiteMaterial = new THREE.LineBasicMaterial({
@@ -204,11 +211,10 @@ export default class HorizonView extends React.Component {
         });
         this.ecliptic = new THREE.LineSegments(
             discGeometry, thickWhiteMaterial);
-        this.ecliptic.rotation.x = THREE.Math.degToRad(75);
-        this.ecliptic.rotation.y = THREE.Math.degToRad(5);
+        this.ecliptic.rotation.x = THREE.Math.degToRad(67);
     }
     drawStickFigure() {
-        const geometry = new THREE.BoxGeometry(7, 14, 0.01);
+        const geometry = new THREE.BoxBufferGeometry(7, 14, 0.01);
         const spriteMap = new THREE.TextureLoader().load('img/stickfigure.svg');
         const spriteMaterial = new THREE.MeshLambertMaterial({
             transparent: true,
@@ -231,7 +237,7 @@ export default class HorizonView extends React.Component {
             color: 0xffdd00,
             side: THREE.DoubleSide
         });
-        const geometry = new THREE.CircleGeometry(3, 32);
+        const geometry = new THREE.CircleBufferGeometry(3, 32);
         const edges = new THREE.EdgesGeometry(geometry);
         const border = new THREE.LineLoop(edges, new THREE.LineBasicMaterial({
             color: 0x000000,
@@ -243,7 +249,10 @@ export default class HorizonView extends React.Component {
 
         group.add(sun);
         group.add(border);
-        group.position.set(50, 1, 0);
+        group.position.y = 20;
+        group.position.x = 46.25 * Math.cos(this.props.sunDeclinationAngle);
+        group.position.z = 46.25 * Math.sin(this.props.sunDeclinationAngle);
+        group.rotation.x = THREE.Math.degToRad(-18);
         return group;
     }
     updateAngleGeometry(ellipse, angle) {
@@ -277,19 +286,16 @@ export default class HorizonView extends React.Component {
     }
 
     animate() {
-        this.sun.position.x = 50 * Math.cos(this.props.sunDeclinationAngle);
-        this.sun.position.z = 50 * Math.sin(this.props.sunDeclinationAngle);
-        this.sun.rotation.y = -this.props.sunDeclinationAngle +
-                              THREE.Math.degToRad(90);
-        this.light.position.x = 50 * Math.cos(this.props.sunDeclinationAngle);
-        this.light.position.z = 50 * Math.sin(this.props.sunDeclinationAngle);
-        this.light.rotation.y = -this.props.sunDeclinationAngle +
-                                THREE.Math.degToRad(90);
+        this.orbitGroup.rotation.y = -this.props.sunDeclinationAngle +
+                                     THREE.Math.degToRad(90);
+        this.orbitGroup.rotation.x =
+            THREE.Math.degToRad(this.props.latitude) - (Math.PI / 2);
 
         this.skyMaterial.color.setHex(this.getSkyColor(this.props.sunDeclinationAngle));
 
-        this.orbitGroup.rotation.x =
-            THREE.Math.degToRad(this.props.latitude) - (Math.PI / 2);
+        this.sunDeclination.visible = this.props.showDeclinationCircle;
+        this.ecliptic.visible = this.props.showEcliptic;
+        this.stickFigure.visible = this.props.showStickfigure;
 
         this.renderScene();
         this.frameId = window.requestAnimationFrame(this.animate);
@@ -340,5 +346,10 @@ export default class HorizonView extends React.Component {
 
 HorizonView.propTypes = {
     latitude: PropTypes.number.isRequired,
-    sunDeclinationAngle: PropTypes.number.isRequired
+    sunDeclinationAngle: PropTypes.number.isRequired,
+    showDeclinationCircle: PropTypes.bool.isRequired,
+    showEcliptic: PropTypes.bool.isRequired,
+    showMonthLabels: PropTypes.bool.isRequired,
+    showStickfigure: PropTypes.bool.isRequired,
+    showUnderside: PropTypes.bool.isRequired
 };

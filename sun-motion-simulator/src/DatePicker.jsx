@@ -3,6 +3,16 @@ import PropTypes from 'prop-types';
 import * as PIXI from 'pixi.js';
 
 export default class DatePicker extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            isDragging: false
+        };
+
+        this.onDragStart = this.onDragStart.bind(this);
+        this.onDragEnd = this.onDragEnd.bind(this);
+        this.onMove = this.onMove.bind(this);
+    }
     render() {
         return <React.Fragment>
             <div className="form-inline">
@@ -36,22 +46,22 @@ export default class DatePicker extends React.Component {
         </React.Fragment>;
     }
     componentDidMount() {
-        const calendarPickerApp = new PIXI.Application({
+        const app = new PIXI.Application({
             backgroundColor: 0xffffff,
-            width: 520,
+            width: 500,
             height: 30,
             sharedLoader: true,
             sharedTicker: true,
             forceCanvas: true
         });
-        this.calendarPickerApp = calendarPickerApp;
-        this.calendarPicker.appendChild(calendarPickerApp.view);
-        this.drawCalendarScene(calendarPickerApp);
+        this.app = app;
+        this.calendarPicker.appendChild(app.view);
+        this.drawCalendarScene(app);
     }
     componentDidUpdate(prevProps) {
         if (prevProps.dateTime !== this.props.dateTime) {
             const pos = this.dateToLocalPos(this.props.dateTime,
-                                            this.calendarPickerApp);
+                                            this.app);
 
             this.control.position.x = pos;
         }
@@ -62,7 +72,7 @@ export default class DatePicker extends React.Component {
             'Sep', 'Oct', 'Nov', 'Dec'
         ];
 
-        let offset = 10;
+        let offset = 18;
         months = months.map(month => {
             const text = new PIXI.Text(month, {
                 fontFamily: 'Arial',
@@ -91,14 +101,14 @@ export default class DatePicker extends React.Component {
         });
 
         // Draw the draggable control
-        const picker = new PIXI.Container();
-        picker.interactive = true;
-        picker.buttonMode = true;
+        const control = new PIXI.Container();
+        control.interactive = true;
+        control.buttonMode = true;
         const line = new PIXI.Graphics()
                              .lineStyle(2, 0x000000)
                              .moveTo(0, 0)
                              .lineTo(0, 35);
-        picker.addChild(line);
+        control.addChild(line);
 
         const arrowhead = new PIXI.Graphics()
                                   .beginFill(0x000000)
@@ -107,23 +117,78 @@ export default class DatePicker extends React.Component {
                                       7, 0,
                                       0, 10
                                   ]);
-        picker.addChild(arrowhead);
+        control.addChild(arrowhead);
 
-        const pickerPos = this.dateToLocalPos(this.props.dateTime, app);
-        picker.position.x = pickerPos;
-        this.control = picker;
-        app.stage.addChild(picker);
+        const controlPos = this.dateToLocalPos(this.props.dateTime, app);
+        control.position.x = controlPos;
+        this.control = control;
+        app.stage.addChild(control);
+
+        // Set up events
+        control
+        // events for drag start
+            .on('mousedown', this.onDragStart)
+            .on('touchstart', this.onDragStart)
+        // events for drag end
+            .on('mouseup', this.onDragEnd)
+            .on('mouseupoutside', this.onDragEnd)
+            .on('touchend', this.onDragEnd)
+            .on('touchendoutside', this.onDragEnd)
+        // events for drag move
+            .on('mousemove', this.onMove)
+            .on('touchmove', this.onMove);
+
+
     }
+    /**
+     * Given a Date object, return the active x position of this
+     * control.
+     */
     dateToLocalPos(dateTime, app) {
         // TODO: this isn't exactly accurate.. might have to use a
         // library like https://date-fns.org/
-        const dayOfYear = (dateTime.getMonth() * 30.5) + dateTime.getDay();
-        return (dayOfYear / 365.25) * app.view.width;
+        const dayOfYear = (dateTime.getMonth() * 30.5) + dateTime.getDate();
+        const x = (dayOfYear / 365.25) * (app.view.width - 20);
+        return x + 10;
+    }
+    /**
+     * Given an x-position on the calendar control, return the Date
+     * that point represents.
+     *
+     * This control only modifies the day, not the time.
+     */
+    localPosToDate(x, app) {
+        const d = new Date('1/1/2001');
+        x = Math.min(Math.max(x - 10, 0), (app.view.width - 20));
+        const dayOfYear = (x / (app.view.width - 20)) * 365.25;
+
+        const newDate = new Date(
+            d.getTime() + (dayOfYear * 24 * 3600 * 1000));
+
+        return newDate;
+    }
+
+    onDragStart(e) {
+        this.dragStartPos = e.data.getLocalPosition(this.app.stage);
+        this.setState({isDragging: true});
+    }
+    onDragEnd() {
+        this.setState({isDragging: false});
+    }
+    onMove(e) {
+        if (this.state.isDragging) {
+            const pos = e.data.getLocalPosition(this.app.stage);
+
+            const newDate = this.localPosToDate(pos.x, this.app);
+
+            this.props.onDateControlUpdate(newDate);
+        }
     }
 }
 
 DatePicker.propTypes = {
     dateTime: PropTypes.object.isRequired,
     onDayUpdate: PropTypes.func.isRequired,
-    onMonthUpdate: PropTypes.func.isRequired
+    onMonthUpdate: PropTypes.func.isRequired,
+    onDateControlUpdate: PropTypes.func.isRequired
 };
