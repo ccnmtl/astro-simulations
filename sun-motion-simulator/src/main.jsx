@@ -12,7 +12,7 @@ class SunMotionSim extends React.Component {
     constructor(props) {
         super(props);
         this.initialState = {
-            dateTime: new Date('May 27, 12:00'),
+            dateTime: new Date(2001, 4, 27, 12),
             latitude: 40.8,
             sunDeclinationAngle: Math.PI / 2,
             isPlaying: false,
