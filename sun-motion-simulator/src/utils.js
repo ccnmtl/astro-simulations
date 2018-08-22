@@ -14,7 +14,7 @@ const roundToOnePlace = function(n) {
 }
 
 /**
- * Get the sun's angle in the sky, given a JavaScript Date object.
+ * Get the sun's azimuth, given a JavaScript Date object.
  *
  * This function only pays attention to the time part of the Date
  * object, not the date.
@@ -22,8 +22,7 @@ const roundToOnePlace = function(n) {
 const timeToAngle = function(dateTime) {
     const hours = dateTime.getHours();
     const minutes = dateTime.getMinutes();
-    return (((hours + (minutes / 60)) / 24) * (Math.PI * 2))
-        - (Math.PI / 2);
+    return ((hours + (minutes / 60)) / 24) * (Math.PI * 2);
 };
 
 /**
@@ -42,7 +41,16 @@ const minuteAngleToTime = function(angle) {
     return minute;
 };
 
+const degToRad = function(degrees) {
+    return degrees * Math.PI / 180;
+};
+
+const radToDeg = function(radians) {
+    return radians * 180 / Math.PI;
+};
+
 export {
     forceNumber, roundToOnePlace, timeToAngle,
-    hourAngleToTime, minuteAngleToTime
+    hourAngleToTime, minuteAngleToTime,
+    degToRad, radToDeg
 };

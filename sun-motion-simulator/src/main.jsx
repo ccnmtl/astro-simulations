@@ -6,7 +6,10 @@ import GeneralSettings from './GeneralSettings';
 import DatePicker from './DatePicker';
 import LatitudePicker from './LatitudePicker';
 import Clock from './Clock';
-import {forceNumber, roundToOnePlace, timeToAngle} from './utils';
+import {
+    forceNumber, roundToOnePlace, timeToAngle, degToRad,
+    radToDeg
+} from './utils';
 
 class SunMotionSim extends React.Component {
     constructor(props) {
@@ -14,7 +17,8 @@ class SunMotionSim extends React.Component {
         this.initialState = {
             dateTime: new Date('May 27, 12:00'),
             latitude: 40.8,
-            sunDeclinationAngle: Math.PI / 2,
+            sunAzimuth: degToRad(182),
+            sunDeclination: degToRad(21.4),
             isPlaying: false,
             animationRate: 1,
 
@@ -39,6 +43,14 @@ class SunMotionSim extends React.Component {
         this.onAnimationRateUpdate = this.onAnimationRateUpdate.bind(this);
     }
     render() {
+        const sunAltitude = roundToOnePlace(
+            radToDeg(this.getSunAltitude(
+                this.state.latitude, this.state.sunDeclination))
+        );
+        const sunAzimuth = roundToOnePlace(
+            radToDeg(this.state.sunAzimuth));
+        const sunDeclination = roundToOnePlace(
+            radToDeg(this.state.sunDeclination));
         return <React.Fragment>
             <nav className="navbar navbar-expand-md navbar-light bg-light d-flex justify-content-between">
                 <span className="navbar-brand mb-0 h1">Motions of the Sun Simulator</span>
@@ -64,7 +76,8 @@ class SunMotionSim extends React.Component {
                         showMonthLabels={this.state.showMonthLabels}
                         showStickfigure={this.state.showStickfigure}
                         showUnderside={this.state.showUnderside}
-                        sunDeclinationAngle={this.state.sunDeclinationAngle} />
+                        sunAzimuth={this.state.sunAzimuth}
+                        sunDeclination={this.state.sunDeclination} />
                     <div>
                         <h5>Information</h5>
                         <p>
@@ -97,17 +110,17 @@ class SunMotionSim extends React.Component {
                             </div>
                             <div className="col">
                                 <div>
-                                    Sun&apos;s altitude: 67.7&deg;
+                                    Sun&apos;s altitude: {sunAltitude}&deg;
                                 </div>
                                 <div>
-                                    Sun&apos;s azimuth: 213.3&deg;
+                                    Sun&apos;s azimuth: {sunAzimuth}&deg;
                                 </div>
 
                                 <div>
                                     Sun&apos;s right ascension: 4h 19m
                                 </div>
                                 <div>
-                                    Sun&apos;s declination: 21.4&deg;
+                                    Sun&apos;s declination: {sunDeclination}&deg;
                                 </div>
                             </div>
                         </div>
@@ -160,25 +173,22 @@ class SunMotionSim extends React.Component {
             </div>
         </React.Fragment>;
     }
-    handleInputChange(event) {
-        const target = event.target;
-        const value = target.type === 'checkbox' ?
-                      target.checked : target.value;
-        const name = target.name;
-
-        this.setState({
-            [name]: value
-        });
+    /**
+     * Given the sun's latitude and declination, calculate its
+     * altitude in the sky.
+     */
+    getSunAltitude(latitude, declination) {
+        return degToRad(90) - degToRad(latitude) + declination;
     }
-    incrementSunDeclinationAngle(n, inc) {
+    incrementSunDeclination(n, inc) {
         return (n + inc) % (Math.PI * 2);
     }
     componentDidUpdate(prevProps, prevState) {
         if (prevState.dateTime !== this.state.dateTime) {
-            // sunDeclinationAngle is derived from the dateTime, so always
+            // sunAzimuth is derived from the dateTime, so always
             // keep that up to date.
             this.setState({
-                sunDeclinationAngle: timeToAngle(new Date(
+                sunAzimuth: timeToAngle(new Date(
                     this.state.dateTime.getTime()))
             });
         }
@@ -189,6 +199,16 @@ class SunMotionSim extends React.Component {
                 100000 * this.state.animationRate))
         }));
         this.frameId = requestAnimationFrame(this.animate);
+    }
+    handleInputChange(event) {
+        const target = event.target;
+        const value = target.type === 'checkbox' ?
+                      target.checked : target.value;
+        const name = target.name;
+
+        this.setState({
+            [name]: value
+        });
     }
     onStartClick() {
         if (!this.state.isPlaying) {
