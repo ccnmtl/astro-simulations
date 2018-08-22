@@ -135,7 +135,7 @@ export default class HorizonView extends React.Component {
         scene.add(plane);
     }
     drawGlobe(scene) {
-        var domeGeometry = new THREE.SphereBufferGeometry(
+        const domeGeometry = new THREE.SphereBufferGeometry(
             50, 64, 64, 0, Math.PI * 2, 0, Math.PI / 2);
         const nightDomeMaterial = new THREE.MeshBasicMaterial({
             transparent: true,
@@ -146,6 +146,33 @@ export default class HorizonView extends React.Component {
         const nightDome = new THREE.Mesh(domeGeometry, nightDomeMaterial);
         nightDome.rotation.x = Math.PI;
         scene.add(nightDome);
+
+        // Make a solid black dome to cover the sphere's underside
+        // when showUnderside is false.
+        const domeCoverGeometry = new THREE.SphereBufferGeometry(
+            51, 64, 64, 0, Math.PI * 2, 0, Math.PI / 2);
+        const solidBlackMaterial = new THREE.MeshBasicMaterial({
+            color: 0x000000,
+            side: THREE.FrontSide
+        });
+        const solidBlackDome = new THREE.Mesh(
+            domeCoverGeometry, solidBlackMaterial);
+
+        // Hide the opening with a disc
+        const plane = new THREE.Mesh(
+            new THREE.CircleBufferGeometry(51, 64),
+            solidBlackMaterial);
+        plane.position.y = 0.1;
+        plane.rotation.x = Math.PI / 2;
+
+        const domeGroup = new THREE.Group()
+        domeGroup.add(solidBlackDome);
+        domeGroup.add(plane);
+        domeGroup.rotation.x = Math.PI;
+        domeGroup.visible = false;
+
+        scene.add(domeGroup);
+        this.solidBlackDome = domeGroup;
 
         this.skyMaterial = new THREE.MeshBasicMaterial({
             transparent: true,
@@ -253,7 +280,7 @@ export default class HorizonView extends React.Component {
             this.props.sunAzimuth + THREE.Math.degToRad(90));
         group.position.z = 46.25 * Math.sin(
             this.props.sunAzimuth + THREE.Math.degToRad(90));
-        group.rotation.x = THREE.Math.degToRad(12);
+        group.rotation.x = THREE.Math.degToRad(14);
         return group;
     }
     updateAngleGeometry(ellipse, angle) {
@@ -297,6 +324,7 @@ export default class HorizonView extends React.Component {
         this.sunDeclination.visible = this.props.showDeclinationCircle;
         this.ecliptic.visible = this.props.showEcliptic;
         this.stickFigure.visible = this.props.showStickfigure;
+        this.solidBlackDome.visible = !this.props.showUnderside;
 
         this.renderScene();
         this.frameId = window.requestAnimationFrame(this.animate);
