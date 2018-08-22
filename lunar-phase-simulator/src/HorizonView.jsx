@@ -136,37 +136,35 @@ export default class HorizonView extends React.Component {
         const dayDome = new THREE.Mesh(domeGeometry, this.skyMaterial);
         scene.add(dayDome);
 
-        const lineMaterial = new THREE.LineBasicMaterial({
+        const lineMeshMaterial = new THREE.MeshBasicMaterial({
             transparent: true,
             opacity: 0.5,
-            color: 0xffffff,
-            linewidth: 4
+            color: 0xffffff
         });
 
-        // The EdgesGeometry is necessary to fix a problem when
-        // drawing lines on CircleGeometry.
-        // https://stackoverflow.com/q/51525988/173630
-        const discGeometry = new THREE.EdgesGeometry(
-            new THREE.CircleBufferGeometry(50, 64));
+        const thinTorusGeometry = new THREE.TorusBufferGeometry(
+            50, 0.1, 16, 64);
 
         // A north-south line
-        const observersMeridian = new THREE.LineSegments(
-            discGeometry, lineMaterial);
+        const observersMeridian = new THREE.Mesh(
+            thinTorusGeometry, lineMeshMaterial);
         observersMeridian.rotation.y = THREE.Math.degToRad(90);
         scene.add(observersMeridian);
 
         // An east-west line at the top of the observer's globe
-        const zenithEquator = new THREE.LineSegments(discGeometry, lineMaterial);
+        const zenithEquator = new THREE.Mesh(
+            thinTorusGeometry, lineMeshMaterial);
         zenithEquator.rotation.z = THREE.Math.degToRad(90);
         scene.add(zenithEquator);
 
         // The sun and moon orbit along this next line.
-        const thickLineMaterial = new THREE.LineBasicMaterial({
-            color: 0xffffff,
-            linewidth: 8
+        const solidLineMaterial = new THREE.MeshBasicMaterial({
+            color: 0xffffff
         });
-        this.celestialEquator = new THREE.LineSegments(
-            discGeometry, thickLineMaterial);
+        const thickTorusGeometry = new THREE.TorusBufferGeometry(
+            50, 0.3, 16, 64);
+        this.celestialEquator = new THREE.Mesh(
+            thickTorusGeometry, solidLineMaterial);
         this.celestialEquator.rotation.x = THREE.Math.degToRad(90);
     }
     drawStickFigure(scene) {

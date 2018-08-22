@@ -157,64 +157,58 @@ export default class HorizonView extends React.Component {
         const dayDome = new THREE.Mesh(domeGeometry, this.skyMaterial);
         scene.add(dayDome);
 
-        const lineMaterial = new THREE.LineBasicMaterial({
+        const lineMeshMaterial = new THREE.MeshBasicMaterial({
             transparent: true,
             opacity: 0.5,
-            color: 0xffffff,
-            linewidth: 2
+            color: 0xffffff
         });
 
-        // The EdgesGeometry is necessary to fix a problem when
-        // drawing lines on CircleGeometry.
-        // https://stackoverflow.com/q/51525988/173630
-        const discGeometry = new THREE.EdgesGeometry(
-            new THREE.CircleBufferGeometry(50, 64));
+        const thinTorusGeometry = new THREE.TorusBufferGeometry(
+            50, 0.1, 16, 64);
 
         // A north-south line
-        const observersMeridian = new THREE.LineSegments(
-            discGeometry, lineMaterial);
+        const observersMeridian = new THREE.Mesh(
+            thinTorusGeometry, lineMeshMaterial);
         observersMeridian.rotation.y = THREE.Math.degToRad(90);
         scene.add(observersMeridian);
 
         // An east-west line at the top of the observer's globe
-        const zenithEquator = new THREE.LineSegments(discGeometry, lineMaterial);
+        const zenithEquator = new THREE.Mesh(thinTorusGeometry, lineMeshMaterial);
         zenithEquator.rotation.z = THREE.Math.degToRad(90);
         scene.add(zenithEquator);
 
         // The sun orbits along this next line.
-        const yellowMaterial = new THREE.LineBasicMaterial({
-            color: 0xffff00,
-            linewidth: 8
+        const yellowMaterial = new THREE.MeshBasicMaterial({
+            color: 0xffff00
         });
 
-        const declinationGeometry = new THREE.EdgesGeometry(
-            new THREE.CircleBufferGeometry(46, 64));
-        this.sunDeclination = new THREE.LineSegments(
-            declinationGeometry, yellowMaterial);
+        const declinationGeometry = new THREE.TorusBufferGeometry(46, 0.3, 16, 64);
+        this.sunDeclination = new THREE.Mesh(declinationGeometry, yellowMaterial);
         this.sunDeclination.position.y = 20;
         this.sunDeclination.rotation.x = THREE.Math.degToRad(90);
 
-        const blueMaterial = new THREE.LineBasicMaterial({
-            color: 0x7080ff,
-            linewidth: 8
+        const thickTorusGeometry = new THREE.TorusBufferGeometry(
+            50, 0.3, 16, 64);
+        const blueMaterial = new THREE.MeshBasicMaterial({
+            color: 0x7080ff
         });
-        this.celestialEquator = new THREE.LineSegments(
-            discGeometry, blueMaterial);
+        this.celestialEquator = new THREE.Mesh(
+            thickTorusGeometry, blueMaterial);
         this.celestialEquator.rotation.x = THREE.Math.degToRad(90);
 
-        const primeHourGeometry = new THREE.EdgesGeometry(
-            new THREE.CircleBufferGeometry(50, 64, 0, Math.PI));
-        this.primeHourCircle = new THREE.LineSegments(
+        /*const primeHourGeometry = new THREE.EdgesGeometry(
+            new THREE.CircleBufferGeometry(50, 64, 0, Math.PI));*/
+        const primeHourGeometry = new THREE.TorusBufferGeometry(
+            50, 0.3, 16, 64, Math.PI);
+        this.primeHourCircle = new THREE.Mesh(
             primeHourGeometry, blueMaterial);
         this.primeHourCircle.rotation.z = THREE.Math.degToRad(90);
         this.primeHourCircle.rotation.y = THREE.Math.degToRad(180 + 45);
 
-        const thickWhiteMaterial = new THREE.LineBasicMaterial({
-            color: 0xffffff,
-            linewidth: 8
+        const whiteMaterial = new THREE.MeshBasicMaterial({
+            color: 0xffffff
         });
-        this.ecliptic = new THREE.LineSegments(
-            discGeometry, thickWhiteMaterial);
+        this.ecliptic = new THREE.Mesh(thickTorusGeometry, whiteMaterial);
         this.ecliptic.rotation.x = THREE.Math.degToRad(90 + 24);
         this.ecliptic.rotation.y = THREE.Math.degToRad(-12);
     }
