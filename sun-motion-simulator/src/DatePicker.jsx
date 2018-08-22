@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import * as PIXI from 'pixi.js';
+import {getDayOfYear} from './utils';
 
 export default class DatePicker extends React.Component {
     constructor(props) {
@@ -145,9 +146,7 @@ export default class DatePicker extends React.Component {
      * control.
      */
     dateToLocalPos(dateTime, app) {
-        // TODO: this isn't exactly accurate.. might have to use a
-        // library like https://date-fns.org/
-        const dayOfYear = (dateTime.getMonth() * 30.5) + dateTime.getDate();
+        const dayOfYear = getDayOfYear(dateTime);
         const x = (dayOfYear / 365.25) * (app.view.width - 20);
         return x + 10;
     }
