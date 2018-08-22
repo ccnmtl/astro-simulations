@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Exoplanet Transit Simulator</title>
+ 
+        <link rel="stylesheet" href="../css/bootstrap.min.css">
+    </head>
+    <body>
+        <div class="container">
+            <div id="sim-container"></div>
+        </div>
+
+        <div class="modal" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="helpModalLabel">Help</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            This simulator shows what happens when an
+                            extrasolar planet passes in front of its
+                            star. Such eclipses (called transits)
+                            allow scientists to detect planets they
+                            would not see otherwise.
+                        </p>
+                        <p>
+                            The upper left panel shows the star and
+                            planet as they would be seen from earth if
+                            we had an extremely powerful telescope. In
+                            fact, this privileged view is impossible
+                            with any existing telescope; astronomers
+                            must infer the transit from the dip in the
+                            lightcurve as the planet moves in front of
+                            the star. (A lightcurve is a plot of
+                            brightness over time.)
+                        </p>
+                        <p>
+                            The lightcurve is shown in the upper right
+                            panel. The apparent brightness of the star
+                            is 'normalized', that is, the brightness
+                            is reported as a fraction of the full
+                            brightness (when the star is not
+                            eclipsed). You have the option of showing
+                            simulated noisy measurements and hiding
+                            the theoretical curve &mdash; this gives a
+                            better idea of what it is like working
+                            with real data.
+                        </p>
+                        <p>
+                            The planet, star, and system properties
+                            can be set in the lower panels. These
+                            parameters can also be set by selecting
+                            one of the presets from the dropdown menu
+                            in the Presets panel.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="aboutModal" tabindex="-1" role="dialog" aria-labelledby="aboutModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="aboutModalLabel">About</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            See <a
+                            href="https://github.com/ccnmtl/astro-interactives">github.com/ccnmtl/astro-interactives</a>
+                            for more info.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>        
+
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>        
+
+        <script src="dist/bundle.js"></script>
+    </body>
+</html>

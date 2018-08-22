@@ -14,3 +14,7 @@ script:
 - cd sun-motion-simulator
 - npm install
 - npm run eslint
+- cd ..
+- cd exoplanet-transit-simulator
+- npm install
+- npm run eslint

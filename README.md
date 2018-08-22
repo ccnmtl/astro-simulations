@@ -9,6 +9,7 @@ JavaScript/HTML ports of the Flash originals, found here: [http://astro.unl.edu/
 * [Small-Angle Approximation Demonstrator](https://ccnmtl.github.io/astro-interactives/small-angle-demo/)
 * [Lunar Phase Simulator](https://ccnmtl.github.io/astro-interactives/lunar-phase-simulator/)
 * [Motions of the Sun Simulator](https://ccnmtl.github.io/astro-interactives/sun-motion-simulator/)
+* [Exoplanet Transit Simulator](https://ccnmtl.github.io/astro-interactives/exoplanet-transit-simulator/)
 
 ## Development guide
 
