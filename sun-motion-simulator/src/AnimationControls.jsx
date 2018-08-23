@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import RangeStepInput from './RangeStepInput';
 import {roundToOnePlace} from './utils';
 
 export default class AnimationControls extends React.Component {
@@ -65,7 +66,7 @@ export default class AnimationControls extends React.Component {
                 </div>
 
                 <label>Animation speed:</label> {animationSpeed}
-                <input className="custom-range" type="range"
+                <RangeStepInput className="custom-range"
                        name="animationRate"
                        min={this.props.stepByDay ? 5 : 0.01}
                        max={this.props.stepByDay ? 122 : 10}

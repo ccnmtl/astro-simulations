@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import MainView from './MainView';
 import MoonPhaseView from './MoonPhaseView';
 import HorizonView from './HorizonView';
+import RangeStepInput from './RangeStepInput';
 import {degToRad, forceNumber} from './utils';
 
 class LunarPhaseSim extends React.Component {
@@ -72,12 +73,12 @@ class LunarPhaseSim extends React.Component {
                             </button>
                             <form className="form-inline">
                                 <label htmlFor="diamRange">Animation rate:</label>
-                                <input name="animationRate"
+                                <RangeStepInput name="animationRate"
                                        className="custom-range ml-2"
                                        value={this.state.animationRate}
                                        onChange={this.onAnimationRateChange.bind(this)}
-                                       type="range" step="0.01"
-                                       min="0.1" max="5" />
+                                       step={0.1}
+                                       min={0.1} max={5} />
                             </form>
                         </div>
 
