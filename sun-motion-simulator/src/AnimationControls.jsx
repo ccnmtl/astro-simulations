@@ -8,6 +8,15 @@ export default class AnimationControls extends React.Component {
         if (this.props.isPlaying) {
             startBtnText = 'Stop Animation';
         }
+        let animationSpeed = '';
+        if (this.props.stepByDay) {
+            animationSpeed =
+                this.props.animationRate + ' days/sec';
+        } else {
+            animationSpeed =
+                roundToOnePlace(this.props.animationRate * 3) + ' hrs/sec';
+        }
+
         return (
             <React.Fragment>
                 <h5>Animation Controls</h5>
@@ -45,6 +54,7 @@ export default class AnimationControls extends React.Component {
                                        name="loopDay"
                                        onChange={this.props.onChange}
                                        checked={this.props.loopDay}
+                                       disabled={this.props.stepByDay}
                                        id="loopDayToggle" />
                                 <label className="custom-control-label" htmlFor="loopDayToggle">
                                     Loop day
@@ -54,10 +64,12 @@ export default class AnimationControls extends React.Component {
                     </div>
                 </div>
 
-                <label>Animation speed:</label> {roundToOnePlace(this.props.animationRate * 3)} hrs/sec
+                <label>Animation speed:</label> {animationSpeed}
                 <input className="custom-range" type="range"
                        name="animationRate"
-                       min={0.01} max={10} step={0.01}
+                       min={this.props.stepByDay ? 5 : 0.01}
+                       max={this.props.stepByDay ? 122 : 10}
+                       step={this.props.stepByDay ? 1 : 0.01}
                        value={this.props.animationRate}
                        onChange={this.props.onChange} />
             </React.Fragment>

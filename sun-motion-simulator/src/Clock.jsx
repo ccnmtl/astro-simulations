@@ -179,7 +179,7 @@ export default class Clock extends React.Component {
             .on('touchmove', this.onHourMove);
     }
     /**
-     * Given a date object, display the time as a string.
+     * Given a date object, display its time as a string.
      */
     displayTime(d) {
         let hours = d.getHours();

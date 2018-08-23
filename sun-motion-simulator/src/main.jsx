@@ -191,10 +191,17 @@ class SunMotionSim extends React.Component {
         }
     }
     animate() {
-        this.setState(prevState => ({
-            dateTime: new Date(prevState.dateTime.getTime() + (
-                100000 * this.state.animationRate))
-        }));
+        if (this.state.stepByDay) {
+            this.setState(prevState => ({
+                dateTime: new Date(prevState.dateTime.getTime() + (
+                    (3600 * 24 * 1000) * Math.round(this.state.animationRate)))
+            }));
+        } else {
+            this.setState(prevState => ({
+                dateTime: new Date(prevState.dateTime.getTime() + (
+                    100000 * this.state.animationRate))
+            }));
+        }
         this.frameId = requestAnimationFrame(this.animate);
     }
     handleInputChange(event) {
