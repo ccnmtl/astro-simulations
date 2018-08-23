@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import MathJax from 'react-mathjax2';
 import VisualDemo from './VisualDemo';
+import RangeStepInput from './RangeStepInput';
 import {forceFloat} from './utils';
 
 class SmallAngleDemo extends React.Component {
@@ -51,12 +52,13 @@ class SmallAngleDemo extends React.Component {
                                    step="0.1" name="distance"
                                    value={this.state.distance}
                                    onChange={this.handleInputChange} /> units
-                            <input name="distance" id="distRange"
-                                   className="custom-range ml-2"
-                                   value={this.state.distance}
-                                   onChange={this.handleInputChange}
-                                   type="range" step="0.1"
-                                   min="20" max="60" />
+                            <RangeStepInput
+                                step={0.1}
+                                min={20} max={60}
+                                onChange={this.handleInputChange}
+                                name="distance" id="distRange"
+                                className="custom-range ml-2"
+                                value={this.state.distance} />
                         </form>
                     </div>
 
@@ -68,12 +70,13 @@ class SmallAngleDemo extends React.Component {
                                    step="0.1" name="diameter"
                                    value={this.state.diameter}
                                    onChange={this.handleInputChange} /> units
-                            <input name="diameter" id="diamRange"
-                                   className="custom-range ml-2"
-                                   value={this.state.diameter}
-                                   onChange={this.handleInputChange}
-                                   type="range" step="0.1"
-                                   min="1" max="3" />
+                            <RangeStepInput
+                                step={0.1}
+                                min={1} max={3}
+                                onChange={this.handleInputChange}
+                                name="diameter" id="diamRange"
+                                className="custom-range ml-2"
+                                value={this.state.diameter} />
                         </form>
                     </div>
 
