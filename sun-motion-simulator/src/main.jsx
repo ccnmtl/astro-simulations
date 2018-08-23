@@ -7,8 +7,10 @@ import DatePicker from './DatePicker';
 import LatitudePicker from './LatitudePicker';
 import Clock from './Clock';
 import {
-    forceNumber, roundToOnePlace, timeToAngle, degToRad,
-    radToDeg
+    forceNumber, roundToOnePlace, timeToAngle,
+    degToRad, radToDeg,
+    getSunAltitude, getSunDeclination,
+    getDayOfYear
 } from './utils';
 
 class SunMotionSim extends React.Component {
@@ -44,7 +46,7 @@ class SunMotionSim extends React.Component {
     }
     render() {
         const sunAltitude = roundToOnePlace(
-            radToDeg(this.getSunAltitude(
+            radToDeg(getSunAltitude(
                 this.state.latitude, this.state.sunDeclination))
         );
         const sunAzimuth = roundToOnePlace(
@@ -173,23 +175,15 @@ class SunMotionSim extends React.Component {
             </div>
         </React.Fragment>;
     }
-    /**
-     * Given the sun's latitude and declination, calculate its
-     * altitude in the sky.
-     */
-    getSunAltitude(latitude, declination) {
-        return degToRad(90) - degToRad(latitude) + declination;
-    }
-    incrementSunDeclination(n, inc) {
-        return (n + inc) % (Math.PI * 2);
-    }
     componentDidUpdate(prevProps, prevState) {
         if (prevState.dateTime !== this.state.dateTime) {
-            // sunAzimuth is derived from the dateTime, so always
-            // keep that up to date.
+            // The sun's azimuth and declination are derived from the
+            // dateTime, so keep them up to date.
             this.setState({
                 sunAzimuth: timeToAngle(new Date(
-                    this.state.dateTime.getTime()))
+                    this.state.dateTime.getTime())),
+                sunDeclination: getSunDeclination(
+                    getDayOfYear(this.state.dateTime))
             });
         }
     }

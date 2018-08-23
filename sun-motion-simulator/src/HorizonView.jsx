@@ -63,7 +63,7 @@ export default class HorizonView extends React.Component {
 
         const light = new THREE.DirectionalLight(0xffffff);
         this.light = light;
-        this.light.position.y = 20;
+        this.light.position.y = THREE.Math.radToDeg(this.props.sunDeclination);
         this.light.position.x = 46 * Math.cos(
             this.props.sunAzimuth + THREE.Math.degToRad(90));
         this.light.position.z = 46 * Math.sin(
@@ -212,6 +212,8 @@ export default class HorizonView extends React.Component {
         const declinationGeometry = new THREE.TorusBufferGeometry(46, 0.3, 16, 64);
         this.sunDeclination = new THREE.Mesh(declinationGeometry, yellowMaterial);
         this.sunDeclination.position.y = 20;
+        this.sunDeclination.position.y = THREE.Math.radToDeg(
+            this.props.sunDeclination);
         this.sunDeclination.rotation.x = THREE.Math.degToRad(90);
 
         const thickTorusGeometry = new THREE.TorusBufferGeometry(
@@ -275,7 +277,7 @@ export default class HorizonView extends React.Component {
 
         group.add(sun);
         group.add(border);
-        group.position.y = 20;
+        group.position.y = THREE.Math.radToDeg(this.props.sunDeclination);
         group.position.x = 46.25 * Math.cos(
             this.props.sunAzimuth + THREE.Math.degToRad(90));
         group.position.z = 46.25 * Math.sin(
@@ -322,6 +324,13 @@ export default class HorizonView extends React.Component {
         this.skyMaterial.color.setHex(this.getSkyColor(this.props.sunDeclination));
 
         this.sunDeclination.visible = this.props.showDeclinationCircle;
+        if (this.props.showDeclinationCircle) {
+            this.sunDeclination.position.y =
+                THREE.Math.radToDeg(this.props.sunDeclination);
+        }
+        this.sun.position.y = THREE.Math.radToDeg(this.props.sunDeclination);
+        this.light.position.y = THREE.Math.radToDeg(this.props.sunDeclination);
+
         this.ecliptic.visible = this.props.showEcliptic;
         this.stickFigure.visible = this.props.showStickfigure;
         this.solidBlackDome.visible = !this.props.showUnderside;
