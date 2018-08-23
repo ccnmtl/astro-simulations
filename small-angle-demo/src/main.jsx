@@ -8,11 +8,13 @@ import {forceFloat} from './utils';
 class SmallAngleDemo extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
+        this.initialState = {
             distance: 40,
             diameter: 2
         };
+        this.state = this.initialState;
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.onResetClick = this.onResetClick.bind(this);
     }
     render() {
         const result = Math.round(
@@ -21,7 +23,19 @@ class SmallAngleDemo extends React.Component {
         const tex = `\\alpha = 206{,}265 \\times ` +
               `{\\text{linear diameter} \\over \\text{distance}} ` +
               `= ${result} \\text{arcsec}`;
-        return <div>
+        return <React.Fragment>
+            <nav className="navbar navbar-expand-md navbar-light bg-light d-flex justify-content-between">
+                <span className="navbar-brand mb-0 h1">Small-Angle Approximation Demonstrator</span>
+
+                <ul className="navbar-nav">
+                    <li className="nav-item">
+                        <a className="nav-link" href="#" onClick={this.onResetClick.bind(this)}>Reset</a>
+                    </li>
+                    <li className="nav-item">
+                        <a className="nav-link" href="#" data-toggle="modal" data-target="#aboutModal">About</a>
+                    </li>
+                </ul>
+            </nav>
             <MathJax.Context
                 script="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML"
                 input="tex"
@@ -82,7 +96,7 @@ class SmallAngleDemo extends React.Component {
 
                 </div>
             </div>
-        </div>;
+        </React.Fragment>;
     }
     handleInputChange(event) {
         const target = event.target;
@@ -90,6 +104,9 @@ class SmallAngleDemo extends React.Component {
         this.setState({
             [target.name]: forceFloat(target.value)
         });
+    }
+    onResetClick() {
+        this.setState(this.initialState);
     }
 }
 
