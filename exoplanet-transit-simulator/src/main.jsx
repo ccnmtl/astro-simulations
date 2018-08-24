@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import LightcurveView from './LightcurveView';
 import TransitView from './TransitView';
+import RangeStepInput from './RangeStepInput';
 
 class ExoplanetTransitSimulator extends React.Component {
     constructor(props) {
@@ -80,7 +81,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                             type="number" name="planetAxis"
                                             className="form-control form-control-sm"
                                             step={0.01} />
-                                        <input className="form-control" type="range"
+                                        <RangeStepInput className="form-control"
                                                min={0.01} max={10} step={0.01} />
                                     </div>
                                 </div>
@@ -93,7 +94,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                             type="number" name="planetAxis"
                                             className="form-control form-control-sm"
                                             step={0.01} />
-                                        <input className="form-control" type="range"
+                                        <RangeStepInput className="form-control"
                                                min={0.01} max={10} step={0.01} />
                                     </div>
                                 </div>
@@ -121,7 +122,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                     step={0.01} />
                                 M<sub>jup</sub>
 
-                                <input className="form-control" type="range"
+                                <RangeStepInput className="form-control"
                                        min={0.01} max={10} step={0.01} />
                             </div>
                         </div>
@@ -136,7 +137,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                     step={0.01} />
                                 R<sub>jup</sub>
 
-                                <input className="form-control" type="range"
+                                <RangeStepInput className="form-control"
                                        min={0.01} max={10} step={0.01} />
                             </div>
                         </div>
@@ -151,7 +152,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                     step={0.01} />
                                 AU
 
-                                <input className="form-control" type="range"
+                                <RangeStepInput className="form-control"
                                        min={0.01} max={10} step={0.01} />
                             </div>
                         </div>
@@ -165,7 +166,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                     className="form-control form-control-sm"
                                     step={0.01} />
 
-                                <input className="form-control" type="range"
+                                <RangeStepInput className="form-control"
                                        min={0.01} max={10} step={0.01} />
                             </div>
                         </div>
@@ -187,7 +188,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                        step={0.01} />
                                 M<sub>sun</sub>
 
-                                <input className="form-control" type="range"
+                                <RangeStepInput className="form-control"
                                        min={0.01} max={10} step={0.01} />
                             </div>
                         </div>
@@ -213,7 +214,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                        className="form-control form-control-sm"
                                        step={0.01} />&deg;
 
-        <input className="form-control" type="range"
+        <RangeStepInput className="form-control"
                min={0.01} max={10} step={0.01} />
                             </div>
                         </div>
@@ -229,7 +230,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                     className="form-control form-control-sm"
                                     step={0.01} />&deg;
 
-        <input className="form-control" type="range"
+        <RangeStepInput className="form-control"
                min={0.01} max={10} step={0.01} />
                             </div>
                         </div>
@@ -241,7 +242,7 @@ class ExoplanetTransitSimulator extends React.Component {
                             </label>
 
                             <div className="col-sm-10">
-                                <input className="form-control" type="range"
+                                <RangeStepInput className="form-control"
                                        name="phase" id="phaseSlider"
                                        min={0.01} max={10} step={0.01} />
                             </div>
