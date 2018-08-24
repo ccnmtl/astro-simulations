@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {forceFloat} from './utils';
+import {forceNumber} from './utils';
 
 /**
  * This is an <input type=range> that steps up and down on click
@@ -12,7 +12,14 @@ import {forceFloat} from './utils';
 export default class RangeStepInput extends React.Component {
     constructor(props) {
         super(props);
-        this.handleRangeInput = this.handleRangeInput.bind(this);
+        this.state = {
+            isMouseDown: false,
+            isDragging: false
+        }
+        this.onInput = this.onInput.bind(this);
+        this.onMouseDown = this.onMouseDown.bind(this);
+        this.onMouseUp = this.onMouseUp.bind(this);
+        this.onMouseMove = this.onMouseMove.bind(this);
     }
     render() {
         return <input
@@ -25,15 +32,39 @@ export default class RangeStepInput extends React.Component {
                    name={this.props.name}
                    id={this.props.id}
                    onChange={this.props.onChange}
-                   onInput={this.handleRangeInput} />;
+                   onMouseDown={this.onMouseDown}
+                   onMouseUp={this.onMouseUp}
+                   onMouseMove={this.onMouseMove}
+                   onClick={this.onClick}
+                   onInput={this.onInput} />;
     }
-    handleRangeInput(e) {
-        const step = forceFloat(e.target.step);
-        const val = forceFloat(e.target.value);
-        const oldValue = this.props.value;
-        if (oldValue) {
-            e.target.value = (val > oldValue) ?
-                             oldValue + step : oldValue - step;
+    onMouseDown() {
+        this.setState({isMouseDown: true});
+    }
+    onMouseUp() {
+        this.setState({
+            isMouseDown: false,
+            isDragging: false
+        });
+    }
+    onMouseMove() {
+        if (this.state.isMouseDown) {
+            this.setState({isDragging: true});
+        }
+    }
+    onInput(e) {
+        const step = forceNumber(e.target.step);
+        const newVal = forceNumber(e.target.value);
+        const oldVal = this.props.value;
+
+        if (
+            // Disable the oninput filter with the user is dragging
+            // the slider's knob.
+            !(this.state.isMouseDown && this.state.isDragging) &&
+            oldVal
+        ) {
+            e.target.value = (newVal > oldVal) ?
+                             oldVal + step : oldVal - step;
         }
     }
 }
