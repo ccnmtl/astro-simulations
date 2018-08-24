@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import MathJax from 'react-mathjax2';
 import VisualDemo from './VisualDemo';
 import RangeStepInput from './RangeStepInput';
-import {forceFloat} from './utils';
+import {forceNumber} from './utils';
 
 class SmallAngleDemo extends React.Component {
     constructor(props) {
@@ -56,45 +56,57 @@ class SmallAngleDemo extends React.Component {
             </div>
 
             <div className="container">
-                <div className="row">
+                <form className="form-inline">
+                    <div className="row">
 
-                    <div className="col">
-                        <form className="form-inline">
-                            <label htmlFor="distRange">Distance:</label>
-                            <input type="number" size="4"
-                                   className="form-control form-control-sm ml-2 mr-1 mb-2"
-                                   step="0.1" name="distance"
-                                   value={this.state.distance}
-                                   onChange={this.handleInputChange} /> units
-                            <RangeStepInput
-                                step={0.1}
-                                min={20} max={60}
-                                onChange={this.handleInputChange}
-                                name="distance" id="distRange"
-                                className="custom-range ml-2"
-                                value={this.state.distance} />
-                        </form>
+                        <div className="col">
+                            <div className="form-group row">
+
+                                <label htmlFor="distRange"
+                                       className="col-sm-2 col-form-label col-form-label-sm">
+                                    Distance:
+                                </label>
+                                <div className="col-sm-10">
+                                    <input type="number" size="4"
+                                           className="form-control form-control-sm"
+                                           step="0.1" name="distance"
+                                           value={this.state.distance}
+                                           onChange={this.handleInputChange} /> units
+                                    <RangeStepInput
+                                        step={0.1}
+                                        min={20} max={60}
+                                        onChange={this.handleInputChange}
+                                        name="distance" id="distRange"
+                                        className="form-control form-control-sm ml-2"
+                                        value={this.state.distance} />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="col">
+                            <div className="form-group row">
+                                <label htmlFor="diamRange"
+                                       className="col-sm-2 col-form-label col-form-label-sm">
+                                    Diameter:
+                                </label>
+                                <div className="col-sm-10">
+                                    <input type="number" size="4"
+                                           className="form-control form-control-sm"
+                                           step="0.1" name="diameter"
+                                           value={this.state.diameter}
+                                           onChange={this.handleInputChange} /> units
+                                    <RangeStepInput
+                                        step={0.1}
+                                        min={1} max={3}
+                                        onChange={this.handleInputChange}
+                                        name="diameter" id="diamRange"
+                                        className="form-control form-control-sm ml-2"
+                                        value={this.state.diameter} />
+                                </div>
+                            </div>
+                        </div>
                     </div>
-
-                    <div className="col">
-                        <form className="form-inline">
-                            <label htmlFor="diamRange">Diameter:</label>
-                            <input type="number" size="4"
-                                   className="form-control form-control-sm ml-2 mr-1 mb-2"
-                                   step="0.1" name="diameter"
-                                   value={this.state.diameter}
-                                   onChange={this.handleInputChange} /> units
-                            <RangeStepInput
-                                step={0.1}
-                                min={1} max={3}
-                                onChange={this.handleInputChange}
-                                name="diameter" id="diamRange"
-                                className="custom-range ml-2"
-                                value={this.state.diameter} />
-                        </form>
-                    </div>
-
-                </div>
+                </form>
             </div>
         </React.Fragment>;
     }
@@ -102,7 +114,7 @@ class SmallAngleDemo extends React.Component {
         const target = event.target;
 
         this.setState({
-            [target.name]: forceFloat(target.value)
+            [target.name]: forceNumber(target.value)
         });
     }
     onResetClick() {

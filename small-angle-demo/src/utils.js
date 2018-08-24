@@ -1,8 +1,8 @@
 /*
- * Force a value into a float. This is currently capped to 2 decimal
+ * Force a value into a number. This is currently capped to 2 decimal
  * places.
  */
-const forceFloat = function(n) {
+const forceNumber = function(n) {
     n = Number(n);
     if (isNaN(n) || typeof n === 'undefined') {
         n = 0;
@@ -25,4 +25,4 @@ const loadSprite = function(src) {
     });
 }
 
-export {forceFloat, loadSprite};
+export {forceNumber, loadSprite};
