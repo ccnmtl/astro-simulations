@@ -103,7 +103,6 @@ export default class HorizonView extends React.Component {
         this.orbitGroup.add(this.celestialEquator);
         this.orbitGroup.add(this.primeHourCircle);
         this.orbitGroup.add(this.ecliptic);
-        this.orbitGroup.add(this.angleEllipse);
         this.orbitGroup.rotation.x =
             THREE.Math.degToRad(this.props.latitude) - (Math.PI / 2);
         this.orbitGroup.rotation.y = -this.props.sunAzimuth;
