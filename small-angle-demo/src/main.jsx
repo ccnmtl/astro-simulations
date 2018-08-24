@@ -15,6 +15,7 @@ class SmallAngleDemo extends React.Component {
         this.state = this.initialState;
         this.handleInputChange = this.handleInputChange.bind(this);
         this.onResetClick = this.onResetClick.bind(this);
+        this.onDistanceUpdate = this.onDistanceUpdate.bind(this);
     }
     render() {
         const result = Math.round(
@@ -52,7 +53,8 @@ class SmallAngleDemo extends React.Component {
             <div>
                 <VisualDemo
                     distance={this.state.distance}
-                    diameter={this.state.diameter} />
+                    diameter={this.state.diameter}
+                    onDistanceUpdate={this.onDistanceUpdate} />
             </div>
 
             <div className="container">
@@ -116,6 +118,9 @@ class SmallAngleDemo extends React.Component {
         this.setState({
             [target.name]: forceNumber(target.value)
         });
+    }
+    onDistanceUpdate(distance) {
+        this.setState({distance: distance});
     }
     onResetClick() {
         this.setState(this.initialState);
