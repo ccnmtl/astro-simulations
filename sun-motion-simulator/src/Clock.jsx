@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import * as PIXI from 'pixi.js';
-import {hourAngleToTime, minuteAngleToTime} from './utils';
+import {forceNumber, hourAngleToTime, minuteAngleToTime} from './utils';
 
 export default class Clock extends React.Component {
     constructor(props) {
@@ -17,6 +17,7 @@ export default class Clock extends React.Component {
         this.onHourDragStart = this.onHourDragStart.bind(this);
         this.onHourDragEnd = this.onHourDragEnd.bind(this);
         this.onHourMove = this.onHourMove.bind(this);
+        this.onTimeUpdate = this.onTimeUpdate.bind(this);
 
         this.loader = new PIXI.loaders.Loader();
         this.loader.add('clock', 'img/clock.png');
@@ -24,22 +25,13 @@ export default class Clock extends React.Component {
         this.center = new PIXI.Point(100, 100);
     }
     render() {
-        let hours = this.props.dateTime.getHours();
-        if (hours < 10) {
-            hours = '0' + hours;
-        }
-        let minutes = this.props.dateTime.getMinutes();
-        if (minutes < 10) {
-            minutes = '0' + minutes;
-        }
-
         return <React.Fragment>
             <div className="form-inline">
                 <label>
                     The time of day:
                     <input type="time"
-                           value={`${hours}:${minutes}`}
-                           onChange={this.props.onDateTimeUpdate}
+                           value={this.displayTime(this.props.dateTime)}
+                           onChange={this.onTimeUpdate}
                            className="form-control form-control-sm ml-2" />
                 </label>
             </div>
@@ -186,7 +178,32 @@ export default class Clock extends React.Component {
             .on('mousemove', this.onHourMove)
             .on('touchmove', this.onHourMove);
     }
+    /**
+     * Given a date object, display its time as a string.
+     */
+    displayTime(d) {
+        let hours = d.getHours();
+        if (hours < 10) {
+            hours = '0' + hours;
+        }
+        let minutes = d.getMinutes();
+        if (minutes < 10) {
+            minutes = '0' + minutes;
+        }
+        return `${hours}:${minutes}`;
+    }
 
+    onTimeUpdate(e) {
+        // Parse the time input's time and make the update on the
+        // global dateTime value.
+        const time = e.target.value.split(':');
+        const hours = forceNumber(time[0]);
+        const minutes = forceNumber(time[1]);
+        const d = new Date(this.props.dateTime);
+        d.setHours(hours);
+        d.setMinutes(minutes);
+        return this.props.onDateTimeUpdate(d);
+    }
     onMinuteDragStart(e) {
         this.dragStartPos = e.data.getLocalPosition(this.timePickerApp.stage);
         this.dragStartTime = this.props.dateTime;

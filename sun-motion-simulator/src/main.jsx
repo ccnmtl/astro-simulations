@@ -23,6 +23,8 @@ class SunMotionSim extends React.Component {
             sunDeclination: degToRad(21.4),
             isPlaying: false,
             animationRate: 1,
+            loopDay: false,
+            stepByDay: false,
 
             // General settings
             showDeclinationCircle: true,
@@ -42,7 +44,6 @@ class SunMotionSim extends React.Component {
         this.onDayUpdate = this.onDayUpdate.bind(this);
         this.onDateControlUpdate = this.onDateControlUpdate.bind(this);
         this.onMonthUpdate = this.onMonthUpdate.bind(this);
-        this.onAnimationRateUpdate = this.onAnimationRateUpdate.bind(this);
     }
     render() {
         const sunAltitude = roundToOnePlace(
@@ -158,7 +159,9 @@ class SunMotionSim extends React.Component {
                                 isPlaying={this.state.isPlaying}
                                 onStartClick={this.onStartClick}
                                 animationRate={this.state.animationRate}
-                                onAnimationRateUpdate={this.onAnimationRateUpdate}
+                                loopDay={this.state.loopDay}
+                                stepByDay={this.state.stepByDay}
+                                onChange={this.handleInputChange}
                             />
                         </div>
                         <div className="col-4">
@@ -188,17 +191,30 @@ class SunMotionSim extends React.Component {
         }
     }
     animate() {
-        this.setState(prevState => ({
-            dateTime: new Date(prevState.dateTime.getTime() + (
-                100000 * this.state.animationRate))
-        }));
+        if (this.state.stepByDay) {
+            this.setState(prevState => ({
+                dateTime: new Date(prevState.dateTime.getTime() + (
+                    (3600 * 24 * 1000) * Math.round(this.state.animationRate)))
+            }));
+        } else {
+            this.setState(prevState => ({
+                dateTime: new Date(prevState.dateTime.getTime() + (
+                    100000 * this.state.animationRate))
+            }));
+        }
         this.frameId = requestAnimationFrame(this.animate);
     }
     handleInputChange(event) {
         const target = event.target;
-        const value = target.type === 'checkbox' ?
-                      target.checked : target.value;
         const name = target.name;
+        let value = target.type === 'checkbox' ?
+                    target.checked : target.value;
+
+        if (target.type === 'radio') {
+            value = target.id === (target.name + 'Radio');
+        } else if (target.type === 'range') {
+            value = forceNumber(value);
+        }
 
         this.setState({
             [name]: value
@@ -250,9 +266,6 @@ class SunMotionSim extends React.Component {
         newDate.setHours(this.state.dateTime.getHours());
         newDate.setMinutes(this.state.dateTime.getMinutes());
         this.setState({dateTime: newDate});
-    }
-    onAnimationRateUpdate(e) {
-        this.setState({animationRate: forceNumber(e.target.value)});
     }
 }
 

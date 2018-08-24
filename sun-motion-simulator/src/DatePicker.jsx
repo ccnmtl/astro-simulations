@@ -22,7 +22,7 @@ export default class DatePicker extends React.Component {
                     <input type="number"
                            value={this.props.dateTime.getDate()}
                            onChange={this.props.onDayUpdate}
-                           min="1" max="31"
+                           min="0" max="32"
                            className="form-control form-control-sm ml-2" />
                 </label>
                 <select className="form-control form-control-sm ml-2"

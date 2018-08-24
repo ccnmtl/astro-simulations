@@ -8,6 +8,15 @@ export default class AnimationControls extends React.Component {
         if (this.props.isPlaying) {
             startBtnText = 'Stop Animation';
         }
+        let animationSpeed = '';
+        if (this.props.stepByDay) {
+            animationSpeed =
+                this.props.animationRate + ' days/sec';
+        } else {
+            animationSpeed =
+                roundToOnePlace(this.props.animationRate * 3) + ' hrs/sec';
+        }
+
         return (
             <React.Fragment>
                 <h5>Animation Controls</h5>
@@ -20,25 +29,49 @@ export default class AnimationControls extends React.Component {
 
                 <div className="form-group">
                     <label>Animation mode:</label>
-                    <div className="custom-control custom-radio">
-                        <input type="radio" id="animationMode1" defaultChecked="true"
-                               name="animationMode" className="custom-control-input" />
-                        <label className="custom-control-label"
-                               htmlFor="animationMode1">Continuous</label>
-                    </div>
-                    <div className="custom-control custom-radio">
-                        <input type="radio" id="animationMode2"
-                               name="animationMode" className="custom-control-input" />
-                        <label className="custom-control-label"
-                               htmlFor="animationMode2">Step by day</label>
+                    <div className="row">
+                        <div className="col">
+                            <div className="custom-control custom-radio">
+                                <input type="radio" id="continuousRadio"
+                                       checked={!this.props.stepByDay}
+                                       onChange={this.props.onChange}
+                                       name="stepByDay" className="custom-control-input" />
+                                <label className="custom-control-label"
+                                       htmlFor="continuousRadio">Continuous</label>
+                            </div>
+                            <div className="custom-control custom-radio">
+                                <input type="radio" id="stepByDayRadio"
+                                       checked={this.props.stepByDay}
+                                       onChange={this.props.onChange}
+                                       name="stepByDay" className="custom-control-input" />
+                                <label className="custom-control-label"
+                                       htmlFor="stepByDayRadio">Step by day</label>
+                            </div>
+                        </div>
+                        <div className="col">
+                            <div className="custom-control custom-checkbox">
+                                <input type="checkbox" className="custom-control-input"
+                                       name="loopDay"
+                                       onChange={this.props.onChange}
+                                       checked={this.props.loopDay}
+                                       disabled={this.props.stepByDay}
+                                       id="loopDayToggle" />
+                                <label className="custom-control-label" htmlFor="loopDayToggle">
+                                    Loop day
+                                </label>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <label>Animation speed:</label> {roundToOnePlace(this.props.animationRate * 3)} hrs/sec
+                <label>Animation speed:</label> {animationSpeed}
                 <input className="custom-range" type="range"
-                       min={0.01} max={10} step={0.01}
+                       name="animationRate"
+                       min={this.props.stepByDay ? 5 : 0.01}
+                       max={this.props.stepByDay ? 122 : 10}
+                       step={this.props.stepByDay ? 1 : 0.01}
                        value={this.props.animationRate}
-                       onChange={this.props.onAnimationRateUpdate} />
+                       onChange={this.props.onChange} />
             </React.Fragment>
         );
     }
@@ -47,6 +80,8 @@ export default class AnimationControls extends React.Component {
 AnimationControls.propTypes = {
     isPlaying: PropTypes.bool.isRequired,
     animationRate: PropTypes.number.isRequired,
+    loopDay: PropTypes.bool.isRequired,
+    stepByDay: PropTypes.bool.isRequired,
     onStartClick: PropTypes.func.isRequired,
-    onAnimationRateUpdate: PropTypes.func.isRequired,
+    onChange: PropTypes.func.isRequired
 };
