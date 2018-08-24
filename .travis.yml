@@ -1,20 +1,8 @@
 language: node_js
 node_js:
-- '8'
-- '10'
+  - '8'
+  - '10'
 install: npm install
 script:
-- cd small-angle-demo 
-- make eslint
-- cd ..
-- cd lunar-phase-simulator 
-- make eslint
-- npm run test
-- cd ..
-- cd sun-motion-simulator
-- npm install
-- npm run eslint
-- cd ..
-- cd exoplanet-transit-simulator
-- npm install
-- npm run eslint
+  - make eslint-all
+  - make test-all
