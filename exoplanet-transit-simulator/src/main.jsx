@@ -104,12 +104,14 @@ class ExoplanetTransitSimulator extends React.Component {
                                             type="number" name="planetAxis"
                                             className="form-control form-control-sm"
                                             disabled={!this.state.showSimulatedMeasurements}
+                                            name="noise"
                                             value={this.state.noise}
                                             onChange={this.handleInputChange}
                                             step={0.01} />
                                         <RangeStepInput
                                             className="form-control"
                                             disabled={!this.state.showSimulatedMeasurements}
+                                            name="noise"
                                             value={this.state.noise}
                                             onChange={this.handleInputChange}
                                             min={0.01} max={10} step={0.01} />
@@ -124,12 +126,14 @@ class ExoplanetTransitSimulator extends React.Component {
                                             type="number" name="planetAxis"
                                             className="form-control form-control-sm"
                                             disabled={!this.state.showSimulatedMeasurements}
+                                            name="number"
                                             value={this.state.number}
                                             onChange={this.handleInputChange}
                                             step={0.01} />
                                         <RangeStepInput
                                             className="form-control"
                                             disabled={!this.state.showSimulatedMeasurements}
+                                            name="number"
                                             value={this.state.number}
                                             onChange={this.handleInputChange}
                                             min={0.01} max={10} step={0.01} />
@@ -156,6 +160,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                 <input
                                     type="number" name="planetMass"
                                     className="form-control form-control-sm"
+                                    name="planetMass"
                                     value={this.state.planetMass}
                                     onChange={this.handleInputChange}
                                     min={0.01} max={2}
@@ -164,6 +169,7 @@ class ExoplanetTransitSimulator extends React.Component {
 
                                 <RangeStepInput
                                     className="form-control"
+                                    name="planetMass"
                                     value={this.state.planetMass}
                                     onChange={this.handleInputChange}
                                     min={0.01} max={2} step={0.0001} />
@@ -177,6 +183,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                 <input
                                     type="number" name="planetRadius"
                                     className="form-control form-control-sm"
+                                    name="planetRadius"
                                     value={this.state.planetRadius}
                                     onChange={this.handleInputChange}
                                     min={0.01} max={2}
@@ -185,6 +192,7 @@ class ExoplanetTransitSimulator extends React.Component {
 
                                 <RangeStepInput
                                     className="form-control"
+                                    name="planetRadius"
                                     value={this.state.planetRadius}
                                     onChange={this.handleInputChange}
                                     min={0.01} max={2} step={0.0001} />
@@ -198,6 +206,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                 <input
                                     type="number" name="planetAxis"
                                     className="form-control form-control-sm"
+                                    name="planetSemimajorAxis"
                                     value={this.state.planetSemimajorAxis}
                                     onChange={this.handleInputChange}
                                     min={0.01} max={2}
@@ -206,6 +215,7 @@ class ExoplanetTransitSimulator extends React.Component {
 
                                 <RangeStepInput
                                     className="form-control"
+                                    name="planetSemimajorAxis"
                                     value={this.state.planetSemimajorAxis}
                                     onChange={this.handleInputChange}
                                     min={0.01} max={2}
@@ -220,6 +230,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                 <input
                                     type="number" name="planetEccentricity"
                                     className="form-control form-control-sm"
+                                    name="planetEccentricity"
                                     value={this.state.planetEccentricity}
                                     onChange={this.handleInputChange}
                                     min={0} max={0.4}
@@ -227,6 +238,7 @@ class ExoplanetTransitSimulator extends React.Component {
 
                                 <RangeStepInput
                                     className="form-control"
+                                    name="planetEccentricity"
                                     value={this.state.planetEccentricity}
                                     onChange={this.handleInputChange}
                                     min={0} max={0.4}
@@ -248,6 +260,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                 <input type="number"
                                        name="starMass"
                                        className="form-control form-control-sm"
+                                       name="starMass"
                                        value={this.state.starMass}
                                        onChange={this.handleInputChange}
                                        step={0.01} />
@@ -255,6 +268,7 @@ class ExoplanetTransitSimulator extends React.Component {
 
                                 <RangeStepInput
                                     className="form-control"
+                                    name="starMass"
                                     value={this.state.starMass}
                                     onChange={this.handleInputChange}
                                     min={0.01} max={10} step={0.01} />
@@ -281,12 +295,14 @@ class ExoplanetTransitSimulator extends React.Component {
                                 <input
                                     type="number" name="planetAxis"
                                     className="form-control form-control-sm"
+                                    name="inclination"
                                     value={this.state.inclination}
                                     onChange={this.handleInputChange}
                                     step={0.01} />&deg;
 
         <RangeStepInput
             className="form-control"
+            name="inclination"
             value={this.state.inclination}
             onChange={this.handleInputChange}
             min={0.01} max={10} step={0.01} />
@@ -302,12 +318,14 @@ class ExoplanetTransitSimulator extends React.Component {
                                 <input
                                     type="number" name="planetAxis"
                                     className="form-control form-control-sm"
+                                    name="longitude"
                                     value={this.state.longitude}
                                     onChange={this.handleInputChange}
                                     step={0.01} />&deg;
 
         <RangeStepInput
             className="form-control"
+            name="longitude"
             value={this.state.longitude}
             onChange={this.handleInputChange}
             min={0.01} max={10} step={0.01} />
@@ -342,7 +360,7 @@ class ExoplanetTransitSimulator extends React.Component {
 
         if (target.type === 'radio') {
             value = target.id === (target.name + 'Radio');
-        } else if (target.type === 'range') {
+        } else if (target.type === 'range' || target.type === 'number') {
             value = forceNumber(value);
         }
 

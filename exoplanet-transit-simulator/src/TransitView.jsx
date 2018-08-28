@@ -52,6 +52,8 @@ export default class TransitView extends React.Component {
 
         const planetRadius = 10;
         const planet = new PIXI.Graphics();
+        planet.interactive = true;
+        planet.buttonMode = true;
         planet.beginFill(0xa0a0a0);
         planet.drawCircle(
             app.view.width / 2,

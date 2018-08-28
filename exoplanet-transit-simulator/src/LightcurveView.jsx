@@ -25,10 +25,7 @@ export default class LightcurveView extends React.Component {
             worldHeight: 500 * (220 / 400)
         });
         this.viewport = viewport;
-        this.viewport
-            .drag()
-            .wheel()
-            .zoom();
+        this.viewport.zoom();
 
         const app = new PIXI.Application({
             backgroundColor: 0xffffff,
@@ -55,6 +52,7 @@ export default class LightcurveView extends React.Component {
         line.position.set(x, y);
         line.width = width;
         line.height = height;
+        return line;
     }
 
     drawBorder(viewport) {
@@ -75,11 +73,11 @@ export default class LightcurveView extends React.Component {
 
     drawScene(viewport) {
         const star = new PIXI.Graphics();
-        star.beginFill(0xff0000);
+        star.beginFill(0xa0a0a0);
         star.drawCircle(
             450 / 2,
             200 / 2,
-            45);
+            3);
         star.endFill();
         viewport.addChild(star);
 
@@ -87,7 +85,15 @@ export default class LightcurveView extends React.Component {
             viewport,
             0, viewport.worldHeight / 2,
             viewport.worldWidth, 1,
-            0x0000ee);
+            0x2222ee);
+
+        const control = this.drawLine(
+            viewport,
+            viewport.worldWidth / 2, 0,
+            4, viewport.worldHeight,
+            0xee8888);
+        control.interactive = true;
+        control.buttonMode = true;
     }
 
     drawInfo(app) {
