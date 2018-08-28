@@ -96,7 +96,7 @@ export default class LightcurveView extends React.Component {
             viewport,
             0, viewport.worldHeight / 2,
             viewport.worldWidth, 1,
-            0x2222ee);
+            0x6666ff);
 
         const control = this.drawLine(
             viewport,
@@ -114,6 +114,18 @@ export default class LightcurveView extends React.Component {
         line.moveTo(70, 240);
         line.lineTo(430, 240);
         app.stage.addChild(line);
+
+        const leftText = new PIXI.Text('Normalized Flux', {
+            fontFamily: 'Arial',
+            fontSize: 14,
+            fontWeight: 'bold',
+            fill: 0x000000,
+            align: 'center'
+        });
+        leftText.rotation = -Math.PI / 2;
+        leftText.position.x = 14;
+        leftText.position.y = 160;
+        app.stage.addChild(leftText);
     }
 
     onDragStart(e) {
