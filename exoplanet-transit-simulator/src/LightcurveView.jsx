@@ -47,7 +47,7 @@ export default class LightcurveView extends React.Component {
 
         this.drawBorder(viewport);
         this.drawScene(viewport);
-        this.drawInfo(this.app);
+        this.drawInfo(this.app, viewport);
     }
     componentDidUpdate(prevProps) {
         if (prevProps.phase !== this.props.phase) {
@@ -131,7 +131,7 @@ export default class LightcurveView extends React.Component {
         this.control = control;
     }
 
-    drawInfo(app) {
+    drawInfo(app, viewport) {
         const line = new PIXI.Graphics()
                              .lineStyle(2, 0x000000)
                              .moveTo(70, 240)
@@ -159,6 +159,31 @@ export default class LightcurveView extends React.Component {
         bottomText.position.x = 130;
         bottomText.position.y = 252;
         app.stage.addChild(bottomText);
+
+        this.drawYAxisLabels(app, viewport)
+    }
+
+    /**
+     * Draw dynamic axis labels in the app container, with respect to
+     * the viewport's world co-ordinates.
+     */
+    drawYAxisLabels(app, viewport) {
+        viewport.fitYHeight = function(height, center) {
+            let save;
+            if (center) {
+                save = this.center;
+            }
+            height = height || this.worldHeight;
+            this.scale.y = this.screenHeight / height;
+            //this.scale.x = this.scale.y
+            if (center) {
+                this.moveCenter(save);
+            }
+            return this;
+        };
+        viewport.fitYHeight.bind(viewport);
+
+        //viewport.fitYHeight(200);
     }
 
     onDragStart(e) {
