@@ -33,7 +33,7 @@
   },
   "devDependencies": {
     "babel-eslint": "^9.0.0",
-    "babel-loader": "^7.1.5",
+    "babel-loader": "^8.0.0",
     "babel-preset-react": "^6.24.1",
     "eslint": "^5.1.0",
     "eslint-plugin-react": "~7.10.0",
