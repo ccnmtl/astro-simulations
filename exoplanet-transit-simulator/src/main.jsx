@@ -176,7 +176,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                     value={this.state.planetMass}
                                     onChange={this.handleInputChange}
                                     min={0.01} max={2}
-                                    step={0.0001} />
+                                    step={0.001} />
                                 M<sub>jup</sub>
 
                                 <RangeStepInput
@@ -184,7 +184,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                     name="planetMass"
                                     value={this.state.planetMass}
                                     onChange={this.handleInputChange}
-                                    min={0.01} max={2} step={0.0001} />
+                                    min={0.01} max={2} step={0.001} />
                             </div>
                         </div>
                         <div className="form-group row">
@@ -199,7 +199,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                     value={this.state.planetRadius}
                                     onChange={this.handleInputChange}
                                     min={0.01} max={2}
-                                    step={0.0001} />
+                                    step={0.001} />
                                 R<sub>jup</sub>
 
                                 <RangeStepInput
@@ -207,7 +207,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                     name="planetRadius"
                                     value={this.state.planetRadius}
                                     onChange={this.handleInputChange}
-                                    min={0.01} max={2} step={0.0001} />
+                                    min={0.01} max={2} step={0.001} />
                             </div>
                         </div>
                         <div className="form-group row">
@@ -222,7 +222,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                     value={this.state.planetSemimajorAxis}
                                     onChange={this.handleInputChange}
                                     min={0.01} max={2}
-                                    step={0.0001} />
+                                    step={0.001} />
                                 AU
 
                                 <RangeStepInput
@@ -231,7 +231,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                     value={this.state.planetSemimajorAxis}
                                     onChange={this.handleInputChange}
                                     min={0.01} max={2}
-                                    step={0.0001} />
+                                    step={0.001} />
                             </div>
                         </div>
                         <div className="form-group row">

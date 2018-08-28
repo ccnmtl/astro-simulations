@@ -126,6 +126,16 @@ export default class LightcurveView extends React.Component {
         leftText.position.x = 14;
         leftText.position.y = 160;
         app.stage.addChild(leftText);
+
+        const bottomText = new PIXI.Text('Eclipse takes 2.93 hours of 3.56 day orbit', {
+            fontFamily: 'Arial',
+            fontSize: 13,
+            fill: 0x000000,
+            align: 'center'
+        });
+        bottomText.position.x = 130;
+        bottomText.position.y = 252;
+        app.stage.addChild(bottomText);
     }
 
     onDragStart(e) {
