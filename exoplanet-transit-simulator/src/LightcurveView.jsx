@@ -23,8 +23,8 @@ export default class LightcurveView extends React.Component {
         const viewport = new Viewport({
             screenWidth: 400,
             screenHeight: 220,
-            worldWidth: 500,
-            worldHeight: 500 * (220 / 400)
+            worldWidth: 100 * (400 / 220),
+            worldHeight: 100
         });
         this.viewport = viewport;
         this.viewport.zoom();
@@ -55,6 +55,12 @@ export default class LightcurveView extends React.Component {
             const pos = this.props.phase * this.viewport.worldWidth - 2;
             this.control.position.x = pos;
         }
+        if (prevProps.planetRadius !== this.props.planetRadius) {
+            this.viewport.removeChild(this.lightcurve);
+            this.lightcurve = this.drawLightcurve(
+                this.viewport, this.props.planetRadius);
+            this.viewport.addChild(this.lightcurve);
+        }
     }
 
     drawLine(viewport, x, y, width, height, tint = 0x000000) {
@@ -67,7 +73,7 @@ export default class LightcurveView extends React.Component {
     }
 
     drawBorder(viewport) {
-        const BORDER = 1;
+        const BORDER = 0.5;
         this.drawLine(
             viewport,
             0, 0, viewport.worldWidth, BORDER);
@@ -82,26 +88,43 @@ export default class LightcurveView extends React.Component {
             viewport.worldWidth - BORDER, 0, BORDER, viewport.worldHeight);
     }
 
+    drawLightcurve(viewport, planetRadius) {
+        const lightcurve = new PIXI.Graphics();
+        lightcurve
+            .lineStyle(0.5, 0x6666ff)
+            .moveTo(0, viewport.worldHeight / 2)
+            .lineTo(20, viewport.worldHeight / 2)
+            .quadraticCurveTo(
+                // x
+                viewport.worldWidth / 2,
+                viewport.worldHeight * Math.max(0.5, planetRadius),
+
+                // y
+                viewport.worldWidth - 20,
+                viewport.worldHeight / 2)
+            .lineTo(viewport.worldWidth, viewport.worldHeight / 2);
+        return lightcurve;
+    }
+
     drawScene(viewport) {
-        const star = new PIXI.Graphics();
-        star.beginFill(0xa0a0a0);
-        star.drawCircle(
+        const dot = new PIXI.Graphics();
+        dot.beginFill(0xa0a0a0);
+        dot.drawCircle(
             450 / 2,
             200 / 2,
             3);
-        star.endFill();
-        viewport.addChild(star);
+        dot.endFill();
+        viewport.addChild(dot);
 
-        this.drawLine(
-            viewport,
-            0, viewport.worldHeight / 2,
-            viewport.worldWidth, 1,
-            0x6666ff);
+        const lightcurve = this.drawLightcurve(
+            viewport, this.props.planetRadius);
+        this.lightcurve = lightcurve;
+        viewport.addChild(lightcurve);
 
         const control = this.drawLine(
             viewport,
             viewport.worldWidth / 2 - 2, 0,
-            4, viewport.worldHeight,
+            2, viewport.worldHeight,
             0xee8888);
         control.interactive = true;
         control.buttonMode = true;
@@ -110,9 +133,9 @@ export default class LightcurveView extends React.Component {
 
     drawInfo(app) {
         const line = new PIXI.Graphics()
-        line.lineStyle(2, 0x000000);
-        line.moveTo(70, 240);
-        line.lineTo(430, 240);
+                             .lineStyle(2, 0x000000)
+                             .moveTo(70, 240)
+                             .lineTo(430, 240);
         app.stage.addChild(line);
 
         const leftText = new PIXI.Text('Normalized Flux', {
