@@ -26,15 +26,16 @@
   "homepage": "https://github.com/ccnmtl/astro-interactives#readme",
   "dependencies": {
     "babel-cli": "^6.26.0",
-    "babel-preset-react-app": "^3.1.2",
     "pixi.js": "^4.8.1",
     "react": "^16.4.1",
     "react-dom": "^16.4.1"
   },
   "devDependencies": {
+    "@babel/core": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/preset-react": "^7.0.0",
     "babel-eslint": "^9.0.0",
-    "babel-loader": "^7.1.5",
-    "babel-preset-react": "^6.24.1",
+    "babel-loader": "^8.0.0",
     "eslint": "^5.1.0",
     "eslint-plugin-react": "~7.10.0",
     "jest": "^23.4.1",
@@ -44,8 +45,8 @@
   },
   "babel": {
     "presets": [
-      "env",
-      "react"
+      "@babel/env",
+      "@babel/react"
     ]
   }
 }
