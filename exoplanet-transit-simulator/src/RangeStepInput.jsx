@@ -31,6 +31,7 @@ export default class RangeStepInput extends React.Component {
                    value={this.props.value}
                    name={this.props.name}
                    id={this.props.id}
+                   disabled={this.props.disabled}
                    onChange={this.props.onChange}
                    onMouseDown={this.onMouseDown}
                    onMouseUp={this.onMouseUp}
@@ -77,5 +78,6 @@ RangeStepInput.propTypes = {
     min: PropTypes.number,
     max: PropTypes.number,
     id: PropTypes.string,
-    name: PropTypes.string
+    name: PropTypes.string,
+    disabled: PropTypes.bool
 };
