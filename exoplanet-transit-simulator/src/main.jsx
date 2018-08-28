@@ -29,7 +29,7 @@ class ExoplanetTransitSimulator extends React.Component {
             // System orientation and phase
             inclination: 86.929,
             longitude: 0,
-            phase: 0
+            phase: 0.5
         }
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -74,7 +74,19 @@ class ExoplanetTransitSimulator extends React.Component {
                 </div>
 
                 <div className="col-6">
-                    <LightcurveView phase={this.state.phase} />
+                    <LightcurveView
+                        showTheoreticalCurve={this.state.showTheoreticalCurve}
+                        showSimulatedMeasurements={this.state.showSimulatedMeasurements}
+                        noise={this.state.noise}
+                        number={this.state.number}
+                        planetMass={this.state.planetMass}
+                        planetRadius={this.state.planetRadius}
+                        planetSemimajorAxis={this.state.planetSemimajorAxis}
+                        planetEccentricity={this.state.planetEccentricity}
+                        starMass={this.state.starMass}
+                        inclination={this.state.inclination}
+                        longitude={this.state.longitude}
+                        phase={this.state.phase} />
                     <div className="row">
                         <div className="col">
                             <div className="form-inline">
@@ -101,7 +113,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                     </label>
                                     <div className="col-sm-10">
                                         <input
-                                            type="number" name="planetAxis"
+                                            type="number"
                                             className="form-control form-control-sm"
                                             disabled={!this.state.showSimulatedMeasurements}
                                             name="noise"
@@ -123,7 +135,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                     </label>
                                     <div className="col-sm-10">
                                         <input
-                                            type="number" name="planetAxis"
+                                            type="number"
                                             className="form-control form-control-sm"
                                             disabled={!this.state.showSimulatedMeasurements}
                                             name="number"
@@ -158,7 +170,7 @@ class ExoplanetTransitSimulator extends React.Component {
                             </label>
                             <div className="col-sm-10">
                                 <input
-                                    type="number" name="planetMass"
+                                    type="number"
                                     className="form-control form-control-sm"
                                     name="planetMass"
                                     value={this.state.planetMass}
@@ -181,7 +193,7 @@ class ExoplanetTransitSimulator extends React.Component {
                             </label>
                             <div className="col-sm-10">
                                 <input
-                                    type="number" name="planetRadius"
+                                    type="number"
                                     className="form-control form-control-sm"
                                     name="planetRadius"
                                     value={this.state.planetRadius}
@@ -204,7 +216,7 @@ class ExoplanetTransitSimulator extends React.Component {
                             </label>
                             <div className="col-sm-10">
                                 <input
-                                    type="number" name="planetAxis"
+                                    type="number"
                                     className="form-control form-control-sm"
                                     name="planetSemimajorAxis"
                                     value={this.state.planetSemimajorAxis}
@@ -228,7 +240,7 @@ class ExoplanetTransitSimulator extends React.Component {
                             </label>
                             <div className="col-sm-10">
                                 <input
-                                    type="number" name="planetEccentricity"
+                                    type="number"
                                     className="form-control form-control-sm"
                                     name="planetEccentricity"
                                     value={this.state.planetEccentricity}
@@ -258,7 +270,6 @@ class ExoplanetTransitSimulator extends React.Component {
 
                             <div className="col-sm-10">
                                 <input type="number"
-                                       name="starMass"
                                        className="form-control form-control-sm"
                                        name="starMass"
                                        value={this.state.starMass}
@@ -293,7 +304,7 @@ class ExoplanetTransitSimulator extends React.Component {
 
                             <div className="col-sm-10">
                                 <input
-                                    type="number" name="planetAxis"
+                                    type="number"
                                     className="form-control form-control-sm"
                                     name="inclination"
                                     value={this.state.inclination}
@@ -316,7 +327,7 @@ class ExoplanetTransitSimulator extends React.Component {
 
                             <div className="col-sm-10">
                                 <input
-                                    type="number" name="planetAxis"
+                                    type="number"
                                     className="form-control form-control-sm"
                                     name="longitude"
                                     value={this.state.longitude}
@@ -344,7 +355,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                     name="phase" id="phaseSlider"
                                     value={this.state.phase}
                                     onChange={this.handleInputChange}
-                                    min={0.01} max={10} step={0.01} />
+                                    min={0} max={1} step={0.01} />
                             </div>
                         </div>
                     </div>

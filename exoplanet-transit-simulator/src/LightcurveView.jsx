@@ -18,6 +18,8 @@ export default class LightcurveView extends React.Component {
         return <div ref={(el) => {this.el = el}}></div>;
     }
     componentDidMount() {
+        // The viewport contains the plotted, dynamic and scalable
+        // scene.
         const viewport = new Viewport({
             screenWidth: 400,
             screenHeight: 220,
@@ -27,6 +29,8 @@ export default class LightcurveView extends React.Component {
         this.viewport = viewport;
         this.viewport.zoom();
 
+        // The app contains the textual info with the viewport plot
+        // in the center.
         const app = new PIXI.Application({
             backgroundColor: 0xffffff,
             width: 480,
@@ -44,6 +48,13 @@ export default class LightcurveView extends React.Component {
         this.drawBorder(viewport);
         this.drawScene(viewport);
         this.drawInfo(this.app);
+    }
+    componentDidUpdate(prevProps) {
+        if (prevProps.phase !== this.props.phase) {
+            // Scale the phase to the viewport's worldWidth.
+            const pos = this.props.phase * this.viewport.worldWidth - 2;
+            this.control.position.x = pos;
+        }
     }
 
     drawLine(viewport, x, y, width, height, tint = 0x000000) {
@@ -89,11 +100,12 @@ export default class LightcurveView extends React.Component {
 
         const control = this.drawLine(
             viewport,
-            viewport.worldWidth / 2, 0,
+            viewport.worldWidth / 2 - 2, 0,
             4, viewport.worldHeight,
             0xee8888);
         control.interactive = true;
         control.buttonMode = true;
+        this.control = control;
     }
 
     drawInfo(app) {
@@ -119,5 +131,16 @@ export default class LightcurveView extends React.Component {
 }
 
 LightcurveView.propTypes = {
+    showTheoreticalCurve: PropTypes.bool.isRequired,
+    showSimulatedMeasurements: PropTypes.bool.isRequired,
+    noise: PropTypes.number.isRequired,
+    number: PropTypes.number.isRequired,
+    planetMass: PropTypes.number.isRequired,
+    planetRadius: PropTypes.number.isRequired,
+    planetSemimajorAxis: PropTypes.number.isRequired,
+    planetEccentricity: PropTypes.number.isRequired,
+    starMass: PropTypes.number.isRequired,
+    inclination: PropTypes.number.isRequired,
+    longitude: PropTypes.number.isRequired,
     phase: PropTypes.number.isRequired
 };
