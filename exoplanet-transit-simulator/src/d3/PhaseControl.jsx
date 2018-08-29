@@ -1,8 +1,5 @@
 import React from 'react';
 
-/**
- * This is the phase control.
- */
 const PhaseControl = props => {
     const xPos = props.phase * (
         props.width - (2 * (props.padding + 2))) + props.padding + 2;

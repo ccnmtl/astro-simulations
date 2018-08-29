@@ -39,8 +39,9 @@ export default class Plot extends React.Component {
             <svg width={props.width} height={props.height}>
                 <DataCircles {...props} {...scales} />
                 <path ref={(el) => {this.path = el}}
-                      fillOpacity="0"
+                      fill="none"
                       strokeWidth="1"
+                      visibility={this.props.showTheoreticalCurve ? 'inherit' : 'hidden'}
                       stroke="blue" />
                 <Axis ax={'y'} {...props} {...scales} />
                 <PhaseControl {...props} {...scales} />
@@ -50,8 +51,10 @@ export default class Plot extends React.Component {
     componentDidMount() {
         this.drawLightcurve(this.path);
     }
-    componentDidUpdate() {
-        this.drawLightcurve(this.path);
+    componentDidUpdate(prevProps) {
+        if (prevProps.planetRadius !== this.props.planetRadius) {
+            this.drawLightcurve(this.path);
+        }
     }
     /**
      * Draw the lightcurve with a canvas path.

@@ -18,7 +18,10 @@ export default class LightcurveView extends React.Component {
         return Math.floor(Math.random() * 1000);
     }
     randomDataSet() {
-        return Array.from(Array(50)).map(
+        if (!this.props.showSimulatedMeasurements) {
+            return [];
+        }
+        return Array.from(Array(this.props.simMeasurementNumber)).map(
             () => [this.randomNum(), this.randomNum()]);
     }
     render() {
@@ -28,6 +31,7 @@ export default class LightcurveView extends React.Component {
             <Plot
                 data={this.state.data}
                 phase={this.props.phase}
+                showTheoreticalCurve={this.props.showTheoreticalCurve}
                 planetRadius={this.props.planetRadius}
                 width={460} height={280}
                 padding={30} />
@@ -36,6 +40,17 @@ export default class LightcurveView extends React.Component {
     }
     componentDidUpdate(prevProps) {
         if (prevProps.planetRadius !== this.props.planetRadius) {
+            this.setState({data: this.randomDataSet()});
+        }
+        if (
+            prevProps.simMeasurementNumber !== this.props.simMeasurementNumber
+        ) {
+            this.setState({data: this.randomDataSet()});
+        }
+        if (
+            prevProps.showSimulatedMeasurements !==
+                this.props.showSimulatedMeasurements
+        ) {
             this.setState({data: this.randomDataSet()});
         }
     }
@@ -58,7 +73,7 @@ LightcurveView.propTypes = {
     showTheoreticalCurve: PropTypes.bool.isRequired,
     showSimulatedMeasurements: PropTypes.bool.isRequired,
     noise: PropTypes.number.isRequired,
-    number: PropTypes.number.isRequired,
+    simMeasurementNumber: PropTypes.number.isRequired,
     planetMass: PropTypes.number.isRequired,
     planetRadius: PropTypes.number.isRequired,
     planetSemimajorAxis: PropTypes.number.isRequired,
