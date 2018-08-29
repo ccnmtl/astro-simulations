@@ -13,6 +13,7 @@ export default class DatePicker extends React.Component {
         this.onDragStart = this.onDragStart.bind(this);
         this.onDragEnd = this.onDragEnd.bind(this);
         this.onMove = this.onMove.bind(this);
+        this.onClick = this.onClick.bind(this);
     }
     render() {
         return <React.Fragment>
@@ -48,7 +49,7 @@ export default class DatePicker extends React.Component {
     }
     componentDidMount() {
         const app = new PIXI.Application({
-            backgroundColor: 0xffffff,
+            backgroundColor: 0xaaaaff,
             width: 500,
             height: 30,
             sharedLoader: true,
@@ -56,6 +57,11 @@ export default class DatePicker extends React.Component {
             forceCanvas: true
         });
         this.app = app;
+
+        app.stage.interactive = true;
+        app.stage.buttonMode = true;
+        app.stage.on('click', this.onClick);
+
         this.calendarPicker.appendChild(app.view);
         this.drawCalendarScene(app);
     }
@@ -68,6 +74,15 @@ export default class DatePicker extends React.Component {
         }
     }
     drawCalendarScene(app) {
+        // Add a white background rectangle. This just makes the
+        // stage's onClick behavior consistent through the whole scene,
+        // and really shouldn't be necessary.
+        const rect = new PIXI.Graphics()
+                             .beginFill(0xffffff)
+                             .drawRect(0, 0, app.view.width, app.view.height)
+                             .endFill();
+        app.stage.addChild(rect);
+
         let months = [
             'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug',
             'Sep', 'Oct', 'Nov', 'Dec'
@@ -181,6 +196,17 @@ export default class DatePicker extends React.Component {
             const newDate = this.localPosToDate(pos.x, this.app);
 
             this.props.onDateControlUpdate(newDate);
+        }
+    }
+    onClick(e) {
+        const pos = e.data.getLocalPosition(this.app.stage);
+        const currentPos = this.dateToLocalPos(this.props.dateTime, this.app);
+        if (pos.x < currentPos) {
+            this.props.onDateControlUpdate(
+                new Date(this.props.dateTime.getTime() - (3600 * 24 * 1000)));
+        } else if (pos.x > currentPos) {
+            this.props.onDateControlUpdate(
+                new Date(this.props.dateTime.getTime() + (3600 * 24 * 1000)));
         }
     }
 }
