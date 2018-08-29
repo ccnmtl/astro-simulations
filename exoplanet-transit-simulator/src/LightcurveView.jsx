@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ScatterPlot from './d3/ScatterPlot';
+import Plot from './d3/Plot';
 
 export default class LightcurveView extends React.Component {
     constructor(props) {
@@ -25,9 +25,11 @@ export default class LightcurveView extends React.Component {
         // d3 integration based on:
         // https://github.com/freddyrangel/playing-with-react-and-d3
         return (
-            <ScatterPlot
+            <Plot
                 data={this.state.data}
-                width={400} height={220}
+                phase={this.props.phase}
+                planetRadius={this.props.planetRadius}
+                width={460} height={280}
                 padding={30} />
         );
 

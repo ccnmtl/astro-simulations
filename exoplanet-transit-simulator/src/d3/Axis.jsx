@@ -11,26 +11,16 @@ export default class Axis extends Component {
     }
 
     renderAxis() {
-        if (this.props.ax === 'x') {
-            var axis = d3.axisBottom(this.props.xScale).ticks(5);
-        } else if (this.props.ax === 'y') {
-            var axis = d3.axisLeft(this.props.yScale).ticks(5);
-        }
+        const axis = d3.axisLeft(this.props.yScale).ticks(5);
 
-        var node = this.refs.axis;
+        const node = this.refs.axis;
         d3.select(node).call(axis);
     }
 
     render() {
         return (
-            <g
-                className={this.props.ax === 'x' ? 'xAxis' : 'yAxis'}
-                ref="axis"
-                transform={
-                    this.props.ax === 'x'
-                    ? `translate(0, ${this.props.height - this.props.padding})`
-                    : `translate(${this.props.padding}, 0)`
-                }
+            <g className="yAxis" ref="axis"
+               transform={`translate(${this.props.padding}, 0)`}
             />
         );
     }
