@@ -13,6 +13,7 @@ export default class LatitudePicker extends React.Component {
         this.onLatDragStart = this.onLatDragStart.bind(this);
         this.onLatDragEnd = this.onLatDragEnd.bind(this);
         this.onLatMove = this.onLatMove.bind(this);
+        this.onClick = this.onClick.bind(this);
 
         this.loader = new PIXI.loaders.Loader();
         this.loader.add('earthmap', 'img/earthmap.png');
@@ -39,7 +40,7 @@ export default class LatitudePicker extends React.Component {
     componentDidMount() {
         const me = this;
 
-        this.latitudePickerApp = new PIXI.Application({
+        this.app = new PIXI.Application({
             backgroundColor: 0xffffff,
             // Make this width an odd number so centering the map doesn't
             // cause width pixel artifacts when drawing border.
@@ -49,13 +50,18 @@ export default class LatitudePicker extends React.Component {
             sharedTicker: true,
             forceCanvas: true
         });
-        this.latitudePicker.appendChild(this.latitudePickerApp.view);
+
+        this.app.stage.interactive = true;
+        this.app.stage.buttonMode = true;
+        this.app.stage.on('click', this.onClick);
+
+        this.latitudePicker.appendChild(this.app.view);
 
         this.loader.load((loader, resources) => {
             me.resources = resources;
 
             this.lPicker = me.drawLatitudeScene(
-                me.latitudePickerApp, resources.earthmap);
+                me.app, resources.earthmap);
         });
     }
     componentDidUpdate(prevProps) {
@@ -67,7 +73,7 @@ export default class LatitudePicker extends React.Component {
         }
     }
     componentWillUnmount() {
-        this.latitudePickerApp.stop();
+        this.app.stop();
     }
     /**
      * Draw a centered sprite on the given pixi application.
@@ -152,9 +158,20 @@ export default class LatitudePicker extends React.Component {
     }
     onLatMove(e) {
         if (this.state.isDraggingLatitude) {
-            const pos = e.data.getLocalPosition(this.latitudePickerApp.stage);
+            const pos = e.data.getLocalPosition(this.app.stage);
             const lat = this.localPosToLatitude(pos.y, 126);
             this.props.onLatitudeUpdate(lat);
+        }
+    }
+    onClick(e) {
+        const pos = e.data.getLocalPosition(this.app.stage);
+        const currentPos = this.latitudeToLocalPos(
+            this.props.latitude, this.app.view.height);
+
+        if (pos.y < currentPos) {
+            this.props.onLatitudeUpdate(this.props.latitude + 1);
+        } else if (pos.y > currentPos) {
+            this.props.onLatitudeUpdate(this.props.latitude - 1);
         }
     }
     /**
