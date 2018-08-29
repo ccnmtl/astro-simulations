@@ -29,6 +29,13 @@ export default class TransitView extends React.Component {
         this.el.appendChild(app.view);
         this.drawScene(app);
     }
+    componentDidUpdate(prevProps) {
+        if (prevProps.phase !== this.props.phase) {
+            // phase * starRadius * 2
+            const pos = this.props.phase * 140;
+            this.planet.position.x = pos;
+        }
+    }
     drawScene(app) {
         const starRadius = 70;
         const star = new PIXI.Graphics();
@@ -52,12 +59,16 @@ export default class TransitView extends React.Component {
 
         const planetRadius = 10;
         const planet = new PIXI.Graphics();
+        planet.interactive = true;
+        planet.buttonMode = true;
         planet.beginFill(0xa0a0a0);
         planet.drawCircle(
-            app.view.width / 2,
+            (app.view.width / 2) - starRadius,
             (app.view.height / 2) + 25,
             planetRadius);
         planet.endFill();
+        planet.position.x = this.props.phase * starRadius * 2;
+        this.planet = planet;
         app.stage.addChild(planet);
     }
     onDragStart(e) {
