@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import * as PIXI from 'pixi.js';
 import Viewport from 'pixi-viewport';
+import JXG from 'jsxgraph';
 
 export default class LightcurveView extends React.Component {
     constructor(props) {
@@ -15,7 +16,12 @@ export default class LightcurveView extends React.Component {
         this.onMove = this.onMove.bind(this);
     }
     render() {
-        return <div ref={(el) => {this.el = el}}></div>;
+        return <div ref={(el) => {this.el = el}}>
+            <div id="jxgboard" style={{
+                width: '400px',
+                height: '220px'
+            }}></div>
+        </div>;
     }
     componentDidMount() {
         // The viewport contains the plotted, dynamic and scalable
@@ -48,6 +54,7 @@ export default class LightcurveView extends React.Component {
         this.drawBorder(viewport);
         this.drawScene(viewport);
         this.drawInfo(this.app, viewport);
+        this.drawGraph('jxgboard');
     }
     componentDidUpdate(prevProps) {
         if (prevProps.phase !== this.props.phase) {
@@ -61,6 +68,51 @@ export default class LightcurveView extends React.Component {
                 this.viewport, this.props.planetRadius);
             this.viewport.addChild(this.lightcurve);
         }
+    }
+
+    drawGraph(id) {
+        const board = JXG.JSXGraph.initBoard(
+             id, {
+                 axis: true,
+                 keepAspectRatio: false,
+                 showCopyright: false,
+                 showNavigation: false,
+                 defaultAxes: {
+                     x: {
+                         withLabel: false,
+                         ticks: {
+                             visible: true
+                         },
+                         layer: 9
+                     },
+                     y: {
+                         withLabel: false,
+                         ticks: {
+                             visible: true
+                         },
+                         layer: 9
+                     }
+                 },
+                 zoomY: 0.5,
+                 boundingbox: [-0.1, 1.2, 1, 0.8]
+             }
+         );
+        board.create(
+            'curve', [
+                function(t) {
+                    return (t - Math.sin(t)) * 0.2;
+                },
+                function(t) {
+                    return Math.cos(t) + 3;
+                },
+                0, 2 * Math.PI
+            ]
+        );
+        board.create(
+            'line', [[0.5, 0], [0.5, 3]], {
+                strokeColor: '#ee8888',
+                strokeWidth: 4
+            });
     }
 
     drawLine(viewport, x, y, width, height, tint = 0x000000) {
@@ -91,7 +143,7 @@ export default class LightcurveView extends React.Component {
     drawLightcurve(viewport, planetRadius) {
         const lightcurve = new PIXI.Graphics();
         lightcurve
-            .lineStyle(0.5, 0x6666ff)
+            .lineStyle(1, 0x6666ff)
             .moveTo(0, viewport.worldHeight / 2)
             .lineTo(20, viewport.worldHeight / 2)
             .quadraticCurveTo(
@@ -168,13 +220,16 @@ export default class LightcurveView extends React.Component {
      * the viewport's world co-ordinates.
      */
     drawYAxisLabels(app, viewport) {
+        // TODO: use upstream version:
+        // https://github.com/davidfig/pixi-viewport/pull/73
         viewport.fitYHeight = function(height, center) {
             let save;
             if (center) {
                 save = this.center;
             }
             height = height || this.worldHeight;
-            this.scale.y = this.screenHeight / height;
+            const scale = this.screenHeight / height;
+            this.scale.y = scale;
             //this.scale.x = this.scale.y
             if (center) {
                 this.moveCenter(save);

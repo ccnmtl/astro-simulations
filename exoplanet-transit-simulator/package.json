@@ -26,6 +26,7 @@
   "homepage": "https://github.com/ccnmtl/astro-interactives#readme",
   "dependencies": {
     "babel-cli": "^6.26.0",
+    "jsxgraph": "^0.99.7",
     "pixi-viewport": "^3.4.1",
     "pixi.js": "^4.8.1",
     "react": "^16.4.1",
