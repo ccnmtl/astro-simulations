@@ -15,7 +15,7 @@ class ExoplanetTransitSimulator extends React.Component {
             showTheoreticalCurve: true,
             showSimulatedMeasurements: false,
             noise: 0.1,
-            number: 50,
+            simMeasurementNumber: 50,
 
             // Planet properties
             planetMass: 0.657,
@@ -78,7 +78,7 @@ class ExoplanetTransitSimulator extends React.Component {
                         showTheoreticalCurve={this.state.showTheoreticalCurve}
                         showSimulatedMeasurements={this.state.showSimulatedMeasurements}
                         noise={this.state.noise}
-                        number={this.state.number}
+                        simMeasurementNumber={this.state.simMeasurementNumber}
                         planetMass={this.state.planetMass}
                         planetRadius={this.state.planetRadius}
                         planetSemimajorAxis={this.state.planetSemimajorAxis}
@@ -93,7 +93,10 @@ class ExoplanetTransitSimulator extends React.Component {
                                 <div className="custom-control custom-checkbox">
                                     <input type="checkbox" className="custom-control-input"
                                            name="showTheoreticalCurve"
-                                           id="showTheoreticalCurveToggle" />
+                                           id="showTheoreticalCurveToggle"
+                                           checked={this.state.showTheoreticalCurve}
+                                           onChange={this.handleInputChange}
+                                    />
                                     <label className="custom-control-label" htmlFor="showTheoreticalCurveToggle">
                                         Show theoretical curve
                                     </label>
@@ -101,7 +104,10 @@ class ExoplanetTransitSimulator extends React.Component {
                                 <div className="custom-control custom-checkbox">
                                     <input type="checkbox" className="custom-control-input"
                                            name="showSimulatedMeasurements"
-                                           id="showSimulatedMeasurementsToggle" />
+                                           id="showSimulatedMeasurementsToggle"
+                                           checked={this.state.showSimulatedMeasurements}
+                                           onChange={this.handleInputChange}
+                                    />
                                     <label className="custom-control-label" htmlFor="showSimulatedMeasurementsToggle">
                                         Show simulated measurements
                                     </label>
@@ -119,14 +125,14 @@ class ExoplanetTransitSimulator extends React.Component {
                                             name="noise"
                                             value={this.state.noise}
                                             onChange={this.handleInputChange}
-                                            step={0.01} />
+                                            min={0.00001} max={0.2} step={0.01} />
                                         <RangeStepInput
                                             className="form-control"
                                             disabled={!this.state.showSimulatedMeasurements}
                                             name="noise"
                                             value={this.state.noise}
                                             onChange={this.handleInputChange}
-                                            min={0.01} max={10} step={0.01} />
+                                            min={0.00001} max={0.2} step={0.01} />
                                     </div>
                                 </div>
                                 <div className="form-group row">
@@ -138,17 +144,17 @@ class ExoplanetTransitSimulator extends React.Component {
                                             type="number"
                                             className="form-control form-control-sm"
                                             disabled={!this.state.showSimulatedMeasurements}
-                                            name="number"
-                                            value={this.state.number}
+                                            name="simMeasurementNumber"
+                                            value={this.state.simMeasurementNumber}
                                             onChange={this.handleInputChange}
-                                            step={0.01} />
+                                            min={5} max={250} step={1} />
                                         <RangeStepInput
                                             className="form-control"
                                             disabled={!this.state.showSimulatedMeasurements}
-                                            name="number"
-                                            value={this.state.number}
+                                            name="simMeasurementNumber"
+                                            value={this.state.simMeasurementNumber}
                                             onChange={this.handleInputChange}
-                                            min={0.01} max={10} step={0.01} />
+                                            min={5} max={250} step={1} />
                                     </div>
                                 </div>
                             </div>

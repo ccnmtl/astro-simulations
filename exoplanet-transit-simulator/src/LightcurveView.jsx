@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ScatterPlot from './d3/ScatterPlot';
+import Plot from './d3/Plot';
 
 export default class LightcurveView extends React.Component {
     constructor(props) {
@@ -18,22 +18,39 @@ export default class LightcurveView extends React.Component {
         return Math.floor(Math.random() * 1000);
     }
     randomDataSet() {
-        return Array.from(Array(50)).map(
+        if (!this.props.showSimulatedMeasurements) {
+            return [];
+        }
+        return Array.from(Array(this.props.simMeasurementNumber)).map(
             () => [this.randomNum(), this.randomNum()]);
     }
     render() {
         // d3 integration based on:
         // https://github.com/freddyrangel/playing-with-react-and-d3
         return (
-            <ScatterPlot
+            <Plot
                 data={this.state.data}
-                width={400} height={220}
+                phase={this.props.phase}
+                showTheoreticalCurve={this.props.showTheoreticalCurve}
+                planetRadius={this.props.planetRadius}
+                width={460} height={280}
                 padding={30} />
         );
 
     }
     componentDidUpdate(prevProps) {
         if (prevProps.planetRadius !== this.props.planetRadius) {
+            this.setState({data: this.randomDataSet()});
+        }
+        if (
+            prevProps.simMeasurementNumber !== this.props.simMeasurementNumber
+        ) {
+            this.setState({data: this.randomDataSet()});
+        }
+        if (
+            prevProps.showSimulatedMeasurements !==
+                this.props.showSimulatedMeasurements
+        ) {
             this.setState({data: this.randomDataSet()});
         }
     }
@@ -56,7 +73,7 @@ LightcurveView.propTypes = {
     showTheoreticalCurve: PropTypes.bool.isRequired,
     showSimulatedMeasurements: PropTypes.bool.isRequired,
     noise: PropTypes.number.isRequired,
-    number: PropTypes.number.isRequired,
+    simMeasurementNumber: PropTypes.number.isRequired,
     planetMass: PropTypes.number.isRequired,
     planetRadius: PropTypes.number.isRequired,
     planetSemimajorAxis: PropTypes.number.isRequired,
