@@ -8,6 +8,7 @@ import 'three/FXAAShader';
 import 'three/EffectComposer';
 import 'three/RenderPass';
 import 'three/ShaderPass';
+import initializeDomEvents from 'threex-domevents';
 
 // three.js/react integration based on:
 // https://stackoverflow.com/a/46412546/173630
@@ -15,10 +16,18 @@ export default class HorizonView extends React.Component {
     constructor(props) {
         super(props);
 
+        this.state = {
+            mouseoverSun: false
+        };
+
         this.id = 'HorizonView';
         this.start = this.start.bind(this);
         this.stop = this.stop.bind(this);
         this.animate = this.animate.bind(this);
+        this.onSunMouseover = this.onSunMouseover.bind(this);
+        this.onSunMouseout = this.onSunMouseout.bind(this);
+
+        this.THREEx = {};
     }
 
     componentDidMount() {
@@ -49,13 +58,18 @@ export default class HorizonView extends React.Component {
         controls.minPolarAngle = THREE.Math.degToRad(0);
         controls.maxPolarAngle = THREE.Math.degToRad(85);
 
+        const canvas = document.getElementById(this.id + 'Canvas');
         const renderer = new THREE.WebGLRenderer({
             antialias: true,
-            canvas: document.getElementById(this.id + 'Canvas')
+            canvas: canvas
         });
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setClearColor(0x000000);
         renderer.shadowMap.enabled = true;
+
+        initializeDomEvents(THREE, this.THREEx);
+        const domEvents = new this.THREEx.DomEvents(camera, renderer.domElement);
+        this.domEvents = domEvents;
 
         // Lights
         const ambient = new THREE.AmbientLight(0x808080);
@@ -119,6 +133,22 @@ export default class HorizonView extends React.Component {
 
         this.mount.appendChild(this.renderer.domElement);
         this.start();
+    }
+    componentDidUpdate(prevProps, prevState) {
+        if (prevState.mouseoverSun !== this.state.mouseoverSun) {
+            // TODO: do this in a better way
+            const border = this.sun.children[1];
+
+            border.geometry.verticesNeedUpdate = true;
+            if (this.state.mouseoverSun) {
+                border.geometry = new THREE.TorusGeometry(
+                    3, 0.2, 16, 32);
+            } else {
+                border.geometry = new THREE.TorusGeometry(
+                    3, 0.01, 16, 32);
+            }
+
+        }
     }
     drawPlane(scene) {
         const texture = new THREE.TextureLoader().load('img/plane.svg');
@@ -265,11 +295,13 @@ export default class HorizonView extends React.Component {
             side: THREE.DoubleSide
         });
         const geometry = new THREE.CircleBufferGeometry(3, 32);
-        const edges = new THREE.EdgesGeometry(geometry);
-        const border = new THREE.LineLoop(edges, new THREE.LineBasicMaterial({
-            color: 0x000000,
-            linewidth: 3
-        }));
+
+        const border = new THREE.Mesh(
+            new THREE.TorusGeometry(
+                3, 0.01, 16, 32),
+            new THREE.MeshBasicMaterial({
+                color: 0x000000
+            }));
 
         const sun = new THREE.Mesh(geometry, material);
         const group = new THREE.Group();
@@ -282,6 +314,12 @@ export default class HorizonView extends React.Component {
         group.position.z = 46.25 * Math.sin(
             this.props.sunAzimuth + THREE.Math.degToRad(90));
         group.rotation.x = THREE.Math.degToRad(14);
+
+        this.domEvents.addEventListener(
+            sun, 'mouseover', this.onSunMouseover);
+        this.domEvents.addEventListener(
+            sun, 'mouseout', this.onSunMouseout);
+
         return group;
     }
     updateAngleGeometry(ellipse, angle) {
@@ -378,6 +416,17 @@ export default class HorizonView extends React.Component {
                 </div>
             </React.Fragment>
         );
+    }
+
+    onSunMouseover() {
+        if (!this.state.mouseoverSun) {
+            this.setState({mouseoverSun: true});
+        }
+    }
+    onSunMouseout() {
+        if (this.state.mouseoverSun) {
+            this.setState({mouseoverSun: false});
+        }
     }
 }
 
