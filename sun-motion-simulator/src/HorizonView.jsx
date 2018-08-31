@@ -17,7 +17,11 @@ export default class HorizonView extends React.Component {
         super(props);
 
         this.state = {
-            mouseoverSun: false
+            mouseoverSun: false,
+            mouseoverEcliptic: false,
+            mouseoverDeclination: false,
+            mouseoverCelestialEquator: false,
+            mouseoverPrimeHour: false
         };
 
         this.id = 'HorizonView';
@@ -26,6 +30,16 @@ export default class HorizonView extends React.Component {
         this.animate = this.animate.bind(this);
         this.onSunMouseover = this.onSunMouseover.bind(this);
         this.onSunMouseout = this.onSunMouseout.bind(this);
+        this.onEclipticMouseover = this.onEclipticMouseover.bind(this);
+        this.onEclipticMouseout = this.onEclipticMouseout.bind(this);
+        this.onDeclinationMouseover = this.onDeclinationMouseover.bind(this);
+        this.onDeclinationMouseout = this.onDeclinationMouseout.bind(this);
+        this.onCelestialEquatorMouseover =
+            this.onCelestialEquatorMouseover.bind(this);
+        this.onCelestialEquatorMouseout =
+            this.onCelestialEquatorMouseout.bind(this);
+        this.onPrimeHourMouseover = this.onPrimeHourMouseover.bind(this);
+        this.onPrimeHourMouseout = this.onPrimeHourMouseout.bind(this);
 
         this.THREEx = {};
     }
@@ -139,15 +153,58 @@ export default class HorizonView extends React.Component {
             // TODO: do this in a better way
             const border = this.sun.children[1];
 
-            border.geometry.verticesNeedUpdate = true;
             if (this.state.mouseoverSun) {
-                border.geometry = new THREE.TorusGeometry(
-                    3, 0.2, 16, 32);
+                border.visible = true;
             } else {
-                border.geometry = new THREE.TorusGeometry(
-                    3, 0.01, 16, 32);
+                border.visible = false;
             }
+        }
 
+        if (prevState.mouseoverEcliptic !== this.state.mouseoverEcliptic) {
+            this.ecliptic.verticesNeedUpdate = true;
+            if (this.state.mouseoverEcliptic) {
+                this.ecliptic.geometry = new THREE.TorusBufferGeometry(
+                    50, 0.6, 16, 64);
+            } else {
+                this.ecliptic.geometry = new THREE.TorusBufferGeometry(
+                    50, 0.3, 16, 64);
+            }
+        }
+
+        if (prevState.mouseoverDeclination !== this.state.mouseoverDeclination) {
+            this.sunDeclination.verticesNeedUpdate = true;
+            if (this.state.mouseoverDeclination) {
+                this.sunDeclination.geometry = new THREE.TorusBufferGeometry(
+                    46, 0.6, 16, 64);
+            } else {
+                this.sunDeclination.geometry = new THREE.TorusBufferGeometry(
+                    46, 0.3, 16, 64);
+            }
+        }
+
+        if (
+            prevState.mouseoverCelestialEquator !==
+                this.state.mouseoverCelestialEquator
+        ) {
+            this.celestialEquator.verticesNeedUpdate = true;
+            if (this.state.mouseoverCelestialEquator) {
+                this.celestialEquator.geometry = new THREE.TorusBufferGeometry(
+                    50, 0.6, 16, 64);
+            } else {
+                this.celestialEquator.geometry = new THREE.TorusBufferGeometry(
+                    50, 0.3, 16, 64);
+            }
+        }
+
+        if (prevState.mouseoverPrimeHour !== this.state.mouseoverPrimeHour) {
+            this.primeHourCircle.verticesNeedUpdate = true;
+            if (this.state.mouseoverPrimeHour) {
+                this.primeHourCircle.geometry = new THREE.TorusBufferGeometry(
+                    50, 0.6, 16, 64);
+            } else {
+                this.primeHourCircle.geometry = new THREE.TorusBufferGeometry(
+                    50, 0.3, 16, 64);
+            }
         }
     }
     drawPlane(scene) {
@@ -245,6 +302,11 @@ export default class HorizonView extends React.Component {
             this.props.sunDeclination);
         this.sunDeclination.rotation.x = THREE.Math.degToRad(90);
 
+        this.domEvents.addEventListener(
+            this.sunDeclination, 'mouseover', this.onDeclinationMouseover);
+        this.domEvents.addEventListener(
+            this.sunDeclination, 'mouseout', this.onDeclinationMouseout);
+
         const thickTorusGeometry = new THREE.TorusBufferGeometry(
             50, 0.3, 16, 64);
         const blueMaterial = new THREE.MeshBasicMaterial({
@@ -254,14 +316,22 @@ export default class HorizonView extends React.Component {
             thickTorusGeometry, blueMaterial);
         this.celestialEquator.rotation.x = THREE.Math.degToRad(90);
 
-        /*const primeHourGeometry = new THREE.EdgesGeometry(
-            new THREE.CircleBufferGeometry(50, 64, 0, Math.PI));*/
+        this.domEvents.addEventListener(
+            this.celestialEquator, 'mouseover',
+            this.onCelestialEquatorMouseover);
+        this.domEvents.addEventListener(
+            this.celestialEquator, 'mouseout',
+            this.onCelestialEquatorMouseout);
+
         const primeHourGeometry = new THREE.TorusBufferGeometry(
             50, 0.3, 16, 64, Math.PI);
-        this.primeHourCircle = new THREE.Mesh(
-            primeHourGeometry, blueMaterial);
+        this.primeHourCircle = new THREE.Mesh(primeHourGeometry, blueMaterial);
         this.primeHourCircle.rotation.z = THREE.Math.degToRad(90);
         this.primeHourCircle.rotation.y = THREE.Math.degToRad(180 + 45);
+        this.domEvents.addEventListener(
+            this.primeHourCircle, 'mouseover', this.onPrimeHourMouseover);
+        this.domEvents.addEventListener(
+            this.primeHourCircle, 'mouseout', this.onPrimeHourMouseout);
 
         const whiteMaterial = new THREE.MeshBasicMaterial({
             color: 0xffffff
@@ -269,6 +339,11 @@ export default class HorizonView extends React.Component {
         this.ecliptic = new THREE.Mesh(thickTorusGeometry, whiteMaterial);
         this.ecliptic.rotation.x = THREE.Math.degToRad(90 + 24);
         this.ecliptic.rotation.y = THREE.Math.degToRad(-12);
+
+        this.domEvents.addEventListener(
+            this.ecliptic, 'mouseover', this.onEclipticMouseover);
+        this.domEvents.addEventListener(
+            this.ecliptic, 'mouseout', this.onEclipticMouseout);
     }
     drawStickFigure() {
         const geometry = new THREE.BoxBufferGeometry(7, 14, 0.01);
@@ -297,11 +372,12 @@ export default class HorizonView extends React.Component {
         const geometry = new THREE.CircleBufferGeometry(3, 32);
 
         const border = new THREE.Mesh(
-            new THREE.TorusGeometry(
-                3, 0.01, 16, 32),
+            new THREE.TorusBufferGeometry(
+                3, 0.1, 16, 32),
             new THREE.MeshBasicMaterial({
                 color: 0x000000
             }));
+        border.visible = false;
 
         const sun = new THREE.Mesh(geometry, material);
         const group = new THREE.Group();
@@ -426,6 +502,46 @@ export default class HorizonView extends React.Component {
     onSunMouseout() {
         if (this.state.mouseoverSun) {
             this.setState({mouseoverSun: false});
+        }
+    }
+    onEclipticMouseover() {
+        if (!this.state.mouseoverEcliptic) {
+            this.setState({mouseoverEcliptic: true});
+        }
+    }
+    onEclipticMouseout() {
+        if (this.state.mouseoverEcliptic) {
+            this.setState({mouseoverEcliptic: false});
+        }
+    }
+    onDeclinationMouseover() {
+        if (!this.state.mouseoverDeclination) {
+            this.setState({mouseoverDeclination: true});
+        }
+    }
+    onDeclinationMouseout() {
+        if (this.state.mouseoverDeclination) {
+            this.setState({mouseoverDeclination: false});
+        }
+    }
+    onCelestialEquatorMouseover() {
+        if (!this.state.mouseoverCelestialEquator) {
+            this.setState({mouseoverCelestialEquator: true});
+        }
+    }
+    onCelestialEquatorMouseout() {
+        if (this.state.mouseoverCelestialEquator) {
+            this.setState({mouseoverCelestialEquator: false});
+        }
+    }
+    onPrimeHourMouseover() {
+        if (!this.state.mouseoverPrimeHour) {
+            this.setState({mouseoverPrimeHour: true});
+        }
+    }
+    onPrimeHourMouseout() {
+        if (this.state.mouseoverPrimeHour) {
+            this.setState({mouseoverPrimeHour: false});
         }
     }
 }
