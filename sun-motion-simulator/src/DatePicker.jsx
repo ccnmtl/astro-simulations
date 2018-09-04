@@ -21,6 +21,7 @@ export default class DatePicker extends React.Component {
                 <label>
                     The day of year:
                     <input type="number"
+                           maxLength="2"
                            value={this.props.dateTime.getDate()}
                            onChange={this.props.onDayUpdate}
                            min="0" max="32"
