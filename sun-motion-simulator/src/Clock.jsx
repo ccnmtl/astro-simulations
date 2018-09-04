@@ -30,6 +30,7 @@ export default class Clock extends React.Component {
                 <label>
                     The time of day:
                     <input type="time"
+                           style={{width: '115px'}}
                            value={this.displayTime(this.props.dateTime)}
                            onChange={this.onTimeUpdate}
                            className="form-control form-control-sm ml-2" />

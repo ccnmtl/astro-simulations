@@ -430,7 +430,6 @@ export default class HorizonView extends React.Component {
 
     animate() {
         this.orbitGroup.rotation.y = -this.props.sunAzimuth;
-                                    //0; THREE.Math.degToRad(90);
         this.orbitGroup.rotation.x =
             THREE.Math.degToRad(this.props.latitude) - (Math.PI / 2);
 
