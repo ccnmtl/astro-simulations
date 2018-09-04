@@ -197,13 +197,14 @@ export default class HorizonView extends React.Component {
         }
 
         if (prevState.mouseoverPrimeHour !== this.state.mouseoverPrimeHour) {
-            this.primeHourCircle.verticesNeedUpdate = true;
+            const primeHourCurve = this.primeHourCircle.children[0];
+            primeHourCurve.verticesNeedUpdate = true;
             if (this.state.mouseoverPrimeHour) {
-                this.primeHourCircle.geometry = new THREE.TorusBufferGeometry(
-                    50, 0.6, 16, 64);
+                primeHourCurve.geometry = new THREE.TorusBufferGeometry(
+                    50, 0.6, 16, 64, Math.PI);
             } else {
-                this.primeHourCircle.geometry = new THREE.TorusBufferGeometry(
-                    50, 0.3, 16, 64);
+                primeHourCurve.geometry = new THREE.TorusBufferGeometry(
+                    50, 0.3, 16, 64, Math.PI);
             }
         }
     }
@@ -325,13 +326,33 @@ export default class HorizonView extends React.Component {
 
         const primeHourGeometry = new THREE.TorusBufferGeometry(
             50, 0.3, 16, 64, Math.PI);
-        this.primeHourCircle = new THREE.Mesh(primeHourGeometry, blueMaterial);
-        this.primeHourCircle.rotation.z = THREE.Math.degToRad(90);
-        this.primeHourCircle.rotation.y = THREE.Math.degToRad(180 + 45);
+        const primeHour = new THREE.Mesh(primeHourGeometry, blueMaterial);
+        primeHour.rotation.z = THREE.Math.degToRad(90);
+        primeHour.rotation.y = THREE.Math.degToRad(180 + 45);
         this.domEvents.addEventListener(
-            this.primeHourCircle, 'mouseover', this.onPrimeHourMouseover);
+            primeHour, 'mouseover', this.onPrimeHourMouseover);
         this.domEvents.addEventListener(
-            this.primeHourCircle, 'mouseout', this.onPrimeHourMouseout);
+            primeHour, 'mouseout', this.onPrimeHourMouseout);
+
+        const primeHourTopCylGeo = new THREE.CylinderBufferGeometry(
+            0.3, 0.3, 10, 32);
+        const primeHourTopCyl = new THREE.Mesh(
+            primeHourTopCylGeo, blueMaterial);
+        primeHourTopCyl.position.y = 55;
+
+        const primeHourBottomCylGeo = new THREE.CylinderBufferGeometry(
+            0.3, 0.3, 10, 32);
+        const primeHourBottomCyl = new THREE.Mesh(
+            primeHourBottomCylGeo, blueMaterial);
+        primeHourBottomCyl.position.y = -55;
+
+        // TODO
+        //const primeHourMonthsText = this.drawPrimeHourMonthsText(scene);
+
+        this.primeHourCircle = new THREE.Group();
+        this.primeHourCircle.add(primeHour);
+        this.primeHourCircle.add(primeHourTopCyl);
+        this.primeHourCircle.add(primeHourBottomCyl);
 
         const whiteMaterial = new THREE.MeshBasicMaterial({
             color: 0xffffff
@@ -344,6 +365,37 @@ export default class HorizonView extends React.Component {
             this.ecliptic, 'mouseover', this.onEclipticMouseover);
         this.domEvents.addEventListener(
             this.ecliptic, 'mouseout', this.onEclipticMouseout);
+    }
+    drawPrimeHourMonthsText(scene) {
+        const loader = new THREE.FontLoader();
+        const months = [
+            'Jan', 'Feb', 'Mar',
+            'Apr', 'May', 'Jun',
+            'Jul', 'Aug', 'Sep',
+            'Oct', 'Nov', 'Dec'
+        ];
+
+        loader.load(
+            'node_modules/three/examples/fonts/' +
+            'helvetiker_bold.typeface.json',
+            function (font) {
+                const whiteMaterial = new THREE.MeshBasicMaterial({
+                    color: 0xffffff
+                });
+                const geometry = new THREE.TextGeometry(months[0], {
+                    font: font,
+                    size: 5,
+                    height: 0.1,
+                    curveSegments: 12,
+                    bevelEnabled: false
+                });
+                const text = new THREE.Mesh(geometry, whiteMaterial);
+                text.position.y = 52;
+                text.position.x = -6;
+                text.rotation.x = -Math.PI / 2;
+                scene.add(text);
+            }
+        );
     }
     drawStickFigure() {
         const geometry = new THREE.BoxBufferGeometry(7, 14, 0.01);
