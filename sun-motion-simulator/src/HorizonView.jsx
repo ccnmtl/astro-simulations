@@ -346,10 +346,18 @@ export default class HorizonView extends React.Component {
             primeHourBottomCylGeo, blueMaterial);
         primeHourBottomCyl.position.y = -55;
 
-        // TODO
-        //const primeHourMonthsText = this.drawPrimeHourMonthsText(scene);
-
         this.primeHourCircle = new THREE.Group();
+
+        const me = this;
+        this.drawPrimeHourMonthsText(scene).then(function(primeHourMonthsText) {
+            primeHourMonthsText.visible = false;
+            primeHourMonthsText.rotation.x =
+                THREE.Math.degToRad(me.props.latitude) - (Math.PI / 2);
+            primeHourMonthsText.rotation.y = -me.props.sunAzimuth;
+            me.orbitGroup.add(primeHourMonthsText);
+            me.primeHourMonthsText = primeHourMonthsText;
+        });
+
         this.primeHourCircle.add(primeHour);
         this.primeHourCircle.add(primeHourTopCyl);
         this.primeHourCircle.add(primeHourBottomCyl);
@@ -366,7 +374,15 @@ export default class HorizonView extends React.Component {
         this.domEvents.addEventListener(
             this.ecliptic, 'mouseout', this.onEclipticMouseout);
     }
-    drawPrimeHourMonthsText(scene) {
+    /**
+     * Draw a circle of months.
+     *
+     * This requires the font to be loaded and it's handled
+     * asynchronously in a promise.
+     *
+     * Returns a promise containing a three.js Group.
+     */
+    drawPrimeHourMonthsText() {
         const loader = new THREE.FontLoader();
         const months = [
             'Jan', 'Feb', 'Mar',
@@ -375,27 +391,40 @@ export default class HorizonView extends React.Component {
             'Oct', 'Nov', 'Dec'
         ];
 
-        loader.load(
-            'node_modules/three/examples/fonts/' +
-            'helvetiker_bold.typeface.json',
-            function (font) {
-                const whiteMaterial = new THREE.MeshBasicMaterial({
-                    color: 0xffffff
-                });
-                const geometry = new THREE.TextGeometry(months[0], {
-                    font: font,
-                    size: 5,
-                    height: 0.1,
-                    curveSegments: 12,
-                    bevelEnabled: false
-                });
-                const text = new THREE.Mesh(geometry, whiteMaterial);
-                text.position.y = 52;
-                text.position.x = -6;
-                text.rotation.x = -Math.PI / 2;
-                scene.add(text);
-            }
-        );
+        const whiteMaterial = new THREE.MeshBasicMaterial({
+            color: 0xffffff
+        });
+
+        return new Promise(function(resolve) {
+            loader.load(
+                // TODO: I think this will break in the prod build.
+                'node_modules/three/examples/fonts/' +
+                'helvetiker_bold.typeface.json',
+                function (font) {
+                    const textGroup = new THREE.Group();
+                    for (let i = 0; i < 12; i++) {
+                        let angle = -i * ((Math.PI * 2) / 12);
+                        let geometry = new THREE.TextGeometry(months[i], {
+                            font: font,
+                            size: 4,
+                            height: 0.1,
+                            curveSegments: 12,
+                            bevelEnabled: false
+                        });
+                        let text = new THREE.Mesh(geometry, whiteMaterial);
+
+                        text.position.x = Math.cos(angle) * 52;
+                        text.position.y = Math.sin(angle) * 52;
+                        text.rotation.x = -Math.PI / 2;
+                        text.rotation.y = -angle
+                                        + (Math.PI / 2) + (Math.PI / 48);
+
+                        textGroup.add(text);
+                    }
+                    resolve(textGroup);
+                }
+            );
+        });
     }
     drawStickFigure() {
         const geometry = new THREE.BoxBufferGeometry(7, 14, 0.01);
@@ -498,6 +527,10 @@ export default class HorizonView extends React.Component {
         this.ecliptic.visible = this.props.showEcliptic;
         this.stickFigure.visible = this.props.showStickfigure;
         this.solidBlackDome.visible = !this.props.showUnderside;
+
+        if (this.primeHourMonthsText) {
+            this.primeHourMonthsText.visible = this.props.showMonthLabels;
+        }
 
         this.renderScene();
         this.frameId = window.requestAnimationFrame(this.animate);
