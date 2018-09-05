@@ -402,8 +402,8 @@ export default class HorizonView extends React.Component {
                 'helvetiker_bold.typeface.json',
                 function (font) {
                     const textGroup = new THREE.Group();
-                    for (let i = 0; i < 12; i++) {
-                        let angle = -i * ((Math.PI * 2) / 12);
+                    for (let i = 0; i < months.length; i++) {
+                        let angle = -i * ((Math.PI * 2) / months.length);
                         let geometry = new THREE.TextGeometry(months[i], {
                             font: font,
                             size: 4,
@@ -567,14 +567,40 @@ export default class HorizonView extends React.Component {
     }
 
     render() {
+        let infoContents = null;
+        if (this.state.mouseoverEcliptic) {
+            infoContents = <React.Fragment>
+                <div>The ecliptic</div>
+                <div>(Sun&apos;s annual path)</div>
+            </React.Fragment>;
+        } else if (this.state.mouseoverDeclination) {
+            infoContents = <React.Fragment>
+                <div>Sun&apos;s declination</div>
+                <div>(Its daily path)</div>
+            </React.Fragment>;
+        } else if (this.state.mouseoverCelestialEquator) {
+            infoContents = <div>Celestial equator</div>;
+        } else if (this.state.mouseoverPrimeHour) {
+            infoContents = <React.Fragment>
+                <div>Prime hour circle</div>
+                <div>(0h right ascension)</div>
+            </React.Fragment>;
+        }
+
+        const showInfo = !!infoContents;
+
         return (
-            <React.Fragment>
-                <div id={this.id}
-                     ref={(mount) => { this.mount = mount }}>
-                    <canvas
-                        id={this.id + 'Canvas'} width={860} height={860} />
+            <div id={this.id}
+                 ref={(mount) => { this.mount = mount }}>
+                <canvas
+                    onMouseMove={this.onMouseMove}
+                    id={this.id + 'Canvas'} width={860} height={860} />
+                <div id="HorizonInfo" style={{
+                        display: showInfo ? 'block' : 'none'
+                }}>
+                    {infoContents}
                 </div>
-            </React.Fragment>
+            </div>
         );
     }
 
