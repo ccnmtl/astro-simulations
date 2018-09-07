@@ -397,9 +397,7 @@ export default class HorizonView extends React.Component {
 
         return new Promise(function(resolve) {
             loader.load(
-                // TODO: I think this will break in the prod build.
-                'node_modules/three/examples/fonts/' +
-                'helvetiker_bold.typeface.json',
+                'fonts/helvetiker_bold.typeface.json',
                 function (font) {
                     const textGroup = new THREE.Group();
                     for (let i = 0; i < months.length; i++) {
