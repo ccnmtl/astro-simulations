@@ -28,8 +28,8 @@
     "babel-cli": "^6.26.0",
     "d3": "^5.7.0",
     "pixi.js": "^4.8.1",
-    "react": "^16.4.1",
-    "react-dom": "^16.4.1"
+    "react": "~16.5.0",
+    "react-dom": "~16.5.0"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
