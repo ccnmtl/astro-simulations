@@ -91,11 +91,15 @@ export default class HorizonView extends React.Component {
 
         const light = new THREE.DirectionalLight(0xffffff);
         this.light = light;
-        this.light.position.y = THREE.Math.radToDeg(this.props.sunDeclination);
-        this.light.position.x = 46 * Math.cos(
+        const declinationRad = this.getSunDeclinationRadius(this.props.sunDeclination);
+        this.light.position.x = declinationRad * Math.cos(
             this.props.sunAzimuth + THREE.Math.degToRad(90));
-        this.light.position.z = 46 * Math.sin(
+        this.light.position.z = declinationRad * Math.sin(
             this.props.sunAzimuth + THREE.Math.degToRad(90));
+        this.light.position.y = THREE.Math.radToDeg(
+            this.props.sunDeclination);
+        this.light.rotation.x = this.props.sunDeclination;
+
         light.castShadow = true;
         scene.add(light);
 
@@ -175,10 +179,40 @@ export default class HorizonView extends React.Component {
             this.sunDeclination.verticesNeedUpdate = true;
             if (this.state.mouseoverDeclination) {
                 this.sunDeclination.geometry = new THREE.TorusBufferGeometry(
-                    46, 0.6, 16, 64);
+                    this.getSunDeclinationRadius(this.props.sunDeclination),
+                    0.6, 16, 64);
             } else {
                 this.sunDeclination.geometry = new THREE.TorusBufferGeometry(
-                    46, 0.3, 16, 64);
+                    this.getSunDeclinationRadius(this.props.sunDeclination),
+                    0.3, 16, 64);
+            }
+        }
+
+        if (prevProps.sunDeclination !== this.props.sunDeclination) {
+            const declinationRad = this.getSunDeclinationRadius(this.props.sunDeclination);
+            this.sun.position.x = declinationRad * Math.cos(
+                this.props.sunAzimuth + THREE.Math.degToRad(90));
+            this.sun.position.z = declinationRad * Math.sin(
+                this.props.sunAzimuth + THREE.Math.degToRad(90));
+            this.sun.position.y = THREE.Math.radToDeg(
+                this.props.sunDeclination);
+            this.sun.rotation.x = this.props.sunDeclination;
+
+            this.light.position.x = declinationRad * Math.cos(
+                this.props.sunAzimuth + THREE.Math.degToRad(90));
+            this.light.position.z = declinationRad * Math.sin(
+                this.props.sunAzimuth + THREE.Math.degToRad(90));
+            this.light.position.y = THREE.Math.radToDeg(
+                this.props.sunDeclination);
+            this.light.rotation.x = this.props.sunDeclination;
+
+            if (this.props.showDeclinationCircle) {
+                this.sunDeclination.position.y =
+                    THREE.Math.radToDeg(this.props.sunDeclination);
+
+                this.sunDeclination.verticesNeedUpdate = true;
+                this.sunDeclination.geometry = new THREE.TorusBufferGeometry(
+                    declinationRad, 0.3, 16, 64);
             }
         }
 
@@ -296,9 +330,10 @@ export default class HorizonView extends React.Component {
             color: 0xffff00
         });
 
-        const declinationGeometry = new THREE.TorusBufferGeometry(46, 0.3, 16, 64);
+        const declinationGeometry = new THREE.TorusBufferGeometry(
+            this.getSunDeclinationRadius(this.props.sunDeclination),
+            0.3, 16, 64);
         this.sunDeclination = new THREE.Mesh(declinationGeometry, yellowMaterial);
-        this.sunDeclination.position.y = 20;
         this.sunDeclination.position.y = THREE.Math.radToDeg(
             this.props.sunDeclination);
         this.sunDeclination.rotation.x = THREE.Math.degToRad(90);
@@ -464,10 +499,13 @@ export default class HorizonView extends React.Component {
         group.add(sun);
         group.add(border);
         group.position.y = THREE.Math.radToDeg(this.props.sunDeclination);
-        group.position.x = 46.25 * Math.cos(
+
+        const declinationRad = this.getSunDeclinationRadius(this.props.sunDeclination);
+        group.position.x = declinationRad * Math.cos(
             this.props.sunAzimuth + THREE.Math.degToRad(90));
-        group.position.z = 46.25 * Math.sin(
+        group.position.z = declinationRad * Math.sin(
             this.props.sunAzimuth + THREE.Math.degToRad(90));
+
         group.rotation.x = THREE.Math.degToRad(14);
 
         this.domEvents.addEventListener(
@@ -515,12 +553,6 @@ export default class HorizonView extends React.Component {
         this.skyMaterial.color.setHex(this.getSkyColor(this.props.sunDeclination));
 
         this.sunDeclination.visible = this.props.showDeclinationCircle;
-        if (this.props.showDeclinationCircle) {
-            this.sunDeclination.position.y =
-                THREE.Math.radToDeg(this.props.sunDeclination);
-        }
-        this.sun.position.y = THREE.Math.radToDeg(this.props.sunDeclination);
-        this.light.position.y = THREE.Math.radToDeg(this.props.sunDeclination);
 
         this.ecliptic.visible = this.props.showEcliptic;
         this.stickFigure.visible = this.props.showStickfigure;
@@ -562,6 +594,14 @@ export default class HorizonView extends React.Component {
             return 0x000000;
         }
         return 0x90c0ff;
+    }
+
+    /**
+     * Given the sun declination in radians, return the radius of this
+     * orbit on the sphere.
+     */
+    getSunDeclinationRadius(sunDeclination) {
+        return 50 * Math.cos(sunDeclination);
     }
 
     render() {
