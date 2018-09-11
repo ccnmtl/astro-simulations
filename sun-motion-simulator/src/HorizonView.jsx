@@ -35,6 +35,8 @@ export default class HorizonView extends React.Component {
         this.raycaster = new THREE.Raycaster();
         this.mouse = new THREE.Vector2();
         this.onMouseMove = this.onMouseMove.bind(this);
+        this.onMouseDown = this.onMouseDown.bind(this);
+        this.onMouseUp = this.onMouseUp.bind(this);
     }
 
     componentDidMount() {
@@ -76,6 +78,10 @@ export default class HorizonView extends React.Component {
         });
         renderer.domElement.addEventListener(
             'mousemove', this.onMouseMove, false);
+        renderer.domElement.addEventListener(
+            'mousedown', this.onMouseDown, false);
+        renderer.domElement.addEventListener(
+            'mouseup', this.onMouseUp, false);
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setClearColor(0x000000);
         renderer.shadowMap.enabled = true;
@@ -143,6 +149,7 @@ export default class HorizonView extends React.Component {
         this.camera = camera;
         this.renderer = renderer;
         this.composer = composer;
+        this.controls = controls;
 
         this.mount.appendChild(this.renderer.domElement);
         this.start();
@@ -244,7 +251,7 @@ export default class HorizonView extends React.Component {
         material.map.minFilter = THREE.LinearFilter;
         const geometry = new THREE.CircleBufferGeometry(50, 64);
         const plane = new THREE.Mesh(geometry, material);
-        plane.name = 'plane';
+        plane.name = 'Plane';
         plane.castShadow = false;
         plane.receiveShadow = true;
         plane.rotation.x = THREE.Math.degToRad(-90);
@@ -618,25 +625,19 @@ export default class HorizonView extends React.Component {
         );
     }
 
-    onMouseMove(e) {
-        e.preventDefault();
+    /**
+     * Given the scene setup and a mouse event, return the notable
+     * objects in the scene that intersect with this mouse event.
+     */
+    findMouseIntersects(e, mouse, camera, raycaster, renderer) {
+        mouse.x = (e.offsetX / renderer.domElement.clientWidth) * 2 - 1;
+        mouse.y = -(e.offsetY / renderer.domElement.clientHeight) * 2 + 1;
 
-
-        // Return if this is a React SyntheticEvent.
-        // e.stopPropogation() would remove the need for this, but the
-        // mousemove event needs to bubble through in order for
-        // OrbitControls to work.
-        if (typeof e.offsetX === 'undefined' ||
-            typeof e.offsetY === 'undefined') {
-            return;
-        }
-
-        this.mouse.x = (e.offsetX / this.renderer.domElement.clientWidth) * 2 - 1;
-        this.mouse.y = -(e.offsetY / this.renderer.domElement.clientHeight) * 2 + 1;
-
-        this.raycaster.setFromCamera(this.mouse, this.camera);
+        raycaster.setFromCamera(mouse, camera);
 
         // Make an array of all the objects to check for intersection.
+        // Some of these objects (sun and primeHourCircle) are
+        // actually groups of objects, so flatten them out.
         const objs = [
             this.plane,
             this.ecliptic,
@@ -646,18 +647,53 @@ export default class HorizonView extends React.Component {
          .concat(this.primeHourCircle.children);
 
         const intersects = this.raycaster.intersectObjects(objs);
+        return intersects;
+    }
+
+    onMouseMove(e) {
+        e.preventDefault();
+
+        // Return if this is a React SyntheticEvent.
+        // e.stopPropagation() would remove the need for this, but the
+        // mousemove event needs to bubble through in order for
+        // OrbitControls to work.
+        if (typeof e.offsetX === 'undefined' ||
+            typeof e.offsetY === 'undefined') {
+            return;
+        }
+
+        // Reset everything before deciding on a new object to select
+        this.setState(this.initialState);
+
+        const intersects = this.findMouseIntersects(
+            e, this.mouse, this.camera, this.raycaster, this.renderer);
         if (intersects.length > 0) {
             if (intersects[0].object) {
                 let obj = intersects[0].object;
                 let key = 'mouseover' + obj.name;
 
-                // TODO: do this in one setState call
-                this.setState(this.initialState);
                 this.setState({[key]: true});
             }
-        } else {
-            this.setState(this.initialState);
         }
+    }
+    onMouseDown(e) {
+        e.preventDefault();
+
+        const intersects = this.findMouseIntersects(
+            e, this.mouse, this.camera, this.raycaster, this.renderer);
+        if (intersects.length > 0) {
+            if (intersects[0].object) {
+                let obj = intersects[0].object;
+
+                if (obj.name !== 'Plane') {
+                    this.controls.enabled = false;
+                }
+            }
+        }
+    }
+    onMouseUp(e) {
+        e.preventDefault();
+        this.controls.enabled = true;
     }
 }
 
