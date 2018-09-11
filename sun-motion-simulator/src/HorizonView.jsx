@@ -487,7 +487,8 @@ export default class HorizonView extends React.Component {
         group.position.z = declinationRad * Math.sin(
             this.props.sunAzimuth + THREE.Math.degToRad(90));
 
-        group.rotation.x = THREE.Math.degToRad(14);
+        group.rotation.x = this.props.sunDeclination;
+
         return group;
     }
     updateAngleGeometry(ellipse, angle) {
