@@ -10,6 +10,7 @@ import {
     forceNumber, roundToOnePlace, timeToAngle,
     degToRad, radToDeg,
     getSunAltitude, getSunDeclination,
+    getRightAscension,
     getDayOfYear
 } from './utils';
 
@@ -54,6 +55,8 @@ class SunMotionSim extends React.Component {
             radToDeg(this.state.sunAzimuth));
         const sunDeclination = roundToOnePlace(
             radToDeg(this.state.sunDeclination));
+        const sunRightAscension = roundToOnePlace(
+            getRightAscension(getDayOfYear(this.state.dateTime)));
         return <React.Fragment>
             <nav className="navbar navbar-expand-md navbar-light bg-light d-flex justify-content-between">
                 <span className="navbar-brand mb-0 h1">Motions of the Sun Simulator</span>
@@ -120,7 +123,7 @@ class SunMotionSim extends React.Component {
                                 </div>
 
                                 <div>
-                                    Sun&apos;s right ascension: 4h 19m
+                                    Sun&apos;s right ascension: {sunRightAscension}h
                                 </div>
                                 <div>
                                     Sun&apos;s declination: {sunDeclination}&deg;
