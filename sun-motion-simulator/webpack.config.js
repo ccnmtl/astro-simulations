@@ -11,6 +11,7 @@ module.exports = {
     resolve: {
         extensions: ['*', '.js', '.jsx'],
         alias: {
+            'three/Detector': path.join(__dirname, 'node_modules/three/examples/js/Detector.js'),
             'three/OrbitControls': path.join(__dirname, 'node_modules/three/examples/js/controls/OrbitControls.js'),
             'three/DragControls': path.join(__dirname, 'node_modules/three/examples/js/controls/DragControls.js'),
             'three/CopyShader': path.join(__dirname, 'node_modules/three/examples/js/shaders/CopyShader.js'),
