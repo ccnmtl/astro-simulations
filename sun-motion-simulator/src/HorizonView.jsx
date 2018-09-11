@@ -25,6 +25,7 @@ export default class HorizonView extends React.Component {
         };
         this.state = this.initialState;
 
+        this.sphereRadius = 50;
         this.id = 'HorizonView';
         this.start = this.start.bind(this);
         this.stop = this.stop.bind(this);
@@ -162,10 +163,10 @@ export default class HorizonView extends React.Component {
             if (this.state.mouseoverEcliptic) {
                 this.ecliptic.verticesNeedUpdate = true;
                 this.ecliptic.geometry = new THREE.TorusBufferGeometry(
-                    50, 0.6, 16, 64);
+                    this.sphereRadius, 0.6, 16, 64);
             } else {
                 this.ecliptic.geometry = new THREE.TorusBufferGeometry(
-                    50, 0.3, 16, 64);
+                    this.sphereRadius, 0.3, 16, 64);
             }
         }
 
@@ -189,10 +190,10 @@ export default class HorizonView extends React.Component {
             this.celestialEquator.verticesNeedUpdate = true;
             if (this.state.mouseoverCelestialEquator) {
                 this.celestialEquator.geometry = new THREE.TorusBufferGeometry(
-                    50, 0.6, 16, 64);
+                    this.sphereRadius, 0.6, 16, 64);
             } else {
                 this.celestialEquator.geometry = new THREE.TorusBufferGeometry(
-                    50, 0.3, 16, 64);
+                    this.sphereRadius, 0.3, 16, 64);
             }
         }
 
@@ -201,10 +202,10 @@ export default class HorizonView extends React.Component {
             primeHourCurve.verticesNeedUpdate = true;
             if (this.state.mouseoverPrimeHour) {
                 primeHourCurve.geometry = new THREE.TorusBufferGeometry(
-                    50, 0.6, 16, 64, Math.PI);
+                    this.sphereRadius, 0.6, 16, 64, Math.PI);
             } else {
                 primeHourCurve.geometry = new THREE.TorusBufferGeometry(
-                    50, 0.3, 16, 64, Math.PI);
+                    this.sphereRadius, 0.3, 16, 64, Math.PI);
             }
         }
 
@@ -242,7 +243,7 @@ export default class HorizonView extends React.Component {
             map: texture
         });
         material.map.minFilter = THREE.LinearFilter;
-        const geometry = new THREE.CircleBufferGeometry(50, 64);
+        const geometry = new THREE.CircleBufferGeometry(this.sphereRadius, 64);
         const plane = new THREE.Mesh(geometry, material);
         plane.name = 'plane';
         plane.castShadow = false;
@@ -253,7 +254,7 @@ export default class HorizonView extends React.Component {
     }
     drawGlobe(scene) {
         const domeGeometry = new THREE.SphereBufferGeometry(
-            50, 64, 64, 0, Math.PI * 2, 0, Math.PI / 2);
+            this.sphereRadius, 64, 64, 0, Math.PI * 2, 0, Math.PI / 2);
         const nightDomeMaterial = new THREE.MeshBasicMaterial({
             transparent: true,
             opacity: 0.8,
@@ -308,7 +309,7 @@ export default class HorizonView extends React.Component {
         });
 
         const thinTorusGeometry = new THREE.TorusBufferGeometry(
-            50, 0.1, 16, 64);
+            this.sphereRadius, 0.1, 16, 64);
 
         // A north-south line
         const observersMeridian = new THREE.Mesh(
@@ -336,7 +337,7 @@ export default class HorizonView extends React.Component {
         this.sunDeclination.rotation.x = THREE.Math.degToRad(90);
 
         const thickTorusGeometry = new THREE.TorusBufferGeometry(
-            50, 0.3, 16, 64);
+            this.sphereRadius, 0.3, 16, 64);
         const blueMaterial = new THREE.MeshBasicMaterial({
             color: 0x7080ff
         });
@@ -346,7 +347,7 @@ export default class HorizonView extends React.Component {
         this.celestialEquator.rotation.x = THREE.Math.degToRad(90);
 
         const primeHourGeometry = new THREE.TorusBufferGeometry(
-            50, 0.3, 16, 64, Math.PI);
+            this.sphereRadius, 0.3, 16, 64, Math.PI);
         const primeHour = new THREE.Mesh(primeHourGeometry, blueMaterial);
         primeHour.name = 'PrimeHour';
         primeHour.rotation.z = THREE.Math.degToRad(90);
@@ -495,7 +496,7 @@ export default class HorizonView extends React.Component {
         const angleDiff = Math.abs(angle);
         const curve = new THREE.EllipseCurve(
             0,  0,    // ax, aY
-            50, 50,   // xRadius, yRadius
+            this.sphereRadius, this.sphereRadius,   // xRadius, yRadius
             // aStartAngle, aEndAngle
             0,  angleDiff,
             false,    // aClockwise
@@ -577,7 +578,7 @@ export default class HorizonView extends React.Component {
      * orbit on the sphere.
      */
     getSunDeclinationRadius(sunDeclination) {
-        return 50 * Math.cos(sunDeclination);
+        return this.sphereRadius * Math.cos(sunDeclination);
     }
 
     render() {
