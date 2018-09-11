@@ -80,13 +80,26 @@ const getSunDeclination = function(day) {
 };
 
 /**
+ * Given the day of the year, return the sun's right ascension.
+ *
+ * https://en.wikipedia.org/wiki/Right_ascension
+ */
+const getRightAscension = function(day) {
+    return ((day + 285) % 365) / 365.24 * 24;
+};
+
+/**
  * Given a Date object, return the day of year.
  *
- * TODO: this isn't exactly accurate.. might have to use a
- * library like https://date-fns.org/
+ * Taken from: https://stackoverflow.com/a/8619946
  */
 const getDayOfYear = function(d) {
-    return (d.getMonth() * 30.5) + d.getDate();
+    const start = new Date(d.getFullYear(), 0, 0);
+    const diff = (d - start) + (
+        (start.getTimezoneOffset() - d.getTimezoneOffset()) * 60 * 1000);
+    const oneDay = 1000 * 60 * 60 * 24;
+    const day = Math.floor(diff / oneDay);
+    return day;
 };
 
 export {
@@ -94,5 +107,6 @@ export {
     hourAngleToTime, minuteAngleToTime,
     degToRad, radToDeg,
     getSunAltitude, getSunDeclination,
+    getRightAscension,
     getDayOfYear
 };
