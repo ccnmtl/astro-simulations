@@ -81,10 +81,10 @@ export default class HorizonView extends React.Component {
         renderer.shadowMap.enabled = true;
 
         // Lights
-        const ambient = new THREE.AmbientLight(0x808080);
+        const ambient = new THREE.AmbientLight(0x909090);
         scene.add(ambient);
 
-        const light = new THREE.DirectionalLight(0xffffff);
+        const light = new THREE.DirectionalLight(0xa0a0a0);
         this.light = light;
         const declinationRad = this.getSunDeclinationRadius(this.props.sunDeclination);
         this.light.position.x = declinationRad * Math.cos(
