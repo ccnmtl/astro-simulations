@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import * as solar from 'solar-calculator';
 import HorizonView from './HorizonView';
 import AnimationControls from './AnimationControls';
 import GeneralSettings from './GeneralSettings';
@@ -11,14 +12,18 @@ import {
     degToRad, radToDeg,
     getSunAltitude, getSunDeclination,
     getRightAscension,
-    getDayOfYear
+    getDayOfYear, formatMinutes
 } from './utils';
 
 class SunMotionSim extends React.Component {
     constructor(props) {
         super(props);
         this.initialState = {
-            dateTime: new Date(2001, 4, 27, 12),
+            dateTime: new Date(
+                // Use current year
+                (new Date()).getFullYear(),
+                // Initial state is always May 27th, at noon
+                4, 27, 12),
             latitude: 40.8,
             sunAzimuth: degToRad(182),
             sunDeclination: degToRad(21.4),
@@ -47,6 +52,8 @@ class SunMotionSim extends React.Component {
         this.onMonthUpdate = this.onMonthUpdate.bind(this);
     }
     render() {
+        const doy = getDayOfYear(this.state.dateTime);
+
         const sunAltitude = roundToOnePlace(
             radToDeg(getSunAltitude(
                 this.state.latitude, this.state.sunDeclination))
@@ -55,8 +62,11 @@ class SunMotionSim extends React.Component {
             radToDeg(this.state.sunAzimuth));
         const sunDeclination = roundToOnePlace(
             radToDeg(this.state.sunDeclination));
-        const sunRightAscension = roundToOnePlace(
-            getRightAscension(getDayOfYear(this.state.dateTime)));
+        const sunRightAscension = roundToOnePlace(getRightAscension(doy));
+
+        const centuryDate = solar.century(this.state.dateTime);
+        const eot = formatMinutes(solar.equationOfTime(centuryDate));
+
         return <React.Fragment>
             <nav className="navbar navbar-expand-md navbar-light bg-light d-flex justify-content-between">
                 <span className="navbar-brand mb-0 h1">Motions of the Sun Simulator</span>
@@ -101,7 +111,7 @@ class SunMotionSim extends React.Component {
                                         Sidereal time: 5h 10m
                                     </div>
                                     <div>
-                                        Equation of time: 2:49
+                                        Equation of time: {eot}
                                     </div>
                                     <div className="custom-control custom-checkbox">
                                         <input type="checkbox" className="custom-control-input"

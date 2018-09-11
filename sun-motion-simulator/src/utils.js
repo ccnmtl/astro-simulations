@@ -102,11 +102,26 @@ const getDayOfYear = function(d) {
     return day;
 };
 
+/**
+ * Format a decimal of minutes as: minutes:seconds
+ */
+const formatMinutes = function(n) {
+    const isNegative = n < 0;
+    n = Math.abs(n);
+    const minutes = Math.floor(n);
+    const r = n - minutes;
+    const seconds = Math.round(r * 60);
+
+    const negDisplay = isNegative ? '-' : '';
+    const secDisplay = seconds < 10 ? '0' + seconds : seconds;
+    return `${negDisplay}${minutes}:${secDisplay}`;
+}
+
 export {
     forceNumber, roundToOnePlace, timeToAngle,
     hourAngleToTime, minuteAngleToTime,
     degToRad, radToDeg,
     getSunAltitude, getSunDeclination,
     getRightAscension,
-    getDayOfYear
+    getDayOfYear, formatMinutes
 };
