@@ -58,28 +58,6 @@ const getSunAltitude = function(latitude, declination) {
 };
 
 /**
- * Given the day of the year, return the sun's declination.
- *
- * https://en.wikipedia.org/wiki/Position_of_the_Sun#Declination_of_the_Sun_as_seen_from_Earth
- */
-const getSunDeclination = function(day) {
-    /*
-     * Simpler, less accurate algorithm:
-     *
-     * return degToRad(-23.44) *
-     *    Math.cos((degToRad(360) / 365) * (d + 10));
-     */
-
-    // More complicated, more accurate algorithm. Both from wikipedia
-    // article linked above.
-    return Math.asin(
-        Math.sin(degToRad(-23.44)) * Math.cos(
-            (degToRad(360) / 365.24) * (day + 10) + (degToRad(360) / Math.PI) *
-                0.0167 * Math.sin((degToRad(360) / 365.24) * (day - 2)))
-    );
-};
-
-/**
  * Given the day of the year, return the sun's right ascension.
  *
  * https://en.wikipedia.org/wiki/Right_ascension
@@ -102,11 +80,26 @@ const getDayOfYear = function(d) {
     return day;
 };
 
+/**
+ * Format a decimal of minutes as: minutes:seconds
+ */
+const formatMinutes = function(n) {
+    const isNegative = n < 0;
+    n = Math.abs(n);
+    const minutes = Math.floor(n);
+    const r = n - minutes;
+    const seconds = Math.round(r * 60);
+
+    const negDisplay = isNegative ? '-' : '';
+    const secDisplay = seconds < 10 ? '0' + seconds : seconds;
+    return `${negDisplay}${minutes}:${secDisplay}`;
+}
+
 export {
     forceNumber, roundToOnePlace, timeToAngle,
     hourAngleToTime, minuteAngleToTime,
     degToRad, radToDeg,
-    getSunAltitude, getSunDeclination,
+    getSunAltitude,
     getRightAscension,
-    getDayOfYear
+    getDayOfYear, formatMinutes
 };

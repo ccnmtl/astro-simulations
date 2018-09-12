@@ -173,7 +173,8 @@ export default class DatePicker extends React.Component {
      * This control only modifies the day, not the time.
      */
     localPosToDate(x, app) {
-        const d = new Date('1/1/2001');
+        const year = this.props.dateTime.getFullYear();
+        const d = new Date(`1/1/${year}`);
         x = Math.min(Math.max(x - 10, 0), (app.view.width - 20));
         const dayOfYear = (x / (app.view.width - 20)) * 365.25;
 
