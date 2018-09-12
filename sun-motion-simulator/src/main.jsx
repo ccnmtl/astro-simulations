@@ -10,7 +10,7 @@ import Clock from './Clock';
 import {
     forceNumber, roundToOnePlace, timeToAngle,
     degToRad, radToDeg,
-    getSunAltitude, getSunDeclination,
+    getSunAltitude,
     getRightAscension,
     getDayOfYear, formatMinutes
 } from './utils';
@@ -195,11 +195,11 @@ class SunMotionSim extends React.Component {
         if (prevState.dateTime !== this.state.dateTime) {
             // The sun's azimuth and declination are derived from the
             // dateTime, so keep them up to date.
+            const centuryDate = solar.century(this.state.dateTime);
             this.setState({
                 sunAzimuth: timeToAngle(new Date(
                     this.state.dateTime.getTime())),
-                sunDeclination: getSunDeclination(
-                    getDayOfYear(this.state.dateTime))
+                sunDeclination: degToRad(solar.declination(centuryDate))
             });
         }
     }
