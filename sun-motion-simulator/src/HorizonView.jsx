@@ -95,9 +95,9 @@ export default class HorizonView extends React.Component {
         this.light = light;
         const declinationRad = this.getSunDeclinationRadius(this.props.sunDeclination);
         this.light.position.x = declinationRad * Math.cos(
-            this.props.sunAzimuth + THREE.Math.degToRad(90));
+            -THREE.Math.degToRad(90));
         this.light.position.z = declinationRad * Math.sin(
-            this.props.sunAzimuth + THREE.Math.degToRad(90));
+            -THREE.Math.degToRad(90));
         this.light.position.y = THREE.Math.radToDeg(
             this.props.sunDeclination);
         this.light.rotation.x = this.props.sunDeclination;
@@ -243,9 +243,9 @@ export default class HorizonView extends React.Component {
             this.sun.rotation.x = this.props.sunDeclination;
 
             this.light.position.x = declinationRad * Math.cos(
-                this.props.sunAzimuth + THREE.Math.degToRad(90));
+                -THREE.Math.degToRad(90));
             this.light.position.z = declinationRad * Math.sin(
-                this.props.sunAzimuth + THREE.Math.degToRad(90));
+                -THREE.Math.degToRad(90));
             this.light.position.y = THREE.Math.radToDeg(
                 this.props.sunDeclination);
             this.light.rotation.x = this.props.sunDeclination;
