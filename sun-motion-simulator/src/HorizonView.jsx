@@ -156,6 +156,15 @@ export default class HorizonView extends React.Component {
         this.start();
     }
     componentDidUpdate(prevProps, prevState) {
+        if (prevProps.latitude !== this.props.latitude) {
+            this.orbitGroup.rotation.x =
+                THREE.Math.degToRad(this.props.latitude) - (Math.PI / 2);
+        }
+
+        if (prevProps.sunAzimuth !== this.props.sunAzimuth) {
+            this.orbitGroup.rotation.y = -this.props.sunAzimuth;
+        }
+
         if (prevState.mouseoverSun !== this.state.mouseoverSun) {
             // TODO: do this in a better way
             const border = this.sun.children[1];
@@ -219,9 +228,9 @@ export default class HorizonView extends React.Component {
         if (prevProps.sunDeclination !== this.props.sunDeclination) {
             const declinationRad = this.getSunDeclinationRadius(this.props.sunDeclination);
             this.sun.position.x = declinationRad * Math.cos(
-                this.props.sunAzimuth + THREE.Math.degToRad(90));
+                -THREE.Math.degToRad(90));
             this.sun.position.z = declinationRad * Math.sin(
-                this.props.sunAzimuth + THREE.Math.degToRad(90));
+                -THREE.Math.degToRad(90));
             this.sun.position.y = THREE.Math.radToDeg(
                 this.props.sunDeclination);
             this.sun.rotation.x = this.props.sunDeclination;
@@ -358,7 +367,7 @@ export default class HorizonView extends React.Component {
         const primeHour = new THREE.Mesh(primeHourGeometry, blueMaterial);
         primeHour.name = 'PrimeHour';
         primeHour.rotation.z = THREE.Math.degToRad(90);
-        primeHour.rotation.y = THREE.Math.degToRad(180 + 45);
+        primeHour.rotation.y = THREE.Math.degToRad(180 + 27);
 
         const primeHourTopCylGeo = new THREE.CylinderBufferGeometry(
             0.3, 0.3, 10, 32);
@@ -530,14 +539,9 @@ export default class HorizonView extends React.Component {
     }
 
     animate() {
-        this.orbitGroup.rotation.y = -this.props.sunAzimuth;
-        this.orbitGroup.rotation.x =
-            THREE.Math.degToRad(this.props.latitude) - (Math.PI / 2);
-
         this.skyMaterial.color.setHex(this.getSkyColor(this.props.sunDeclination));
 
         this.sunDeclination.visible = this.props.showDeclinationCircle;
-
         this.ecliptic.visible = this.props.showEcliptic;
         this.stickFigure.visible = this.props.showStickfigure;
         this.solidBlackDome.visible = !this.props.showUnderside;

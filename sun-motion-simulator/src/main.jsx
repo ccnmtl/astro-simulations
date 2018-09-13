@@ -25,7 +25,7 @@ class SunMotionSim extends React.Component {
                 // Initial state is always May 27th, at noon
                 4, 27, 12),
             latitude: 40.8,
-            sunAzimuth: degToRad(182),
+            sunAzimuth: degToRad(180),
             sunDeclination: degToRad(21.4),
             isPlaying: false,
             animationRate: 1,
@@ -205,15 +205,15 @@ class SunMotionSim extends React.Component {
     }
     animate() {
         if (this.state.stepByDay) {
-            this.setState(prevState => ({
-                dateTime: new Date(prevState.dateTime.getTime() + (
+            this.setState({
+                dateTime: new Date(this.state.dateTime.getTime() + (
                     (3600 * 24 * 1000) * Math.round(this.state.animationRate)))
-            }));
+            });
         } else {
-            this.setState(prevState => ({
-                dateTime: new Date(prevState.dateTime.getTime() + (
+            this.setState({
+                dateTime: new Date(this.state.dateTime.getTime() + (
                     100000 * this.state.animationRate))
-            }));
+            });
         }
         this.frameId = requestAnimationFrame(this.animate);
     }
