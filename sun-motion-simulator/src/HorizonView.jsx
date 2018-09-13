@@ -163,6 +163,11 @@ export default class HorizonView extends React.Component {
 
         if (prevProps.sunAzimuth !== this.props.sunAzimuth) {
             this.orbitGroup.rotation.y = -this.props.sunAzimuth;
+            this.skyMaterial.color.setHex(this.getSkyColor());
+        }
+
+        if (prevProps.latitude !== this.props.latitude) {
+            this.skyMaterial.color.setHex(this.getSkyColor());
         }
 
         if (prevState.mouseoverSun !== this.state.mouseoverSun) {
@@ -226,6 +231,8 @@ export default class HorizonView extends React.Component {
         }
 
         if (prevProps.sunDeclination !== this.props.sunDeclination) {
+            this.skyMaterial.color.setHex(this.getSkyColor());
+
             const declinationRad = this.getSunDeclinationRadius(this.props.sunDeclination);
             this.sun.position.x = declinationRad * Math.cos(
                 -THREE.Math.degToRad(90));
@@ -539,8 +546,6 @@ export default class HorizonView extends React.Component {
     }
 
     animate() {
-        this.skyMaterial.color.setHex(this.getSkyColor(this.props.sunDeclination));
-
         this.sunDeclination.visible = this.props.showDeclinationCircle;
         this.ecliptic.visible = this.props.showEcliptic;
         this.stickFigure.visible = this.props.showStickfigure;
@@ -577,8 +582,11 @@ export default class HorizonView extends React.Component {
      *
      * Returns a hex value.
      */
-    getSkyColor(angle) {
-        if (angle < 0 || angle > Math.PI) {
+    getSkyColor() {
+        const target = new THREE.Vector3();
+        this.sun.getWorldPosition(target);
+        const angle = target.y;
+        if (angle < 0 || angle > 180) {
             return 0x000000;
         }
         return 0x90c0ff;

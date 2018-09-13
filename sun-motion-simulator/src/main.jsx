@@ -66,6 +66,8 @@ class SunMotionSim extends React.Component {
 
         const centuryDate = solar.century(this.state.dateTime);
         const eot = formatMinutes(solar.equationOfTime(centuryDate));
+        const hourAngle = roundToOnePlace(
+            solar.riseHourAngle(centuryDate, this.state.latitude));
 
         return <React.Fragment>
             <nav className="navbar navbar-expand-md navbar-light bg-light d-flex justify-content-between">
@@ -105,7 +107,7 @@ class SunMotionSim extends React.Component {
                                 <div className="card-body">
                                     <h6>Advanced</h6>
                                     <div>
-                                        Sun&apos;s hour angle: 0h 41m
+                                        Sun&apos;s hour angle: {hourAngle}
                                     </div>
                                     <div>
                                         Sidereal time: 5h 10m
