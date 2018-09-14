@@ -25,7 +25,7 @@ class SunMotionSim extends React.Component {
                 // Initial state is always May 27th, at noon
                 4, 27, 12),
             latitude: 40.8,
-            sunAzimuth: degToRad(182),
+            sunAzimuth: degToRad(180),
             sunDeclination: degToRad(21.4),
             isPlaying: false,
             animationRate: 1,
@@ -66,6 +66,8 @@ class SunMotionSim extends React.Component {
 
         const centuryDate = solar.century(this.state.dateTime);
         const eot = formatMinutes(solar.equationOfTime(centuryDate));
+        const hourAngle = roundToOnePlace(
+            solar.riseHourAngle(centuryDate, this.state.latitude));
 
         return <React.Fragment>
             <nav className="navbar navbar-expand-md navbar-light bg-light d-flex justify-content-between">
@@ -105,7 +107,7 @@ class SunMotionSim extends React.Component {
                                 <div className="card-body">
                                     <h6>Advanced</h6>
                                     <div>
-                                        Sun&apos;s hour angle: 0h 41m
+                                        Sun&apos;s hour angle: {hourAngle}
                                     </div>
                                     <div>
                                         Sidereal time: 5h 10m
@@ -205,15 +207,15 @@ class SunMotionSim extends React.Component {
     }
     animate() {
         if (this.state.stepByDay) {
-            this.setState(prevState => ({
-                dateTime: new Date(prevState.dateTime.getTime() + (
+            this.setState({
+                dateTime: new Date(this.state.dateTime.getTime() + (
                     (3600 * 24 * 1000) * Math.round(this.state.animationRate)))
-            }));
+            });
         } else {
-            this.setState(prevState => ({
-                dateTime: new Date(prevState.dateTime.getTime() + (
+            this.setState({
+                dateTime: new Date(this.state.dateTime.getTime() + (
                     100000 * this.state.animationRate))
-            }));
+            });
         }
         this.frameId = requestAnimationFrame(this.animate);
     }
