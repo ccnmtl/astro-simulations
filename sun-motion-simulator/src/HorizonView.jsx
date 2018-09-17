@@ -9,6 +9,7 @@ import 'three/FXAAShader';
 import 'three/EffectComposer';
 import 'three/RenderPass';
 import 'three/ShaderPass';
+import {getDayOfYear} from './utils';
 
 // three.js/react integration based on:
 // https://stackoverflow.com/a/46412546/173630
@@ -135,12 +136,23 @@ export default class HorizonView extends React.Component {
 
         this.orbitGroup.add(this.sunDeclination);
         this.orbitGroup.add(this.celestialEquator);
-        this.orbitGroup.add(this.primeHourCircle);
-        this.orbitGroup.add(this.ecliptic);
+
         this.orbitGroup.rotation.x =
             THREE.Math.degToRad(this.props.latitude) - (Math.PI / 2);
         this.orbitGroup.rotation.y = -this.props.sunAzimuth;
         scene.add(this.orbitGroup);
+
+        this.eclipticOrbitGroup = new THREE.Group();
+        this.eclipticOrbitGroup.add(this.primeHourCircle);
+        this.eclipticOrbitGroup.add(this.ecliptic);
+
+        this.eclipticOrbitGroup.rotation.x =
+            THREE.Math.degToRad(this.props.latitude) - (Math.PI / 2);
+        const doy = getDayOfYear(this.props.dateTime);
+        this.eclipticOrbitGroup.rotation.y = -this.props.sunAzimuth -
+                                             THREE.Math.degToRad(
+                                                 (((doy - 140) / 365.24) * 360));
+        scene.add(this.eclipticOrbitGroup);
 
         /*new THREE.DragControls(
             [this.sun], camera, renderer.domElement);*/
@@ -159,11 +171,50 @@ export default class HorizonView extends React.Component {
         if (prevProps.latitude !== this.props.latitude) {
             this.orbitGroup.rotation.x =
                 THREE.Math.degToRad(this.props.latitude) - (Math.PI / 2);
+
+            this.eclipticOrbitGroup.rotation.x =
+                THREE.Math.degToRad(this.props.latitude) - (Math.PI / 2);
         }
 
         if (prevProps.sunAzimuth !== this.props.sunAzimuth) {
             this.orbitGroup.rotation.y = -this.props.sunAzimuth;
+            this.eclipticOrbitGroup.rotation.y = -this.props.sunAzimuth + this.props.sunDeclination;
             this.skyMaterial.color.setHex(this.getSkyColor());
+        }
+
+        if (prevProps.sunDeclination !== this.props.sunDeclination) {
+            this.skyMaterial.color.setHex(this.getSkyColor());
+
+            const doy = getDayOfYear(this.props.dateTime);
+            this.eclipticOrbitGroup.rotation.y = -this.props.sunAzimuth -
+                                                 THREE.Math.degToRad(
+                                                     (((doy - 140) / 365.24) * 360));
+
+            const declinationRad = this.getSunDeclinationRadius(this.props.sunDeclination);
+            this.sun.position.x = declinationRad * Math.cos(
+                -THREE.Math.degToRad(90));
+            this.sun.position.z = declinationRad * Math.sin(
+                -THREE.Math.degToRad(90));
+            this.sun.position.y = THREE.Math.radToDeg(
+                this.props.sunDeclination);
+            this.sun.rotation.x = this.props.sunDeclination;
+
+            this.light.position.x = declinationRad * Math.cos(
+                -THREE.Math.degToRad(90));
+            this.light.position.z = declinationRad * Math.sin(
+                -THREE.Math.degToRad(90));
+            this.light.position.y = THREE.Math.radToDeg(
+                this.props.sunDeclination);
+            this.light.rotation.x = this.props.sunDeclination;
+
+            if (this.props.showDeclinationCircle) {
+                this.sunDeclination.position.y =
+                    THREE.Math.radToDeg(this.props.sunDeclination);
+
+                this.sunDeclination.verticesNeedUpdate = true;
+                this.sunDeclination.geometry = new THREE.TorusBufferGeometry(
+                    declinationRad, 0.3, 16, 64);
+            }
         }
 
         if (prevProps.latitude !== this.props.latitude) {
@@ -227,36 +278,6 @@ export default class HorizonView extends React.Component {
             } else {
                 primeHourCurve.geometry = new THREE.TorusBufferGeometry(
                     this.sphereRadius, 0.3, 16, 64, Math.PI);
-            }
-        }
-
-        if (prevProps.sunDeclination !== this.props.sunDeclination) {
-            this.skyMaterial.color.setHex(this.getSkyColor());
-
-            const declinationRad = this.getSunDeclinationRadius(this.props.sunDeclination);
-            this.sun.position.x = declinationRad * Math.cos(
-                -THREE.Math.degToRad(90));
-            this.sun.position.z = declinationRad * Math.sin(
-                -THREE.Math.degToRad(90));
-            this.sun.position.y = THREE.Math.radToDeg(
-                this.props.sunDeclination);
-            this.sun.rotation.x = this.props.sunDeclination;
-
-            this.light.position.x = declinationRad * Math.cos(
-                -THREE.Math.degToRad(90));
-            this.light.position.z = declinationRad * Math.sin(
-                -THREE.Math.degToRad(90));
-            this.light.position.y = THREE.Math.radToDeg(
-                this.props.sunDeclination);
-            this.light.rotation.x = this.props.sunDeclination;
-
-            if (this.props.showDeclinationCircle) {
-                this.sunDeclination.position.y =
-                    THREE.Math.radToDeg(this.props.sunDeclination);
-
-                this.sunDeclination.verticesNeedUpdate = true;
-                this.sunDeclination.geometry = new THREE.TorusBufferGeometry(
-                    declinationRad, 0.3, 16, 64);
             }
         }
     }
@@ -711,6 +732,7 @@ export default class HorizonView extends React.Component {
 }
 
 HorizonView.propTypes = {
+    dateTime: PropTypes.object.isRequired,
     latitude: PropTypes.number.isRequired,
     sunAzimuth: PropTypes.number.isRequired,
     sunDeclination: PropTypes.number.isRequired,

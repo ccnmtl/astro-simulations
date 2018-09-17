@@ -88,6 +88,7 @@ class SunMotionSim extends React.Component {
             <div className="row mt-2">
                 <div className="col">
                     <HorizonView
+                        dateTime={this.state.dateTime}
                         latitude={this.state.latitude}
                         showDeclinationCircle={this.state.showDeclinationCircle}
                         showEcliptic={this.state.showEcliptic}
