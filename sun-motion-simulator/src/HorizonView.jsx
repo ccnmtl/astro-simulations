@@ -18,6 +18,7 @@ export default class HorizonView extends React.Component {
         super(props);
 
         this.initialState = {
+            isDraggingSun: false,
             mouseoverSun: false,
             mouseoverEcliptic: false,
             mouseoverDeclination: false,
@@ -141,6 +142,14 @@ export default class HorizonView extends React.Component {
             THREE.Math.degToRad(this.props.latitude) - (Math.PI / 2);
         this.orbitGroup.rotation.y = -this.props.sunAzimuth;
         scene.add(this.orbitGroup);
+
+        // Make an invisible plane on the orbitGroup's axis.
+        // This is for interactivity: casting a ray from the mouse
+        // position to find out where the Sun should get dragged to.
+        // https://discourse.threejs.org/t/finding-nearest-vertex-of-a-mesh-to-mouse-cursor/4167/4
+        // TODO: this plane's normal needs to update as the scene's
+        // latitude changes.
+        this.orbitPlane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
 
         this.eclipticOrbitGroup = new THREE.Group();
         this.eclipticOrbitGroup.add(this.primeHourCircle);
@@ -663,10 +672,7 @@ export default class HorizonView extends React.Component {
      * Given the scene setup and a mouse event, return the notable
      * objects in the scene that intersect with this mouse event.
      */
-    findMouseIntersects(e, mouse, camera, raycaster, renderer) {
-        mouse.x = (e.offsetX / renderer.domElement.clientWidth) * 2 - 1;
-        mouse.y = -(e.offsetY / renderer.domElement.clientHeight) * 2 + 1;
-
+    findMouseIntersects(e, mouse, camera, raycaster) {
         raycaster.setFromCamera(mouse, camera);
 
         // Make an array of all the objects to check for intersection.
@@ -696,11 +702,55 @@ export default class HorizonView extends React.Component {
             return;
         }
 
+        this.mouse.x = (
+            e.offsetX / this.renderer.domElement.clientWidth) * 2 - 1;
+        this.mouse.y = -(
+            e.offsetY / this.renderer.domElement.clientHeight) * 2 + 1;
+
+        // Based on:
+        // https://discourse.threejs.org/t/finding-nearest-vertex-of-a-mesh-to-mouse-cursor/4167/4
+        if (this.state.isDraggingSun) {
+            const pointOnPlane = new THREE.Vector3();
+            const closestPoint = new THREE.Vector3();
+            const target = new THREE.Vector3();
+            this.raycaster.setFromCamera(this.mouse, this.camera);
+
+            this.raycaster.ray.intersectPlane(this.orbitPlane, pointOnPlane);
+            const geometry = this.sunDeclination.geometry;
+
+            const index = geometry.index;
+            const position = geometry.attributes.position;
+            let minDistance = Infinity;
+            const triangle = new THREE.Triangle();
+
+            for (let i = 0, l = index.count; i < l; i += 3) {
+                let a = index.getX( i );
+                let b = index.getX( i + 1 );
+                let c = index.getX( i + 2 );
+
+                triangle.a.fromBufferAttribute( position, a );
+                triangle.b.fromBufferAttribute( position, b );
+                triangle.c.fromBufferAttribute( position, c );
+
+                triangle.closestPointToPoint( pointOnPlane, target );
+                const distanceSq = pointOnPlane.distanceToSquared( target );
+
+                if ( distanceSq < minDistance ) {
+                    closestPoint.copy( target );
+                    minDistance = distanceSq;
+                }
+            }
+
+            const angle = Math.atan2(closestPoint.y, closestPoint.x);
+            const time = this.getTime(angle);
+            return this.props.onDateTimeUpdate(time);
+        }
+
         // Reset everything before deciding on a new object to select
         this.setState(this.initialState);
 
         const intersects = this.findMouseIntersects(
-            e, this.mouse, this.camera, this.raycaster, this.renderer);
+            e, this.mouse, this.camera, this.raycaster);
         if (intersects.length > 0) {
             if (intersects[0].object) {
                 let obj = intersects[0].object;
@@ -721,6 +771,10 @@ export default class HorizonView extends React.Component {
 
                 if (obj.name !== 'Plane') {
                     this.controls.enabled = false;
+
+                    if (obj.name === 'Sun') {
+                        this.setState({isDraggingSun: true});
+                    }
                 }
             }
         }
@@ -728,11 +782,16 @@ export default class HorizonView extends React.Component {
     onMouseUp(e) {
         e.preventDefault();
         this.controls.enabled = true;
+
+        if (this.state.isDraggingSun) {
+            this.setState({isDraggingSun: false});
+        }
     }
 }
 
 HorizonView.propTypes = {
     dateTime: PropTypes.object.isRequired,
+    onDateTimeUpdate: PropTypes.func.isRequired,
     latitude: PropTypes.number.isRequired,
     sunAzimuth: PropTypes.number.isRequired,
     sunDeclination: PropTypes.number.isRequired,
