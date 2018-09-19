@@ -333,7 +333,8 @@ export default class HorizonView extends React.Component {
 
     render() {
         const time = this.getTime(this.props.observerAngle)
-                         .toLocaleTimeString();
+                         .toLocaleTimeString(
+                             [], {hour: '2-digit', minute: '2-digit'});
         return (
             <React.Fragment>
             <div id={this.id}
