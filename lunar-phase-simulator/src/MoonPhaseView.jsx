@@ -70,9 +70,13 @@ export default class MoonPhaseView extends React.Component {
             me.start();
         });
     }
+    componentDidUpdate(prevProps) {
+        if (prevProps.showLunarLandmark !== this.props.showLunarLandmark) {
+            this.draw();
+        }
+    }
     animate() {
         this.draw();
-
         this.frameId = requestAnimationFrame(this.animate);
     }
     start() {
@@ -95,6 +99,9 @@ export default class MoonPhaseView extends React.Component {
 
         this.drawMoon(ctx);
         this.paint(ctx, this.convertPhase(this.props.moonPhase));
+        if (this.props.showLunarLandmark) {
+            this.drawLunarLandmark(ctx);
+        }
     }
     drawMoon(ctx) {
         ctx.drawImage(this.moon, 0, 0, 228, 215);
@@ -154,6 +161,14 @@ export default class MoonPhaseView extends React.Component {
         }
         return phase;
     }
+    drawLunarLandmark(ctx) {
+        ctx.beginPath();
+        ctx.arc(228 / 2, 215 / 2, 8, 0, Math.PI * 2, true);
+        ctx.fillStyle = '#ff95ff';
+        ctx.strokeStyle = '#000000';
+        ctx.fill();
+        ctx.stroke();
+    }
     onMoonPhaseUpdate(e) {
         this.props.onMoonPhaseUpdate(
             degToRad(forceNumber(e.target.value))
@@ -166,5 +181,6 @@ export default class MoonPhaseView extends React.Component {
 
 MoonPhaseView.propTypes = {
     moonPhase: PropTypes.number.isRequired,
-    onMoonPhaseUpdate: PropTypes.func.isRequired
+    onMoonPhaseUpdate: PropTypes.func.isRequired,
+    showLunarLandmark: PropTypes.bool.isRequired
 };

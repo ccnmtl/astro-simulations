@@ -104,6 +104,11 @@ export default class MainView extends React.Component {
     componentWillUnmount() {
         this.app.stop();
     }
+    componentDidUpdate(prevProps) {
+        if (prevProps.showLunarLandmark !== this.props.showLunarLandmark) {
+            this.landmark.visible = this.props.showLunarLandmark;
+        }
+    }
     start() {
         if (!this.frameId) {
             this.frameId = requestAnimationFrame(this.animate);
@@ -117,18 +122,18 @@ export default class MainView extends React.Component {
 
         // Rotate the moon about the earth, but not the shade from the
         // sun.
-        const moon = this.moonContainer.children.find(el => {
-            return el.name === 'moonObj';
+        const me = this;
+        this.moonContainer.children.filter(el => {
+            return el.name === 'moonObj' || el.name === 'landmark';
+        }).forEach(el => {
+            el.rotation = -me.props.moonPhase;
         });
-        moon.rotation = -this.props.moonPhase;
-
 
         if (this.state.isHoveringOnMoon || this.draggingMoon) {
             this.moonHighlight.visible = true;
         } else {
             this.moonHighlight.visible = false;
         }
-
 
         this.earth.rotation = -this.props.observerAngle + degToRad(90);
 
@@ -189,6 +194,16 @@ export default class MainView extends React.Component {
         moon.height = 20;
         moon.anchor.set(0.5);
         moonContainer.addChild(moon);
+
+        const landmark = new PIXI.Graphics();
+        landmark.name = 'landmark';
+        landmark.visible = false;
+        landmark.lineColor = 0xff95ff;
+        landmark.lineWidth = 4;
+        landmark.moveTo(-10, 0);
+        landmark.lineTo(-20, 0);
+        this.landmark = landmark;
+        moonContainer.addChild(this.landmark);
 
         // Shade the right half of the moon. This follows the moon
         // along its orbit.
@@ -370,5 +385,6 @@ MainView.propTypes = {
     onObserverAngleUpdate: PropTypes.func.isRequired,
     onMoonPosUpdate: PropTypes.func.isRequired,
     showAngle: PropTypes.bool.isRequired,
-    showTimeTickmarks: PropTypes.bool.isRequired
+    showTimeTickmarks: PropTypes.bool.isRequired,
+    showLunarLandmark: PropTypes.bool.isRequired
 };
