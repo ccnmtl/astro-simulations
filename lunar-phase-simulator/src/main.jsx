@@ -23,6 +23,7 @@ class LunarPhaseSim extends React.Component {
             isPlaying: false,
             animationRate: 1,
             showAngle: false,
+            showLunarLandmark: false,
             showTimeTickmarks: false
         };
         this.state = this.initialState;
@@ -58,6 +59,7 @@ class LunarPhaseSim extends React.Component {
                         observerAngle={this.state.observerAngle}
                         moonPhase={this.state.moonPhase}
                         showAngle={this.state.showAngle}
+                        showLunarLandmark={this.state.showLunarLandmark}
                         showTimeTickmarks={this.state.showTimeTickmarks}
                         onObserverAngleUpdate={this.onObserverAngleUpdate.bind(this)}
                         onMoonPosUpdate={this.onMoonPosUpdate.bind(this)}
@@ -147,8 +149,12 @@ class LunarPhaseSim extends React.Component {
                                 </label>
                             </div>
                             <div className="custom-control custom-checkbox">
-                                <input type="checkbox" className="custom-control-input" id="customCheck2" />
-                                <label className="custom-control-label" htmlFor="customCheck2">
+                                <input type="checkbox" className="custom-control-input"
+                                       name="showLunarLandmark"
+                                       onChange={this.handleInputChange}
+                                       checked={this.state.showLunarLandmark}
+                                       id="showLunarLandmarkToggle" />
+                                <label className="custom-control-label" htmlFor="showLunarLandmarkToggle">
                                     Show lunar landmark
                                 </label>
                             </div>
@@ -171,6 +177,7 @@ class LunarPhaseSim extends React.Component {
                     <div>
                         <h4>Moon Phase</h4>
                         <MoonPhaseView
+                            showLunarLandmark={this.state.showLunarLandmark}
                             moonPhase={this.state.moonPhase}
                             onMoonPhaseUpdate={this.onMoonPhaseUpdate.bind(this)} />
                     </div>
