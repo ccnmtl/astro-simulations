@@ -77,7 +77,7 @@ export default class HorizonView extends React.Component {
         this.drawGlobe(scene);
         this.moon = this.drawMoon(scene);
         this.sun = this.drawSun(scene);
-        this.angleEllipse = this.drawAngle(scene);
+        this.angle = this.drawAngle(scene);
 
         // Put the sun, moon, and orbit line into a group so I can
         // rotate them all on the same axis.
@@ -85,7 +85,7 @@ export default class HorizonView extends React.Component {
         this.orbitGroup.add(this.sun);
         this.orbitGroup.add(this.moon);
         this.orbitGroup.add(this.celestialEquator);
-        this.orbitGroup.add(this.angleEllipse);
+        this.orbitGroup.add(this.angle);
         this.orbitGroup.rotation.x = THREE.Math.degToRad(-50);
         scene.add(this.orbitGroup);
 
@@ -100,6 +100,17 @@ export default class HorizonView extends React.Component {
 
         this.mount.appendChild(this.renderer.domElement);
         this.start();
+    }
+    componentDidUpdate(prevProps) {
+        if (this.props.showAngle) {
+            this.angle.visible = true;
+            this.updateAngleGeometry(
+                this.angle,
+                this.props.observerAngle,
+                this.props.moonObserverPos);
+        } else if (prevProps.showAngle !== this.props.showAngle) {
+            this.angle.visible = false;
+        }
     }
     drawPlane(scene) {
         const texture = new THREE.TextureLoader().load('img/plane.svg');
@@ -217,82 +228,80 @@ export default class HorizonView extends React.Component {
         group.position.set(50, 1, 0);
         return group;
     }
-    updateAngleGeometry(ellipse, observerAngle, moonObserverPos) {
-        const angleDiff = Math.abs(observerAngle - moonObserverPos);
-        const curve = new THREE.EllipseCurve(
-            0,  0,    // ax, aY
-            50, 50,   // xRadius, yRadius
-            // aStartAngle, aEndAngle
-            0,  angleDiff,
-            false,    // aClockwise
-            0         // aRotation
+    updateAngleGeometry(group, observerAngle, moonObserverPos) {
+        const angleDiff = observerAngle - moonObserverPos;
+        const angleOutline = group.children.find(function(e) {
+            return e.name === 'angleOutline';
+        });
+        const angleSlice = group.children.find(function(e) {
+            return e.name === 'angleSlice';
+        });
+        const geometry = new THREE.TorusBufferGeometry(
+            50, 0.4, 16, 100, Math.abs(angleDiff)
         );
+        angleOutline.geometry = geometry;
 
-        const points = curve.getPoints(50);
-        const geometry = new THREE.BufferGeometry().setFromPoints(points);
-        ellipse.geometry = geometry;
+        const sliceGeometry = new THREE.CircleBufferGeometry(
+            50, 32, observerAngle - Math.PI, angleDiff);
+        angleSlice.geometry = sliceGeometry;
     }
     drawAngle() {
-        const curve = new THREE.EllipseCurve(
-            0,  0,     // ax, aY
-            50, 50,    // xRadius, yRadius
-            // aStartAngle, aEndAngle
-            0,  0,
-            false,     // aClockwise
-            0          // aRotation
+        const geometry = new THREE.TorusBufferGeometry(
+            50, 0.4, 16, 100, 0
         );
-
-        const points = curve.getPoints(50);
-        const geometry = new THREE.BufferGeometry().setFromPoints(points);
-
-        const material = new THREE.LineBasicMaterial({
-            linewidth: 30,
+        const material = new THREE.MeshBasicMaterial({
             color : 0xffff00
         });
 
-        const ellipse = new THREE.Line(geometry, material);
-        ellipse.visible = false;
-        ellipse.rotation.x = THREE.Math.degToRad(90);
+        const angle = new THREE.Mesh(geometry, material);
+        angle.name = 'angleOutline';
+        angle.rotation.x = THREE.Math.degToRad(90);
 
-        return ellipse;
+        const angleSliceGeom = new THREE.CircleBufferGeometry(
+            50, 32, 0, this.props.observerAngle - Math.PI,
+            this.props.moonObserverPos);
+        const angleSliceMaterial = new THREE.MeshBasicMaterial({
+            color : 0xffff00,
+            transparent: true,
+            opacity: 0.4,
+            side: THREE.DoubleSide
+        });
+        const angleSlice = new THREE.Mesh(angleSliceGeom, angleSliceMaterial);
+        angleSlice.name = 'angleSlice';
+        angleSlice.rotation.x = -THREE.Math.degToRad(90);
+
+        const group = new THREE.Group();
+        group.add(angle);
+        group.add(angleSlice);
+        group.visible = false;
+
+        return group;
     }
     componentWillUnmount() {
         this.stop();
         this.mount.removeChild(this.renderer.domElement);
     }
-
     start() {
         if (!this.frameId) {
             this.frameId = requestAnimationFrame(this.animate);
         }
     }
-
     stop() {
         cancelAnimationFrame(this.frameId)
     }
-
     animate() {
         this.sun.position.x = 50.25 * Math.cos(this.props.observerAngle);
         this.sun.position.z = 50.25 * Math.sin(this.props.observerAngle);
         this.sun.rotation.y = -this.props.observerAngle +
                               THREE.Math.degToRad(90);
 
-        this.skyMaterial.color.setHex(this.getSkyColor(this.props.observerAngle));
+        this.skyMaterial.color.setHex(
+            this.getSkyColor(this.props.observerAngle));
 
         this.moon.position.x = 50.25 * Math.cos(this.props.moonObserverPos);
         this.moon.position.z = 50.25 * Math.sin(this.props.moonObserverPos);
-        this.moon.rotation.y = -this.props.moonObserverPos + THREE.Math.degToRad(90);
-
-        if (this.props.showAngle) {
-            this.angleEllipse.visible = true;
-            this.updateAngleGeometry(
-                this.angleEllipse,
-                this.props.observerAngle,
-                this.props.moonObserverPos);
-            this.angleEllipse.rotation.z = this.props.moonObserverPos;
-        } else {
-            this.angleEllipse.visible = false;
-        }
+        this.moon.rotation.y = -this.props.moonObserverPos +
+                               THREE.Math.degToRad(90);
 
         this.renderScene();
         this.frameId = window.requestAnimationFrame(this.animate);
