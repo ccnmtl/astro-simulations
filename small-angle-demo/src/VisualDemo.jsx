@@ -64,7 +64,7 @@ export default class VisualDemo extends React.Component {
             this.ball.position.x = dist - (size / 2);
 
             if (this.props.diameter !== prevProps.diameter) {
-                this.ball.position.y = 75 - (size / 2);
+                this.ball.position.y = this.eyePos.y - (size / 2);
                 this.ball.width = size;
                 this.ball.height = size;
             }
@@ -72,6 +72,10 @@ export default class VisualDemo extends React.Component {
             this.redrawLine1(this.lines.line1);
             this.redrawLine2(this.lines.line2);
             this.redrawArc(this.lines.arc);
+
+            // re-position the alpha symbol
+            const ratio = this.props.diameter / this.props.distance;
+            this.lines.alphaText.position.y = 60 - (ratio * 80);
         }
     }
     drawStatic(app, resources) {
@@ -89,7 +93,7 @@ export default class VisualDemo extends React.Component {
     drawPerson(app, resource) {
         const person = new PIXI.Sprite(resource.texture);
         person.position.x = 10;
-        person.position.y = 50;
+        person.position.y = 80;
         person.width *= 0.15;
         person.height *= 0.15;
         app.stage.addChild(person);
@@ -101,7 +105,7 @@ export default class VisualDemo extends React.Component {
         ball.interactive = true;
         ball.buttonMode = true;
         ball.position.x = dist - (size / 2);
-        ball.position.y = 75 - (size / 2);
+        ball.position.y = this.eyePos.y - (size / 2);
         ball.width = size;
         ball.height = size;
         app.stage.addChild(ball);
@@ -128,7 +132,7 @@ export default class VisualDemo extends React.Component {
         line1.moveTo(this.eyePos.x, this.eyePos.y);
         line1.lineTo(
             dist,
-            74 + (this.unitToPixel(this.props.diameter / 2)));
+            this.eyePos.y + (this.unitToPixel(this.props.diameter / 2)));
     }
     redrawLine2(line2) {
         const dist = this.unitToPixel(this.props.distance);
@@ -137,14 +141,18 @@ export default class VisualDemo extends React.Component {
         line2.moveTo(this.eyePos.x, this.eyePos.y);
         line2.lineTo(
             dist,
-            76 - (this.unitToPixel(this.props.diameter / 2)));
+            this.eyePos.y - (this.unitToPixel(this.props.diameter / 2)));
     }
     redrawArc(arc) {
         const ratio = this.props.diameter / this.props.distance;
         arc.clear();
         arc.lineStyle(1);
-        arc.moveTo(155, 82 - (ratio * 66));
-        arc.lineTo(155, 82 + (ratio * 66));
+        arc.arc(
+            55, this.eyePos.y,
+            100,
+            4 / (5 / ratio),
+            -4 / (5 / ratio),
+            true);
     }
     drawLines(app) {
         const line1 = new PIXI.Graphics();
@@ -163,7 +171,7 @@ export default class VisualDemo extends React.Component {
             align: 'center'
         });
         alphaText.position.x = 150;
-        alphaText.position.y = 60 - (ratio * 100);
+        alphaText.position.y = 60 - (ratio * 80);
         app.stage.addChild(alphaText);
 
         const arc = new PIXI.Graphics();
@@ -173,7 +181,8 @@ export default class VisualDemo extends React.Component {
         return {
             arc: arc,
             line1: line1,
-            line2: line2
+            line2: line2,
+            alphaText: alphaText
         };
     }
 
