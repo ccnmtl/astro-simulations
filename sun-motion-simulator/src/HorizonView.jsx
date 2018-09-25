@@ -660,6 +660,12 @@ export default class HorizonView extends React.Component {
         }
 
         const showInfo = !!infoContents;
+        let x = 10;
+        let y = 25;
+        if (showInfo) {
+            x = ((this.mouse.x + 1) / 2) * 430;
+            y = 430 - ((this.mouse.y + 1) / 2) * 430;
+        }
 
         return (
             <div id={this.id}
@@ -668,7 +674,9 @@ export default class HorizonView extends React.Component {
                     onMouseMove={this.onMouseMove}
                     id={this.id + 'Canvas'} width={860} height={860} />
                 <div id="HorizonInfo" style={{
-                        display: showInfo ? 'block' : 'none'
+                    display: showInfo ? 'block' : 'none',
+                    left: Math.max(x - 100, 0),
+                    top: Math.max(y - 60, 0)
                 }}>
                     {infoContents}
                 </div>
