@@ -196,11 +196,11 @@ export default class HorizonView extends React.Component {
         if (prevProps.sunAzimuth !== this.props.sunAzimuth) {
             this.orbitGroup.rotation.y = -this.props.sunAzimuth;
             this.eclipticOrbitGroup.rotation.y = -this.props.sunAzimuth + this.props.sunDeclination;
-            this.skyMaterial.color.setHex(this.getSkyColor());
+            this.skyMaterial.color = this.getSkyColor();
         }
 
         if (prevProps.sunDeclination !== this.props.sunDeclination) {
-            this.skyMaterial.color.setHex(this.getSkyColor());
+            this.skyMaterial.color = this.getSkyColor();
 
             const doy = getDayOfYear(this.props.dateTime);
             this.eclipticOrbitGroup.rotation.y = -this.props.sunAzimuth -
@@ -235,7 +235,7 @@ export default class HorizonView extends React.Component {
         }
 
         if (prevProps.latitude !== this.props.latitude) {
-            this.skyMaterial.color.setHex(this.getSkyColor());
+            this.skyMaterial.color = this.getSkyColor();
         }
 
         if (prevState.mouseoverSun !== this.state.mouseoverSun) {
@@ -618,16 +618,16 @@ export default class HorizonView extends React.Component {
      * Given the observer angle, return what color the sky should
      * be. It fades between blue and black.
      *
-     * Returns a hex value.
+     * Returns a THREE.Color.
      */
     getSkyColor() {
         const target = new THREE.Vector3();
         this.sun.getWorldPosition(target);
         const angle = target.y;
         if (angle < 0 || angle > 180) {
-            return 0x353535;
+            return new THREE.Color('hsl(0, 0%, 21%)');
         }
-        return 0xb0c0ff;
+        return new THREE.Color('hsl(228, 100%, 85%)');
     }
 
     /**
