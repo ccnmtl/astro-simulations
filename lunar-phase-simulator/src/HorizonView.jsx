@@ -295,8 +295,7 @@ export default class HorizonView extends React.Component {
         this.sun.rotation.y = -this.props.observerAngle +
                               THREE.Math.degToRad(90);
 
-        this.skyMaterial.color.setHex(
-            this.getSkyColor(this.props.observerAngle));
+        this.skyMaterial.color = this.getSkyColor();
 
         this.moon.position.x = 50.25 * Math.cos(this.props.moonObserverPos);
         this.moon.position.z = 50.25 * Math.sin(this.props.moonObserverPos);
@@ -331,13 +330,18 @@ export default class HorizonView extends React.Component {
      * Given the observer angle, return what color the sky should
      * be. It fades between blue and black.
      *
-     * Returns a hex value.
+     * Returns a THREE.Color.
      */
-    getSkyColor(angle) {
-        if (angle < 0 || angle > Math.PI) {
-            return 0x000000;
+    getSkyColor() {
+        const target = new THREE.Vector3();
+        this.sun.getWorldPosition(target);
+        const angle = target.y;
+        if (angle < 0 || angle > 180) {
+            return new THREE.Color(0x000000);
         }
-        return 0x90c0ff;
+        const c = new THREE.Color(0xb0c0ff);
+        c.lerp(new THREE.Color(0x000000), 1 - (angle / 40));
+        return c;
     }
 
     render() {
