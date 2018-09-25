@@ -398,7 +398,7 @@ export default class HorizonView extends React.Component {
         this.sunDeclination.rotation.x = THREE.Math.degToRad(90);
 
         const thickTorusGeometry = new THREE.TorusBufferGeometry(
-            this.sphereRadius, 0.3, 16, 64);
+            this.sphereRadius - 0.1, 0.3, 16, 64);
         const blueMaterial = new THREE.MeshBasicMaterial({
             color: 0x6070ff
         });
@@ -638,7 +638,7 @@ export default class HorizonView extends React.Component {
      * orbit on the sphere.
      */
     getSunDeclinationRadius(sunDeclination) {
-        return this.sphereRadius * Math.cos(sunDeclination);
+        return this.sphereRadius * (Math.cos(sunDeclination) ** 1.25);
     }
 
     render() {
