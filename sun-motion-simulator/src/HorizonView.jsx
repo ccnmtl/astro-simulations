@@ -625,7 +625,7 @@ export default class HorizonView extends React.Component {
         this.sun.getWorldPosition(target);
         const angle = target.y;
         if (angle < 0 || angle > 180) {
-            return 0x000000;
+            return 0x353535;
         }
         return 0xb0c0ff;
     }
