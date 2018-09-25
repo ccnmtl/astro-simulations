@@ -10,6 +10,7 @@ import 'three/EffectComposer';
 import 'three/RenderPass';
 import 'three/ShaderPass';
 import {getDayOfYear} from './utils';
+import MutedColorsShader from './shaders/MutedColorsShader';
 
 // three.js/react integration based on:
 // https://stackoverflow.com/a/46412546/173630
@@ -110,12 +111,19 @@ export default class HorizonView extends React.Component {
         const dpr = window.devicePixelRatio;
         const composer = new THREE.EffectComposer(renderer);
         composer.addPass(new THREE.RenderPass(scene, camera));
+
+        // Add anti-aliasing pass
         const shaderPass = new THREE.ShaderPass(THREE.FXAAShader);
         shaderPass.uniforms.resolution.value = new THREE.Vector2(
             1 / (width * 2 * dpr), 1 / (height * 2 * dpr));
-        shaderPass.renderToScreen = true;
         composer.setSize(width * 4 * dpr, height * 4 * dpr);
         composer.addPass(shaderPass);
+
+        const colorPass = new THREE.ShaderPass(MutedColorsShader);
+
+        // The last pass always needs renderToScreen = true.
+        colorPass.renderToScreen = true;
+        composer.addPass(colorPass);
 
         controls.update();
 
@@ -348,7 +356,7 @@ export default class HorizonView extends React.Component {
         this.skyMaterial = new THREE.MeshBasicMaterial({
             transparent: true,
             opacity: 0.8,
-            color: 0x90c0ff,
+            color: 0xb0c0ff,
             depthWrite: false,
             side: THREE.BackSide
         });
@@ -377,7 +385,7 @@ export default class HorizonView extends React.Component {
 
         // The sun orbits along this next line.
         const yellowMaterial = new THREE.MeshBasicMaterial({
-            color: 0xffff00
+            color: 0xffff50
         });
 
         const declinationGeometry = new THREE.TorusBufferGeometry(
@@ -392,7 +400,7 @@ export default class HorizonView extends React.Component {
         const thickTorusGeometry = new THREE.TorusBufferGeometry(
             this.sphereRadius, 0.3, 16, 64);
         const blueMaterial = new THREE.MeshBasicMaterial({
-            color: 0x7080ff
+            color: 0x6070ff
         });
         this.celestialEquator = new THREE.Mesh(
             thickTorusGeometry, blueMaterial);
@@ -513,7 +521,7 @@ export default class HorizonView extends React.Component {
     }
     drawSun() {
         const material = new THREE.MeshBasicMaterial({
-            color: 0xffdd00,
+            color: 0xffdd90,
             side: THREE.DoubleSide
         });
         const geometry = new THREE.CircleBufferGeometry(3, 32);
@@ -619,7 +627,7 @@ export default class HorizonView extends React.Component {
         if (angle < 0 || angle > 180) {
             return 0x000000;
         }
-        return 0x90c0ff;
+        return 0xb0c0ff;
     }
 
     /**
