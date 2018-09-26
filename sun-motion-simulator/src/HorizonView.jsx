@@ -10,6 +10,7 @@ import 'three/EffectComposer';
 import 'three/RenderPass';
 import 'three/ShaderPass';
 import {getDayOfYear} from './utils';
+import MutedColorsShader from './shaders/MutedColorsShader';
 
 // three.js/react integration based on:
 // https://stackoverflow.com/a/46412546/173630
@@ -110,12 +111,19 @@ export default class HorizonView extends React.Component {
         const dpr = window.devicePixelRatio;
         const composer = new THREE.EffectComposer(renderer);
         composer.addPass(new THREE.RenderPass(scene, camera));
+
+        // Add anti-aliasing pass
         const shaderPass = new THREE.ShaderPass(THREE.FXAAShader);
         shaderPass.uniforms.resolution.value = new THREE.Vector2(
             1 / (width * 2 * dpr), 1 / (height * 2 * dpr));
-        shaderPass.renderToScreen = true;
         composer.setSize(width * 4 * dpr, height * 4 * dpr);
         composer.addPass(shaderPass);
+
+        const colorPass = new THREE.ShaderPass(MutedColorsShader);
+
+        // The last pass always needs renderToScreen = true.
+        colorPass.renderToScreen = true;
+        composer.addPass(colorPass);
 
         controls.update();
 
@@ -188,11 +196,11 @@ export default class HorizonView extends React.Component {
         if (prevProps.sunAzimuth !== this.props.sunAzimuth) {
             this.orbitGroup.rotation.y = -this.props.sunAzimuth;
             this.eclipticOrbitGroup.rotation.y = -this.props.sunAzimuth + this.props.sunDeclination;
-            this.skyMaterial.color.setHex(this.getSkyColor());
+            this.skyMaterial.color = this.getSkyColor();
         }
 
         if (prevProps.sunDeclination !== this.props.sunDeclination) {
-            this.skyMaterial.color.setHex(this.getSkyColor());
+            this.skyMaterial.color = this.getSkyColor();
 
             const doy = getDayOfYear(this.props.dateTime);
             this.eclipticOrbitGroup.rotation.y = -this.props.sunAzimuth -
@@ -227,7 +235,7 @@ export default class HorizonView extends React.Component {
         }
 
         if (prevProps.latitude !== this.props.latitude) {
-            this.skyMaterial.color.setHex(this.getSkyColor());
+            this.skyMaterial.color = this.getSkyColor();
         }
 
         if (prevState.mouseoverSun !== this.state.mouseoverSun) {
@@ -348,7 +356,7 @@ export default class HorizonView extends React.Component {
         this.skyMaterial = new THREE.MeshBasicMaterial({
             transparent: true,
             opacity: 0.8,
-            color: 0x90c0ff,
+            color: 0xb0c0ff,
             depthWrite: false,
             side: THREE.BackSide
         });
@@ -377,7 +385,7 @@ export default class HorizonView extends React.Component {
 
         // The sun orbits along this next line.
         const yellowMaterial = new THREE.MeshBasicMaterial({
-            color: 0xffff00
+            color: 0xffff50
         });
 
         const declinationGeometry = new THREE.TorusBufferGeometry(
@@ -390,9 +398,9 @@ export default class HorizonView extends React.Component {
         this.sunDeclination.rotation.x = THREE.Math.degToRad(90);
 
         const thickTorusGeometry = new THREE.TorusBufferGeometry(
-            this.sphereRadius, 0.3, 16, 64);
+            this.sphereRadius - 0.1, 0.3, 16, 64);
         const blueMaterial = new THREE.MeshBasicMaterial({
-            color: 0x7080ff
+            color: 0x6070ff
         });
         this.celestialEquator = new THREE.Mesh(
             thickTorusGeometry, blueMaterial);
@@ -513,7 +521,7 @@ export default class HorizonView extends React.Component {
     }
     drawSun() {
         const material = new THREE.MeshBasicMaterial({
-            color: 0xffdd00,
+            color: 0xffdd90,
             side: THREE.DoubleSide
         });
         const geometry = new THREE.CircleBufferGeometry(3, 32);
@@ -610,16 +618,19 @@ export default class HorizonView extends React.Component {
      * Given the observer angle, return what color the sky should
      * be. It fades between blue and black.
      *
-     * Returns a hex value.
+     * Returns a THREE.Color.
      */
     getSkyColor() {
         const target = new THREE.Vector3();
         this.sun.getWorldPosition(target);
         const angle = target.y;
         if (angle < 0 || angle > 180) {
-            return 0x000000;
+            return new THREE.Color(0x353535);
         }
-        return 0x90c0ff;
+        const c = new THREE.Color(0xb0c0ff);
+        c.lerp(new THREE.Color(0x353535),
+               1 - Math.min(angle / 50));
+        return c;
     }
 
     /**
@@ -627,7 +638,7 @@ export default class HorizonView extends React.Component {
      * orbit on the sphere.
      */
     getSunDeclinationRadius(sunDeclination) {
-        return this.sphereRadius * Math.cos(sunDeclination);
+        return this.sphereRadius * (Math.cos(sunDeclination) ** 1.25);
     }
 
     render() {
@@ -652,6 +663,12 @@ export default class HorizonView extends React.Component {
         }
 
         const showInfo = !!infoContents;
+        let x = 10;
+        let y = 25;
+        if (showInfo) {
+            x = ((this.mouse.x + 1) / 2) * 430;
+            y = 430 - ((this.mouse.y + 1) / 2) * 430;
+        }
 
         return (
             <div id={this.id}
@@ -660,7 +677,9 @@ export default class HorizonView extends React.Component {
                     onMouseMove={this.onMouseMove}
                     id={this.id + 'Canvas'} width={860} height={860} />
                 <div id="HorizonInfo" style={{
-                        display: showInfo ? 'block' : 'none'
+                    display: showInfo ? 'block' : 'none',
+                    left: Math.max(x - 100, 0),
+                    top: Math.max(y - 60, 0)
                 }}>
                     {infoContents}
                 </div>
