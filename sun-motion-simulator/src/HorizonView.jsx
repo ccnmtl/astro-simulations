@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import * as THREE from 'three';
-import * as Detector from 'three/Detector';
+import WEBGL from './utils/WebGL';
 import 'three/OrbitControls';
 import 'three/DragControls';
 import 'three/CopyShader';
@@ -45,8 +45,8 @@ export default class HorizonView extends React.Component {
     }
 
     componentDidMount() {
-        if (!Detector.webgl) {
-            Detector.addGetWebGLMessage();
+        if (!WEBGL.isWebGLAvailable()) {
+            document.body.appendChild(WEBGL.getWebGLErrorMessage());
         }
 
         const width = this.mount.clientWidth;
