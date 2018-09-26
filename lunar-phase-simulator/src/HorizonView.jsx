@@ -189,16 +189,18 @@ export default class HorizonView extends React.Component {
         scene.add(sprite);
     }
     drawSun() {
+        const thinTorusGeometry = new THREE.TorusBufferGeometry(
+            5, 0.2, 16, 32);
+        const lineMeshMaterial = new THREE.MeshBasicMaterial({
+            color: 0x000000
+        });
+
         const material = new THREE.MeshBasicMaterial({
             color: 0xffdd00,
             side: THREE.DoubleSide
         });
         const geometry = new THREE.CircleBufferGeometry(5, 32);
-        const edges = new THREE.EdgesGeometry(geometry);
-        const border = new THREE.LineLoop(edges, new THREE.LineBasicMaterial({
-            color: 0x000000,
-            linewidth: 3
-        }));
+        const border = new THREE.Mesh(thinTorusGeometry, lineMeshMaterial);
 
         const sun = new THREE.Mesh(geometry, material);
         const group = new THREE.Group();
@@ -209,16 +211,18 @@ export default class HorizonView extends React.Component {
         return group;
     }
     drawMoon() {
+        const thinTorusGeometry = new THREE.TorusBufferGeometry(
+            5, 0.2, 16, 32);
+        const lineMeshMaterial = new THREE.MeshBasicMaterial({
+            color: 0x000000
+        });
+
         const material = new THREE.MeshBasicMaterial({
             color: 0xbbbbbb,
             side: THREE.DoubleSide
         });
         const geometry = new THREE.CircleBufferGeometry(5, 32);
-        const edges = new THREE.EdgesGeometry(geometry);
-        const border = new THREE.LineLoop(edges, new THREE.LineBasicMaterial({
-            color: 0x000000,
-            linewidth: 3
-        }));
+        const border = new THREE.Mesh(thinTorusGeometry, lineMeshMaterial);
 
         const moon = new THREE.Mesh(geometry, material);
         const group = new THREE.Group();
