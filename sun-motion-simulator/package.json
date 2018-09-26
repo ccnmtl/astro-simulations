@@ -30,7 +30,7 @@
     "react": "~16.5.0",
     "react-dom": "~16.5.0",
     "solar-calculator": "^0.3.0",
-    "three": "^0.96.0"
+    "three": "^0.97.0"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
