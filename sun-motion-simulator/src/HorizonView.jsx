@@ -19,6 +19,7 @@ export default class HorizonView extends React.Component {
         super(props);
 
         this.initialState = {
+            isDragging: false,
             isDraggingSun: false,
             mouseoverSun: false,
             mouseoverEcliptic: false,
@@ -721,6 +722,10 @@ export default class HorizonView extends React.Component {
             return;
         }
 
+        if (this.state.isDragging) {
+            return;
+        }
+
         this.mouse.x = (
             e.offsetX / this.renderer.domElement.clientWidth) * 2 - 1;
         this.mouse.y = -(
@@ -794,17 +799,22 @@ export default class HorizonView extends React.Component {
                     if (obj.name === 'Sun') {
                         this.setState({isDraggingSun: true});
                     }
+                } else {
+                    this.setState({isDragging: true});
                 }
             }
+        } else {
+            this.setState({isDragging: true});
         }
     }
     onMouseUp(e) {
         e.preventDefault();
         this.controls.enabled = true;
 
-        if (this.state.isDraggingSun) {
-            this.setState({isDraggingSun: false});
-        }
+        this.setState({
+            isDragging: false,
+            isDraggingSun: false
+        });
     }
 }
 
