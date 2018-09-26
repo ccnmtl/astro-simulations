@@ -23,6 +23,11 @@ export default class Clock extends React.Component {
         this.loader.add('clock', 'img/clock.png');
 
         this.center = new PIXI.Point(100, 100);
+
+        // For keeping track of clockwise/counter-clockwise motion on
+        // the minute hand.
+        this.minuteLastPos = {x: 0, y: 0};
+        this.lastTime = null;
     }
     render() {
         return <React.Fragment>
@@ -63,8 +68,9 @@ export default class Clock extends React.Component {
         if (prevProps.dateTime !== this.props.dateTime) {
             // Update the clock.
             const minutes = this.props.dateTime.getMinutes();
-            this.minuteHand.rotation = (minutes / 60) * (Math.PI * 2)
-                                     - Math.PI;
+            const seconds = this.props.dateTime.getSeconds();
+            this.minuteHand.rotation = (minutes / 60) * (Math.PI * 2) - Math.PI
+                                     + ((seconds / 60 / 60) * (Math.PI * 2));
 
             const hours = this.props.dateTime.getHours();
             this.hourHand.rotation = ((hours + (minutes / 60)) / 24) * (
@@ -194,6 +200,16 @@ export default class Clock extends React.Component {
         return `${hours}:${minutes}`;
     }
 
+    /**
+     * Return true if point C is counter-clockwise of point B, given a
+     * circle's center at point A.
+     *
+     * From: https://gamedev.stackexchange.com/a/22139/120714
+     */
+    isCounterClockwise(a, b, c) {
+        return ((b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x)) > 0;
+    }
+
     onTimeUpdate(e) {
         // Parse the time input's time and make the update on the
         // global dateTime value.
@@ -224,9 +240,29 @@ export default class Clock extends React.Component {
 
             const minute = minuteAngleToTime(vAngle);
 
-            const newTime = new Date(
+            let newTime = new Date(
                 this.dragStartTime.getTime() + (minute * 60 * 1000));
 
+            const isCounterClockwise = this.isCounterClockwise(
+                this.center, pos, this.minuteLastPos);
+
+            // Make the minute hand able to decrement and increment
+            // the current hour by dragging it in complete
+            // circles. This took a while to figure out.
+            if (isCounterClockwise && this.lastTime < newTime) {
+                // Decrement an hour
+                newTime = new Date(newTime.getTime() - (3600 * 1000));
+                this.dragStartTime = new Date(
+                    this.dragStartTime.getTime() - (3600 * 1000));
+            } else if (!isCounterClockwise && this.lastTime > newTime) {
+                // Increment an hour
+                newTime = new Date(newTime.getTime() + (3600 * 1000));
+                this.dragStartTime = new Date(
+                    this.dragStartTime.getTime() + (3600 * 1000));
+            }
+
+            this.minuteLastPos = pos;
+            this.lastTime = newTime;
             this.props.onDateTimeUpdate(newTime);
         }
     }
