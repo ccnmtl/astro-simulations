@@ -184,6 +184,10 @@ export default class HorizonView extends React.Component {
         this.mount.appendChild(this.renderer.domElement);
         this.start();
     }
+    // Update the scene based on what props have changed. Doing this here
+    // in componentDidUpdate() is better than in animate() because
+    // these checks aren't constantly needed in every iteration of the
+    // animate loop.
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.latitude !== this.props.latitude) {
             this.orbitGroup.rotation.x =
@@ -431,10 +435,15 @@ export default class HorizonView extends React.Component {
         const me = this;
         this.drawPrimeHourMonthsText(scene).then(function(primeHourMonthsText) {
             primeHourMonthsText.visible = false;
-            primeHourMonthsText.rotation.x =
-                THREE.Math.degToRad(me.props.latitude) - (Math.PI / 2);
-            primeHourMonthsText.rotation.y = -me.props.sunAzimuth;
-            me.orbitGroup.add(primeHourMonthsText);
+
+            // Apply the same rotation as the ecliptic circle (this.ecliptic).
+            primeHourMonthsText.rotation.x = THREE.Math.degToRad(90 + 24);
+            primeHourMonthsText.rotation.y = THREE.Math.degToRad(-12);
+
+            // Rotate the Z axis so March 21 is on the prime hour line.
+            primeHourMonthsText.rotation.z = THREE.Math.degToRad(47);
+
+            me.eclipticOrbitGroup.add(primeHourMonthsText);
             me.primeHourMonthsText = primeHourMonthsText;
         });
 
@@ -487,8 +496,9 @@ export default class HorizonView extends React.Component {
                         });
                         let text = new THREE.Mesh(geometry, whiteMaterial);
 
-                        text.position.x = Math.cos(angle) * 52;
-                        text.position.y = Math.sin(angle) * 52;
+                        text.position.x = Math.cos(angle) * 53;
+                        text.position.y = Math.sin(angle) * 53;
+                        text.position.z = -1;
                         text.rotation.x = -Math.PI / 2;
                         text.rotation.y = -angle
                                         + (Math.PI / 2) + (Math.PI / 48);
