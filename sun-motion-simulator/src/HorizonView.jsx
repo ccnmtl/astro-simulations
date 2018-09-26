@@ -777,7 +777,10 @@ export default class HorizonView extends React.Component {
 
             const angle = Math.atan2(closestPoint.y, closestPoint.x);
             const time = this.getTime(angle);
-            return this.props.onDateTimeUpdate(time);
+            const d = new Date(this.props.dateTime);
+            d.setHours(time.getHours());
+            d.setMinutes(time.getMinutes());
+            return this.props.onDateTimeUpdate(d);
         }
 
         // Reset everything before deciding on a new object to select
