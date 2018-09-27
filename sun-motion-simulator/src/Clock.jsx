@@ -25,8 +25,9 @@ export default class Clock extends React.Component {
         this.center = new PIXI.Point(100, 100);
 
         // For keeping track of clockwise/counter-clockwise motion on
-        // the minute hand.
+        // the clock hands.
         this.minuteLastPos = {x: 0, y: 0};
+        this.hourLastPos = {x: 0, y: 0};
         this.lastTime = null;
     }
     render() {
@@ -286,8 +287,29 @@ export default class Clock extends React.Component {
 
             const hour = hourAngleToTime(vAngle);
 
-            const newTime = new Date(
+            let newTime = new Date(
                 this.dragStartTime.getTime() + (hour * 3600 * 1000));
+
+            const isCounterClockwise = this.isCounterClockwise(
+                this.center, pos, this.hourLastPos);
+
+            // Make the hour hand able to decrement and increment
+            // the current day by dragging it in complete
+            // circles. This took a while to figure out.
+            if (isCounterClockwise && this.lastTime < newTime) {
+                // Decrement a day
+                newTime = new Date(newTime.getTime() - (3600 * 24 * 1000));
+                this.dragStartTime = new Date(
+                    this.dragStartTime.getTime() - (3600 * 24 * 1000));
+            } else if (!isCounterClockwise && this.lastTime > newTime) {
+                // Increment a day
+                newTime = new Date(newTime.getTime() + (3600 * 24 * 1000));
+                this.dragStartTime = new Date(
+                    this.dragStartTime.getTime() + (3600 * 24 * 1000));
+            }
+
+            this.hourLastPos = pos;
+            this.lastTime = newTime;
 
             this.props.onDateTimeUpdate(newTime);
         }
