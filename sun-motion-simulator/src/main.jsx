@@ -37,7 +37,10 @@ class SunMotionSim extends React.Component {
             showEcliptic: true,
             showMonthLabels: false,
             showUnderside: true,
-            showStickfigure: true
+            showStickfigure: true,
+
+            // Advanced
+            showAnalemma: false
         };
         this.state = this.initialState;
 
@@ -115,6 +118,7 @@ class SunMotionSim extends React.Component {
                         showMonthLabels={this.state.showMonthLabels}
                         showStickfigure={this.state.showStickfigure}
                         showUnderside={this.state.showUnderside}
+                        showAnalemma={this.state.showAnalemma}
                         sunAzimuth={this.state.sunAzimuth}
                         sunDeclination={this.state.sunDeclination} />
                     <div>
@@ -137,8 +141,9 @@ class SunMotionSim extends React.Component {
                                     </div>
                                     <div className="custom-control custom-checkbox">
                                         <input type="checkbox" className="custom-control-input"
-                                               name="showAngle"
-                                               id="showAnalemma" />
+                                               onChange={this.handleInputChange}
+                                               checked={this.state.showAnalemma}
+                                               name="showAnalemma" id="showAnalemma" />
                                         <label className="custom-control-label"
                                                htmlFor="showAnalemma">
                                             Show analemma

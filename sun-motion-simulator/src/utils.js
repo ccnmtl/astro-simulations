@@ -125,11 +125,41 @@ const formatHours = function(n) {
     return `${negDisplay}${hours}h ${minutes}m`;
 }
 
+// https://gist.github.com/chris-siedell/b5de8dae41cfa8a5ad67a1501aeeab47
+const getEqnOfTime = function(day) {
+    // this function returns the equation of time in radians
+    const sin = Math.sin;
+    const cos = Math.cos;
+    return (-4.3796019e-6
+            + 0.001830724*cos(0.017214206*day) - 0.032070267*sin(0.017214206*day)
+            - 0.015952904*cos(0.034428413*day) - 0.04026479*sin(0.034428413*day)
+            - 0.00044373354*cos(0.051642619*day) - 0.0013114725*sin(0.051642619*day)
+            - 0.00064591583*cos(0.068856825*day) - 0.00070547099*sin(0.068856825*day));
+}
+
+// https://gist.github.com/chris-siedell/b5de8dae41cfa8a5ad67a1501aeeab47
+const getPosition = function(day) {
+    // this function returns the right ascension in decimal hours and
+    // the declination in degrees
+    const sin = Math.sin;
+    const cos = Math.cos;
+    var ra = 0.01721421*day - 1.3793756
+            - 0.001830724*cos(0.017214206*day) + 0.032070267*sin(0.017214206*day)
+            + 0.015952904*cos(0.034428413*day) + 0.04026479*sin(0.034428413*day)
+            + 0.00044373354*cos(0.051642619*day) + 0.0013114725*sin(0.051642619*day)
+            + 0.00064591583*cos(0.068856825*day) + 0.00070547099*sin(0.068856825*day);
+    var obj = {};
+    obj.ra = (((12/Math.PI)*ra)%24+24)%24;
+    obj.dec = (180/Math.PI)*Math.atan2(sin(ra), 2.30644456403329);
+    return obj;
+}
+
 export {
     forceNumber, roundToOnePlace, timeToAngle,
     hourAngleToTime, minuteAngleToTime,
     degToRad, radToDeg,
     getSunAltitude,
     getRightAscension, getSiderealTime,
-    getDayOfYear, formatMinutes, formatHours
+    getDayOfYear, formatMinutes, formatHours,
+    getEqnOfTime, getPosition
 };
