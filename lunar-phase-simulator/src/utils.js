@@ -9,21 +9,6 @@ const forceNumber = function(n) {
     return n;
 };
 
-/**
- * Load an image with a URL. Returns a promise, containing the Image
- * object on success.
- */
-const loadSprite = function(src) {
-    const sprite = new Image();
-
-    return new Promise((resolve) => {
-        sprite.onload = function() {
-            return resolve(sprite);
-        }
-        sprite.src = src;
-    });
-}
-
 /*
  * Convert degrees to radians.
  */
@@ -165,6 +150,6 @@ const formatInterval = function(i) {
 }
 
 export {
-    forceNumber, loadSprite, degToRad, radToDeg, getPercentIlluminated,
+    forceNumber, degToRad, radToDeg, getPercentIlluminated,
     roundToOnePlace, getPhaseSlot, getTimeSinceNewMoon, formatInterval
 };
