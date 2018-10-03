@@ -19,6 +19,8 @@ export default class HorizonView extends React.Component {
             isHidden: false
         };
 
+        this.dayColor = 0x90c0ff;
+
         this.id = 'HorizonView';
         this.start = this.start.bind(this);
         this.stop = this.stop.bind(this);
@@ -137,10 +139,7 @@ export default class HorizonView extends React.Component {
         scene.add(nightDome);
 
         this.skyMaterial = new THREE.MeshBasicMaterial({
-            transparent: true,
-            opacity: 0.8,
-            color: 0x90c0ff,
-            depthWrite: false,
+            color: this.dayColor,
             // Don't shade the green plane within the dome
             side: THREE.BackSide
         });
@@ -341,10 +340,10 @@ export default class HorizonView extends React.Component {
         this.sun.getWorldPosition(target);
         const angle = target.y;
         if (angle < 0 || angle > 180) {
-            return new THREE.Color(0x000000);
+            return new THREE.Color(0x021840);
         }
-        const c = new THREE.Color(0xb0c0ff);
-        c.lerp(new THREE.Color(0x000000), 1 - (angle / 40));
+        const c = new THREE.Color(this.dayColor);
+        c.lerp(new THREE.Color(0x021840), 1 - (angle / 40));
         return c;
     }
 
