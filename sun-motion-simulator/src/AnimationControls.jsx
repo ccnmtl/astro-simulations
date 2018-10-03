@@ -66,7 +66,7 @@ export default class AnimationControls extends React.Component {
                 </div>
 
                 <label>Animation speed:</label> {animationSpeed}
-                <RangeStepInput className="custom-range"
+                <RangeStepInput className="form-control-range"
                        name="animationRate"
                        min={this.props.stepByDay ? 5 : 0.01}
                        max={this.props.stepByDay ? 122 : 10}

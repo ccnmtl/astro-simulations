@@ -76,7 +76,7 @@ class LunarPhaseSim extends React.Component {
                             <form className="form-inline">
                                 <label htmlFor="diamRange">Animation rate:</label>
                                 <RangeStepInput name="animationRate"
-                                       className="custom-range ml-2"
+                                       className="form-control-range ml-2"
                                        value={this.state.animationRate}
                                        onChange={this.onAnimationRateChange.bind(this)}
                                        step={0.1}
