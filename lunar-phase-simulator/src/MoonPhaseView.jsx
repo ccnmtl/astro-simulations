@@ -14,7 +14,7 @@ export default class MoonPhaseView extends React.Component {
         }
         this.id = 'MoonPhaseView'
         this.moon = null;
-        this.radius = 101;
+        this.radius = 100.5;
 
         // width: 228, height: 215
         this.center = new PIXI.Point(228 / 2, 215 / 2);
@@ -84,7 +84,7 @@ export default class MoonPhaseView extends React.Component {
                            this.convertPhase(this.props.moonPhase));
         }
         if (prevProps.showLunarLandmark !== this.props.showLunarLandmark) {
-            this.draw();
+            this.lunarLandmark.visible = this.props.showLunarLandmark;
         }
     }
     draw() {
@@ -92,6 +92,7 @@ export default class MoonPhaseView extends React.Component {
         this.drawShades(this.app);
         this.drawPhase(this.leftShade, this.rightShade,
                        this.convertPhase(this.props.moonPhase));
+        this.drawLunarLandmark(this.app);
     }
     drawMoon(app) {
         const moon = new PIXI.Sprite(this.moon.texture);
@@ -142,9 +143,6 @@ export default class MoonPhaseView extends React.Component {
                 this.hiddenMoon.visible = false;
             }
         } else {
-            // TODO
-            //leftShade.rotation = Math.PI / 8;
-            //rightShade.rotation = Math.PI / 8;
             const scale = -phase * 4 + 3;
 
             rightShade.scale.x = 1;
@@ -184,13 +182,14 @@ export default class MoonPhaseView extends React.Component {
         }
         return phase;
     }
-    drawLunarLandmark(ctx) {
-        ctx.beginPath();
-        ctx.arc(228 / 2, 215 / 2, 8, 0, Math.PI * 2, true);
-        ctx.fillStyle = '#ff95ff';
-        ctx.strokeStyle = '#000000';
-        ctx.fill();
-        ctx.stroke();
+    drawLunarLandmark(app) {
+        const g = new PIXI.Graphics();
+        g.lineStyle(1, 0x000000);
+        g.beginFill(0xff95ff);
+        g.drawCircle(this.center.x, this.center.y, 8);
+        g.visible = this.props.showLunarLandmark;
+        app.stage.addChild(g);
+        this.lunarLandmark = g;
     }
     onMoonPhaseUpdate(e) {
         this.props.onMoonPhaseUpdate(
