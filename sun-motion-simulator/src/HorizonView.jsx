@@ -204,7 +204,9 @@ export default class HorizonView extends React.Component {
             this.skyMaterial.color = this.getSkyColor();
         }
 
-        if (prevProps.sunDeclination !== this.props.sunDeclination) {
+        if (prevProps.sunDeclination !== this.props.sunDeclination ||
+            prevProps.dateTime !== this.props.dateTime
+        ) {
             this.skyMaterial.color = this.getSkyColor();
 
             const doy = getDayOfYear(this.props.dateTime);

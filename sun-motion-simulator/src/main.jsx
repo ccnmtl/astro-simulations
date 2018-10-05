@@ -282,6 +282,7 @@ class SunMotionSim extends React.Component {
     onDateControlUpdate(newDate) {
         newDate.setHours(this.state.dateTime.getHours());
         newDate.setMinutes(this.state.dateTime.getMinutes());
+        newDate.setSeconds(this.state.dateTime.getSeconds());
         this.setState({dateTime: newDate});
     }
 }
