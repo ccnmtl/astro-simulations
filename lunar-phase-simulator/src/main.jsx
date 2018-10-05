@@ -16,10 +16,8 @@ class LunarPhaseSim extends React.Component {
              * the sky.
              */
             observerAngle: Math.PI / 2,
-            moonPhase: -Math.PI,
-            // moonObserverPos is a function of observerAngle and
-            // moonPhase.
-            moonObserverPos: Math.PI / 2,
+            moonAngle: -Math.PI,
+
             isPlaying: false,
             animationRate: 1,
             showAngle: false,
@@ -57,7 +55,7 @@ class LunarPhaseSim extends React.Component {
                 <div className="col-lg-8">
                     <MainView
                         observerAngle={this.state.observerAngle}
-                        moonPhase={this.state.moonPhase}
+                        moonAngle={this.state.moonAngle}
                         showAngle={this.state.showAngle}
                         showLunarLandmark={this.state.showLunarLandmark}
                         showTimeTickmarks={this.state.showTimeTickmarks}
@@ -178,14 +176,14 @@ class LunarPhaseSim extends React.Component {
                         <h4>Moon Phase</h4>
                         <MoonPhaseView
                             showLunarLandmark={this.state.showLunarLandmark}
-                            moonPhase={this.state.moonPhase}
-                            onMoonPhaseUpdate={this.onMoonPhaseUpdate.bind(this)} />
+                            moonAngle={this.state.moonAngle}
+                            onMoonAngleUpdate={this.onMoonAngleUpdate.bind(this)} />
                     </div>
                     <div>
                         <h4>Horizon Diagram</h4>
                         <HorizonView
                             observerAngle={this.state.observerAngle}
-                            moonObserverPos={this.state.moonObserverPos}
+                            moonAngle={this.state.moonAngle}
                             showAngle={this.state.showAngle} />
                     </div>
                 </div>
@@ -206,14 +204,14 @@ class LunarPhaseSim extends React.Component {
         }
         return newAngle;
     }
-    incrementMoonPhaseAngle(n, inc) {
+    incrementMoonAngleAngle(n, inc) {
         const newAngle = n + inc;
         if (newAngle > Math.PI) {
             return newAngle - Math.PI * 2;
         }
         return newAngle;
     }
-    decrementMoonPhaseAngle(n, dec) {
+    decrementMoonAngleAngle(n, dec) {
         const newAngle = n - dec;
         if (newAngle < -Math.PI) {
             return newAngle + Math.PI * 2;
@@ -226,11 +224,9 @@ class LunarPhaseSim extends React.Component {
             observerAngle: me.incrementAngle(
                 prevState.observerAngle,
                 0.03 * this.state.animationRate),
-            moonPhase: me.incrementMoonPhaseAngle(
-                prevState.moonPhase,
-                0.001 * this.state.animationRate),
-            moonObserverPos: me.getMoonObserverPos(
-                prevState.observerAngle, prevState.moonPhase)
+            moonAngle: me.incrementMoonAngleAngle(
+                prevState.moonAngle,
+                0.001 * this.state.animationRate)
         }));
         this.raf = requestAnimationFrame(this.animate.bind(this));
     }
@@ -254,17 +250,14 @@ class LunarPhaseSim extends React.Component {
         cancelAnimationFrame(this.raf);
         this.setState({
             isPlaying: false,
-            moonPhase: newAngle,
-            moonObserverPos: newAngle
+            moonAngle: newAngle
         });
     }
-    onMoonPhaseUpdate(newPhase) {
+    onMoonAngleUpdate(newPhase) {
         cancelAnimationFrame(this.raf);
         this.setState({
             isPlaying: false,
-            moonPhase: newPhase,
-            moonObserverPos: this.getMoonObserverPos(
-                this.state.observerAngle, newPhase)
+            moonAngle: newPhase
         });
     }
     onAnimationRateChange(e) {
@@ -272,74 +265,68 @@ class LunarPhaseSim extends React.Component {
             animationRate: forceNumber(e.target.value)
         });
     }
-    getMoonObserverPos(observerAngle, moonPhase) {
-        return observerAngle + Math.PI - moonPhase;
+    getMoonObserverPos(observerAngle, moonAngle) {
+        return observerAngle + Math.PI - moonAngle;
     }
     // TODO: can probably refactor this into something better
     onDecrementDay() {
         const observerAngle = this.decrementAngle(
             this.state.observerAngle, degToRad(360));
-        const moonPhase = this.decrementMoonPhaseAngle(
-            this.state.moonPhase, 0.1);
+        const moonAngle = this.decrementMoonAngleAngle(
+            this.state.moonAngle, 0.1);
         this.setState({
             observerAngle: observerAngle,
-            moonPhase: moonPhase,
-            moonObserverPos: this.getMoonObserverPos(observerAngle, moonPhase)
+            moonAngle: moonAngle
         });
     }
     onIncrementDay() {
         const observerAngle = this.incrementAngle(
             this.state.observerAngle, degToRad(360));
-        const moonPhase = this.incrementMoonPhaseAngle(
-            this.state.moonPhase, 0.1);
+        const moonAngle = this.incrementMoonAngleAngle(
+            this.state.moonAngle, 0.1);
         this.setState({
             observerAngle: observerAngle,
-            moonPhase: moonPhase,
-            moonObserverPos: this.getMoonObserverPos(observerAngle, moonPhase)
+            moonAngle: moonAngle
         });
     }
     onDecrementHour() {
         const observerAngle = this.decrementAngle(
             this.state.observerAngle, degToRad(360 / 24));
-        const moonPhase = this.decrementMoonPhaseAngle(
-            this.state.moonPhase, 0.01);
+        const moonAngle = this.decrementMoonAngleAngle(
+            this.state.moonAngle, 0.01);
         this.setState({
             observerAngle: observerAngle,
-            moonPhase: moonPhase,
-            moonObserverPos: this.getMoonObserverPos(observerAngle, moonPhase)
+            moonAngle: moonAngle
         });
     }
     onIncrementHour() {
         const observerAngle = this.incrementAngle(
             this.state.observerAngle, degToRad(360 / 24));
-        const moonPhase = this.incrementMoonPhaseAngle(
-            this.state.moonPhase, 0.01);
+        const moonAngle = this.incrementMoonAngleAngle(
+            this.state.moonAngle, 0.01);
         this.setState({
             observerAngle: observerAngle,
-            moonPhase: moonPhase,
-            moonObserverPos: this.getMoonObserverPos(observerAngle, moonPhase)
+            moonAngle: moonAngle
         });
     }
     onDecrementMinute() {
         const observerAngle = this.decrementAngle(
             this.state.observerAngle, degToRad(360 / 24 / 60));
-        const moonPhase = this.decrementMoonPhaseAngle(
-            this.state.moonPhase, 0.001);
+        const moonAngle = this.decrementMoonAngleAngle(
+            this.state.moonAngle, 0.001);
         this.setState({
             observerAngle: observerAngle,
-            moonPhase: moonPhase,
-            moonObserverPos: this.getMoonObserverPos(observerAngle, moonPhase)
+            moonAngle: moonAngle
         });
     }
     onIncrementMinute() {
         const observerAngle = this.incrementAngle(
             this.state.observerAngle, degToRad(360 / 24 / 60));
-        const moonPhase = this.incrementMoonPhaseAngle(
-            this.state.moonPhase, 0.001);
+        const moonAngle = this.incrementMoonAngleAngle(
+            this.state.moonAngle, 0.001);
         this.setState({
             observerAngle: observerAngle,
-            moonPhase: moonPhase,
-            moonObserverPos: this.getMoonObserverPos(observerAngle, moonPhase)
+            moonAngle: moonAngle
         });
     }
     handleInputChange(event) {

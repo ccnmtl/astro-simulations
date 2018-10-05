@@ -118,7 +118,7 @@ export default class MainView extends React.Component {
         cancelAnimationFrame(this.frameId)
     }
     animate() {
-        this.moonContainer.position = this.getMoonPos(this.props.moonPhase);
+        this.moonContainer.position = this.getMoonPos(this.props.moonAngle);
 
         // Rotate the moon about the earth, but not the shade from the
         // sun.
@@ -126,7 +126,7 @@ export default class MainView extends React.Component {
         this.moonContainer.children.filter(el => {
             return el.name === 'moonObj' || el.name === 'landmark';
         }).forEach(el => {
-            el.rotation = -me.props.moonPhase;
+            el.rotation = -me.props.moonAngle;
         });
 
         if (this.state.isHoveringOnMoon || this.draggingMoon) {
@@ -171,7 +171,7 @@ export default class MainView extends React.Component {
         return timeCompass;
     }
     drawMoon(moonResource, highlightResource) {
-        const pos = this.getMoonPos(this.props.moonPhase);
+        const pos = this.getMoonPos(this.props.moonAngle);
 
         const moonContainer = new PIXI.Container();
         moonContainer.name = 'moon';
@@ -381,7 +381,7 @@ export default class MainView extends React.Component {
 
 MainView.propTypes = {
     observerAngle: PropTypes.number.isRequired,
-    moonPhase: PropTypes.number.isRequired,
+    moonAngle: PropTypes.number.isRequired,
     onObserverAngleUpdate: PropTypes.func.isRequired,
     onMoonPosUpdate: PropTypes.func.isRequired,
     showAngle: PropTypes.bool.isRequired,
