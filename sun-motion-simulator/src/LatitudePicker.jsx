@@ -27,7 +27,7 @@ export default class LatitudePicker extends React.Component {
                         The observer&apos;s latitude:
                         <input type="number"
                                style={{width: '75px'}}
-                               value={roundToOnePlace(this.props.latitude)}
+                               value={roundToOnePlace(Math.abs(this.props.latitude))}
                                onChange={this.props.onLatitudeUpdate}
                                min="-90" max="90"
                                className="form-control form-control-sm ml-2" />

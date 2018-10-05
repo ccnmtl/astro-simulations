@@ -8,6 +8,7 @@ eslint-all:
 
 test-all:
 	cd lunar-phase-simulator && npm i && npm run test
+	cd sun-motion-simulator && npm i && npm run test
 
 all:
 	@$(foreach dir, $(sims), cd $(dir) && npm i && npm run build && cd ..;)

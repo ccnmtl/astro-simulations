@@ -637,6 +637,7 @@ export default class HorizonView extends React.Component {
         const target = new THREE.Vector3();
         this.sun.getWorldPosition(target);
         const angle = target.y;
+
         if (angle < 0 || angle > 180) {
             return new THREE.Color(0x353535);
         }

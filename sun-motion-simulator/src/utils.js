@@ -54,7 +54,11 @@ const radToDeg = function(radians) {
  * altitude in the sky.
  */
 const getSunAltitude = function(latitude, declination) {
-    return degToRad(90) - degToRad(latitude) + declination;
+    const alt = degToRad(90) - degToRad(latitude) + declination;
+    if (alt > Math.PI / 2) {
+        return (Math.PI / 2) - (alt - (Math.PI / 2));
+    }
+    return alt;
 };
 
 /**
@@ -65,6 +69,16 @@ const getSunAltitude = function(latitude, declination) {
 const getRightAscension = function(day) {
     return ((day + 285) % 365) / 365.24 * 24;
 };
+
+/**
+ * Calculate sidereal time.
+ */
+const getSiderealTime = function(day) {
+    // From the original source code
+    return (24 * (
+        ((0.280464857844662 + 1.0027397260274 * day)
+         % 1 + 1) % 1) - 12 + 24) % 24;
+}
 
 /**
  * Given a Date object, return the day of year.
@@ -95,11 +109,27 @@ const formatMinutes = function(n) {
     return `${negDisplay}${minutes}:${secDisplay}`;
 }
 
+/**
+ * Format a decimal of hours as: Hh Mm
+ *
+ * For example: 2.25 -> 2h 15m
+ */
+const formatHours = function(n) {
+    const isNegative = n < 0;
+    n = Math.abs(n);
+    const hours = Math.floor(n);
+    const r = n - hours;
+    const minutes = forceNumber(Math.round(r * 60));
+
+    const negDisplay = isNegative ? '-' : '';
+    return `${negDisplay}${hours}h ${minutes}m`;
+}
+
 export {
     forceNumber, roundToOnePlace, timeToAngle,
     hourAngleToTime, minuteAngleToTime,
     degToRad, radToDeg,
     getSunAltitude,
-    getRightAscension,
-    getDayOfYear, formatMinutes
+    getRightAscension, getSiderealTime,
+    getDayOfYear, formatMinutes, formatHours
 };
