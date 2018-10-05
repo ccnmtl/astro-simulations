@@ -302,6 +302,24 @@ export default class HorizonView extends React.Component {
                     this.sphereRadius, 0.3, 16, 64, Math.PI);
             }
         }
+
+        if (prevProps.showDeclinationCircle !== this.props.showDeclinationCircle) {
+            this.sunDeclination.visible = this.props.showDeclinationCircle;
+        }
+        if (prevProps.showEcliptic !== this.props.showEcliptic) {
+            this.ecliptic.visible = this.props.showEcliptic;
+        }
+        if (prevProps.showStickfigure !== this.props.showStickfigure) {
+            this.stickFigure.visible = this.props.showStickfigure;
+        }
+        if (prevProps.showUnderside !== this.props.showUnderside) {
+            this.solidBlackDome.visible = !this.props.showUnderside;
+        }
+        if (this.primeHourMonthsText &&
+            prevProps.showMonthLabels !== this.props.showMonthLabels
+        ) {
+            this.primeHourMonthsText.visible = this.props.showMonthLabels;
+        }
     }
     drawPlane(scene) {
         const texture = new THREE.TextureLoader().load('img/plane.svg');
@@ -595,15 +613,6 @@ export default class HorizonView extends React.Component {
     }
 
     animate() {
-        this.sunDeclination.visible = this.props.showDeclinationCircle;
-        this.ecliptic.visible = this.props.showEcliptic;
-        this.stickFigure.visible = this.props.showStickfigure;
-        this.solidBlackDome.visible = !this.props.showUnderside;
-
-        if (this.primeHourMonthsText) {
-            this.primeHourMonthsText.visible = this.props.showMonthLabels;
-        }
-
         this.renderScene();
         this.frameId = window.requestAnimationFrame(this.animate);
     }
