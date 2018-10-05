@@ -71,6 +71,16 @@ const getRightAscension = function(day) {
 };
 
 /**
+ * Calculate sidereal time.
+ */
+const getSiderealTime = function(day) {
+    // From the original source code
+    return (24 * (
+        ((0.280464857844662 + 1.0027397260274 * day)
+         % 1 + 1) % 1) - 12 + 24) % 24;
+}
+
+/**
  * Given a Date object, return the day of year.
  *
  * Taken from: https://stackoverflow.com/a/8619946
@@ -120,6 +130,6 @@ export {
     hourAngleToTime, minuteAngleToTime,
     degToRad, radToDeg,
     getSunAltitude,
-    getRightAscension,
+    getRightAscension, getSiderealTime,
     getDayOfYear, formatMinutes, formatHours
 };

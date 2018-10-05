@@ -11,7 +11,7 @@ import {
     forceNumber, roundToOnePlace, timeToAngle,
     degToRad, radToDeg,
     getSunAltitude,
-    getRightAscension,
+    getRightAscension, getSiderealTime,
     getDayOfYear, formatMinutes, formatHours
 } from './utils';
 
@@ -54,7 +54,7 @@ class SunMotionSim extends React.Component {
     render() {
         const doy = getDayOfYear(this.state.dateTime);
 
-        const siderealTime = formatHours(this.getSiderealTime(doy));
+        const siderealTime = formatHours(getSiderealTime(doy));
 
         const sunAltitude = roundToOnePlace(
             radToDeg(getSunAltitude(
@@ -224,18 +224,6 @@ class SunMotionSim extends React.Component {
                 sunDeclination: degToRad(solar.declination(centuryDate))
             });
         }
-    }
-    /**
-     * Calculate sidereal time.
-     */
-    getSiderealTime(day) {
-        // From the original source code
-        // TODO: this seems on the right track.. but maybe needs a 6-month offset?
-        return 24 * (
-            ((0.280464857844662 + 1.0027397260274 * day)
-                % 1 + 1) % 1);
-        // from: http://aa.usno.navy.mil/faq/docs/GAST.php
-        // return 18.697374558 + 24.06570982441908 * day;
     }
     animate() {
         if (this.state.stepByDay) {
