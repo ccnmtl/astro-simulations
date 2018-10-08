@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import * as THREE from 'three';
 import 'three/OrbitControls';
-import 'three/DragControls';
 import 'three/CopyShader';  // For FXAAShader
 import 'three/FXAAShader';
 import 'three/EffectComposer';
@@ -15,9 +14,15 @@ export default class HorizonView extends React.Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            isHidden: false
+        this.initialState = {
+            isHidden: false,
+            isDragging: false,
+            isDraggingSun: false,
+            isDraggingMoon: false,
+            mouseoverSun: false,
+            mouseoverMoon: false
         };
+        this.state = this.initialState;
 
         this.dayColor = 0x90c0ff;
 
@@ -25,6 +30,14 @@ export default class HorizonView extends React.Component {
         this.start = this.start.bind(this);
         this.stop = this.stop.bind(this);
         this.animate = this.animate.bind(this);
+
+        // Handle mouse/object interactivity.
+        // See: https://threejs.org/docs/#api/en/core/Raycaster
+        this.raycaster = new THREE.Raycaster();
+        this.mouse = new THREE.Vector2();
+        this.onMouseMove = this.onMouseMove.bind(this);
+        this.onMouseDown = this.onMouseDown.bind(this);
+        this.onMouseUp = this.onMouseUp.bind(this);
     }
 
     componentDidMount() {
@@ -74,7 +87,8 @@ export default class HorizonView extends React.Component {
 
         controls.update();
 
-        this.drawPlane(scene);
+        this.controls = controls;
+        this.plane = this.drawPlane(scene);
         this.drawStickFigure(scene);
         this.drawGlobe(scene);
         this.moon = this.drawMoon(scene);
@@ -91,13 +105,24 @@ export default class HorizonView extends React.Component {
         this.orbitGroup.rotation.x = THREE.Math.degToRad(-50);
         scene.add(this.orbitGroup);
 
-        /*new THREE.DragControls(
-            [this.sun, this.moon], camera, renderer.domElement);*/
-        //dragControls.enabled = false;
+        // Make an invisible plane on the orbitGroup's axis.
+        // This is for interactivity: casting a ray from the mouse
+        // position to find out where the Sun should get dragged to.
+        // https://discourse.threejs.org/t/finding-nearest-vertex-of-a-mesh-to-mouse-cursor/4167/4
+        //
+        // TODO: this plane's normal needs to be finetuned.
+        this.orbitPlane = new THREE.Plane(new THREE.Vector3(0, -0.6, 0.4), 0);
 
         this.scene = scene;
         this.camera = camera;
         this.renderer = renderer;
+        this.renderer.domElement.addEventListener(
+            'mousemove', this.onMouseMove, false);
+        this.renderer.domElement.addEventListener(
+            'mousedown', this.onMouseDown, false);
+        this.renderer.domElement.addEventListener(
+            'mouseup', this.onMouseUp, false);
+
         this.composer = composer;
 
         this.mount.appendChild(this.renderer.domElement);
@@ -107,7 +132,7 @@ export default class HorizonView extends React.Component {
         this.stop();
         this.mount.removeChild(this.renderer.domElement);
     }
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps, prevState) {
         if (this.props.showAngle) {
             this.angle.visible = true;
             this.updateAngleGeometry(
@@ -134,6 +159,34 @@ export default class HorizonView extends React.Component {
                 this.moon,
                 this.props.observerAngle, this.props.moonAngle);
         }
+
+        if (prevState.mouseoverSun !== this.state.mouseoverSun) {
+            // TODO: do this in a better way
+            const border = this.sun.children[1];
+
+            border.verticesNeedUpdate = true;
+            if (this.state.mouseoverSun) {
+                border.geometry = new THREE.TorusBufferGeometry(
+                    5, 0.35, 16, 32);
+            } else {
+                border.geometry = new THREE.TorusBufferGeometry(
+                    5, 0.2, 16, 32);
+            }
+        }
+
+        if (prevState.mouseoverMoon !== this.state.mouseoverMoon) {
+            // TODO: do this in a better way
+            const border = this.moon.children[1];
+
+            border.verticesNeedUpdate = true;
+            if (this.state.mouseoverMoon) {
+                border.geometry = new THREE.TorusBufferGeometry(
+                    5, 0.35, 16, 32);
+            } else {
+                border.geometry = new THREE.TorusBufferGeometry(
+                    5, 0.2, 16, 32);
+            }
+        }
     }
     updateSunPos(sun, observerAngle) {
         sun.position.x = 50.25 * Math.cos(observerAngle);
@@ -156,8 +209,10 @@ export default class HorizonView extends React.Component {
         material.map.minFilter = THREE.LinearFilter;
         const geometry = new THREE.CircleBufferGeometry(50, 64);
         const plane = new THREE.Mesh(geometry, material);
+        plane.name = 'Plane';
         plane.rotation.x = THREE.Math.degToRad(-90);
         scene.add(plane);
+        return plane;
     }
     drawGlobe(scene) {
         var domeGeometry = new THREE.SphereBufferGeometry(
@@ -236,6 +291,7 @@ export default class HorizonView extends React.Component {
         const border = new THREE.Mesh(thinTorusGeometry, lineMeshMaterial);
 
         const sun = new THREE.Mesh(geometry, material);
+        sun.name = 'Sun';
         const group = new THREE.Group();
 
         group.add(sun);
@@ -258,6 +314,7 @@ export default class HorizonView extends React.Component {
         const border = new THREE.Mesh(thinTorusGeometry, lineMeshMaterial);
 
         const moon = new THREE.Mesh(geometry, material);
+        moon.name = 'Moon';
         const group = new THREE.Group();
 
         group.add(moon);
@@ -402,10 +459,145 @@ export default class HorizonView extends React.Component {
     onHideShowToggle() {
         this.setState({isHidden: !this.state.isHidden});
     }
+
+    /**
+     * Given the scene setup and a mouse event, return the notable
+     * objects in the scene that intersect with this mouse event.
+     */
+    findMouseIntersects(e, mouse, camera, raycaster) {
+        raycaster.setFromCamera(mouse, camera);
+
+        // Make an array of all the objects to check for intersection.
+        // Some of these objects (sun and primeHourCircle) are
+        // actually groups of objects, so flatten them out.
+        const objs = [
+            this.plane
+        ].concat(this.sun.children)
+         .concat(this.moon.children);
+
+        const intersects = this.raycaster.intersectObjects(objs);
+        return intersects;
+    }
+
+    onMouseMove(e) {
+        e.preventDefault();
+
+        // Return if this is a React SyntheticEvent.
+        // e.stopPropagation() would remove the need for this, but the
+        // mousemove event needs to bubble through in order for
+        // OrbitControls to work.
+        if (typeof e.offsetX === 'undefined' ||
+            typeof e.offsetY === 'undefined') {
+            return;
+        }
+
+        if (this.state.isDragging) {
+            return;
+        }
+
+        this.mouse.x = (
+            e.offsetX / this.renderer.domElement.clientWidth) * 2 - 1;
+        this.mouse.y = -(
+            e.offsetY / this.renderer.domElement.clientHeight) * 2 + 1;
+
+        // Based on:
+        // https://discourse.threejs.org/t/finding-nearest-vertex-of-a-mesh-to-mouse-cursor/4167/4
+        if (this.state.isDraggingSun || this.state.isDraggingMoon) {
+            const pointOnPlane = new THREE.Vector3();
+            const closestPoint = new THREE.Vector3();
+            const target = new THREE.Vector3();
+            this.raycaster.setFromCamera(this.mouse, this.camera);
+
+            this.raycaster.ray.intersectPlane(this.orbitPlane, pointOnPlane);
+            const geometry = this.celestialEquator.geometry;
+
+            const index = geometry.index;
+            const position = geometry.attributes.position;
+            let minDistance = Infinity;
+            const triangle = new THREE.Triangle();
+
+            for (let i = 0, l = index.count; i < l; i += 3) {
+                let a = index.getX( i );
+                let b = index.getX( i + 1 );
+                let c = index.getX( i + 2 );
+
+                triangle.a.fromBufferAttribute(position, a);
+                triangle.b.fromBufferAttribute(position, b);
+                triangle.c.fromBufferAttribute(position, c);
+
+                triangle.closestPointToPoint(pointOnPlane, target);
+                const distanceSq = pointOnPlane.distanceToSquared(target);
+
+                if ( distanceSq < minDistance ) {
+                    closestPoint.copy( target );
+                    minDistance = distanceSq;
+                }
+            }
+
+            const angle = Math.atan2(closestPoint.y, closestPoint.x);
+            if (this.state.isDraggingSun) {
+                return this.props.onObserverAngleUpdate(angle);
+            } else if (this.state.isDraggingMoon) {
+                return this.props.onMoonAngleUpdate(-angle - Math.PI / 2);
+            }
+        }
+
+        // Reset everything before deciding on a new object to select
+        this.setState(this.initialState);
+
+        const intersects = this.findMouseIntersects(
+            e, this.mouse, this.camera, this.raycaster);
+        if (intersects.length > 0) {
+            if (intersects[0].object) {
+                let obj = intersects[0].object;
+                let key = 'mouseover' + obj.name;
+
+                this.setState({[key]: true});
+            }
+        }
+    }
+    onMouseDown(e) {
+        e.preventDefault();
+
+        const intersects = this.findMouseIntersects(
+            e, this.mouse, this.camera, this.raycaster, this.renderer);
+        if (intersects.length > 0) {
+            if (intersects[0].object) {
+                let obj = intersects[0].object;
+
+                if (obj.name !== 'Plane') {
+                    this.controls.enabled = false;
+
+                    if (obj.name === 'Sun') {
+                        this.setState({isDraggingSun: true});
+                    }
+                    if (obj.name === 'Moon') {
+                        this.setState({isDraggingMoon: true});
+                    }
+                } else {
+                    this.setState({isDragging: true});
+                }
+            }
+        } else {
+            this.setState({isDragging: true});
+        }
+    }
+    onMouseUp(e) {
+        e.preventDefault();
+        this.controls.enabled = true;
+
+        this.setState({
+            isDragging: false,
+            isDraggingSun: false,
+            isDraggingMoon: false
+        });
+    }
 }
 
 HorizonView.propTypes = {
     observerAngle: PropTypes.number.isRequired,
+    onObserverAngleUpdate: PropTypes.func.isRequired,
     moonAngle: PropTypes.number.isRequired,
+    onMoonAngleUpdate: PropTypes.func.isRequired,
     showAngle: PropTypes.bool.isRequired
 };

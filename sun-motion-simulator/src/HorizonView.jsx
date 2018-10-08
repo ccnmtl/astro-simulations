@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import * as THREE from 'three';
 import WEBGL from './utils/WebGL';
 import 'three/OrbitControls';
-import 'three/DragControls';
 import 'three/CopyShader';
 import 'three/FXAAShader';
 import 'three/EffectComposer';
@@ -171,10 +170,6 @@ export default class HorizonView extends React.Component {
                                              THREE.Math.degToRad(
                                                  (((doy - 140) / 365.24) * 360));
         scene.add(this.eclipticOrbitGroup);
-
-        /*new THREE.DragControls(
-            [this.sun], camera, renderer.domElement);*/
-        //dragControls.enabled = false;
 
         this.scene = scene;
         this.camera = camera;
