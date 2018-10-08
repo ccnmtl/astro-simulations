@@ -27,6 +27,8 @@ class LunarPhaseSim extends React.Component {
         this.state = this.initialState;
         this.raf = null;
 
+        // The moon's synodic period
+        this.synodicPeriod = 29.530589;
         this.handleInputChange = this.handleInputChange.bind(this);
     }
     render() {
@@ -204,14 +206,14 @@ class LunarPhaseSim extends React.Component {
         }
         return newAngle;
     }
-    incrementMoonAngleAngle(n, inc) {
+    incrementMoonAngle(n, inc) {
         const newAngle = n + inc;
         if (newAngle > Math.PI) {
             return newAngle - Math.PI * 2;
         }
         return newAngle;
     }
-    decrementMoonAngleAngle(n, dec) {
+    decrementMoonAngle(n, dec) {
         const newAngle = n - dec;
         if (newAngle < -Math.PI) {
             return newAngle + Math.PI * 2;
@@ -224,7 +226,7 @@ class LunarPhaseSim extends React.Component {
             observerAngle: me.incrementAngle(
                 prevState.observerAngle,
                 0.03 * this.state.animationRate),
-            moonAngle: me.incrementMoonAngleAngle(
+            moonAngle: me.incrementMoonAngle(
                 prevState.moonAngle,
                 0.001 * this.state.animationRate)
         }));
@@ -272,8 +274,8 @@ class LunarPhaseSim extends React.Component {
     onDecrementDay() {
         const observerAngle = this.decrementAngle(
             this.state.observerAngle, degToRad(360));
-        const moonAngle = this.decrementMoonAngleAngle(
-            this.state.moonAngle, 0.1);
+        const moonAngle = this.decrementMoonAngle(
+            this.state.moonAngle, (Math.PI * 2) / this.synodicPeriod);
         this.setState({
             observerAngle: observerAngle,
             moonAngle: moonAngle
@@ -282,8 +284,8 @@ class LunarPhaseSim extends React.Component {
     onIncrementDay() {
         const observerAngle = this.incrementAngle(
             this.state.observerAngle, degToRad(360));
-        const moonAngle = this.incrementMoonAngleAngle(
-            this.state.moonAngle, 0.1);
+        const moonAngle = this.incrementMoonAngle(
+            this.state.moonAngle, (Math.PI * 2) / this.synodicPeriod);
         this.setState({
             observerAngle: observerAngle,
             moonAngle: moonAngle
@@ -292,8 +294,8 @@ class LunarPhaseSim extends React.Component {
     onDecrementHour() {
         const observerAngle = this.decrementAngle(
             this.state.observerAngle, degToRad(360 / 24));
-        const moonAngle = this.decrementMoonAngleAngle(
-            this.state.moonAngle, 0.01);
+        const moonAngle = this.decrementMoonAngle(
+            this.state.moonAngle, (Math.PI * 2) / this.synodicPeriod * 24);
         this.setState({
             observerAngle: observerAngle,
             moonAngle: moonAngle
@@ -302,8 +304,8 @@ class LunarPhaseSim extends React.Component {
     onIncrementHour() {
         const observerAngle = this.incrementAngle(
             this.state.observerAngle, degToRad(360 / 24));
-        const moonAngle = this.incrementMoonAngleAngle(
-            this.state.moonAngle, 0.01);
+        const moonAngle = this.incrementMoonAngle(
+            this.state.moonAngle, (Math.PI * 2) / this.synodicPeriod * 24);
         this.setState({
             observerAngle: observerAngle,
             moonAngle: moonAngle
@@ -312,8 +314,9 @@ class LunarPhaseSim extends React.Component {
     onDecrementMinute() {
         const observerAngle = this.decrementAngle(
             this.state.observerAngle, degToRad(360 / 24 / 60));
-        const moonAngle = this.decrementMoonAngleAngle(
-            this.state.moonAngle, 0.001);
+        const moonAngle = this.decrementMoonAngle(
+            this.state.moonAngle,
+            (Math.PI * 2) / (this.synodicPeriod * 24) / 60);
         this.setState({
             observerAngle: observerAngle,
             moonAngle: moonAngle
@@ -322,8 +325,9 @@ class LunarPhaseSim extends React.Component {
     onIncrementMinute() {
         const observerAngle = this.incrementAngle(
             this.state.observerAngle, degToRad(360 / 24 / 60));
-        const moonAngle = this.incrementMoonAngleAngle(
-            this.state.moonAngle, 0.001);
+        const moonAngle = this.incrementMoonAngle(
+            this.state.moonAngle,
+            (Math.PI * 2) / (this.synodicPeriod * 24) / 60);
         this.setState({
             observerAngle: observerAngle,
             moonAngle: moonAngle
