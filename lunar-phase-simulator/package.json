@@ -6,7 +6,7 @@
   "main": "main.js",
   "scripts": {
     "test": "jest",
-    "serve": "webpack-serve --no-hot-client --no-hmr --no-reload ./webpack.config.js",
+    "serve": "webpack-dev-server",
     "dev": "webpack --mode development --watch",
     "build": "webpack --mode production",
     "eslint": "eslint src/*.js src/*.jsx"
@@ -44,7 +44,7 @@
     "jest": "^23.5.0",
     "webpack": "^4.16.1",
     "webpack-cli": "^3.0.8",
-    "webpack-serve": "^2.0.2"
+    "webpack-dev-server": "^3.1.9"
   },
   "babel": {
     "presets": [
