@@ -144,8 +144,17 @@ export default class HorizonView extends React.Component {
                 this.angle,
                 this.props.observerAngle,
                 this.props.moonAngle);
-        } else if (prevProps.showAngle !== this.props.showAngle) {
-            this.angle.visible = false;
+        }
+
+        if (prevProps.showAngle !== this.props.showAngle) {
+            if (this.props.showAngle) {
+                this.updateAngleGeometry(
+                    this.angle,
+                    this.props.observerAngle,
+                    this.props.moonAngle);
+            }
+
+            this.angle.visible = this.props.showAngle;
         }
 
         if (prevProps.observerAngle !== this.props.observerAngle) {
