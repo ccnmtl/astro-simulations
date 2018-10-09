@@ -60,7 +60,7 @@ class LunarPhaseSim extends React.Component {
                         showLunarLandmark={this.state.showLunarLandmark}
                         showTimeTickmarks={this.state.showTimeTickmarks}
                         onObserverAngleUpdate={this.onObserverAngleUpdate.bind(this)}
-                        onMoonPosUpdate={this.onMoonPosUpdate.bind(this)}
+                        onMoonAngleUpdate={this.onMoonAngleUpdate.bind(this)}
                     />
 
                     <div className="row">
@@ -183,7 +183,9 @@ class LunarPhaseSim extends React.Component {
                         <h4>Horizon Diagram</h4>
                         <HorizonView
                             observerAngle={this.state.observerAngle}
+                            onObserverAngleUpdate={this.onObserverAngleUpdate.bind(this)}
                             moonAngle={this.state.moonAngle}
+                            onMoonAngleUpdate={this.onMoonAngleUpdate.bind(this)}
                             showAngle={this.state.showAngle} />
                     </div>
                 </div>
@@ -244,13 +246,6 @@ class LunarPhaseSim extends React.Component {
         this.setState({
             isPlaying: false,
             observerAngle: newAngle
-        });
-    }
-    onMoonPosUpdate(newAngle) {
-        cancelAnimationFrame(this.raf);
-        this.setState({
-            isPlaying: false,
-            moonAngle: newAngle
         });
     }
     onMoonAngleUpdate(newPhase) {

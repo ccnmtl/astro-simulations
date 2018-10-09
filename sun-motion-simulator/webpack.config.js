@@ -12,7 +12,6 @@ module.exports = {
         extensions: ['*', '.js', '.jsx'],
         alias: {
             'three/OrbitControls': path.join(__dirname, 'node_modules/three/examples/js/controls/OrbitControls.js'),
-            'three/DragControls': path.join(__dirname, 'node_modules/three/examples/js/controls/DragControls.js'),
             'three/CopyShader': path.join(__dirname, 'node_modules/three/examples/js/shaders/CopyShader.js'),
             'three/FXAAShader': path.join(__dirname, 'node_modules/three/examples/js/shaders/FXAAShader.js'),
             'three/EffectComposer': path.join(__dirname, 'node_modules/three/examples/js/postprocessing/EffectComposer.js'),

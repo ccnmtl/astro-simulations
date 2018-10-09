@@ -369,7 +369,7 @@ export default class MainView extends React.Component {
                 Math.atan2(newPosition.y - this.orbitCenter.y,
                            newPosition.x - this.orbitCenter.x);
 
-            this.props.onMoonPosUpdate(-vAngle);
+            this.props.onMoonAngleUpdate(-vAngle);
         }
     }
     getMoonPos(phase) {
@@ -383,7 +383,7 @@ MainView.propTypes = {
     observerAngle: PropTypes.number.isRequired,
     moonAngle: PropTypes.number.isRequired,
     onObserverAngleUpdate: PropTypes.func.isRequired,
-    onMoonPosUpdate: PropTypes.func.isRequired,
+    onMoonAngleUpdate: PropTypes.func.isRequired,
     showAngle: PropTypes.bool.isRequired,
     showTimeTickmarks: PropTypes.bool.isRequired,
     showLunarLandmark: PropTypes.bool.isRequired
