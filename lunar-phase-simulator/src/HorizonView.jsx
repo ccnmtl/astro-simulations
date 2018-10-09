@@ -353,7 +353,8 @@ export default class HorizonView extends React.Component {
         angleOutline.geometry = geometry;
 
         const sliceGeometry = new THREE.CircleBufferGeometry(
-            50, 32, Math.PI, moonAngle - Math.PI);
+            50, 32, Math.PI,
+            (moonAngle > 0) ? moonAngle - Math.PI : moonAngle + Math.PI);
         angleSlice.geometry = sliceGeometry;
 
         group.rotation.y = -observerAngle - Math.PI;
