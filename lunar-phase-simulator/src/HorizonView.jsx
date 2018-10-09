@@ -233,6 +233,8 @@ export default class HorizonView extends React.Component {
         scene.add(nightDome);
 
         this.skyMaterial = new THREE.MeshBasicMaterial({
+            transparent: true,
+            opacity: 0.8,            
             color: this.dayColor,
             // Don't shade the green plane within the dome
             side: THREE.BackSide
