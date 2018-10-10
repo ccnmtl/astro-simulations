@@ -133,14 +133,28 @@ export default class HorizonView extends React.Component {
         this.mount.removeChild(this.renderer.domElement);
     }
     componentDidUpdate(prevProps, prevState) {
-        if (this.props.showAngle) {
+        if (
+            this.props.showAngle && (
+                prevProps.observerAngle !== this.props.observerAngle ||
+                prevProps.moonAngle !== this.props.moonAngle
+            )
+        ) {
             this.angle.visible = true;
             this.updateAngleGeometry(
                 this.angle,
                 this.props.observerAngle,
                 this.props.moonAngle);
-        } else if (prevProps.showAngle !== this.props.showAngle) {
-            this.angle.visible = false;
+        }
+
+        if (prevProps.showAngle !== this.props.showAngle) {
+            if (this.props.showAngle) {
+                this.updateAngleGeometry(
+                    this.angle,
+                    this.props.observerAngle,
+                    this.props.moonAngle);
+            }
+
+            this.angle.visible = this.props.showAngle;
         }
 
         if (prevProps.observerAngle !== this.props.observerAngle) {
@@ -228,6 +242,8 @@ export default class HorizonView extends React.Component {
         scene.add(nightDome);
 
         this.skyMaterial = new THREE.MeshBasicMaterial({
+            transparent: true,
+            opacity: 0.8,            
             color: this.dayColor,
             // Don't shade the green plane within the dome
             side: THREE.BackSide
@@ -325,7 +341,6 @@ export default class HorizonView extends React.Component {
         return group;
     }
     updateAngleGeometry(group, observerAngle, moonAngle) {
-        const angleDiff = observerAngle - moonAngle;
         const angleOutline = group.children.find(function(e) {
             return e.name === 'angleOutline';
         });
@@ -333,13 +348,16 @@ export default class HorizonView extends React.Component {
             return e.name === 'angleSlice';
         });
         const geometry = new THREE.TorusBufferGeometry(
-            50, 0.4, 16, 100, Math.abs(angleDiff)
+            50, 0.4, 16, 100, moonAngle - Math.PI
         );
         angleOutline.geometry = geometry;
 
         const sliceGeometry = new THREE.CircleBufferGeometry(
-            50, 32, observerAngle - Math.PI, angleDiff);
+            50, 32, Math.PI,
+            (moonAngle > 0) ? moonAngle - Math.PI : moonAngle + Math.PI);
         angleSlice.geometry = sliceGeometry;
+
+        group.rotation.y = -observerAngle - Math.PI;
     }
     drawAngle() {
         const geometry = new THREE.TorusBufferGeometry(
@@ -351,11 +369,10 @@ export default class HorizonView extends React.Component {
 
         const angle = new THREE.Mesh(geometry, material);
         angle.name = 'angleOutline';
-        angle.rotation.x = THREE.Math.degToRad(90);
+        angle.rotation.x = Math.PI / 2;
 
         const angleSliceGeom = new THREE.CircleBufferGeometry(
-            50, 32, 0, this.props.observerAngle - Math.PI,
-            this.props.moonAngle);
+            50, 32, 0);
         const angleSliceMaterial = new THREE.MeshBasicMaterial({
             color : 0xffff00,
             transparent: true,
@@ -364,12 +381,16 @@ export default class HorizonView extends React.Component {
         });
         const angleSlice = new THREE.Mesh(angleSliceGeom, angleSliceMaterial);
         angleSlice.name = 'angleSlice';
-        angleSlice.rotation.x = -THREE.Math.degToRad(90);
+        angleSlice.rotation.x = -Math.PI / 2;
 
         const group = new THREE.Group();
         group.add(angle);
         group.add(angleSlice);
         group.visible = false;
+        group.rotation.y = Math.PI / 2;
+
+        this.updateAngleGeometry(
+            group, this.props.observerAngle, this.props.moonAngle);
 
         return group;
     }

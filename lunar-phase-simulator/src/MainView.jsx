@@ -52,6 +52,7 @@ export default class MainView extends React.Component {
         this.drawText();
         this.drawArrows();
         this.drawOrbit();
+        this.angle = this.drawAngle();
 
         this.app.loader.add('moon', 'img/moon.svg')
             .add('earth', 'img/earth.svg')
@@ -108,6 +109,20 @@ export default class MainView extends React.Component {
         if (prevProps.showLunarLandmark !== this.props.showLunarLandmark) {
             this.landmark.visible = this.props.showLunarLandmark;
         }
+
+        if (this.props.showAngle &&
+            prevProps.moonAngle !== this.props.moonAngle
+        ) {
+            this.updateAngle(this.angle, this.props.moonAngle);
+        }
+
+        if (prevProps.showAngle !== this.props.showAngle) {
+            if (this.props.showAngle) {
+                this.updateAngle(this.angle, this.props.moonAngle);
+            }
+
+            this.angle.visible = this.props.showAngle;
+        }
     }
     start() {
         if (!this.frameId) {
@@ -157,6 +172,26 @@ export default class MainView extends React.Component {
         graphics.lineWidth = 1;
         graphics.drawCircle(this.orbitCenter.x, this.orbitCenter.y, 200);
         this.app.stage.addChild(graphics);
+    }
+    drawAngle() {
+        const g = new PIXI.Graphics();
+        g.visible = false;
+        this.updateAngle(g, this.props.moonAngle);
+
+        this.app.stage.addChild(g);
+        return g;
+    }
+    updateAngle(g, moonAngle) {
+        g.clear();
+        g.moveTo(this.orbitCenter.x, this.orbitCenter.y);
+        g.lineStyle(3, 0xffe040);
+        g.beginFill(0xffe200, 0.7);
+        g.arc(this.orbitCenter.x, this.orbitCenter.y,
+              200,
+              Math.PI, -moonAngle, moonAngle < 0);
+
+        g.lineTo(this.orbitCenter.x, this.orbitCenter.y);
+        g.lineTo(170, 230);
     }
     drawTimeCompass(timeCompassResource) {
         const timeCompass = new PIXI.Sprite(timeCompassResource.texture);
@@ -263,10 +298,12 @@ export default class MainView extends React.Component {
         const shade = new PIXI.Graphics();
         shade.beginFill(0x000000);
         shade.alpha = 0.7;
-        shade.drawRect(
+        shade.arc(
             this.orbitCenter.x,
-            this.orbitCenter.y - 60,
-            60, 120);
+            this.orbitCenter.y,
+            35,
+            -Math.PI / 2,
+            Math.PI / 2);
         this.app.stage.addChild(shade);
 
         return earthContainer;
