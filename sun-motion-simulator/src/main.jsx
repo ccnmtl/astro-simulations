@@ -245,10 +245,9 @@ class SunMotionSim extends React.Component {
                 // the current day while letting the time increment.
                 const dayOfMonth = this.state.dateTime.getDate();
                 newDate.setDate(dayOfMonth);
-                this.setState({dateTime: newDate});
-            } else {
-                this.setState({dateTime: newDate});
             }
+
+            this.setState({dateTime: newDate});
         }
         this.frameId = requestAnimationFrame(this.animate);
     }
