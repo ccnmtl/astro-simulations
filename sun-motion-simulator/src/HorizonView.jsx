@@ -8,7 +8,7 @@ import 'three/FXAAShader';
 import 'three/EffectComposer';
 import 'three/RenderPass';
 import 'three/ShaderPass';
-import {getDayOfYear} from './utils';
+import {getDayOfYear, getEqnOfTime, getPosition} from './utils';
 import MutedColorsShader from './shaders/MutedColorsShader';
 
 // three.js/react integration based on:
@@ -94,9 +94,10 @@ export default class HorizonView extends React.Component {
         const ambient = new THREE.AmbientLight(0x909090);
         scene.add(ambient);
 
-        const light = new THREE.DirectionalLight(0xa0a0a0);
+        const light = new THREE.DirectionalLight(0xb0b0b0);
         this.light = light;
-        const declinationRad = this.getSunDeclinationRadius(this.props.sunDeclination);
+        const declinationRad = this.getSunDeclinationRadius(
+            this.props.sunDeclination);
         this.light.position.x = declinationRad * Math.cos(
             -THREE.Math.degToRad(90));
         this.light.position.z = declinationRad * Math.sin(
@@ -145,6 +146,9 @@ export default class HorizonView extends React.Component {
 
         this.orbitGroup.add(this.sunDeclination);
         this.orbitGroup.add(this.celestialEquator);
+
+        this.analemma = this.drawAnalemma(scene)
+        this.orbitGroup.add(this.analemma);
 
         this.orbitGroup.rotation.x =
             THREE.Math.degToRad(this.props.latitude) - (Math.PI / 2);
@@ -312,6 +316,9 @@ export default class HorizonView extends React.Component {
         if (prevProps.showUnderside !== this.props.showUnderside) {
             this.solidBlackDome.visible = !this.props.showUnderside;
         }
+        if (prevProps.showAnalemma !== this.props.showAnalemma) {
+            this.analemma.visible = this.props.showAnalemma;
+        }
         if (this.primeHourMonthsText &&
             prevProps.showMonthLabels !== this.props.showMonthLabels
         ) {
@@ -450,7 +457,7 @@ export default class HorizonView extends React.Component {
 
         const me = this;
         this.drawPrimeHourMonthsText(scene).then(function(primeHourMonthsText) {
-            primeHourMonthsText.visible = false;
+            primeHourMonthsText.visible = me.props.showMonthLabels;
 
             // Apply the same rotation as the ecliptic circle (this.ecliptic).
             primeHourMonthsText.rotation.x = THREE.Math.degToRad(90 + 24);
@@ -578,6 +585,91 @@ export default class HorizonView extends React.Component {
         group.rotation.x = this.props.sunDeclination;
 
         return group;
+    }
+
+    /**
+     * Initialize the analemma object.
+     *
+     * This is based on Chris Siedell's code here, developed for the
+     * original Flash simulations:
+     *
+     * https://gist.github.com/chris-siedell/b5de8dae41cfa8a5ad67a1501aeeab47
+     */
+    drawAnalemma() {
+        const n = 200;
+        const a = this.initAnalemmaArray(n);
+        const CustomSinCurve = function(scale) {
+            THREE.Curve.call(this);
+            this.scale = (scale === undefined) ? 1 : scale;
+        }
+
+        CustomSinCurve.prototype = Object.create(THREE.Curve.prototype);
+        CustomSinCurve.prototype.constructor = CustomSinCurve;
+
+        CustomSinCurve.prototype.getPoint = function(t) {
+            const idx = Math.round(t * (n - 1));
+            const v = a[idx];
+
+            // The curve is invisible unless you use 't' somewhere in
+            // the vector co-ordinates. I don't know why this is
+            // happening. I'm sure there's a better way to work around
+            // this, but for now, just add a really small value based on
+            // t to x.
+            const w = t / 99999999;
+            return new THREE.Vector3(v.x + w, v.z, v.y)
+                            .multiplyScalar(this.scale);
+        };
+
+        const path = new CustomSinCurve(50);
+        const geometry = new THREE.TubeBufferGeometry(
+            path, 64, 0.35, 8, false);
+        const material = new THREE.MeshBasicMaterial({color: 0xe80000});
+        const analemma = new THREE.Mesh(geometry, material);
+
+        analemma.rotation.y = Math.PI / 2;
+        analemma.visible = this.props.showAnalemma;
+        return analemma;
+    }
+
+    /**
+     * https://gist.github.com/chris-siedell/b5de8dae41cfa8a5ad67a1501aeeab47#file-analemma-as-L52
+     */
+    initAnalemmaArray(n) {
+        // n is the number of points that should be used to draw the
+        // analemma curve
+        const step = 365 / n;
+        let points = [];
+
+        // these limits define the declinations where the sun should
+        // start to wrap around
+        const limA = 22;
+        const limB = -22;
+
+        for (let i = 0; i < n; i++) {
+            let day = i * step;
+            let pos = getPosition(day);
+            let eot = -getEqnOfTime(day);
+            let dec = (Math.PI / 180) * pos.dec;
+            let cd = Math.cos(dec);
+
+            points[i] = {
+                x: cd * Math.cos(eot),
+                y: cd * Math.sin(eot),
+                z: Math.sin(dec)
+            };
+
+            if (pos.dec >= limA) {
+                points[i].interval = 1;
+            } else if (pos.dec <= limB) {
+                points[i].interval = 3;
+            } else if (day > 354.318929563686 || day < 170.941195869382) {
+                points[i].interval = 0;
+            } else {
+                points[i].interval = 2;
+            }
+        }
+
+        return points;
     }
     updateAngleGeometry(ellipse, angle) {
         const angleDiff = Math.abs(angle);
@@ -848,5 +940,6 @@ HorizonView.propTypes = {
     showEcliptic: PropTypes.bool.isRequired,
     showMonthLabels: PropTypes.bool.isRequired,
     showStickfigure: PropTypes.bool.isRequired,
-    showUnderside: PropTypes.bool.isRequired
+    showUnderside: PropTypes.bool.isRequired,
+    showAnalemma: PropTypes.bool.isRequired
 };
