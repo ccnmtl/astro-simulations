@@ -237,10 +237,17 @@ class SunMotionSim extends React.Component {
                     (3600 * 24 * 1000) * Math.round(this.state.animationRate)))
             });
         } else {
-            this.setState({
-                dateTime: new Date(this.state.dateTime.getTime() + (
-                    100000 * this.state.animationRate))
-            });
+            const newDate = new Date(this.state.dateTime.getTime() + (
+                100000 * this.state.animationRate));
+
+            if (this.state.loopDay) {
+                // If loopDay is selected, then always keep newDate on
+                // the current day while letting the time increment.
+                const dayOfMonth = this.state.dateTime.getDate();
+                newDate.setDate(dayOfMonth);
+            }
+
+            this.setState({dateTime: newDate});
         }
         this.frameId = requestAnimationFrame(this.animate);
     }
