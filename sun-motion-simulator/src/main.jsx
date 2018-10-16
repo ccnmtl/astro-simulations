@@ -108,7 +108,7 @@ class SunMotionSim extends React.Component {
                 </ul>
             </nav>
             <div className="row mt-2">
-                <div className="col">
+                <div className="col-5">
                     <HorizonView
                         dateTime={this.state.dateTime}
                         onDateTimeUpdate={this.onDateTimeUpdate}
@@ -170,7 +170,7 @@ class SunMotionSim extends React.Component {
                     </div>
                 </div>
 
-                <div className="col-lg-6">
+                <div className="col-6">
                     <h5>Time and Location Controls</h5>
                     <form className="form">
                         <DatePicker

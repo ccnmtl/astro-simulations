@@ -114,10 +114,10 @@ class ExoplanetTransitSimulator extends React.Component {
                                 </div>
 
                                 <div className="form-group row">
-                                    <label className="col-sm-2 col-form-label col-form-label-sm">
+                                    <label className="col-2 col-form-label col-form-label-sm">
                                         Noise:
                                     </label>
-                                    <div className="col-sm-10">
+                                    <div className="col-10">
                                         <input
                                             type="number"
                                             className="form-control form-control-sm"
@@ -136,10 +136,10 @@ class ExoplanetTransitSimulator extends React.Component {
                                     </div>
                                 </div>
                                 <div className="form-group row">
-                                    <label className="col-sm-2 col-form-label col-form-label-sm">
+                                    <label className="col-2 col-form-label col-form-label-sm">
                                         Number:
                                     </label>
-                                    <div className="col-sm-10">
+                                    <div className="col-10">
                                         <input
                                             type="number"
                                             className="form-control form-control-sm"
@@ -171,10 +171,10 @@ class ExoplanetTransitSimulator extends React.Component {
                     <h5>Planet Properties</h5>
                     <div className="form-inline">
                         <div className="form-group row">
-                            <label className="col-sm-2 col-form-label col-form-label-sm">
+                            <label className="col-2 col-form-label col-form-label-sm">
                                 Mass:
                             </label>
-                            <div className="col-sm-10">
+                            <div className="col-10">
                                 <input
                                     type="number"
                                     className="form-control form-control-sm"
@@ -194,10 +194,10 @@ class ExoplanetTransitSimulator extends React.Component {
                             </div>
                         </div>
                         <div className="form-group row">
-                            <label className="col-sm-2 col-form-label col-form-label-sm">
+                            <label className="col-2 col-form-label col-form-label-sm">
                                 Radius:
                             </label>
-                            <div className="col-sm-10">
+                            <div className="col-10">
                                 <input
                                     type="number"
                                     className="form-control form-control-sm"
@@ -217,10 +217,10 @@ class ExoplanetTransitSimulator extends React.Component {
                             </div>
                         </div>
                         <div className="form-group row">
-                            <label className="col-sm-2 col-form-label col-form-label-sm">
+                            <label className="col-2 col-form-label col-form-label-sm">
                                 Semimajor axis:
                             </label>
-                            <div className="col-sm-10">
+                            <div className="col-10">
                                 <input
                                     type="number"
                                     className="form-control form-control-sm"
@@ -241,10 +241,10 @@ class ExoplanetTransitSimulator extends React.Component {
                             </div>
                         </div>
                         <div className="form-group row">
-                            <label className="col-sm-2 col-form-label col-form-label-sm">
+                            <label className="col-2 col-form-label col-form-label-sm">
                                 Eccentricity:
                             </label>
-                            <div className="col-sm-10">
+                            <div className="col-10">
                                 <input
                                     type="number"
                                     className="form-control form-control-sm"
@@ -270,11 +270,11 @@ class ExoplanetTransitSimulator extends React.Component {
                     <h5>Star Properties</h5>
                     <div className="form-inline">
                         <div className="form-group row">
-                            <label className="col-sm-2 col-form-label col-form-label-sm">
+                            <label className="col-2 col-form-label col-form-label-sm">
                                 Mass:
                             </label>
 
-                            <div className="col-sm-10">
+                            <div className="col-10">
                                 <input type="number"
                                        className="form-control form-control-sm"
                                        name="starMass"
@@ -304,11 +304,11 @@ class ExoplanetTransitSimulator extends React.Component {
 
                     <div className="form-inline">
                         <div className="form-group row">
-                            <label className="col-sm-2 col-form-label col-form-label-sm">
+                            <label className="col-2 col-form-label col-form-label-sm">
                                 Inclination:
                             </label>
 
-                            <div className="col-sm-10">
+                            <div className="col-10">
                                 <input
                                     type="number"
                                     className="form-control form-control-sm"
@@ -327,11 +327,11 @@ class ExoplanetTransitSimulator extends React.Component {
                         </div>
 
                         <div className="form-group row">
-                            <label className="col-sm-2 col-form-label col-form-label-sm">
+                            <label className="col-2 col-form-label col-form-label-sm">
                                 Longitude:
                             </label>
 
-                            <div className="col-sm-10">
+                            <div className="col-10">
                                 <input
                                     type="number"
                                     className="form-control form-control-sm"
@@ -351,11 +351,11 @@ class ExoplanetTransitSimulator extends React.Component {
 
                         <div className="form-group row">
                             <label htmlFor="phaseSlider"
-                                   className="col-sm-2 col-form-label col-form-label-sm">
+                                   className="col-2 col-form-label col-form-label-sm">
                                 Phase:
                             </label>
 
-                            <div className="col-sm-10">
+                            <div className="col-10">
                                 <RangeStepInput
                                     className="form-control"
                                     name="phase" id="phaseSlider"
