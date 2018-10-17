@@ -54,7 +54,7 @@ class LunarPhaseSim extends React.Component {
             </nav>
             <div className="row mt-2">
 
-                <div className="col-lg-8">
+                <div className="col-8">
                     <MainView
                         observerAngle={this.state.observerAngle}
                         moonAngle={this.state.moonAngle}
@@ -173,7 +173,7 @@ class LunarPhaseSim extends React.Component {
                     </div>
                 </div>
 
-                <div className="col-lg-4">
+                <div className="col-4">
                     <div>
                         <h4>Moon Phase</h4>
                         <MoonPhaseView
