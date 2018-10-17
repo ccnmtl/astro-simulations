@@ -109,9 +109,15 @@ export default class HorizonView extends React.Component {
         // This is for interactivity: casting a ray from the mouse
         // position to find out where the Sun should get dragged to.
         // https://discourse.threejs.org/t/finding-nearest-vertex-of-a-mesh-to-mouse-cursor/4167/4
-        //
-        // TODO: this plane's normal needs to be finetuned.
-        this.orbitPlane = new THREE.Plane(new THREE.Vector3(0, -0.6, 0.4), 0);
+        this.orbitPlane = new THREE.Plane(
+            // Make this plane the same rotation as the orbitGroup (50
+            // degrees).
+            new THREE.Vector3(0, THREE.Math.degToRad(50), -1), 0);
+
+        // For visualizing the orbitPlane
+        // const planeHelper = new THREE.PlaneHelper(
+        //     this.orbitPlane, 50, 0xff0000);
+        // scene.add(planeHelper);
 
         this.scene = scene;
         this.camera = camera;
