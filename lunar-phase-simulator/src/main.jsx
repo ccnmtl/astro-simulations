@@ -250,11 +250,11 @@ class LunarPhaseSim extends React.Component {
             observerAngle: newAngle
         });
     }
-    onMoonAngleUpdate(newPhase) {
+    onMoonAngleUpdate(newAngle) {
         cancelAnimationFrame(this.raf);
         this.setState({
             isPlaying: false,
-            moonAngle: newPhase
+            moonAngle: newAngle
         });
     }
     onAnimationRateChange(e) {

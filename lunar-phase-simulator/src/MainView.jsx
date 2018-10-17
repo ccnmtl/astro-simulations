@@ -188,7 +188,9 @@ export default class MainView extends React.Component {
         g.beginFill(0xffe200, 0.7);
         g.arc(this.orbitCenter.x, this.orbitCenter.y,
               200,
-              Math.PI, -moonAngle, moonAngle < 0);
+              Math.PI, -moonAngle,
+              // counter-clockwise?
+              moonAngle < 0 && moonAngle > -Math.PI);
 
         g.lineTo(this.orbitCenter.x, this.orbitCenter.y);
         g.lineTo(170, 230);

@@ -243,7 +243,7 @@ export default class HorizonView extends React.Component {
 
         this.skyMaterial = new THREE.MeshBasicMaterial({
             transparent: true,
-            opacity: 0.8,            
+            opacity: 0.8,
             color: this.dayColor,
             // Don't shade the green plane within the dome
             side: THREE.BackSide
@@ -557,9 +557,13 @@ export default class HorizonView extends React.Component {
 
             const angle = Math.atan2(closestPoint.y, closestPoint.x);
             if (this.state.isDraggingSun) {
+                const diff = this.props.observerAngle - angle;
+                this.props.onMoonAngleUpdate(
+                    (this.props.moonAngle - diff) % (Math.PI * 2));
                 return this.props.onObserverAngleUpdate(angle);
             } else if (this.state.isDraggingMoon) {
-                return this.props.onMoonAngleUpdate(-angle - Math.PI / 2);
+                return this.props.onMoonAngleUpdate(
+                    -angle - (Math.PI / 2));
             }
         }
 
