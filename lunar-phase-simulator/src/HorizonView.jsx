@@ -568,8 +568,15 @@ export default class HorizonView extends React.Component {
                     (this.props.moonAngle - diff) % (Math.PI * 2));
                 return this.props.onObserverAngleUpdate(angle);
             } else if (this.state.isDraggingMoon) {
-                return this.props.onMoonAngleUpdate(
-                    -angle - (Math.PI / 2));
+                let moonAngle = -angle + this.props.observerAngle + Math.PI;
+
+                if (moonAngle < -Math.PI) {
+                    moonAngle += Math.PI * 2;
+                } else if (moonAngle > Math.PI) {
+                    moonAngle -= Math.PI * 2;
+                }
+
+                return this.props.onMoonAngleUpdate(moonAngle);
             }
         }
 
