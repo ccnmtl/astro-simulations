@@ -159,9 +159,18 @@ export default class HorizonView extends React.Component {
         // This is for interactivity: casting a ray from the mouse
         // position to find out where the Sun should get dragged to.
         // https://discourse.threejs.org/t/finding-nearest-vertex-of-a-mesh-to-mouse-cursor/4167/4
-        // TODO: this plane's normal needs to update as the scene's
-        // latitude changes.
-        this.orbitPlane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
+
+        // This plane's position follows the sunDeclination line,
+        // changing with latitude and sunDeclination.
+        this.orbitPlane = new THREE.Plane();
+        this.updateOrbitPlanePosition(
+            this.orbitPlane, this.props.latitude,
+            this.props.sunDeclination);
+
+        // For visualizing the orbitPlane
+        //const planeHelper = new THREE.PlaneHelper(
+        //    this.orbitPlane, 80, 0xff0000);
+        //scene.add(planeHelper);
 
         this.eclipticOrbitGroup = new THREE.Group();
         this.eclipticOrbitGroup.add(this.primeHourCircle);
@@ -195,6 +204,10 @@ export default class HorizonView extends React.Component {
 
             this.eclipticOrbitGroup.rotation.x =
                 THREE.Math.degToRad(this.props.latitude) - (Math.PI / 2);
+
+            this.updateOrbitPlanePosition(
+                this.orbitPlane, this.props.latitude,
+                this.props.sunDeclination);
         }
 
         if (prevProps.sunAzimuth !== this.props.sunAzimuth) {
@@ -229,6 +242,10 @@ export default class HorizonView extends React.Component {
             this.light.position.y = THREE.Math.radToDeg(
                 this.props.sunDeclination);
             this.light.rotation.x = this.props.sunDeclination;
+
+            this.updateOrbitPlanePosition(
+                this.orbitPlane, this.props.latitude,
+                this.props.sunDeclination);
 
             if (this.props.showDeclinationCircle) {
                 this.sunDeclination.position.y =
@@ -795,6 +812,13 @@ export default class HorizonView extends React.Component {
                 </div>
             </div>
         );
+    }
+
+    updateOrbitPlanePosition(orbitPlane, latitude, sunDeclination) {
+        const lr = THREE.Math.degToRad(latitude);
+        orbitPlane.set(
+            new THREE.Vector3(0, lr, -1),
+            -THREE.Math.radToDeg(sunDeclination));
     }
 
     /**
