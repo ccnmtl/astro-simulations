@@ -46,6 +46,7 @@ class SunMotionSim extends React.Component {
 
         this.frameId = null;
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.onAnimRateUpdate = this.onAnimRateUpdate.bind(this);
         this.animate = this.animate.bind(this);
         this.onStartClick = this.onStartClick.bind(this);
         this.onLatitudeUpdate = this.onLatitudeUpdate.bind(this);
@@ -202,6 +203,7 @@ class SunMotionSim extends React.Component {
                                 loopDay={this.state.loopDay}
                                 stepByDay={this.state.stepByDay}
                                 onChange={this.handleInputChange}
+                                onAnimRateUpdate={this.onAnimRateUpdate}
                             />
                         </div>
                         <div className="col-4">
@@ -231,25 +233,36 @@ class SunMotionSim extends React.Component {
         }
     }
     animate() {
-        if (this.state.stepByDay) {
-            this.setState({
-                dateTime: new Date(this.state.dateTime.getTime() + (
-                    (3600 * 24 * 1000) * Math.round(this.state.animationRate)))
-            });
-        } else {
-            const newDate = new Date(this.state.dateTime.getTime() + (
-                100000 * this.state.animationRate));
+        this.frameId = requestAnimationFrame(this.animate);
 
-            if (this.state.loopDay) {
-                // If loopDay is selected, then always keep newDate on
-                // the current day while letting the time increment.
-                const dayOfMonth = this.state.dateTime.getDate();
-                newDate.setDate(dayOfMonth);
+        const now = Date.now();
+        const elapsed = now - this.then;
+
+        const fps = this.state.stepByDay ? this.state.animationRate : 60;
+
+        // Handle time throttling.
+        // See: https://stackoverflow.com/a/19772220/173630
+        if (!this.state.stepByDay || (elapsed > 1000 / fps)) {
+            if (this.state.stepByDay) {
+                const nextDay = new Date(this.state.dateTime);
+                nextDay.setDate(nextDay.getDate() + 1);
+                this.setState({dateTime: nextDay});
+            } else {
+                const newDate = new Date(this.state.dateTime.getTime() + (
+                    100000 * this.state.animationRate));
+
+                if (this.state.loopDay) {
+                    // If loopDay is selected, then always keep newDate on
+                    // the current day while letting the time increment.
+                    const dayOfMonth = this.state.dateTime.getDate();
+                    newDate.setDate(dayOfMonth);
+                }
+
+                this.setState({dateTime: newDate});
             }
 
-            this.setState({dateTime: newDate});
+            this.then = now - (elapsed % fps);
         }
-        this.frameId = requestAnimationFrame(this.animate);
     }
     handleInputChange(event) {
         const target = event.target;
@@ -267,9 +280,13 @@ class SunMotionSim extends React.Component {
             [name]: value
         });
     }
+    onAnimRateUpdate(rate) {
+        this.setState({animationRate: rate});
+    }
     onStartClick() {
         if (!this.state.isPlaying) {
-            this.frameId = requestAnimationFrame(this.animate);
+            this.then = Date.now();
+            this.animate();
             this.setState({isPlaying: true});
         } else {
             cancelAnimationFrame(this.frameId);

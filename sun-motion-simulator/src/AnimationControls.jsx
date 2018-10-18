@@ -35,7 +35,7 @@ export default class AnimationControls extends React.Component {
                             <div className="custom-control custom-radio">
                                 <input type="radio" id="continuousRadio"
                                        checked={!this.props.stepByDay}
-                                       onChange={this.props.onChange}
+                                       onChange={this.onModeChange.bind(this)}
                                        name="stepByDay" className="custom-control-input" />
                                 <label className="custom-control-label"
                                        htmlFor="continuousRadio">Continuous</label>
@@ -43,7 +43,7 @@ export default class AnimationControls extends React.Component {
                             <div className="custom-control custom-radio">
                                 <input type="radio" id="stepByDayRadio"
                                        checked={this.props.stepByDay}
-                                       onChange={this.props.onChange}
+                                       onChange={this.onModeChange.bind(this)}
                                        name="stepByDay" className="custom-control-input" />
                                 <label className="custom-control-label"
                                        htmlFor="stepByDayRadio">Step by day</label>
@@ -76,6 +76,15 @@ export default class AnimationControls extends React.Component {
             </React.Fragment>
         );
     }
+    onModeChange(event) {
+        const id = event.target.id;
+        if (id === 'stepByDayRadio') {
+            this.props.onAnimRateUpdate(15);
+        } else if (id === 'continuousRadio') {
+            this.props.onAnimRateUpdate(1);
+        }
+        return this.props.onChange(event);
+    }
 }
 
 AnimationControls.propTypes = {
@@ -84,5 +93,6 @@ AnimationControls.propTypes = {
     loopDay: PropTypes.bool.isRequired,
     stepByDay: PropTypes.bool.isRequired,
     onStartClick: PropTypes.func.isRequired,
-    onChange: PropTypes.func.isRequired
+    onChange: PropTypes.func.isRequired,
+    onAnimRateUpdate: PropTypes.func.isRequired
 };
