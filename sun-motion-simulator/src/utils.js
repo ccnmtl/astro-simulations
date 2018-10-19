@@ -81,6 +81,14 @@ const getSiderealTime = function(day) {
 }
 
 /**
+ * Returns the hour angle as an hour decimal number.
+ */
+const getHourAngle = function(siderealTime, rightAscension) {
+    // From on original (actionscript) source
+    return ((siderealTime - rightAscension) % 24) % 24;
+}
+
+/**
  * Given a Date object, return the day of year.
  *
  * Taken from: https://stackoverflow.com/a/8619946
@@ -90,7 +98,15 @@ const getDayOfYear = function(d) {
     const diff = (d - start) + (
         (start.getTimezoneOffset() - d.getTimezoneOffset()) * 60 * 1000);
     const oneDay = 1000 * 60 * 60 * 24;
-    const day = Math.floor(diff / oneDay);
+    let day = Math.floor(diff / oneDay);
+
+    // Add the time of day as a fraction of 1.
+    let time = 0;
+    time += d.getHours() / 24;
+    time += d.getMinutes() / 60 / 24;
+    time += d.getSeconds() / 60 / 60 / 24;
+
+    day += time;
     return day;
 };
 
@@ -160,6 +176,7 @@ export {
     degToRad, radToDeg,
     getSunAltitude,
     getRightAscension, getSiderealTime,
+    getHourAngle,
     getDayOfYear, formatMinutes, formatHours,
     getEqnOfTime, getPosition
 };

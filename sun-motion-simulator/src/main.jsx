@@ -12,6 +12,7 @@ import {
     degToRad, radToDeg,
     getSunAltitude,
     getRightAscension, getSiderealTime,
+    getHourAngle, getPosition,
     getDayOfYear, formatMinutes, formatHours
 } from './utils';
 
@@ -58,30 +59,30 @@ class SunMotionSim extends React.Component {
     render() {
         const doy = getDayOfYear(this.state.dateTime);
 
-        const siderealTime = formatHours(getSiderealTime(doy));
+        const siderealTime = getSiderealTime(doy - 0.5);
+        const siderealTimeDisplay = formatHours(siderealTime);
 
-        const sunAltitude = roundToOnePlace(
-            radToDeg(getSunAltitude(
-                this.state.latitude, this.state.sunDeclination))
-        );
+        const sunAltitude = getSunAltitude(
+            this.state.latitude, this.state.sunDeclination);
+        const sunAltitudeDisplay = roundToOnePlace(radToDeg(sunAltitude));
         const sunAzimuth = roundToOnePlace(
             radToDeg(this.state.sunAzimuth));
         const sunDeclination = roundToOnePlace(
             radToDeg(this.state.sunDeclination));
-        const sunRightAscension = formatHours(getRightAscension(doy));
+        const sunRightAscension = getRightAscension(doy);
+        const sunRightAscensionDisplay = formatHours(sunRightAscension);
 
         const centuryDate = solar.century(this.state.dateTime);
         const eot = formatMinutes(solar.equationOfTime(centuryDate));
 
-        // TODO... how do I calculate the hour angle?
-        const hourAngle = '0h 2m';
-        //solar.riseHourAngle(centuryDate, this.state.latitude);
+        const hourAngle = getHourAngle(
+            siderealTime, getPosition(doy).ra);
+        const hourAngleDisplay = formatHours(hourAngle);
 
         const formattedDate = this.state.dateTime
                                   .toLocaleDateString([], {
                                       day: 'numeric',
-                                      month: 'long',
-                                      year: 'numeric'
+                                      month: 'long'
                                   });
         const formattedTime = this.state.dateTime
                                   .toLocaleTimeString([], {
@@ -90,7 +91,7 @@ class SunMotionSim extends React.Component {
                                       hour12: false
                                   });
 
-        const latUnit = this.state.latitude > 0 ? 'N' : 'S';
+        const latUnit = this.state.latitude >= 0 ? 'N' : 'S';
 
         return <React.Fragment>
             <nav className="navbar navbar-expand-md navbar-light bg-light d-flex justify-content-between">
@@ -122,20 +123,20 @@ class SunMotionSim extends React.Component {
                         showAnalemma={this.state.showAnalemma}
                         sunAzimuth={this.state.sunAzimuth}
                         sunDeclination={this.state.sunDeclination} />
-                    <div>
+                    <div className="mt-2">
                         <h5>Information</h5>
                         <p>
-                            The horizon diagram is shown for an observer at latitude {roundToOnePlace(Math.abs(this.state.latitude))}&deg; {latUnit} on {formattedDate} at {formattedTime}.
+                            The horizon diagram is shown for an observer at latitude <span className="text-nowrap">{roundToOnePlace(Math.abs(this.state.latitude))}&deg; {latUnit}</span> on {formattedDate} at {formattedTime}.
                         </p>
                         <div className="row small">
                             <div className="col card">
                                 <div className="card-body">
                                     <h6>Advanced</h6>
                                     <div>
-                                        Sun&apos;s hour angle: {hourAngle}
+                                        Sun&apos;s hour angle: {hourAngleDisplay}
                                     </div>
                                     <div>
-                                        Sidereal time: {siderealTime}
+                                        Sidereal time: {siderealTimeDisplay}
                                     </div>
                                     <div>
                                         Equation of time: {eot}
@@ -154,14 +155,14 @@ class SunMotionSim extends React.Component {
                             </div>
                             <div className="col">
                                 <div>
-                                    Sun&apos;s altitude: {sunAltitude}&deg;
+                                    Sun&apos;s altitude: {sunAltitudeDisplay}&deg;
                                 </div>
                                 <div>
                                     Sun&apos;s azimuth: {sunAzimuth}&deg;
                                 </div>
 
                                 <div>
-                                    Sun&apos;s right ascension: {sunRightAscension}
+                                    Sun&apos;s right ascension: {sunRightAscensionDisplay}
                                 </div>
                                 <div>
                                     Sun&apos;s declination: {sunDeclination}&deg;
