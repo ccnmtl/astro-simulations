@@ -25,8 +25,9 @@ Here are instructions on how to develop and make changes to these interactives. 
 
 You can also use the `npm run dev` command if all you want to do is
 make a development build of a simulation without using
-[webpack-dev-server](https://github.com/webpack/webpack-dev-server). Both
-`npm run dev` and `npm run serve` watch the `src/` directory for file
+[webpack-dev-server](https://github.com/webpack/webpack-dev-server). Three.js
+has an overview of this in [How to run things locally](https://threejs.org/docs/#manual/en/introduction/How-to-run-things-locally).
+Both `npm run dev` and `npm run serve` watch the `src/` directory for file
 changes.
 
 Here are some blog posts I've made about these interactives:
