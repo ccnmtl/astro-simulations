@@ -122,7 +122,8 @@ class SunMotionSim extends React.Component {
                         showUnderside={this.state.showUnderside}
                         showAnalemma={this.state.showAnalemma}
                         sunAzimuth={this.state.sunAzimuth}
-                        sunDeclination={this.state.sunDeclination} />
+                        sunDeclination={this.state.sunDeclination}
+                        hourAngle={hourAngle} />
                     <div className="mt-2">
                         <h5>Information</h5>
                         <p>
