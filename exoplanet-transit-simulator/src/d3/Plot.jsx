@@ -10,21 +10,50 @@ const xMax = data => d3.max(data, d => d[0]);
 // Returns the higest Y coordinate from the data set.
 const yMax = data => d3.max(data, d => d[1]);
 
-// Returns a function that "scales" X coordinates from the data to fit the chart.
+// Returns a function that "scales" X coordinates from the data to fit
+// the chart.
 const xScale = props => {
     return d3
         .scaleLinear()
-        .domain([0, xMax(props.data)])
+        .domain([0, xMax(props.lightcurveData)])
         .range([props.padding, props.width - props.padding * 2]);
 };
 
-// Returns a function that "scales" Y coordinates from the data to fit the chart.
+// Returns a function that "scales" Y coordinates from the data to fit
+// the chart.
 const yScale = props => {
     return d3
         .scaleLinear()
-        .domain([0, yMax(props.data)])
+        .domain([0, yMax(props.lightcurveData)])
         .range([props.height - props.padding, props.padding]);
 };
+
+class Line extends React.Component {
+    render() {
+        const data = this.props.data;
+
+        const x = this.props.xScale;
+        const y = this.props.yScale;
+
+        const line = d3
+            .line()
+            .x(function(d) { return x(d[0]); })
+            .y(function(d) { return y(d[1]); });
+
+        data.forEach(function(d) {
+            x.domain(d3.extent(data, function(d) { return d[0]; }));
+            y.domain(d3.extent(data, function(d) { return d[1]; }));
+        });
+
+        const newline = line(data);
+
+        return (
+            <path className="line"
+                  stroke="#6080ff" fill="none"
+                  d={newline} />
+        );
+    }
+}
 
 export default class Plot extends React.Component {
     render() {
@@ -37,47 +66,13 @@ export default class Plot extends React.Component {
 
         return (
             <svg width={props.width} height={props.height}>
-                <DataCircles {...props} {...scales} />
-                <path ref={(el) => {this.path = el}}
-                      fill="none"
-                      strokeWidth="1"
-                      visibility={this.props.showTheoreticalCurve ? 'inherit' : 'hidden'}
-                      stroke="blue" />
+                <DataCircles
+                    data={this.props.noiseData}
+                    {...scales} />
+                <Line stroke="blue" data={this.props.lightcurveData} {...scales} />
                 <Axis ax={'y'} {...props} {...scales} />
                 <PhaseControl {...props} {...scales} />
             </svg>
         )
     }
-    componentDidMount() {
-        this.drawLightcurve(this.path);
-    }
-    componentDidUpdate(prevProps) {
-        if (prevProps.planetRadius !== this.props.planetRadius) {
-            this.drawLightcurve(this.path);
-        }
-    }
-    /**
-     * Draw the lightcurve with a canvas path.
-     *
-     * This takes canvas drawing functions and converts them for use
-     * in an SVG <path> object. See:
-     *
-     *   https://github.com/d3/d3-path
-     */
-    drawLightcurve(path) {
-        const lightcurve = d3.path();
-
-        lightcurve.moveTo(this.props.padding, this.props.height / 2);
-        lightcurve.lineTo(this.props.padding + 40, this.props.height / 2);
-        lightcurve.quadraticCurveTo(
-            this.props.width / 2,
-            (this.props.height / 2) + (this.props.planetRadius * 100),
-            this.props.width - this.props.padding - 40,
-            this.props.height / 2);
-        lightcurve.lineTo(
-            this.props.width - this.props.padding,
-            this.props.height / 2);
-
-        path.setAttribute('d', lightcurve.toString());
-    }
-}
+};

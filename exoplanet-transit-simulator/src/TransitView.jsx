@@ -31,13 +31,17 @@ export default class TransitView extends React.Component {
     }
     componentDidUpdate(prevProps) {
         if (prevProps.phase !== this.props.phase) {
-            // phase * starRadius * 2
-            const pos = this.props.phase * 140;
+            const starDiam = this.props.starMass * 70 * 3;
+            const pos = this.props.phase * starDiam;
             this.planet.position.x = pos;
+        }
+        if (prevProps.starMass !== this.props.starMass) {
+            // TODO: Update star size
         }
     }
     drawScene(app) {
-        const starRadius = 70;
+        const starDiam = this.props.starMass * 70 * 2;
+        const starRadius = starDiam / 2;
         const star = new PIXI.Graphics();
         star.beginFill(0xfffafa);
         star.drawCircle(
@@ -50,10 +54,10 @@ export default class TransitView extends React.Component {
         const phaseLine = new PIXI.Graphics();
         phaseLine.lineStyle(1, 0xd0d0d0);
         phaseLine.moveTo(
-            (app.view.width / 2) - starRadius - 20,
+            (app.view.width / 2) - starRadius - 40,
             (app.view.height / 2) + 25)
         phaseLine.lineTo(
-            (app.view.width / 2) + starRadius + 20,
+            (app.view.width / 2) + starRadius + 40,
             (app.view.height / 2) + 25)
         app.stage.addChild(phaseLine);
 
@@ -63,11 +67,11 @@ export default class TransitView extends React.Component {
         planet.buttonMode = true;
         planet.beginFill(0xa0a0a0);
         planet.drawCircle(
-            (app.view.width / 2) - starRadius,
+            (app.view.width / 2) - starRadius - 40,
             (app.view.height / 2) + 25,
             planetRadius);
         planet.endFill();
-        planet.position.x = this.props.phase * starRadius * 2;
+        planet.position.x = this.props.phase * (starRadius * 3);
         this.planet = planet;
         app.stage.addChild(planet);
     }
@@ -86,5 +90,6 @@ export default class TransitView extends React.Component {
 }
 
 TransitView.propTypes = {
-    phase: PropTypes.number.isRequired
+    phase: PropTypes.number.isRequired,
+    starMass: PropTypes.number.isRequired
 };
