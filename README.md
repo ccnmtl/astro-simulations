@@ -1,4 +1,4 @@
-# astro-interactives
+# astro-interactives [![Build Status](https://travis-ci.org/ccnmtl/astro-interactives.svg?branch=master)](https://travis-ci.org/ccnmtl/astro-interactives)
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/ccnmtl/astro-interactives.svg)](https://greenkeeper.io/)
 
