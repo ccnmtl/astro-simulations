@@ -141,19 +141,30 @@ export default class HorizonView extends React.Component {
         // rotate them all on the same axis.
         this.orbitGroup = new THREE.Group();
 
-        this.orbitGroup.add(this.sun);
-        this.orbitGroup.add(this.light);
+        // The sun actually needs to be in a separate group to account
+        // for the hour angle offset. sunOrbitGroup and orbitGroup both
+        // have the same x-rotation (latitude), but slightly different
+        // y-rotation (azimuth).
+        this.sunOrbitGroup = new THREE.Group();
+        this.sunOrbitGroup.add(this.sun);
+        this.sunOrbitGroup.add(this.light);
 
         this.orbitGroup.add(this.sunDeclination);
         this.orbitGroup.add(this.celestialEquator);
 
         this.analemma = this.drawAnalemma(scene)
+        this.analemma.position.z += 2;
         this.orbitGroup.add(this.analemma);
 
         this.orbitGroup.rotation.x =
             THREE.Math.degToRad(this.props.latitude) - (Math.PI / 2);
         this.orbitGroup.rotation.y = -this.props.sunAzimuth;
         scene.add(this.orbitGroup);
+
+        this.sunOrbitGroup.rotation.x =
+            THREE.Math.degToRad(this.props.latitude) - (Math.PI / 2);
+        this.sunOrbitGroup.rotation.y = -this.props.sunAzimuth;
+        scene.add(this.sunOrbitGroup);
 
         // Make an invisible plane on the orbitGroup's axis.
         // This is for interactivity: casting a ray from the mouse
@@ -202,6 +213,9 @@ export default class HorizonView extends React.Component {
             this.orbitGroup.rotation.x =
                 THREE.Math.degToRad(this.props.latitude) - (Math.PI / 2);
 
+            this.sunOrbitGroup.rotation.x =
+                THREE.Math.degToRad(this.props.latitude) - (Math.PI / 2);
+
             this.eclipticOrbitGroup.rotation.x =
                 THREE.Math.degToRad(this.props.latitude) - (Math.PI / 2);
 
@@ -210,9 +224,19 @@ export default class HorizonView extends React.Component {
                 this.props.sunDeclination);
         }
 
-        if (prevProps.sunAzimuth !== this.props.sunAzimuth) {
+        if (prevProps.sunAzimuth !== this.props.sunAzimuth ||
+            prevProps.hourAngle !== this.props.hourAngle
+        ) {
+            // Offset the azimuth with the hour angle.
+            // hourAngle is in hours, so convert it to a fraction of
+            // a full circle in radians.
+            const sunRotation = -(this.props.hourAngle / 24) * (Math.PI * 2)
+                         - Math.PI;
+
             this.orbitGroup.rotation.y = -this.props.sunAzimuth;
-            this.eclipticOrbitGroup.rotation.y = -this.props.sunAzimuth + this.props.sunDeclination;
+            this.sunOrbitGroup.rotation.y = sunRotation;
+            this.eclipticOrbitGroup.rotation.y =
+                -this.props.sunAzimuth + this.props.sunDeclination;
             this.skyMaterial.color = this.getSkyColor();
         }
 
@@ -222,11 +246,13 @@ export default class HorizonView extends React.Component {
             this.skyMaterial.color = this.getSkyColor();
 
             const doy = getDayOfYear(this.props.dateTime);
-            this.eclipticOrbitGroup.rotation.y = -this.props.sunAzimuth -
-                                                 THREE.Math.degToRad(
-                                                     (((doy - 140) / 365.24) * 360));
+            this.eclipticOrbitGroup.rotation.y =
+                -this.props.sunAzimuth -
+                THREE.Math.degToRad(
+                    (((doy - 140) / 365.24) * 360));
 
-            const declinationRad = this.getSunDeclinationRadius(this.props.sunDeclination);
+            const declinationRad = this.getSunDeclinationRadius(
+                this.props.sunDeclination);
             this.sun.position.x = declinationRad * Math.cos(
                 -THREE.Math.degToRad(90));
             this.sun.position.z = declinationRad * Math.sin(
@@ -597,7 +623,7 @@ export default class HorizonView extends React.Component {
         group.position.x = declinationRad * Math.cos(
             this.props.sunAzimuth + THREE.Math.degToRad(90));
         group.position.z = declinationRad * Math.sin(
-            this.props.sunAzimuth + THREE.Math.degToRad(90));
+            this.props.sunAzimuth + THREE.Math.degToRad(90)) - 0.1;
 
         group.rotation.x = this.props.sunDeclination;
 
@@ -615,15 +641,15 @@ export default class HorizonView extends React.Component {
     drawAnalemma() {
         const n = 200;
         const a = this.initAnalemmaArray(n);
-        const CustomSinCurve = function(scale) {
+        const AnalemmaCurve = function(scale) {
             THREE.Curve.call(this);
             this.scale = (scale === undefined) ? 1 : scale;
         }
 
-        CustomSinCurve.prototype = Object.create(THREE.Curve.prototype);
-        CustomSinCurve.prototype.constructor = CustomSinCurve;
+        AnalemmaCurve.prototype = Object.create(THREE.Curve.prototype);
+        AnalemmaCurve.prototype.constructor = AnalemmaCurve;
 
-        CustomSinCurve.prototype.getPoint = function(t) {
+        AnalemmaCurve.prototype.getPoint = function(t) {
             const idx = Math.round(t * (n - 1));
             const v = a[idx];
 
@@ -633,11 +659,11 @@ export default class HorizonView extends React.Component {
             // this, but for now, just add a really small value based on
             // t to x.
             const w = t / 99999999;
-            return new THREE.Vector3(v.x + w, v.z, v.y)
+            return new THREE.Vector3(v.x + w, 1.15 * v.z, 1.2 * v.y)
                             .multiplyScalar(this.scale);
         };
 
-        const path = new CustomSinCurve(50);
+        const path = new AnalemmaCurve(51);
         const geometry = new THREE.TubeBufferGeometry(
             path, 64, 0.35, 8, false);
         const material = new THREE.MeshBasicMaterial({color: 0xe80000});
@@ -654,7 +680,7 @@ export default class HorizonView extends React.Component {
     initAnalemmaArray(n) {
         // n is the number of points that should be used to draw the
         // analemma curve
-        const step = 365 / n;
+        const step = 365.24 / n;
         let points = [];
 
         // these limits define the declinations where the sun should
@@ -960,6 +986,7 @@ HorizonView.propTypes = {
     latitude: PropTypes.number.isRequired,
     sunAzimuth: PropTypes.number.isRequired,
     sunDeclination: PropTypes.number.isRequired,
+    hourAngle: PropTypes.number.isRequired,
     showDeclinationCircle: PropTypes.bool.isRequired,
     showEcliptic: PropTypes.bool.isRequired,
     showMonthLabels: PropTypes.bool.isRequired,
