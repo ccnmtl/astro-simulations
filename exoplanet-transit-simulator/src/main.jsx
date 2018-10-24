@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import LightcurveView from './LightcurveView';
 import TransitView from './TransitView';
 import RangeStepInput from './RangeStepInput';
-import {forceNumber} from './utils';
+import {forceNumber, getStarRadius} from './utils';
 
 class ExoplanetTransitSimulator extends React.Component {
     constructor(props) {
@@ -35,6 +35,7 @@ class ExoplanetTransitSimulator extends React.Component {
         this.handleInputChange = this.handleInputChange.bind(this);
     }
     render() {
+        const starRadius = getStarRadius(this.state.starMass);
         return <React.Fragment>
             <nav className="navbar navbar-expand-md navbar-light bg-light d-flex justify-content-between">
                 <span className="navbar-brand mb-0 h1">Exoplanet Transit Simulator</span>
@@ -56,7 +57,9 @@ class ExoplanetTransitSimulator extends React.Component {
             <div className="row mt-2">
 
                 <div className="col-4">
-                    <TransitView phase={this.state.phase} />
+                    <TransitView
+                        phase={this.state.phase}
+                        starMass={this.state.starMass} />
                     <h5>Presets</h5>
                     <select className="form-control form-control-sm">
                         <option value={0}>1. Option A</option>
@@ -87,7 +90,10 @@ class ExoplanetTransitSimulator extends React.Component {
                         inclination={this.state.inclination}
                         longitude={this.state.longitude}
                         phase={this.state.phase} />
-                    <div className="row">
+                    <div className="text-center">
+                        Eclipse takes 2.93 hours of 3.56 day orbit.
+                    </div>
+                    <div className="row mt-2">
                         <div className="col">
                             <div className="form-inline">
                                 <div className="custom-control custom-checkbox">
@@ -295,7 +301,7 @@ class ExoplanetTransitSimulator extends React.Component {
                     <p>
                         A main sequence star of this mass would have
                         spectral type F8V, temperature 6100 K, and
-                        radius 1.1 Rsun
+                        radius {starRadius} R<sub>sun</sub>
                     </p>
                 </div>
 
@@ -315,14 +321,14 @@ class ExoplanetTransitSimulator extends React.Component {
                                     name="inclination"
                                     value={this.state.inclination}
                                     onChange={this.handleInputChange}
-                                    step={0.01} />&deg;
+                                    min={0} max={180} step={0.01} />&deg;
 
         <RangeStepInput
             className="form-control"
             name="inclination"
             value={this.state.inclination}
             onChange={this.handleInputChange}
-            min={0.01} max={10} step={0.01} />
+            min={0} max={180} step={0.01} />
                             </div>
                         </div>
 
