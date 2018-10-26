@@ -29,7 +29,7 @@
     "pixi.js": "~4.8.2",
     "react": "~16.6.0",
     "react-dom": "~16.6.0",
-    "react-mathjax2": "0.0.1"
+    "react-mathjax2": "0.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
