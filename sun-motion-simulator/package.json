@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ccnmtl/astro-interactives.git"
+    "url": "git+https://github.com/ccnmtl/astro-simulations.git"
   },
   "keywords": [
     "astronomy"
@@ -21,9 +21,9 @@
   "author": "Nik Nyby",
   "license": "GPL-3.0+",
   "bugs": {
-    "url": "https://github.com/ccnmtl/astro-interactives/issues"
+    "url": "https://github.com/ccnmtl/astro-simulations/issues"
   },
-  "homepage": "https://github.com/ccnmtl/astro-interactives#readme",
+  "homepage": "https://github.com/ccnmtl/astro-simulations#readme",
   "dependencies": {
     "@babel/cli": "^7.0.0",
     "pixi.js": "~4.8.2",
