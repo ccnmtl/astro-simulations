@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 import DataCircles from './DataCircles';
 import PhaseControl from './PhaseControl';
@@ -46,14 +47,21 @@ class Line extends React.Component {
         });
 
         const newline = line(data);
+        const visibility = this.props.showTheoreticalCurve ?
+                           'visible' : 'hidden';
 
         return (
             <path className="line"
+                  visibility={visibility}
                   stroke="#6080ff" fill="none"
                   d={newline} />
         );
     }
-}
+};
+
+Line.propTypes = {
+    showTheoreticalCurve: PropTypes.bool.isRequired
+};
 
 export default class Plot extends React.Component {
     render() {
@@ -69,10 +77,16 @@ export default class Plot extends React.Component {
                 <DataCircles
                     data={this.props.noiseData}
                     {...scales} />
-                <Line stroke="blue" data={this.props.lightcurveData} {...scales} />
+                <Line
+                    showTheoreticalCurve={this.props.showTheoreticalCurve}
+                    data={this.props.lightcurveData} {...scales} />
                 <Axis ax={'y'} {...props} {...scales} />
                 <PhaseControl {...props} {...scales} />
             </svg>
         )
     }
+};
+
+Plot.propTypes = {
+    showTheoreticalCurve: PropTypes.bool.isRequired
 };
