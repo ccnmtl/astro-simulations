@@ -1,7 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import * as PIXI from 'pixi.js';
-import {degToRad} from './utils';
+import {degToRad, radToDeg, roundToOnePlace} from './utils';
+
+/**
+ * Convert the moon angle for display.
+ *
+ * Returns a string.
+ */
+const getAngleDisplay = function(moonAngle) {
+    let a = Math.abs(moonAngle - Math.PI);
+    if (a >= Math.PI) {
+        a -= Math.PI * 2;
+    }
+    const angle = roundToOnePlace(radToDeg(Math.abs(a)));
+    return `${angle}°`;
+};
 
 export default class MainView extends React.Component {
     constructor(props) {
@@ -53,6 +67,7 @@ export default class MainView extends React.Component {
         this.drawArrows();
         this.drawOrbit();
         this.angle = this.drawAngle();
+        this.angleText = this.drawAngleText(this.props.moonAngle);
 
         this.app.loader.add('moon', 'img/moon.svg')
             .add('earth', 'img/earth.svg')
@@ -114,14 +129,17 @@ export default class MainView extends React.Component {
             prevProps.moonAngle !== this.props.moonAngle
         ) {
             this.updateAngle(this.angle, this.props.moonAngle);
+            this.updateAngleText(this.angleText, this.props.moonAngle);
         }
 
         if (prevProps.showAngle !== this.props.showAngle) {
             if (this.props.showAngle) {
                 this.updateAngle(this.angle, this.props.moonAngle);
+                this.updateAngleText(this.angleText, this.props.moonAngle);
             }
 
             this.angle.visible = this.props.showAngle;
+            this.angleText.visible = this.props.showAngle;
         }
     }
     start() {
@@ -181,6 +199,24 @@ export default class MainView extends React.Component {
         this.app.stage.addChild(g);
         return g;
     }
+    drawAngleText(moonAngle) {
+        const angle = getAngleDisplay(-moonAngle);
+        const g = new PIXI.Text(angle, {
+            fontFamily: 'Arial',
+            fontSize: 16,
+            fontWeight: 'bold',
+            fill: 0xffe040,
+            align: 'center'
+        });
+        g.visible = false;
+        g.position.x = this.orbitCenter.x - 180;
+        g.position.y = this.orbitCenter.y - 170;
+
+        this.updateAngleText(g, this.props.moonAngle);
+
+        this.app.stage.addChild(g);
+        return g;
+    }
     updateAngle(g, moonAngle) {
         g.clear();
         g.moveTo(this.orbitCenter.x, this.orbitCenter.y);
@@ -194,6 +230,9 @@ export default class MainView extends React.Component {
 
         g.lineTo(this.orbitCenter.x, this.orbitCenter.y);
         g.lineTo(170, 230);
+    }
+    updateAngleText(g, moonAngle) {
+        g.text = getAngleDisplay(-moonAngle);
     }
     drawTimeCompass(timeCompassResource) {
         const timeCompass = new PIXI.Sprite(timeCompassResource.texture);
