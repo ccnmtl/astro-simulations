@@ -59,6 +59,7 @@ class ExoplanetTransitSimulator extends React.Component {
                 <div className="col-4">
                     <TransitView
                         phase={this.state.phase}
+                        planetRadius={this.state.planetRadius}
                         starMass={this.state.starMass} />
                     <h5>Presets</h5>
                     <select className="form-control form-control-sm">
@@ -187,7 +188,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                     name="planetMass"
                                     value={this.state.planetMass}
                                     onChange={this.handleInputChange}
-                                    min={0.01} max={2}
+                                    min={0.01} max={100}
                                     step={0.001} />
                                 M<sub>jup</sub>
 
@@ -196,7 +197,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                     name="planetMass"
                                     value={this.state.planetMass}
                                     onChange={this.handleInputChange}
-                                    min={0.01} max={2} step={0.001} />
+                                    min={0.01} max={100} step={0.001} />
                             </div>
                         </div>
                         <div className="form-group row">
@@ -286,6 +287,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                        name="starMass"
                                        value={this.state.starMass}
                                        onChange={this.handleInputChange}
+                                       min={0.5} max={2}
                                        step={0.01} />
                                 M<sub>sun</sub>
 
@@ -294,7 +296,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                     name="starMass"
                                     value={this.state.starMass}
                                     onChange={this.handleInputChange}
-                                    min={0.01} max={10} step={0.01} />
+                                    min={0.5} max={2} step={0.01} />
                             </div>
                         </div>
                     </div>
