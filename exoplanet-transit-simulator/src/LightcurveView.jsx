@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Plot from './d3/Plot';
-import {getStarRadius, rJupToKm, rSunToKm} from './utils';
+import {getDist} from './utils';
 
 /**
  * Calculate the intersection area of two circles with
@@ -38,19 +38,31 @@ const generateLightcurveData = function(
     //semimajorAxis, eccentricity, inclination, longitude
 ) {
     const a = [];
-    for (let i = 0; i < 1; i += 1 / 50) {
-        // X is the planet phase position, and Y is the amount
-        // of light that the star/planet scene emits.  When the
-        // planet is moving over the star, its brightness is
-        // slightly less. Otherwise there's full brightness (y=1).
+
+    // Hard-coded entity positions of the Pixi scene in TransitView.
+    // This could be dynamic or smarter, if necessary.
+    const starPos = {x: 175, y: 175};
+    const planetLeft = {x: 60, y: 200};
+    const planetRight = {x: 288, y: 200};
+    const phaseDiff = planetRight.x - planetLeft.x;
+
+    // Adjust this number to change the number of values sampled.
+    const samples = 180;
+
+    for (let i = 0; i < phaseDiff; i += phaseDiff / samples) {
+        const currentPlanetPos = {x: planetLeft.x + i, y: planetLeft.y};
+        const dist = getDist(currentPlanetPos, starPos);
 
         // Calculate the intersection of the planet and star at this
         // point.
-        const dist = Math.abs(i - 0.5);
         let y = circleCircleIntersectionArea(
-            planetRadius / 70000, starRadius / 700000, dist);
+            planetRadius, starRadius, dist);
 
         if (!isNaN(y)) {
+            // X is the planet phase position, and Y is the amount
+            // of light that the star/planet scene emits.  When the
+            // planet is moving over the star, its brightness is
+            // slightly less. Otherwise there's full brightness (y=1).
             a.push([i, 1 - y]);
         }
     }
@@ -64,8 +76,8 @@ export default class LightcurveView extends React.Component {
             isDragging: false,
             noiseData: this.randomDataSet(),
             lightcurveData: generateLightcurveData(
-                rJupToKm(this.props.planetRadius),
-                rSunToKm(getStarRadius(this.props.starMass)),
+                7 * this.props.planetRadius,
+                76 * this.props.starMass,
                 this.props.planetSemimajorAxis,
                 this.props.planetEccentricity,
                 this.props.inclination,
@@ -79,8 +91,8 @@ export default class LightcurveView extends React.Component {
     }
     updateLightcurveData() {
         const data = generateLightcurveData(
-            rJupToKm(this.props.planetRadius),
-            rSunToKm(getStarRadius(this.props.starMass)),
+            7 * this.props.planetRadius,
+            76 * this.props.starMass,
             this.props.planetSemimajorAxis,
             this.props.planetEccentricity,
             this.props.inclination,

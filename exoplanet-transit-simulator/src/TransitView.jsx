@@ -9,6 +9,21 @@ export default class TransitView extends React.Component {
             isDragging: false
         };
 
+        this.planet = null;
+        this.star = null;
+        /*
+         * The planetRadius and starRadius global state values don't
+         * actually describe the radius of these actual spheres on the
+         * screen, in pixi. Instead, I'm using those values to scale
+         * the base radii defined below.
+         */
+        this.entityData = {
+            basePlanetRadius: 7,
+            baseStarRadius: 76,
+            starCenter: null,
+            planetCenter: null
+        };
+
         this.onDragStart = this.onDragStart.bind(this);
         this.onDragEnd = this.onDragEnd.bind(this);
         this.onMove = this.onMove.bind(this);
@@ -25,15 +40,39 @@ export default class TransitView extends React.Component {
             sharedTicker: true,
             forceCanvas: true
         });
+        this.entityData.starCenter = new PIXI.Point(
+            app.view.width / 2,
+            app.view.height / 2);
+
+        const starRadius = this.entityData.baseStarRadius * this.props.starMass;
+        this.entityData.planetCenter = new PIXI.Point(
+            (app.view.width / 2) - starRadius - 40,
+            (app.view.height / 2) + 25);
+
         this.app = app;
         this.el.appendChild(app.view);
         this.drawScene(app);
     }
     componentDidUpdate(prevProps) {
         if (prevProps.phase !== this.props.phase) {
-            const starDiam = this.props.starMass * 70 * 2;
-            const starRadius = starDiam / 2;
-            this.planet.x = this.props.phase * (starRadius * 3) + 60;
+            this.planet.x = this.props.phase * (
+                this.entityData.baseStarRadius * 3) + 60;
+
+            // Uncomment this to enable a "distance helper", used as a
+            // visual guide for the distance between the two entities'
+            // center points.
+            /* const g = new PIXI.Graphics();
+             * g.lineStyle(1, 0xff0000);
+             * g.moveTo(this.planet.position.x, this.planet.position.y);
+             * g.lineTo(this.star.position.x, this.star.position.y);
+             * if (this.distanceHelper) {
+             *     this.app.stage.removeChild(this.distanceHelper);
+             * }
+             * this.app.stage.addChild(g);
+             * this.distanceHelper = g;
+             */
+
+
         }
         if (prevProps.starMass !== this.props.starMass) {
             // Update star size
@@ -47,17 +86,16 @@ export default class TransitView extends React.Component {
         }
     }
     drawScene(app) {
-        const starDiam = this.props.starMass * 70 * 2;
-        const starRadius = starDiam / 2;
+        const starRadius = this.entityData.baseStarRadius * this.props.starMass;
         const star = new PIXI.Graphics()
-        const starCenter = new PIXI.Point(
-            app.view.width / 2,
-            app.view.height / 2);
+        const starCenter = this.entityData.starCenter;
+
         star.pivot = starCenter;
         star.position = starCenter;
         star.beginFill(0xfffafa);
         star.drawCircle(
-            starCenter.x, starCenter.y, starRadius);
+            starCenter.x, starCenter.y,
+            starRadius);
         star.endFill();
 
         this.star = star;
@@ -73,18 +111,16 @@ export default class TransitView extends React.Component {
             (app.view.height / 2) + 25)
         app.stage.addChild(phaseLine);
 
-        const planetRadius = 10;
         const planet = new PIXI.Graphics();
-        const planetCenter = new PIXI.Point(
-            (app.view.width / 2) - starRadius - 40,
-            (app.view.height / 2) + 25);
+        const planetCenter = this.entityData.planetCenter;
         planet.pivot = planetCenter;
         planet.position = planetCenter;
         planet.interactive = true;
         planet.buttonMode = true;
         planet.beginFill(0xa0a0a0);
         planet.drawCircle(
-            planetCenter.x, planetCenter.y, planetRadius - 2);
+            planetCenter.x, planetCenter.y,
+            this.entityData.basePlanetRadius * this.props.planetRadius);
         planet.endFill();
         planet.position.x = this.props.phase * (starRadius * 3);
 
