@@ -8,7 +8,7 @@ import {forceNumber, getStarRadius} from './utils';
 class ExoplanetTransitSimulator extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
+        const initialState = {
             preset: 0,
 
             // Lightcurve view settings
@@ -30,7 +30,8 @@ class ExoplanetTransitSimulator extends React.Component {
             inclination: 86.929,
             longitude: 0,
             phase: 0.5
-        }
+        };
+        this.state = initialState;
 
         this.handleInputChange = this.handleInputChange.bind(this);
     }

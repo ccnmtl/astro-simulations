@@ -31,8 +31,18 @@ const rSunToKm = function(rSun) {
     return rSun * 695700;
 };
 
+/**
+ * Get the distance between two points p1 and p2.
+ */
+const getDist = function(p1, p2) {
+    const a = p1.x - p2.x;
+    const b = p1.y - p2.y;
+    return Math.sqrt((a * a) + (b * b));
+};
+
 export {
     forceNumber,
     getStarRadius,
-    rJupToKm, rSunToKm
+    rJupToKm, rSunToKm,
+    getDist
 };
