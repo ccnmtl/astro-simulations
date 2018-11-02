@@ -17,7 +17,7 @@ const xScale = props => {
     return d3
         .scaleLinear()
         .domain([0, xMax(props.lightcurveData)])
-        .range([props.padding, props.width - props.padding * 2]);
+        .range([props.paddingLeft, props.width]);
 };
 
 // Returns a function that "scales" Y coordinates from the data to fit

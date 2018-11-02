@@ -1,28 +1,45 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Plot from './d3/Plot';
-import {getDist} from './utils';
+
 
 /**
  * Calculate the intersection area of two circles with
- * radii r and R. d is the distance between them.
+ * radii r0 and r1.
  *
- * https://math.stackexchange.com/a/97886/604568
+ * This function handles the cases where one circle is completely
+ * covering the other.
+ *
+ * https://stackoverflow.com/a/14646734/173630
  */
-const circleCircleIntersectionArea = function(r, R, d) {
-    return (
-        (r**2) * Math.acos(
-            ((d**2) + (r**2) - (R**2)) /
-            (2 * d * r)) +
-        (R**2) * Math.acos(
-            ((d**2) + (R**2) - (r**2)) /
-            (2 * d * R))
-    ) - 0.5 * Math.sqrt(
-        (-d + r + R) *
-        (d + r - R) *
-        (d - r + R) *
-        (d + r + R)
-    );
+const areaOfIntersection = function(x0, y0, r0, x1, y1, r1) {
+    const rr0 = r0 * r0;
+    const rr1 = r1 * r1;
+    const d = Math.sqrt((x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0));
+
+    // Circles do not overlap
+    if (d > r1 + r0) {
+        return 0;
+    }
+
+    // Circle1 is completely inside circle0
+    else if (d <= Math.abs(r0 - r1) && r0 >= r1) {
+        // Return area of circle1
+        return Math.PI * rr1;
+    } else if (d <= Math.abs(r0 - r1) && r0 < r1) {
+        // Circle0 is completely inside circle1
+        // Return area of circle0
+        return Math.PI * rr0;
+    } else {
+        // Circles partially overlap
+        const phi = (Math.acos((rr0 + (d * d) - rr1) / (2 * r0 * d))) * 2;
+        const theta = (Math.acos((rr1 + (d * d) - rr0) / (2 * r1 * d))) * 2;
+        const area1 = 0.5 * theta * rr1 - 0.5 * rr1 * Math.sin(theta);
+        const area2 = 0.5 * phi * rr0 - 0.5 * rr0 * Math.sin(phi);
+
+        // Return area of intersection
+        return area1 + area2;
+    }
 };
 
 /**
@@ -51,12 +68,13 @@ const generateLightcurveData = function(
 
     for (let i = 0; i < phaseDiff; i += phaseDiff / samples) {
         const currentPlanetPos = {x: planetLeft.x + i, y: planetLeft.y};
-        const dist = getDist(currentPlanetPos, starPos);
 
         // Calculate the intersection of the planet and star at this
         // point.
-        let y = circleCircleIntersectionArea(
-            planetRadius, starRadius, dist);
+        let y = areaOfIntersection(
+            currentPlanetPos.x, currentPlanetPos.y,
+            planetRadius,
+            starPos.x, starPos.y, starRadius);
 
         if (!isNaN(y)) {
             // X is the planet phase position, and Y is the amount
@@ -64,6 +82,8 @@ const generateLightcurveData = function(
             // planet is moving over the star, its brightness is
             // slightly less. Otherwise there's full brightness (y=1).
             a.push([i, 1 - y]);
+        } else {
+            console.error('y is NaN. The area calculation is probably wrong.');
         }
     }
     return a;
@@ -118,7 +138,8 @@ export default class LightcurveView extends React.Component {
                 showTheoreticalCurve={this.props.showTheoreticalCurve}
                 planetRadius={this.props.planetRadius}
                 width={460} height={280}
-                padding={30} />
+                paddingLeft={60}
+                padding={20} />
         );
 
     }
