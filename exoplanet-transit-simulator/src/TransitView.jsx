@@ -46,7 +46,7 @@ export default class TransitView extends React.Component {
 
         const starRadius = this.entityData.baseStarRadius * this.props.starMass;
         this.entityData.planetCenter = new PIXI.Point(
-            (app.view.width / 2) - starRadius - 40,
+            (app.view.width / 2) - starRadius,
             (app.view.height / 2) + 25);
 
         this.app = app;
@@ -122,7 +122,8 @@ export default class TransitView extends React.Component {
             planetCenter.x, planetCenter.y,
             this.entityData.basePlanetRadius * this.props.planetRadius);
         planet.endFill();
-        planet.position.x = this.props.phase * (starRadius * 3);
+        planet.x = this.props.phase * (
+            this.entityData.baseStarRadius * 3) + 60;
 
         this.planet = planet;
         app.stage.addChild(planet);

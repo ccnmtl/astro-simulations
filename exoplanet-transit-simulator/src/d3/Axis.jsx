@@ -22,10 +22,18 @@ export default class Axis extends Component {
     }
 
     render() {
-        return (
+        return <React.Fragment>
             <g className="yAxis" ref={this.axis}
-               transform={`translate(${this.props.padding}, 0)`}
-            />
-        );
+               transform={`translate(${this.props.paddingLeft}, 0)`}
+        />
+        <text
+            transform="rotate(-90)"
+            x="-80"
+            y="6"
+            dy=".8em"
+            fontSize=".9em"
+            fontWeight="bold"
+            textAnchor="end">Normalized Flux</text>
+        </React.Fragment>;
     }
 }
