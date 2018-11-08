@@ -10,17 +10,18 @@ export default class TransitView extends React.Component {
         this.star = null;
 
         this.entityData = {
-            basePhaseWidth: 73.3945,
-            basePlanetRadius: 7,
+            basePhaseWidth: 55.602,
             /*
              * The planetRadius and starRadius global state values
              * don't actually describe the radius of these actual
              * spheres on the screen, in pixi. Instead, I'm using
              * those values to scale the base radii defined below.
              */
+            basePlanetRadius: 7,
             baseStarRadius: 76,
             starCenter: null,
-            planetCenter: null
+            planetCenter: null,
+            phaseCenter: null
         };
 
         this.state = {
@@ -28,7 +29,11 @@ export default class TransitView extends React.Component {
 
             // The phase line grows and shrinks as a function of
             // planet radius and star mass.
-            phaseWidth: this.entityData.basePhaseWidth * this.props.starMass
+            // It ranges from around 8px wide to viewWidth - 10.
+            phaseWidth: (
+                this.entityData.basePhaseWidth *
+                this.props.starMass * this.props.planetRadius
+            )
         };
 
         this.onDragStart = this.onDragStart.bind(this);
@@ -56,17 +61,16 @@ export default class TransitView extends React.Component {
             (app.view.width / 2) - starRadius,
             (app.view.height / 2) + 45);
 
+        this.entityData.phaseCenter = new PIXI.Point(
+            (app.view.width / 2),
+            (app.view.height / 2) + 45);
+
         this.app = app;
         this.el.appendChild(app.view);
         this.drawScene(app);
     }
     componentDidUpdate(prevProps) {
         if (prevProps.phase !== this.props.phase) {
-            const newPhase = this.props.phase * (
-                this.entityData.baseStarRadius * 3) + 60;
-            this.planet.x = newPhase;
-            this.arrow.x = newPhase - 92;
-
             // Uncomment this to enable a "distance helper", used as a
             // visual guide for the distance between the two entities'
             // center points.
@@ -81,27 +85,21 @@ export default class TransitView extends React.Component {
              * this.distanceHelper = g;
              */
         }
-        if (prevProps.starMass !== this.props.starMass) {
+
+        if (
+            prevProps.starMass !== this.props.starMass ||
+            prevProps.planetRadius !== this.props.planetRadius ||
+            prevProps.phase !== this.props.phase
+        ) {
             this.setState({
-                phaseWidth: this.entityData.basePhaseWidth * this.props.starMass
+                phaseWidth: (
+                    this.entityData.basePhaseWidth *
+                    this.props.starMass * this.props.planetRadius
+                )
             });
-
-            // Update star size
-            this.star.scale = new PIXI.Point(
-                this.props.starMass, this.props.starMass);
-
-            this.phaseLine.scale = new PIXI.Point(this.props.starMass, 1);
-        }
-        if (prevProps.planetRadius !== this.props.planetRadius) {
-            // Update planet size
-            this.planet.scale = new PIXI.Point(
-                this.props.planetRadius, this.props.planetRadius);
-
-            if (this.props.planetRadius < 0.467) {
-                this.arrow.visible = true;
-            } else {
-                this.arrow.visible = false;
-            }
+            this.updateScene(
+                this.props.phase, this.props.planetRadius,
+                this.props.starMass);
         }
     }
     drawScene(app) {
@@ -122,17 +120,16 @@ export default class TransitView extends React.Component {
         app.stage.addChild(star);
 
         const phaseLine = new PIXI.Graphics();
-        phaseLine.pivot = planetCenter;
-        phaseLine.position = planetCenter;
+        const phaseCenter = this.entityData.phaseCenter
+        phaseLine.pivot = phaseCenter;
+        phaseLine.position = phaseCenter;
         phaseLine.lineStyle(1, 0xd0d0d0);
         phaseLine.moveTo(
-            (app.view.width / 2) - starRadius - (
-                this.state.phaseWidth / 2),
-            (app.view.height / 2) + 45)
+            phaseCenter.x - (this.state.phaseWidth / 2),
+            (app.view.height / 2) + 45);
         phaseLine.lineTo(
-            (app.view.width / 2) + starRadius + (
-                this.state.phaseWidth / 2),
-            (app.view.height / 2) + 45)
+            phaseCenter.x + (this.state.phaseWidth / 2),
+            (app.view.height / 2) + 45);
 
         this.phaseLine = phaseLine;
         app.stage.addChild(phaseLine);
@@ -174,6 +171,34 @@ export default class TransitView extends React.Component {
 
         this.arrow = arrow;
         app.stage.addChild(this.arrow);
+    }
+    /**
+     * Update the scene when variables change.
+     */
+    updateScene(
+        phase, planetRadius, starMass
+    ) {
+        const starRadius =
+            this.entityData.baseStarRadius * starMass;
+        const newPhase = phase * (starRadius * 3) + 60;
+        this.planet.x = newPhase;
+        this.arrow.x = newPhase - 92;
+
+        // Update star size
+        this.star.scale = new PIXI.Point(
+            this.props.starMass * 0.8, this.props.starMass * 0.8);
+
+        // Update planet size
+        this.planet.scale = new PIXI.Point(
+            this.props.planetRadius, this.props.planetRadius);
+
+        this.phaseLine.scale = new PIXI.Point(starMass * planetRadius, 1);
+
+        if (planetRadius < 0.467) {
+            this.arrow.visible = true;
+        } else {
+            this.arrow.visible = false;
+        }
     }
     onDragStart(e) {
         this.dragStartPos = e.data.getLocalPosition(this.app.stage);
