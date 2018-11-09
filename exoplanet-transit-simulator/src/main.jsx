@@ -29,11 +29,16 @@ class ExoplanetTransitSimulator extends React.Component {
             // System orientation and phase
             inclination: 86.929,
             longitude: 0,
-            phase: 0.5
+            phase: 0.5,
+
+            // Pixi scene co-ordinates
+            phaseMin: 135,
+            phaseWidth: 80
         };
         this.state = initialState;
 
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.onPhaseCoordsChange = this.onPhaseCoordsChange.bind(this);
     }
     render() {
         const starRadius = getStarRadius(this.state.starMass);
@@ -61,7 +66,9 @@ class ExoplanetTransitSimulator extends React.Component {
                     <TransitView
                         phase={this.state.phase}
                         planetRadius={this.state.planetRadius}
-                        starMass={this.state.starMass} />
+                        starMass={this.state.starMass}
+                        onPhaseCoordsChange={this.onPhaseCoordsChange}
+                    />
                     <h5>Presets</h5>
                     <select className="form-control form-control-sm">
                         <option value={0}>1. Option A</option>
@@ -91,7 +98,10 @@ class ExoplanetTransitSimulator extends React.Component {
                         starMass={this.state.starMass}
                         inclination={this.state.inclination}
                         longitude={this.state.longitude}
-                        phase={this.state.phase} />
+                        phase={this.state.phase}
+                        phaseMin={this.state.phaseMin}
+                        phaseWidth={this.state.phaseWidth}
+                    />
                     <div className="text-center">
                         Eclipse takes 2.93 hours of 3.56 day orbit.
                     </div>
@@ -392,6 +402,12 @@ class ExoplanetTransitSimulator extends React.Component {
 
         this.setState({
             [name]: value
+        });
+    }
+    onPhaseCoordsChange(phaseMin, phaseWidth) {
+        this.setState({
+            phaseMin: phaseMin,
+            phaseWidth: phaseWidth
         });
     }
 }
