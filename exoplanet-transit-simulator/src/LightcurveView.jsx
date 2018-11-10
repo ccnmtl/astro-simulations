@@ -42,60 +42,13 @@ const areaOfIntersection = function(x0, y0, r0, x1, y1, r1) {
     }
 };
 
-/**
- * Make a 2d array of data points based on the current planet/star
- * scene. This creates the plot that displays amount of light
- * emitted based on planet phase. A bunch of parameters influence
- * this curve.
- *
- * Returns a 2d array of x/y values.
- */
-const generateLightcurveData = function(
-    planetRadius, starRadius
-    //semimajorAxis, eccentricity, inclination, longitude
-) {
-    const a = [];
-
-    // Hard-coded entity positions of the Pixi scene in TransitView.
-    // This could be dynamic or smarter, if necessary.
-    const starPos = {x: 175, y: 175};
-    const planetLeft = {x: 60, y: 200};
-    const planetRight = {x: 288, y: 200};
-    const phaseDiff = planetRight.x - planetLeft.x;
-
-    // Adjust this number to change the number of values sampled.
-    const samples = 180;
-
-    for (let i = 0; i < phaseDiff; i += phaseDiff / samples) {
-        const currentPlanetPos = {x: planetLeft.x + i, y: planetLeft.y};
-
-        // Calculate the intersection of the planet and star at this
-        // point.
-        let y = areaOfIntersection(
-            currentPlanetPos.x, currentPlanetPos.y,
-            planetRadius,
-            starPos.x, starPos.y, starRadius);
-
-        if (!isNaN(y)) {
-            // X is the planet phase position, and Y is the amount
-            // of light that the star/planet scene emits.  When the
-            // planet is moving over the star, its brightness is
-            // slightly less. Otherwise there's full brightness (y=1).
-            a.push([i, 1 - y]);
-        } else {
-            console.error('y is NaN. The area calculation is probably wrong.');
-        }
-    }
-    return a;
-}
-
 export default class LightcurveView extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             isDragging: false,
             noiseData: this.randomDataSet(),
-            lightcurveData: generateLightcurveData(
+            lightcurveData: this.generateLightcurveData(
                 7 * this.props.planetRadius,
                 76 * this.props.starMass,
                 this.props.planetSemimajorAxis,
@@ -110,7 +63,7 @@ export default class LightcurveView extends React.Component {
         this.onMove = this.onMove.bind(this);
     }
     updateLightcurveData() {
-        const data = generateLightcurveData(
+        const data = this.generateLightcurveData(
             7 * this.props.planetRadius,
             76 * this.props.starMass,
             this.props.planetSemimajorAxis,
@@ -119,6 +72,48 @@ export default class LightcurveView extends React.Component {
             this.props.longitude
         );
         this.setState({lightcurveData: data});
+    }
+    /**
+     * Make a 2d array of data points based on the current planet/star
+     * scene. This creates the plot that displays amount of light
+     * emitted based on planet phase. A bunch of parameters influence
+     * this curve.
+     *
+     * Returns a 2d array of x/y values.
+     */
+    generateLightcurveData (
+        planetRadius, starRadius
+        //semimajorAxis, eccentricity, inclination, longitude
+    ) {
+        const a = [];
+
+        const starPos = {x: 175, y: 175};
+        const phaseWidth = this.props.phaseWidth;
+
+        // Adjust this number to change the number of values sampled.
+        const samples = 180;
+
+        for (let i = 0; i < phaseWidth; i += phaseWidth / samples) {
+            const currentPlanetPos = {x: this.props.phaseMin + i, y: 200};
+
+            // Calculate the intersection of the planet and star at this
+            // point.
+            let y = areaOfIntersection(
+                currentPlanetPos.x, currentPlanetPos.y,
+                planetRadius,
+                starPos.x, starPos.y, starRadius);
+
+            if (!isNaN(y)) {
+                // X is the planet phase position, and Y is the amount
+                // of light that the star/planet scene emits.  When the
+                // planet is moving over the star, its brightness is
+                // slightly less. Otherwise there's full brightness (y=1).
+                a.push([i, 1 - y]);
+            } else {
+                console.error('y is NaN. The area calculation is probably wrong.');
+            }
+        }
+        return a;
     }
     randomDataSet() {
         if (!this.props.showSimulatedMeasurements) {
@@ -202,5 +197,11 @@ LightcurveView.propTypes = {
     starMass: PropTypes.number.isRequired,
     inclination: PropTypes.number.isRequired,
     longitude: PropTypes.number.isRequired,
-    phase: PropTypes.number.isRequired
+    phase: PropTypes.number.isRequired,
+
+    // phaseMin and phaseMax are min and max X co-ordinates of the
+    // planet's phaseLine in the Pixi scene. This is needed to
+    // calculate the lightcurve.
+    phaseMin: PropTypes.number.isRequired,
+    phaseWidth: PropTypes.number.isRequired
 };
