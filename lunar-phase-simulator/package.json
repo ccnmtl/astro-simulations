@@ -28,7 +28,7 @@
     "@babel/cli": "^7.0.0",
     "pixi.js": "~4.8.2",
     "react": "~16.6.3",
-    "react-dom": "~16.6.0",
+    "react-dom": "~16.6.3",
     "three": "^0.98.0"
   },
   "devDependencies": {
