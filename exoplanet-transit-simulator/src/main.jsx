@@ -199,7 +199,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                     name="planetMass"
                                     value={this.state.planetMass}
                                     onChange={this.handleInputChange}
-                                    min={0.01} max={100}
+                                    min={0.001} max={100}
                                     step={0.001} />
                                 M<sub>jup</sub>
 
