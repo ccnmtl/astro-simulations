@@ -2,10 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import * as PIXI from 'pixi.js';
 
-// The amount to scale the phase line. This also affects
-// planet position.
-const getPhaseScale = function(starMass, planetRadius) {
-    return starMass * planetRadius * 2.25;
+// The phase line's width. Note that this also affects planet
+// position.
+// TODO: Fine-tune this!
+// https://math.stackexchange.com/q/3017406/604568
+const getPhaseWidth = function(starMass, planetRadius) {
+    const s = (starMass * 4) ** 2;
+    const p = planetRadius * 4;
+    const w =  (30 + s) * p;
+    return w;
 };
 
 export default class TransitView extends React.Component {
@@ -16,7 +21,7 @@ export default class TransitView extends React.Component {
         this.star = null;
 
         this.entityData = {
-            basePhaseWidth: 55.602,
+            basePhaseWidth: 120,
             /*
              * The planetRadius and starRadius global state values
              * don't actually describe the radius of these actual
@@ -35,11 +40,8 @@ export default class TransitView extends React.Component {
 
             // The phase line grows and shrinks as a function of
             // planet radius and star mass.
-            // It ranges from around 8px wide to viewWidth - 10.
-            phaseWidth: (
-                this.entityData.basePhaseWidth *
-                this.props.starMass * this.props.planetRadius
-            )
+            phaseWidth: getPhaseWidth(
+                this.props.starMass, this.props.planetRadius)
         };
 
         this.onDragStart = this.onDragStart.bind(this);
@@ -96,13 +98,9 @@ export default class TransitView extends React.Component {
             prevProps.starMass !== this.props.starMass ||
             prevProps.planetRadius !== this.props.planetRadius
         ) {
-            const phaseScale = getPhaseScale(
+            const pw = getPhaseWidth(
                 this.props.starMass, this.props.planetRadius);
-            this.setState({
-                phaseWidth: (
-                    this.entityData.basePhaseWidth * phaseScale
-                )
-            });
+            this.setState({phaseWidth: pw});
 
             const phaseCenter = this.entityData.phaseCenter;
 
@@ -225,8 +223,7 @@ export default class TransitView extends React.Component {
     ) {
         // The amount to scale the phase line. This also affects
         // planet position.
-        // where'd you go?
-        const phaseScale = getPhaseScale(starMass, planetRadius);
+        const phaseWidth = getPhaseWidth(starMass, planetRadius);
 
         // Update star size
         this.star.scale = new PIXI.Point(
@@ -239,9 +236,9 @@ export default class TransitView extends React.Component {
         // Make phase a number between -1 and 1.
         phase = (phase - 0.5) * 2;
 
-        const newPhase = this.entityData.phaseCenter.x + (
-            phase * phaseScale * 28);
-        this.planet.x = newPhase
+        const planetPos = this.entityData.phaseCenter.x + (
+            phase * (phaseWidth / 2));
+        this.planet.x = planetPos;
         this.arrow.x = this.planet.x - 92;
 
         if (planetRadius < 0.467) {
