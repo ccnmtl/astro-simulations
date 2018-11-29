@@ -9,12 +9,19 @@ const forceNumber = function(n) {
     return n;
 };
 
+const roundToOnePlace = function(n) {
+    return Math.round(n * 10) / 10;
+}
+
 /**
  * Returns the star's radius as a relationship to the sun's radius.
  */
 const getStarRadius = function(starMass) {
-    // TODO
-    return 1.1;
+    return roundToOnePlace(starMass * 0.8);
+};
+
+const getStarTemp = function(starMass) {
+    return Math.round(starMass * 3226.6666667 + 2583);
 };
 
 /**
@@ -42,7 +49,9 @@ const getDist = function(p1, p2) {
 
 export {
     forceNumber,
+    roundToOnePlace,
     getStarRadius,
+    getStarTemp,
     rJupToKm, rSunToKm,
     getDist
 };
