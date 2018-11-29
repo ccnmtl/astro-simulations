@@ -50,7 +50,7 @@ export default class LightcurveView extends React.Component {
             noiseData: this.randomDataSet(),
             lightcurveData: this.generateLightcurveData(
                 7 * this.props.planetRadius,
-                76 * this.props.starMass,
+                76 * this.props.starMass * 0.75,
                 this.props.planetSemimajorAxis,
                 this.props.planetEccentricity,
                 this.props.inclination,
@@ -65,7 +65,7 @@ export default class LightcurveView extends React.Component {
     updateLightcurveData() {
         const data = this.generateLightcurveData(
             7 * this.props.planetRadius,
-            76 * this.props.starMass,
+            76 * this.props.starMass * 0.75,
             this.props.planetSemimajorAxis,
             this.props.planetEccentricity,
             this.props.inclination,
@@ -94,7 +94,10 @@ export default class LightcurveView extends React.Component {
         const samples = 180;
 
         for (let i = 0; i < phaseWidth; i += phaseWidth / samples) {
-            const currentPlanetPos = {x: this.props.phaseMin + i, y: 200};
+            const currentPlanetPos = {
+                x: this.props.phaseMin + i,
+                y: 220
+            };
 
             // Calculate the intersection of the planet and star at this
             // point.
@@ -108,6 +111,10 @@ export default class LightcurveView extends React.Component {
                 // of light that the star/planet scene emits.  When the
                 // planet is moving over the star, its brightness is
                 // slightly less. Otherwise there's full brightness (y=1).
+
+                // Also, scale y to something small.
+                // TODO: make this scale exactly like the original somehow.
+                y = y * 0.0001;
                 a.push([i, 1 - y]);
             } else {
                 console.error('y is NaN. The area calculation is probably wrong.');

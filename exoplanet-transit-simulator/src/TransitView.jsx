@@ -90,8 +90,7 @@ export default class TransitView extends React.Component {
              *     this.app.stage.removeChild(this.distanceHelper);
              * }
              * this.app.stage.addChild(g);
-             * this.distanceHelper = g;
-             */
+             * this.distanceHelper = g; */
         }
 
         if (
@@ -110,7 +109,9 @@ export default class TransitView extends React.Component {
                 phaseCenter.y);
             this.app.stage.removeChild(this.phaseLine);
             this.phaseLine.destroy();
-            this.app.stage.addChild(phaseLine);
+            // Re-add phaseLine behind the planet, in front of the
+            // star.
+            this.app.stage.addChildAt(phaseLine, 1);
             this.phaseLine = phaseLine;
 
             // TODO: Might not be the best way to get co-ordinates from
@@ -160,6 +161,8 @@ export default class TransitView extends React.Component {
         star.endFill();
 
         this.star = star;
+        this.star.scale = new PIXI.Point(
+            this.props.starMass * 0.75, this.props.starMass * 0.75);
         app.stage.addChild(star);
 
         const phaseCenter = this.entityData.phaseCenter
