@@ -71,7 +71,7 @@ export default class TransitView extends React.Component {
 
         this.entityData.phaseCenter = new PIXI.Point(
             (app.view.width / 2),
-            (app.view.height / 2) + 45);
+            (app.view.height / 2) + this.props.inclination - 45);
 
         this.app = app;
         this.el.appendChild(app.view);
@@ -95,7 +95,8 @@ export default class TransitView extends React.Component {
 
         if (
             prevProps.starMass !== this.props.starMass ||
-            prevProps.planetRadius !== this.props.planetRadius
+            prevProps.planetRadius !== this.props.planetRadius ||
+            prevProps.inclination !== this.props.inclination
         ) {
             const pw = getPhaseWidth(
                 this.props.starMass, this.props.planetRadius);
@@ -106,7 +107,7 @@ export default class TransitView extends React.Component {
             const phaseLine = this.makePhaseLine(
                 phaseCenter.x - (this.state.phaseWidth / 2),
                 phaseCenter.x + (this.state.phaseWidth / 2),
-                phaseCenter.y);
+                (this.app.view.height / 2) + this.props.inclination - 45);
             this.app.stage.removeChild(this.phaseLine);
             this.phaseLine.destroy();
             // Re-add phaseLine behind the planet, in front of the
@@ -127,11 +128,12 @@ export default class TransitView extends React.Component {
         if (
             prevProps.starMass !== this.props.starMass ||
             prevProps.planetRadius !== this.props.planetRadius ||
-            prevProps.phase !== this.props.phase
+            prevProps.phase !== this.props.phase ||
+            prevProps.inclination !== this.props.inclination
         ) {
             this.updateScene(
                 this.props.phase, this.props.planetRadius,
-                this.props.starMass);
+                this.props.starMass, this.props.inclination);
         }
     }
     makePhaseLine(phaseMin, phaseMax, y) {
@@ -169,7 +171,7 @@ export default class TransitView extends React.Component {
         const phaseLine = this.makePhaseLine(
             phaseCenter.x - (this.state.phaseWidth / 2),
             phaseCenter.x + (this.state.phaseWidth / 2),
-            phaseCenter.y);
+            (app.view.height / 2) + this.props.inclination - 45);
 
         const phaseMin = phaseLine.currentPath.shape.points[0];
         const phaseWidth =
@@ -202,17 +204,17 @@ export default class TransitView extends React.Component {
         arrow.beginFill(0xffffff);
         arrow.lineStyle(1, 0x000000);
         arrow.drawPolygon([
-            new PIXI.Point(planetCenter.x, planetCenter.y - 8),
-            new PIXI.Point(planetCenter.x - 3 - 6, planetCenter.y + 8),
-            new PIXI.Point(planetCenter.x - 3, planetCenter.y + 5),
-            new PIXI.Point(planetCenter.x - 3, planetCenter.y + 20),
-            new PIXI.Point(planetCenter.x + 3, planetCenter.y + 20),
-            new PIXI.Point(planetCenter.x + 3, planetCenter.y + 5),
-            new PIXI.Point(planetCenter.x + 3 + 6, planetCenter.y + 8),
+            new PIXI.Point(0, -8),
+            new PIXI.Point(-3 - 6, 8),
+            new PIXI.Point(-3, 5),
+            new PIXI.Point(-3, 20),
+            new PIXI.Point(3, 20),
+            new PIXI.Point(3, 5),
+            new PIXI.Point(3 + 6, 8)
         ]);
 
-        arrow.position.y += 16;
-        arrow.position.x = planet.x - 92;
+        arrow.position.y = planetCenter.y + 16;
+        arrow.position.x = planet.x;
 
         this.arrow = arrow;
         app.stage.addChild(this.arrow);
@@ -222,7 +224,7 @@ export default class TransitView extends React.Component {
      */
     updateScene(
         // Each of these params maps to a user input.
-        phase, planetRadius, starMass
+        phase, planetRadius, starMass, inclination
     ) {
         // The amount to scale the phase line. This also affects
         // planet position.
@@ -242,7 +244,9 @@ export default class TransitView extends React.Component {
         const planetPos = this.entityData.phaseCenter.x + (
             phase * (phaseWidth / 2));
         this.planet.x = planetPos;
-        this.arrow.x = this.planet.x - 92;
+        this.planet.y = (this.app.view.height / 2) + inclination - 45;
+        this.arrow.x = this.planet.x;
+        this.arrow.position.y = this.planet.y + 16;
 
         if (planetRadius < 0.467) {
             this.arrow.visible = true;
@@ -268,5 +272,6 @@ TransitView.propTypes = {
     phase: PropTypes.number.isRequired,
     planetRadius: PropTypes.number.isRequired,
     starMass: PropTypes.number.isRequired,
+    inclination: PropTypes.number.isRequired,
     onPhaseCoordsChange: PropTypes.func.isRequired
 };

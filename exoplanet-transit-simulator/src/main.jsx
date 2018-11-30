@@ -3,7 +3,9 @@ import ReactDOM from 'react-dom';
 import LightcurveView from './LightcurveView';
 import TransitView from './TransitView';
 import RangeStepInput from './RangeStepInput';
-import {forceNumber, getStarRadius, getStarTemp} from './utils';
+import {
+    forceNumber, getStarRadius, getStarTemp, getSpectralType
+} from './utils';
 
 class ExoplanetTransitSimulator extends React.Component {
     constructor(props) {
@@ -45,6 +47,7 @@ class ExoplanetTransitSimulator extends React.Component {
         this.onPhaseCoordsChange = this.onPhaseCoordsChange.bind(this);
     }
     render() {
+        const starType = getSpectralType(this.state.starMass);
         const starTemp = getStarTemp(this.state.starMass);
         const starRadius = getStarRadius(this.state.starMass);
         return <React.Fragment>
@@ -72,8 +75,8 @@ class ExoplanetTransitSimulator extends React.Component {
                         phase={this.state.phase}
                         planetRadius={this.state.planetRadius}
                         starMass={this.state.starMass}
-                        onPhaseCoordsChange={this.onPhaseCoordsChange}
-                    />
+                        inclination={this.state.inclination}
+                        onPhaseCoordsChange={this.onPhaseCoordsChange} />
                     <h5>Presets</h5>
                     <select className="form-control form-control-sm">
                         <option value={0}>1. Option A</option>
@@ -318,7 +321,7 @@ class ExoplanetTransitSimulator extends React.Component {
                     </div>
                     <p>
                         A main sequence star of this mass would have
-                        spectral type F8V, temperature {starTemp} K, and
+                        spectral type {starType}, temperature {starTemp} K, and
                         radius {starRadius} R<sub>sun</sub>
                     </p>
                 </div>
@@ -339,14 +342,14 @@ class ExoplanetTransitSimulator extends React.Component {
                                     name="inclination"
                                     value={this.state.inclination}
                                     onChange={this.handleInputChange}
-                                    min={0} max={180} step={0.01} />&deg;
+                                    min={0} max={180} step={0.001} />&deg;
 
         <RangeStepInput
             className="form-control"
             name="inclination"
             value={this.state.inclination}
             onChange={this.handleInputChange}
-            min={0} max={180} step={0.01} />
+            min={0} max={180} step={0.001} />
                             </div>
                         </div>
 
@@ -362,14 +365,14 @@ class ExoplanetTransitSimulator extends React.Component {
                                     name="longitude"
                                     value={this.state.longitude}
                                     onChange={this.handleInputChange}
-                                    step={0.01} />&deg;
+                                    step={0.1} />&deg;
 
         <RangeStepInput
             className="form-control"
             name="longitude"
             value={this.state.longitude}
             onChange={this.handleInputChange}
-            min={0.01} max={10} step={0.01} />
+            min={0} max={360} step={0.1} />
                             </div>
                         </div>
 
