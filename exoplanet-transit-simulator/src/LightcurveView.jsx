@@ -127,7 +127,22 @@ export default class LightcurveView extends React.Component {
             return [];
         }
         return Array.from(Array(this.props.simMeasurementNumber)).map(
-            () => [Math.random(), Math.random() + 0.5]);
+            () => [Math.random() * 200, Math.random() + 0.5]);
+    }
+    /**
+     * Generate noise around the lightcurve data.
+     */
+    getNoiseData(lightcurveData) {
+        if (!this.props.showSimulatedMeasurements) {
+            return [];
+        }
+
+        // Find the middle x value.
+        const i = Math.round(lightcurveData.length / 2);
+        const mid = lightcurveData[i];
+
+        return Array.from(Array(this.props.simMeasurementNumber)).map(
+            () => [Math.random() * (mid[0] * 2), Math.random() + 0.5]);
     }
     render() {
         // d3 integration based on:
@@ -150,12 +165,16 @@ export default class LightcurveView extends React.Component {
             if (
                 prevProps.planetRadius !== this.props.planetRadius
             ) {
-                this.setState({noiseData: this.randomDataSet()});
+                this.setState({
+                    noiseData: this.getNoiseData(this.state.lightcurveData)
+                });
             }
             if (
                 prevProps.simMeasurementNumber !== this.props.simMeasurementNumber
             ) {
-                this.setState({noiseData: this.randomDataSet()});
+                this.setState({
+                    noiseData: this.getNoiseData(this.state.lightcurveData)
+                });
             }
         }
 
@@ -163,7 +182,9 @@ export default class LightcurveView extends React.Component {
             prevProps.showSimulatedMeasurements !==
                 this.props.showSimulatedMeasurements
         ) {
-            this.setState({noiseData: this.randomDataSet()});
+            this.setState({
+                noiseData: this.getNoiseData(this.state.lightcurveData)
+            });
         }
 
         if (
@@ -175,6 +196,12 @@ export default class LightcurveView extends React.Component {
             prevProps.longitude !== this.props.longitude
         ) {
             this.updateLightcurveData();
+
+            if (this.props.showSimulatedMeasurements) {
+                this.setState({
+                    noiseData: this.getNoiseData(this.state.lightcurveData)
+                });
+            }
         }
     }
 

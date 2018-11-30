@@ -25,6 +25,40 @@ const getStarTemp = function(starMass) {
 };
 
 /**
+ * Given a star's mass, return the spectral type it would have.
+ *
+ * The range of star mass that's used (0.5 to 2) ranges from types K7V
+ * to A2V.
+ */
+const getSpectralType = function(starMass) {
+    const types = [
+        'K7V', 'K6V', 'K5V', 'K4V',
+        'K3V', 'K2V', 'K1V', 'K0V',
+
+        'G9V', 'G8V', 'G7V', 'G6V',
+        'G5V', 'G4V', 'G3V', 'G2V',
+        'G1V', 'G0V',
+
+        'F9V', 'F8V', 'F7V', 'F6V',
+        'F5V', 'F4V', 'F3V', 'F2V',
+        'F1V', 'F0V',
+
+        'A9V', 'A8V', 'A7V', 'A6V',
+        'A5V', 'A4V', 'A3V', 'A2V'
+    ];
+
+    // Convert starMass to a number between 0 and 1.
+    const s = (starMass - 0.5) / 1.5;
+
+    // Convert s to an index between 0 and types.length - 1.
+    // TODO: it looks like the relationship isn't actually linear, so
+    // I'll have to fix that.
+    const i = Math.round(s * (types.length - 1));
+
+    return types[i];
+};
+
+/**
  * Convert unit from rJupiter to kilometers.
  */
 const rJupToKm = function (rJup) {
@@ -52,6 +86,7 @@ export {
     roundToOnePlace,
     getStarRadius,
     getStarTemp,
+    getSpectralType,
     rJupToKm, rSunToKm,
     getDist
 };
