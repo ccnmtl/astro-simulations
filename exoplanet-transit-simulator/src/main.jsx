@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import LightcurveView from './LightcurveView';
 import TransitView from './TransitView';
 import RangeStepInput from './RangeStepInput';
-import {forceNumber, getStarRadius} from './utils';
+import {forceNumber, getStarRadius, getStarTemp} from './utils';
 
 class ExoplanetTransitSimulator extends React.Component {
     constructor(props) {
@@ -45,6 +45,7 @@ class ExoplanetTransitSimulator extends React.Component {
         this.onPhaseCoordsChange = this.onPhaseCoordsChange.bind(this);
     }
     render() {
+        const starTemp = getStarTemp(this.state.starMass);
         const starRadius = getStarRadius(this.state.starMass);
         return <React.Fragment>
             <nav className="navbar navbar-expand-md navbar-light bg-light d-flex justify-content-between">
@@ -317,7 +318,7 @@ class ExoplanetTransitSimulator extends React.Component {
                     </div>
                     <p>
                         A main sequence star of this mass would have
-                        spectral type F8V, temperature 6100 K, and
+                        spectral type F8V, temperature {starTemp} K, and
                         radius {starRadius} R<sub>sun</sub>
                     </p>
                 </div>
