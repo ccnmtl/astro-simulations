@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Plot from './d3/Plot';
+import {getPlanetY} from './utils';
 
 
 /**
@@ -96,7 +97,7 @@ export default class LightcurveView extends React.Component {
         for (let i = 0; i < phaseWidth; i += phaseWidth / samples) {
             const currentPlanetPos = {
                 x: this.props.phaseMin + i,
-                y: 220
+                y: getPlanetY(this.props.inclination)
             };
 
             // Calculate the intersection of the planet and star at this

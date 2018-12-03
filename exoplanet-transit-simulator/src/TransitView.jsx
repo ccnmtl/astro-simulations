@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import * as PIXI from 'pixi.js';
+import {getPlanetY} from './utils';
 
 // The phase line's width. Note that this also affects planet
 // position.
@@ -67,11 +68,11 @@ export default class TransitView extends React.Component {
         const starRadius = this.entityData.baseStarRadius * this.props.starMass;
         this.entityData.planetCenter = new PIXI.Point(
             (app.view.width / 2) - starRadius,
-            (app.view.height / 2) + 45);
+            getPlanetY(this.props.inclination, app.view.height));
 
         this.entityData.phaseCenter = new PIXI.Point(
             (app.view.width / 2),
-            (app.view.height / 2) + this.props.inclination - 45);
+            getPlanetY(this.props.inclination, app.view.height));
 
         this.app = app;
         this.el.appendChild(app.view);
@@ -107,7 +108,7 @@ export default class TransitView extends React.Component {
             const phaseLine = this.makePhaseLine(
                 phaseCenter.x - (this.state.phaseWidth / 2),
                 phaseCenter.x + (this.state.phaseWidth / 2),
-                (this.app.view.height / 2) + this.props.inclination - 45);
+                getPlanetY(this.props.inclination, this.app.view.height));
             this.app.stage.removeChild(this.phaseLine);
             this.phaseLine.destroy();
             // Re-add phaseLine behind the planet, in front of the
@@ -171,7 +172,7 @@ export default class TransitView extends React.Component {
         const phaseLine = this.makePhaseLine(
             phaseCenter.x - (this.state.phaseWidth / 2),
             phaseCenter.x + (this.state.phaseWidth / 2),
-            (app.view.height / 2) + this.props.inclination - 45);
+            getPlanetY(this.props.inclination, app.view.height));
 
         const phaseMin = phaseLine.currentPath.shape.points[0];
         const phaseWidth =
@@ -244,7 +245,7 @@ export default class TransitView extends React.Component {
         const planetPos = this.entityData.phaseCenter.x + (
             phase * (phaseWidth / 2));
         this.planet.x = planetPos;
-        this.planet.y = (this.app.view.height / 2) + inclination - 45;
+        this.planet.y = getPlanetY(inclination, this.app.view.height);
         this.arrow.x = this.planet.x;
         this.arrow.position.y = this.planet.y + 16;
 
