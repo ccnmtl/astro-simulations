@@ -81,6 +81,14 @@ const getDist = function(p1, p2) {
     return Math.sqrt((a * a) + (b * b));
 };
 
+/**
+ * Return the y-position of the planet and phase line in the Pixi
+ * scene.
+ */
+const getPlanetY = function(inclination, viewHeight=350) {
+    return (viewHeight / 2) + (inclination - 90) * -5;
+};
+
 export {
     forceNumber,
     roundToOnePlace,
@@ -88,5 +96,5 @@ export {
     getStarTemp,
     getSpectralType,
     rJupToKm, rSunToKm,
-    getDist
+    getDist, getPlanetY
 };

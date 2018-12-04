@@ -36,8 +36,8 @@ class ExoplanetTransitSimulator extends React.Component {
             // Pixi scene co-ordinates. Initialize these to accurate
             // values.
             // This is hardcoded because the TransitView doesn't know
-            // its width right at startup, and the phase width depends
-            // on that.
+            // its width and height right when the DOM is created, and these
+            // values depend on that.
             phaseMin: 45.61,
             phaseWidth: 260.62
         };
