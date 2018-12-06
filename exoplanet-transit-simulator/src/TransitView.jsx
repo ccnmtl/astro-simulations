@@ -14,6 +14,22 @@ const getPhaseWidth = function(starMass, planetRadius) {
     return w;
 };
 
+/**
+ * The star color ranges from pale yellow at mass 0.5, to white
+ * at mass 1.09, to pale blue at mass 2.
+ *
+ * Returns an RGB hex value.
+ */
+const getStarColor = function(starMass) {
+    if (starMass < 0.7) {
+        return 0xffefc6;
+    } else if (starMass < 1.5) {
+        return 0xfffcf4;
+    } else {
+        return 0xf2f2ff;
+    }
+};
+
 export default class TransitView extends React.Component {
     constructor(props) {
         super(props);
@@ -157,7 +173,7 @@ export default class TransitView extends React.Component {
 
         star.pivot = starCenter;
         star.position = starCenter;
-        star.beginFill(0xfffafa);
+        star.beginFill(getStarColor(this.props.starMass));
         star.drawCircle(
             starCenter.x, starCenter.y,
             starRadius);
@@ -231,9 +247,13 @@ export default class TransitView extends React.Component {
         // planet position.
         const phaseWidth = getPhaseWidth(starMass, planetRadius);
 
-        // Update star size
-        this.star.scale = new PIXI.Point(
-            this.props.starMass * 0.75, this.props.starMass * 0.75);
+        // Update star color and size
+        this.star.clear();
+        this.star.beginFill(getStarColor(this.props.starMass));
+        const starRadius = this.entityData.baseStarRadius * this.props.starMass;
+        this.star.drawCircle(
+            this.entityData.starCenter.x, this.entityData.starCenter.y,
+            starRadius);
 
         // Update planet size
         this.planet.scale = new PIXI.Point(
