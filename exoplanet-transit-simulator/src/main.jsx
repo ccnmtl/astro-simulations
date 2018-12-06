@@ -10,7 +10,7 @@ import {
 class ExoplanetTransitSimulator extends React.Component {
     constructor(props) {
         super(props);
-        const initialState = {
+        this.initialState = {
             preset: 0,
 
             // Lightcurve view settings
@@ -41,7 +41,7 @@ class ExoplanetTransitSimulator extends React.Component {
             phaseMin: 45.61,
             phaseWidth: 260.62
         };
-        this.state = initialState;
+        this.state = this.initialState;
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.onPhaseCoordsChange = this.onPhaseCoordsChange.bind(this);
@@ -56,7 +56,7 @@ class ExoplanetTransitSimulator extends React.Component {
 
                 <ul className="navbar-nav">
                     <li className="nav-item">
-                        <a className="nav-link" href="#">Reset</a>
+                        <a className="nav-link" href="#" onClick={this.onResetClick.bind(this)}>Reset</a>
                     </li>
                     <li className="nav-item">
                         <a className="nav-link" href="#" data-toggle="modal" data-target="#helpModal">Help</a>
@@ -417,6 +417,10 @@ class ExoplanetTransitSimulator extends React.Component {
             phaseMin: phaseMin,
             phaseWidth: phaseWidth
         });
+    }
+    onResetClick(e) {
+        e.preventDefault();
+        this.setState(this.initialState);
     }
 }
 
