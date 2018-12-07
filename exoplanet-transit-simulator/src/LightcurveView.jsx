@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Plot from './d3/Plot';
-import {getPlanetY} from './utils';
+import {getPlanetY, shuffleArray} from './utils';
 
 
 /**
@@ -48,7 +48,7 @@ export default class LightcurveView extends React.Component {
         super(props);
         this.state = {
             isDragging: false,
-            noiseData: this.randomDataSet(),
+            noiseData: [],
             lightcurveData: this.generateLightcurveData(
                 7 * this.props.planetRadius,
                 76 * this.props.starMass * 0.75,
@@ -123,27 +123,44 @@ export default class LightcurveView extends React.Component {
         }
         return a;
     }
-    randomDataSet() {
-        if (!this.props.showSimulatedMeasurements) {
-            return [];
-        }
-        return Array.from(Array(this.props.simMeasurementNumber)).map(
-            () => [Math.random() * 200, Math.random() + 0.5]);
-    }
     /**
      * Generate noise around the lightcurve data.
      */
     getNoiseData(lightcurveData) {
+        const self = this;
+
         if (!this.props.showSimulatedMeasurements) {
             return [];
         }
 
-        // Find the middle x value.
-        const i = Math.round(lightcurveData.length / 2);
-        const mid = lightcurveData[i];
+        // Find simMeasurementNumber random samples out of lightcurve
+        // data. These will be the points where noise is generated.
+        const randomizedData = shuffleArray(lightcurveData);
+        // Get the first simMeasurementNumber samples out of the
+        // randomized data.
+        const samples = randomizedData.slice(
+            0, this.props.simMeasurementNumber);
 
-        return Array.from(Array(this.props.simMeasurementNumber)).map(
-            () => [Math.random() * (mid[0] * 2), Math.random() + 0.5]);
+        const a = Array.from(
+            Array(this.props.simMeasurementNumber)
+        ).map(
+            function(v, idx) {
+                if (!samples[idx]) {
+                    return [];
+                }
+                return [
+                    // The x value is the same as the original sample.
+                    samples[idx][0],
+                    // y is the same as the original, plus some small
+                    // random factor.
+                    samples[idx][1] + (
+                        // Scale the randomization factor by the value
+                        // of the "noise" slider
+                        (Math.random() - 0.5) * self.props.noise)
+                ];
+            }
+        );
+        return a;
     }
     render() {
         // d3 integration based on:
@@ -154,6 +171,7 @@ export default class LightcurveView extends React.Component {
                 lightcurveData={this.state.lightcurveData}
                 phase={this.props.phase}
                 showTheoreticalCurve={this.props.showTheoreticalCurve}
+                showSimulatedMeasurements={this.props.showSimulatedMeasurements}
                 planetRadius={this.props.planetRadius}
                 width={460} height={280}
                 paddingLeft={60}
@@ -171,7 +189,8 @@ export default class LightcurveView extends React.Component {
                 });
             }
             if (
-                prevProps.simMeasurementNumber !== this.props.simMeasurementNumber
+                prevProps.simMeasurementNumber !== this.props.simMeasurementNumber ||
+                prevProps.noise !== this.props.noise
             ) {
                 this.setState({
                     noiseData: this.getNoiseData(this.state.lightcurveData)

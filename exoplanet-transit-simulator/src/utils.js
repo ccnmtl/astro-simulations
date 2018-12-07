@@ -111,6 +111,22 @@ const getSystemPeriod = function(planetSemimajorAxis, planetMass, starMass) {
     );
 };
 
+/**
+ * Given an array, return a new one with its order randomized.
+ *
+ * https://stackoverflow.com/a/12646864/173630
+ */
+const shuffleArray = function(array) {
+    const a = array.slice();
+
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+
+    return a;
+};
+
 export {
     forceNumber,
     roundToOnePlace,
@@ -120,5 +136,6 @@ export {
     rJupToKm, rSunToKm,
     getDist, getPlanetY,
     getEclipseDepth,
-    getSystemPeriod
+    getSystemPeriod,
+    shuffleArray
 };

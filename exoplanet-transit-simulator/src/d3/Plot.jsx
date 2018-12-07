@@ -25,12 +25,24 @@ const xScale = props => {
 const yScale = props => {
     return d3
         .scaleLinear()
+        .domain([
+            0,
+            props.showSimulatedMeasurements ?
+            yMax(props.noiseData) : yMax(props.lightcurveData)
+        ])
+        .range([props.height - props.padding, props.padding]);
+};
+
+const yCurveScale = props => {
+    return d3
+        .scaleLinear()
         .domain([0, yMax(props.lightcurveData)])
         .range([props.height - props.padding, props.padding]);
 };
 
 class Line extends React.Component {
     render() {
+        const self = this;
         const data = this.props.data;
 
         const x = this.props.xScale;
@@ -41,10 +53,18 @@ class Line extends React.Component {
             .x(function(d) { return x(d[0]); })
             .y(function(d) { return y(d[1]); });
 
-        data.forEach(function(d) {
-            x.domain(d3.extent(data, function(d) { return d[0]; }));
-            y.domain(d3.extent(data, function(d) { return d[1]; }));
-        });
+        if (self.props.showSimulatedMeasurements) {
+            data.forEach(function(d) {
+                x.domain(d3.extent(data, function(d) { return d[0]; }));
+                self.props.yCurveScale.domain(
+                    d3.extent(data, function(d) { return d[1]; }));
+            });
+        } else {
+            data.forEach(function(d) {
+                x.domain(d3.extent(data, function(d) { return d[0]; }));
+                y.domain(d3.extent(data, function(d) { return d[1]; }));
+            });
+        }
 
         const newline = line(data);
         const visibility = this.props.showTheoreticalCurve ?
@@ -79,7 +99,10 @@ export default class Plot extends React.Component {
                     {...scales} />
                 <Line
                     showTheoreticalCurve={this.props.showTheoreticalCurve}
-                    data={this.props.lightcurveData} {...scales} />
+                    showSimulatedMeasurements={this.props.showSimulatedMeasurements}
+                    data={this.props.lightcurveData} {...scales}
+                    yCurveScale={yCurveScale(props)}
+                />
                 <Axis ax={'y'} {...props} {...scales} />
                 <PhaseControl {...props} {...scales} />
             </svg>
@@ -88,5 +111,6 @@ export default class Plot extends React.Component {
 };
 
 Plot.propTypes = {
-    showTheoreticalCurve: PropTypes.bool.isRequired
+    showTheoreticalCurve: PropTypes.bool.isRequired,
+    showSimulatedMeasurements: PropTypes.bool.isRequired
 };
