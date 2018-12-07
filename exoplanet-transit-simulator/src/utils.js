@@ -20,6 +20,10 @@ const getStarRadius = function(starMass) {
     return roundToOnePlace(starMass * 0.8);
 };
 
+/*
+ * TODO:
+ * port getTempFromLuminosity() from original code.
+ */
 const getStarTemp = function(starMass) {
     return Math.round(starMass * 3226.6666667 + 2583);
 };
@@ -89,6 +93,24 @@ const getPlanetY = function(inclination, viewHeight=350) {
     return (viewHeight / 2) + (inclination - 90) * -5;
 };
 
+const getEclipseDepth = function(planetRadius, starMass) {
+    // This isn't quite accurate yet because the relation seems
+    // logarithmic, not linear.
+    const x = (planetRadius * 1.82 - 0.0091) / 100;
+    return Math.round(x * 1000000) / 1000000;
+};
+
+/**
+ * From original source.
+ */
+const getSystemPeriod = function(planetSemimajorAxis, planetMass, starMass) {
+    const a = planetSemimajorAxis;
+    return Math.sqrt(
+        39.47841760435743 * a * a * a / (
+            6.673e-11 * (planetMass + starMass))
+    );
+};
+
 export {
     forceNumber,
     roundToOnePlace,
@@ -96,5 +118,7 @@ export {
     getStarTemp,
     getSpectralType,
     rJupToKm, rSunToKm,
-    getDist, getPlanetY
+    getDist, getPlanetY,
+    getEclipseDepth,
+    getSystemPeriod
 };
