@@ -4,7 +4,8 @@ import LightcurveView from './LightcurveView';
 import TransitView from './TransitView';
 import RangeStepInput from './RangeStepInput';
 import {
-    forceNumber, getStarRadius, getStarTemp, getSpectralType
+    forceNumber, getStarRadius, getStarTemp, getSpectralType,
+    getEclipseDepth
 } from './utils';
 
 class ExoplanetTransitSimulator extends React.Component {
@@ -50,6 +51,7 @@ class ExoplanetTransitSimulator extends React.Component {
         const starType = getSpectralType(this.state.starMass);
         const starTemp = getStarTemp(this.state.starMass);
         const starRadius = getStarRadius(this.state.starMass);
+        const eclipseDepth = getEclipseDepth(this.state.planetRadius);
         return <React.Fragment>
             <nav className="navbar navbar-expand-md navbar-light bg-light d-flex justify-content-between">
                 <span className="navbar-brand mb-0 h1">Exoplanet Transit Simulator</span>
@@ -186,7 +188,7 @@ class ExoplanetTransitSimulator extends React.Component {
                             </div>
                         </div>
                         <div className="col">
-                            Eclipse depth: 0.0159
+                            Eclipse depth: {eclipseDepth}
                         </div>
                     </div>
                 </div>
