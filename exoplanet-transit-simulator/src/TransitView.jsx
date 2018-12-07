@@ -206,8 +206,10 @@ export default class TransitView extends React.Component {
         planet.beginFill(0xa0a0a0);
         planet.drawCircle(
             planetCenter.x, planetCenter.y,
-            this.entityData.basePlanetRadius * this.props.planetRadius);
+            this.entityData.basePlanetRadius);
         planet.endFill();
+        planet.scale = new PIXI.Point(
+            this.props.planetRadius, this.props.planetRadius);
         planet.x = this.props.phase * (
             this.entityData.baseStarRadius * 3) + 60;
 
