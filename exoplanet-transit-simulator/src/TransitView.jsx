@@ -10,7 +10,7 @@ import {getPlanetY, lerpColor} from './utils';
 const getPhaseWidth = function(starMass, planetRadius) {
     const s = (starMass * 4) ** 2;
     const p = planetRadius * 4;
-    const w =  (30 + s) * p;
+    const w = (30 + s) * p;
     return w;
 };
 
@@ -97,7 +97,7 @@ export default class TransitView extends React.Component {
         this.drawScene(app);
     }
     componentDidUpdate(prevProps) {
-        if (prevProps.phase !== this.props.phase) {
+        //if (prevProps.phase !== this.props.phase) {
             // Uncomment this to enable a "distance helper", used as a
             // visual guide for the distance between the two entities'
             // center points.
@@ -110,7 +110,7 @@ export default class TransitView extends React.Component {
              * }
              * this.app.stage.addChild(g);
              * this.distanceHelper = g; */
-        }
+        //}
 
         if (
             prevProps.starMass !== this.props.starMass ||
@@ -253,15 +253,14 @@ export default class TransitView extends React.Component {
 
         // Update star color and size
         this.star.clear();
-        this.star.beginFill(getStarColor(this.props.starMass));
-        const starRadius = this.entityData.baseStarRadius * this.props.starMass;
+        this.star.beginFill(getStarColor(starMass));
+        const starRadius = this.entityData.baseStarRadius * starMass;
         this.star.drawCircle(
             this.entityData.starCenter.x, this.entityData.starCenter.y,
             starRadius);
 
         // Update planet size
-        this.planet.scale = new PIXI.Point(
-            this.props.planetRadius, this.props.planetRadius);
+        this.planet.scale = new PIXI.Point(planetRadius, planetRadius);
 
         // Make phase a number between -1 and 1.
         phase = (phase - 0.5) * 2;
