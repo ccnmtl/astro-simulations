@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import * as PIXI from 'pixi.js';
-import {getPlanetY} from './utils';
+import {getPlanetY, lerpColor} from './utils';
 
 // The phase line's width. Note that this also affects planet
 // position.
@@ -21,13 +21,15 @@ const getPhaseWidth = function(starMass, planetRadius) {
  * Returns an RGB hex value.
  */
 const getStarColor = function(starMass) {
-    if (starMass < 0.7) {
-        return 0xffefc6;
-    } else if (starMass < 1.5) {
-        return 0xfffcf4;
+    let c = 0xffffff;
+
+    if (starMass < 1) {
+        c = lerpColor(0xffefc6, 0xfffcf4, (starMass - 0.5) * 2);
     } else {
-        return 0xf2f2ff;
+        c = lerpColor(0xfffcf4, 0xf2f2ff, starMass - 1);
     }
+
+    return c;
 };
 
 export default class TransitView extends React.Component {
