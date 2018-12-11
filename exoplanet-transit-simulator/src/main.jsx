@@ -604,7 +604,7 @@ class ExoplanetTransitSimulator extends React.Component {
         this.setState(this.initialState);
     }
     onPresetSelect(e) {
-        const idx = e.target.value;
+        const idx = forceNumber(e.target.value);
         const data = systemPresets[idx];
         this.setState(data);
     }
