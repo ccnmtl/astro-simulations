@@ -20,10 +20,13 @@ export default class RangeStepInput extends React.Component {
         this.onMouseDown = this.onMouseDown.bind(this);
         this.onMouseUp = this.onMouseUp.bind(this);
         this.onMouseMove = this.onMouseMove.bind(this);
+
+        this.domRef = React.createRef();
     }
     render() {
         return <input
                    type="range"
+                   ref={this.domRef}
                    className={this.props.className}
                    min={this.props.min}
                    max={this.props.max}
@@ -41,12 +44,23 @@ export default class RangeStepInput extends React.Component {
     }
     onMouseDown() {
         this.setState({isMouseDown: true});
+
+        const oldVal = this.props.value;
+        const self = this;
+        // Add some initial delay on the click-hold functionality.
+        setTimeout(function() {
+            self.holdLoop = self.makeHoldLoop(oldVal);
+        }, 600);
     }
     onMouseUp() {
         this.setState({
             isMouseDown: false,
             isDragging: false
         });
+
+        if (this.holdLoop) {
+            clearInterval(this.holdLoop);
+        }
     }
     onMouseMove() {
         if (this.state.isMouseDown) {
@@ -68,6 +82,44 @@ export default class RangeStepInput extends React.Component {
                              oldVal + step : oldVal - step;
         }
     }
+    makeHoldLoop(oldVal) {
+        const self = this;
+
+        return setInterval(function() {
+            if (!self.state.isMouseDown) {
+                // The user isn't holding the cursor anymore: clean up
+                // and cancel.
+                if (self.holdLoop) {
+                    clearInterval(self.holdLoop);
+                }
+                return false;
+            }
+
+            const input = self.domRef.current;
+
+            let newVal = self.props.value;
+            if (oldVal > newVal) {
+                newVal -= self.props.step;
+            } else if (oldVal < newVal) {
+                newVal += self.props.step;
+            } else {
+                // The user is just holding the cursor at the current
+                // value, so don't do anything.
+                return false;
+            }
+
+            // Directly setting input.value will cause the new value
+            // to not be recognized, because of React.
+            // https://stackoverflow.com/a/46012210/173630
+            const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+                window.HTMLInputElement.prototype, 'value').set;
+            nativeInputValueSetter.call(input, newVal);
+
+            // Trigger an onChange event.
+            const e = new Event('change', {bubbles: true});
+            return input.dispatchEvent(e);
+        }, 100);
+    }
 }
 
 RangeStepInput.propTypes = {
@@ -79,5 +131,6 @@ RangeStepInput.propTypes = {
     max: PropTypes.number,
     id: PropTypes.string,
     name: PropTypes.string,
-    disabled: PropTypes.bool
+    disabled: PropTypes.bool,
+    allowHold: PropTypes.bool
 };
