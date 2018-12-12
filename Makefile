@@ -1,7 +1,9 @@
 sims := exoplanet-transit-simulator \
 	lunar-phase-simulator \
 	small-angle-demo \
-	sun-motion-simulator
+	sun-motion-simulator \
+	eclipsing-binary-simulator \
+	gas-retention-simulator
 
 eslint-all:
 	@$(foreach dir, $(sims), cd $(dir) && npm i && npm run eslint && cd ..;)
