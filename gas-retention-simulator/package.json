@@ -1,0 +1,54 @@
+{
+  "name": "gas-retention-simulator",
+  "version": "1.0.0",
+  "description": "Gas Retention Simulator",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "test": "jest",
+    "serve": "webpack-dev-server",
+    "dev": "webpack --mode development --watch",
+    "build": "webpack --mode production",
+    "eslint": "eslint src/*.jsx"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ccnmtl/astro-simulations.git"
+  },
+  "keywords": [
+    "astronomy"
+  ],
+  "author": "Nik Nyby",
+  "license": "GPL-3.0+",
+  "bugs": {
+    "url": "https://github.com/ccnmtl/astro-simulations/issues"
+  },
+  "homepage": "https://github.com/ccnmtl/astro-simulations#readme",
+  "dependencies": {
+    "babel-cli": "^6.26.0",
+    "d3": "^5.7.0",
+    "pixi.js": "~4.8.3",
+    "react": "~16.6.3",
+    "react-dom": "~16.6.3",
+    "react-range-step-input": "^1.2.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/preset-react": "^7.0.0",
+    "babel-eslint": "^10.0.0",
+    "babel-loader": "^8.0.0",
+    "eslint": "^5.1.0",
+    "eslint-plugin-react": "~7.10.0",
+    "jest": "^23.4.1",
+    "webpack": "^4.26.0",
+    "webpack-cli": "^3.0.8",
+    "webpack-dev-server": "^3.1.9"
+  },
+  "babel": {
+    "presets": [
+      "@babel/env",
+      "@babel/react"
+    ]
+  }
+}
