@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import MainView from './MainView';
 import MoonPhaseView from './MoonPhaseView';
 import HorizonView from './HorizonView';
-import RangeStepInput from './RangeStepInput';
+import {RangeStepInput} from 'react-range-step-input';
 import {degToRad, forceNumber} from './utils';
 
 class LunarPhaseSim extends React.Component {

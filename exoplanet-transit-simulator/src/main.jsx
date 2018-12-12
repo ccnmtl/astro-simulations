@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import LightcurveView from './LightcurveView';
 import TransitView from './TransitView';
-import RangeStepInput from './RangeStepInput';
+import {RangeStepInput} from 'react-range-step-input';
 import {
     forceNumber, getStarRadius, getStarTemp, getSpectralType,
     getEclipseDepth

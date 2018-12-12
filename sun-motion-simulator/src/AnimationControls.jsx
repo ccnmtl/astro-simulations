@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import RangeStepInput from './RangeStepInput';
+import {RangeStepInput} from 'react-range-step-input';
 import {roundToOnePlace} from './utils';
 
 export default class AnimationControls extends React.Component {
