@@ -10,6 +10,7 @@ JavaScript/HTML ports of the Flash originals, found here: [http://astro.unl.edu/
 * [Lunar Phase Simulator](https://ccnmtl.github.io/astro-simulations/lunar-phase-simulator/)
 * [Motions of the Sun Simulator](https://ccnmtl.github.io/astro-simulations/sun-motion-simulator/)
 * [Exoplanet Transit Simulator](https://ccnmtl.github.io/astro-simulations/exoplanet-transit-simulator/)
+* [Eclipsing Binary Simulator](https://ccnmtl.github.io/astro-simulations/eclipsing-binary-simulator/)
 * [Gas Retention Simulator](https://ccnmtl.github.io/astro-simulations/gas-retention-simulator/)
 
 ## Development guide
