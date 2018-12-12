@@ -29,7 +29,8 @@
     "d3": "^5.7.0",
     "pixi.js": "~4.8.3",
     "react": "~16.6.3",
-    "react-dom": "~16.6.3"
+    "react-dom": "~16.6.3",
+    "react-range-step-input": "^1.2.1"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
