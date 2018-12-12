@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import MathJax from 'react-mathjax2';
 import VisualDemo from './VisualDemo';
-import RangeStepInput from './RangeStepInput';
+import {RangeStepInput} from 'react-range-step-input';
 import {forceNumber} from './utils';
 
 class SmallAngleDemo extends React.Component {
