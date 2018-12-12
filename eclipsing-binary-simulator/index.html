@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Eclipsing Binary Simulator</title>
+ 
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">        
+        <style type="text/css">
+        body>.container {
+            width: 1140px;
+        }
+        #sim-container {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            width: 1110px;
+        }
+
+        input[type="number"] {
+            width: 70px !important;
+        }
+        input[type="number"][name="inclination"],
+        input[type="number"][name="noise"],
+        input[type="number"][name="planetMass"] {
+            width: 84px !important;
+        }        
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div id="sim-container"></div>
+        </div>
+
+        <div class="modal" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="helpModalLabel">Help</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            This simulator models the motions of two
+                            stars in orbit around each other. When
+                            such a system is aligned properly the
+                            stars will eclipse one another, causing a
+                            change in brightness (as seen from earth)
+                            that allows astronomers to determine the
+                            properties of the stars.
+                        </p>
+                        <p>
+                            The upper left panel shows the binary
+                            system visualization. If the <strong>lock
+                            on perspective from earth</strong>
+                            checkbox is selected (found in the lower
+                            left corner) the system is shown as it
+                            would be seen from earth with a
+                            sufficiently powerful telescope. If the
+                            perspective is unlocked one can drag the
+                            visualization around, and a red arrow is
+                            shown indicating the direction to the
+                            earth.
+                        </p>
+                        <p>
+                            In practice eclipsing binary stars are so
+                            close together that astronomers see just a
+                            single combined 'star'. The plot in the
+                            upper right shows the combined brightness
+                            of the system. Dips in the lightcurve
+                            correspond to the eclipses as seen from
+                            earth.
+                        </p>
+                        <p>
+                            The panel in the lower right controls the
+                            properties of the stars. Note that as you
+                            adjust one slider the range of the other
+                            sliders may change (indicated by the dark
+                            shading) to prevent the stars from
+                            physically overlapping.  The longitude and
+                            inclination properties in the left panel
+                            control the orientation of the system with
+                            respect to earth.
+                        </p>
+                        <p>
+                            You can also load presets from the presets
+                            drop-down box. With some presets observed
+                            data will be shown in the lightcurve
+                            panel. This data comes from the CALEB
+                            catelog, and when selected a button to
+                            load the associated CALEB webpage will be
+                            enabled.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="aboutModal" tabindex="-1" role="dialog" aria-labelledby="aboutModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="aboutModalLabel">About</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            See <a
+                            href="https://github.com/ccnmtl/astro-simulations">github.com/ccnmtl/astro-simulations</a>
+                            for more info.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>        
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.slim.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>        
+
+        <script src="dist/bundle.js"></script>
+    </body>
+</html>
