@@ -9,6 +9,10 @@ const forceNumber = function(n) {
     return n;
 };
 
+const degToRad = function(degrees) {
+    return degrees * Math.PI / 180;
+};
+
 const roundToOnePlace = function(n) {
     return Math.round(n * 10) / 10;
 }
@@ -64,6 +68,8 @@ const getSpectralType = function(starMass) {
 
 /**
  * Convert unit from rJupiter to kilometers.
+ *
+ * Jupiter's radius is 71,492 km.
  */
 const rJupToKm = function (rJup) {
     return rJup * 71492;
@@ -77,6 +83,20 @@ const rSunToKm = function(rSun) {
 };
 
 /**
+ * Convert astronomical units to kilometers.
+ */
+const auToKm = function(au) {
+    return au * 1.49597871e+8;
+};
+
+/**
+ * Scale kilometers to pixels in the Pixi scene.
+ */
+const kmToPx = function(km) {
+    return km / 10000;
+}
+
+/**
  * Get the distance between two points p1 and p2.
  */
 const getDist = function(p1, p2) {
@@ -86,11 +106,27 @@ const getDist = function(p1, p2) {
 };
 
 /**
+ * Return the inclination offset of the planet.
+ *
+ * This depends on the planet's semimajor axis (distance between the
+ * planet and the star) and the system's inclination variable. Both of
+ * these variables can be altered by the user.
+ *
+ * Inclination represents the angle, in degrees, of the planet in
+ * relation to the star.
+ */
+const getInclinationOffset = function(inclination, semimajorAxis) {
+    const sin = Math.sin(degToRad(inclination));
+    return sin * auToKm(semimajorAxis);
+};
+
+/**
  * Return the y-position of the planet and phase line in the Pixi
  * scene.
  */
-const getPlanetY = function(inclination, viewHeight=350) {
-    return (viewHeight / 2) + (inclination - 90) * -5;
+const getPlanetY = function(inclination, semimajorAxis, viewHeight=350) {
+    const offset = getInclinationOffset(-inclination + 90, semimajorAxis);
+    return (viewHeight / 2) + kmToPx(offset);
 };
 
 const getEclipseDepth = function(planetRadius, starMass) {
