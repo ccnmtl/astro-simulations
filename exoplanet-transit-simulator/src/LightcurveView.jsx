@@ -89,14 +89,14 @@ export default class LightcurveView extends React.Component {
         const a = [];
 
         const starPos = {x: 175, y: 175};
-        const phaseWidth = this.props.phaseWidth;
+        const orbitWidth = this.props.orbitWidth;
 
         // Adjust this number to change the number of values sampled.
         const samples = 180;
 
-        for (let i = 0; i < phaseWidth; i += phaseWidth / samples) {
+        for (let i = 0; i < orbitWidth; i += orbitWidth / samples) {
             const currentPlanetPos = {
-                x: this.props.phaseMin + i,
+                x: this.props.orbitLeft + i,
                 y: getPlanetY(this.props.inclination)
             };
 
@@ -253,9 +253,9 @@ LightcurveView.propTypes = {
     longitude: PropTypes.number.isRequired,
     phase: PropTypes.number.isRequired,
 
-    // phaseMin and phaseMax are min and max X co-ordinates of the
-    // planet's phaseLine in the Pixi scene. This is needed to
+    // orbitLeft is the min X co-ordinates of the
+    // planet's orbitLine in the Pixi scene. This is needed to
     // calculate the lightcurve.
-    phaseMin: PropTypes.number.isRequired,
-    phaseWidth: PropTypes.number.isRequired
+    orbitLeft: PropTypes.number.isRequired,
+    orbitWidth: PropTypes.number.isRequired
 };

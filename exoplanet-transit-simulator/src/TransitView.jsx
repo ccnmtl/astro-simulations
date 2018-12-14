@@ -7,7 +7,7 @@ import {getPlanetY, lerpColor} from './utils';
 // position.
 // TODO: Fine-tune this!
 // https://math.stackexchange.com/q/3017406/604568
-const getPhaseWidth = function(starMass, planetRadius) {
+const getOrbitWidth = function(starMass, planetRadius) {
     const s = (starMass * 4) ** 2;
     const p = planetRadius * 4;
     const w = (30 + s) * p;
@@ -40,7 +40,7 @@ export default class TransitView extends React.Component {
         this.star = null;
 
         this.entityData = {
-            basePhaseWidth: 120,
+            baseOrbitWidth: 120,
             /*
              * The planetRadius and starRadius global state values
              * don't actually describe the radius of these actual
@@ -59,7 +59,7 @@ export default class TransitView extends React.Component {
 
             // The phase line grows and shrinks as a function of
             // planet radius and star mass.
-            phaseWidth: getPhaseWidth(
+            orbitWidth: getOrbitWidth(
                 this.props.starMass, this.props.planetRadius)
         };
 
@@ -117,31 +117,31 @@ export default class TransitView extends React.Component {
             prevProps.planetRadius !== this.props.planetRadius ||
             prevProps.inclination !== this.props.inclination
         ) {
-            const pw = getPhaseWidth(
+            const pw = getOrbitWidth(
                 this.props.starMass, this.props.planetRadius);
-            this.setState({phaseWidth: pw});
+            this.setState({orbitWidth: pw});
 
             const phaseCenter = this.entityData.phaseCenter;
 
-            const phaseLine = this.makePhaseLine(
-                phaseCenter.x - (this.state.phaseWidth / 2),
-                phaseCenter.x + (this.state.phaseWidth / 2),
+            const orbitLine = this.makePhaseLine(
+                phaseCenter.x - (this.state.orbitWidth / 2),
+                phaseCenter.x + (this.state.orbitWidth / 2),
                 getPlanetY(this.props.inclination, this.app.view.height));
-            this.app.stage.removeChild(this.phaseLine);
-            this.phaseLine.destroy();
-            // Re-add phaseLine behind the planet, in front of the
+            this.app.stage.removeChild(this.orbitLine);
+            this.orbitLine.destroy();
+            // Re-add orbitLine behind the planet, in front of the
             // star.
-            this.app.stage.addChildAt(phaseLine, 1);
-            this.phaseLine = phaseLine;
+            this.app.stage.addChildAt(orbitLine, 1);
+            this.orbitLine = orbitLine;
 
             // TODO: Might not be the best way to get co-ordinates from
             // this pixi object but it works for now.
-            // phaseMin = Left point of the phaseLine
-            const phaseMin = this.phaseLine.currentPath.shape.points[0];
-            const phaseWidth =
+            // orbitLeft = Left point of the orbitLine
+            const orbitLeft = this.orbitLine.currentPath.shape.points[0];
+            const orbitWidth =
                 // Right point minus left point
-                this.phaseLine.currentPath.shape.points[2] - phaseMin;
-            this.props.onPhaseCoordsChange(phaseMin, phaseWidth);
+                this.orbitLine.currentPath.shape.points[2] - orbitLeft;
+            this.props.onPhaseCoordsChange(orbitLeft, orbitWidth);
         }
 
         if (
@@ -155,17 +155,17 @@ export default class TransitView extends React.Component {
                 this.props.starMass, this.props.inclination);
         }
     }
-    makePhaseLine(phaseMin, phaseMax, y) {
-        const phaseLine = new PIXI.Graphics();
+    makePhaseLine(orbitLeft, phaseMax, y) {
+        const orbitLine = new PIXI.Graphics();
         const phaseCenter = this.entityData.phaseCenter
-        phaseLine.pivot = phaseCenter;
-        phaseLine.position = phaseCenter;
-        phaseLine.lineStyle(1, 0xd0d0d0);
-        phaseLine.moveTo(
-            phaseMin, y);
-        phaseLine.lineTo(
+        orbitLine.pivot = phaseCenter;
+        orbitLine.position = phaseCenter;
+        orbitLine.lineStyle(1, 0xd0d0d0);
+        orbitLine.moveTo(
+            orbitLeft, y);
+        orbitLine.lineTo(
             phaseMax, y);
-        return phaseLine;
+        return orbitLine;
     }
     drawScene(app) {
         const starRadius = this.entityData.baseStarRadius * this.props.starMass;
@@ -187,18 +187,18 @@ export default class TransitView extends React.Component {
         app.stage.addChild(star);
 
         const phaseCenter = this.entityData.phaseCenter
-        const phaseLine = this.makePhaseLine(
-            phaseCenter.x - (this.state.phaseWidth / 2),
-            phaseCenter.x + (this.state.phaseWidth / 2),
+        const orbitLine = this.makePhaseLine(
+            phaseCenter.x - (this.state.orbitWidth / 2),
+            phaseCenter.x + (this.state.orbitWidth / 2),
             getPlanetY(this.props.inclination, app.view.height));
 
-        const phaseMin = phaseLine.currentPath.shape.points[0];
-        const phaseWidth =
-            phaseLine.currentPath.shape.points[2] - phaseMin;
-        this.props.onPhaseCoordsChange(phaseMin, phaseWidth);
+        const orbitLeft = orbitLine.currentPath.shape.points[0];
+        const orbitWidth =
+            orbitLine.currentPath.shape.points[2] - orbitLeft;
+        this.props.onPhaseCoordsChange(orbitLeft, orbitWidth);
 
-        this.phaseLine = phaseLine;
-        app.stage.addChild(phaseLine);
+        this.orbitLine = orbitLine;
+        app.stage.addChild(orbitLine);
 
         const planet = new PIXI.Graphics();
         planet.pivot = planetCenter;
@@ -249,7 +249,7 @@ export default class TransitView extends React.Component {
     ) {
         // The amount to scale the phase line. This also affects
         // planet position.
-        const phaseWidth = getPhaseWidth(starMass, planetRadius);
+        const orbitWidth = getOrbitWidth(starMass, planetRadius);
 
         // Update star color and size
         this.star.clear();
@@ -266,7 +266,7 @@ export default class TransitView extends React.Component {
         phase = (phase - 0.5) * 2;
 
         const planetPos = this.entityData.phaseCenter.x + (
-            phase * (phaseWidth / 2));
+            phase * (orbitWidth / 2));
         this.planet.x = planetPos;
         this.planet.y = getPlanetY(inclination, this.app.view.height);
         this.arrow.x = this.planet.x;

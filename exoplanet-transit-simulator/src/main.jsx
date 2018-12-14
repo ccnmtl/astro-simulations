@@ -217,8 +217,8 @@ class ExoplanetTransitSimulator extends React.Component {
             // This is hardcoded because the TransitView doesn't know
             // its width and height right when the DOM is created, and these
             // values depend on that.
-            phaseMin: 45.61,
-            phaseWidth: 260.62
+            orbitLeft: 45.61,
+            orbitWidth: 260.62
         };
         this.state = this.initialState;
 
@@ -288,8 +288,8 @@ class ExoplanetTransitSimulator extends React.Component {
                         inclination={this.state.inclination}
                         longitude={this.state.longitude}
                         phase={this.state.phase}
-                        phaseMin={this.state.phaseMin}
-                        phaseWidth={this.state.phaseWidth}
+                        orbitLeft={this.state.orbitLeft}
+                        orbitWidth={this.state.orbitWidth}
                     />
                     <div className="text-center">
                         Eclipse takes 2.93 hours of 3.56 day orbit.
@@ -593,10 +593,10 @@ class ExoplanetTransitSimulator extends React.Component {
             [name]: value
         });
     }
-    onPhaseCoordsChange(phaseMin, phaseWidth) {
+    onPhaseCoordsChange(orbitLeft, orbitWidth) {
         this.setState({
-            phaseMin: phaseMin,
-            phaseWidth: phaseWidth
+            orbitLeft: orbitLeft,
+            orbitWidth: orbitWidth
         });
     }
     onResetClick(e) {
