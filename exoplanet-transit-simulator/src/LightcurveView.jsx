@@ -97,7 +97,8 @@ export default class LightcurveView extends React.Component {
         for (let i = 0; i < orbitWidth; i += orbitWidth / samples) {
             const currentPlanetPos = {
                 x: this.props.orbitLeft + i,
-                y: getPlanetY(this.props.inclination)
+                y: getPlanetY(
+                    this.props.inclination, this.props.planetSemimajorAxis)
             };
 
             // Calculate the intersection of the planet and star at this

@@ -257,6 +257,7 @@ class ExoplanetTransitSimulator extends React.Component {
                         planetRadius={this.state.planetRadius}
                         starMass={this.state.starMass}
                         inclination={this.state.inclination}
+                        semimajorAxis={this.state.planetSemimajorAxis}
                         onPhaseCoordsChange={this.onPhaseCoordsChange} />
                     <h5>Presets</h5>
                     <select className="form-control form-control-sm" onChange={this.onPresetSelect}>
