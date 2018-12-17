@@ -261,6 +261,7 @@ class ExoplanetTransitSimulator extends React.Component {
                         onPhaseCoordsChange={this.onPhaseCoordsChange} />
                     <h5>Presets</h5>
                     <select className="form-control form-control-sm" onChange={this.onPresetSelect}>
+                        <option value={-1}>--</option>
                         <option value={0}>1. Option A</option>
                         <option value={1}>2. Option B</option>
                         <option value={2}>3. OGLE-TR-113 b</option>
@@ -606,6 +607,10 @@ class ExoplanetTransitSimulator extends React.Component {
     }
     onPresetSelect(e) {
         const idx = forceNumber(e.target.value);
+        if (idx < 0) {
+            return;
+        }
+
         const data = systemPresets[idx];
         this.setState(data);
     }
