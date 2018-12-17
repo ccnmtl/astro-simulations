@@ -93,7 +93,7 @@ const auToKm = function(au) {
  * Scale kilometers to pixels in the Pixi scene.
  */
 const kmToPx = function(km) {
-    return km / 10000;
+    return km / 10800;
 }
 
 /**
@@ -202,6 +202,7 @@ export {
     getStarTemp,
     getSpectralType,
     rJupToKm, rSunToKm,
+    kmToPx,
     getDist, getPlanetY,
     getEclipseDepth,
     getSystemPeriod,

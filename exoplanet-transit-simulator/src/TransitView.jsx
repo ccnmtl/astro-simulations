@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import * as PIXI from 'pixi.js';
-import {getPlanetY, lerpColor} from './utils';
+import {
+    rJupToKm, kmToPx, getPlanetY, lerpColor
+} from './utils';
 
 // The phase line's width. Note that this also affects planet
 // position.
@@ -41,13 +43,6 @@ export default class TransitView extends React.Component {
 
         this.entityData = {
             baseOrbitWidth: 120,
-            /*
-             * The planetRadius and starRadius global state values
-             * don't actually describe the radius of these actual
-             * spheres on the screen, in pixi. Instead, I'm using
-             * those values to scale the base radii defined below.
-             */
-            basePlanetRadius: 7,
             baseStarRadius: 76,
             starCenter: null,
             planetCenter: null,
@@ -219,7 +214,7 @@ export default class TransitView extends React.Component {
         planet.beginFill(0xa0a0a0);
         planet.drawCircle(
             planetCenter.x, planetCenter.y,
-            this.entityData.basePlanetRadius);
+            kmToPx(rJupToKm(this.props.planetRadius)));
         planet.endFill();
         planet.scale = new PIXI.Point(
             this.props.planetRadius, this.props.planetRadius);
