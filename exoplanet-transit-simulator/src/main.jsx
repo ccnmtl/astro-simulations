@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Lightcurve from './Lightcurve';
 import LightcurveView from './LightcurveView';
 import TransitView from './TransitView';
 import {RangeStepInput} from 'react-range-step-input';
@@ -225,6 +226,8 @@ class ExoplanetTransitSimulator extends React.Component {
         this.handleInputChange = this.handleInputChange.bind(this);
         this.onPhaseCoordsChange = this.onPhaseCoordsChange.bind(this);
         this.onPresetSelect = this.onPresetSelect.bind(this);
+
+        this.lightcurve = new Lightcurve();
     }
     render() {
         const starType = getSpectralType(this.state.starMass);
