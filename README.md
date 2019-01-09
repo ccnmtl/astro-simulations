@@ -4,11 +4,11 @@
 
 Astronomy Simulations and Animations
 
-JavaScript/HTML ports of the Flash originals, found here: [http://astro.unl.edu/animationsLinks.html](http://astro.unl.edu/animationsLinks.html) (source files here: [https://cse.unl.edu/~astrodev/flashdev2/](https://cse.unl.edu/~astrodev/flashdev2/)) The original simulations are written in ActionScript 1.0. To open
+JavaScript/HTML ports of the Flash originals, found here: [http://astro.unl.edu/animationsLinks.html](http://astro.unl.edu/animationsLinks.html) (source files here: [https://cse.unl.edu/~astrodev/flashdev2/](https://cse.unl.edu/~astrodev/flashdev2/)) The original simulations are written in ActionScript 2.0. To open
 the .fla files, you'll need an older version of Adobe Animate than the current version (19.1). You can download
 a trial version of Adobe Flash Professional CS4 [here](https://helpx.adobe.com/creative-suite/kb/cs4-product-downloads.html)
 and open the .fla files with this. To get to the code, go to Window -> Actions. The bottom-left panel
-should have the code hierarchy.
+should have the code hierarchy. Also, Flash Professional CS6 is [available in Creative Cloud](https://forums.adobe.com/message/10858830#10858830), which also can open these files.
 
 * [Small-Angle Approximation Demonstrator](https://ccnmtl.github.io/astro-simulations/small-angle-demo/)
 * [Lunar Phase Simulator](https://ccnmtl.github.io/astro-simulations/lunar-phase-simulator/)
