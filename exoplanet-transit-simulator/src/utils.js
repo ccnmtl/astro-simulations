@@ -129,13 +129,6 @@ const getPlanetY = function(inclination, semimajorAxis, viewHeight=350) {
     return (viewHeight / 2) + kmToPx(offset);
 };
 
-const getEclipseDepth = function(planetRadius, starMass) {
-    // This isn't quite accurate yet because the relation seems
-    // logarithmic, not linear.
-    const x = (planetRadius * 1.82 - 0.0091) / 100;
-    return Math.round(x * 1000000) / 1000000;
-};
-
 /**
  * From original source.
  */
@@ -195,6 +188,49 @@ const lerpColor = function(a, b, amount) {
     return (rr << 16) + (rg << 8) + (rb | 0);
 };
 
+const formatNumber = function(num, digits) {
+    if (typeof num === 'undefined' || num === null) {
+        return '0';
+    }
+
+    const L = Math.floor(Math.log(num)/Math.LN10) - (digits - 1);
+    if (L >= 0) {
+        const M = Math.pow(10, L);
+        return String(M*Math.round(num/M));
+    } else {
+        return num.toFixed(Math.min(-L, 100));
+    }
+}
+
+const getTimeString = function(time) {
+    if (time>(1.5*60*60*24*365.24)) {
+        // display time in years if it exceeds 1.5 yrs
+        time /= 60*60*24*365.24;
+        var str = " year";
+    }
+    else if (time>(1*60*60*24)) {
+        // display time in days if it exceeds 1 days
+        time /= 60*60*24;
+        var str = " day";
+    }
+    else if (time>(1.5*60*60)) {
+        // display time in hours if it exceeds 1.5 hours
+        time /= 60*60;
+        var str = " hour";
+    }
+    else if (time>(1*60)) {
+        // display time in minutes if it exceeds 1 minute
+        time /= 60;
+        var str = " minute";
+    }
+    else {
+        // display time in seconds
+        var str = " second";
+    }
+    var timeStr = formatNumber(time, 3) + str;
+    return timeStr;
+};
+
 export {
     forceNumber,
     roundToOnePlace,
@@ -204,8 +240,9 @@ export {
     rJupToKm, rSunToKm,
     kmToPx,
     getDist, getPlanetY,
-    getEclipseDepth,
     getSystemPeriod,
     shuffleArray,
-    lerpColor
+    lerpColor,
+    formatNumber,
+    getTimeString
 };
