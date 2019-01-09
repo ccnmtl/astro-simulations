@@ -4,10 +4,16 @@ import Lightcurve from './Lightcurve';
 import LightcurveView from './LightcurveView';
 import TransitView from './TransitView';
 import {RangeStepInput} from 'react-range-step-input';
+
 import {
     forceNumber, getStarRadius, getStarTemp, getSpectralType,
     getEclipseDepth
 } from './utils';
+
+import {
+    getLuminosityFromMass, getTempFromLuminosity,
+    getRadiusFromTempAndLuminosity, getSpectralTypeFromTemp
+} from './star-utils';
 
 const systemPresets = [
     // 0: Option A
@@ -228,6 +234,17 @@ class ExoplanetTransitSimulator extends React.Component {
         this.onPresetSelect = this.onPresetSelect.bind(this);
 
         this.lightcurve = new Lightcurve();
+    }
+    componentDidUpdate(prevProps, prevState) {
+        if (
+            prevState.planetMass !== this.state.planetMass ||
+            prevState.planetRadius !== this.state.planetRadius ||
+            prevState.inclination !== this.state.inclination ||
+            prevState.longitude !== this.state.longitude ||
+            prevState.eccentricity !== this.state.eccentricity
+        ) {
+            this.updateParameters();
+        }
     }
     render() {
         const starType = getSpectralType(this.state.starMass);
@@ -581,6 +598,44 @@ class ExoplanetTransitSimulator extends React.Component {
                 </div>
             </div>
         </React.Fragment>;
+    }
+    /**
+     * https://gist.github.com/chris-siedell/662dd6f5dd253519f172b288520bf537#file-main-code-as-L76
+     */
+    updateParameters() {
+        const starMass = this.state.starMass;
+        const starLum = getLuminosityFromMass(starMass);
+        const starTemp = getTempFromLuminosity(starLum);
+        const starRadius = getRadiusFromTempAndLuminosity(starTemp, starLum);
+        const starType = getSpectralTypeFromTemp(starTemp);
+
+        let num = Math.round(starType.number);
+        if (num === 10) {
+            num = 9;
+        }
+
+        //displayStarInfo(starType, starTemp, starRadius);
+
+        let params = {};
+        params.mass1 = starMass * 1.98892e30;
+        params.radius1 = starRadius * 6.955e8;
+        params.temperature1 = starTemp;
+        params.mass2 = this.state.planetMass * 1.8987e27;
+        params.radius2 = this.state.planetRadius * 7.1492e7;
+        params.temperature2 = 500;
+        params.inclination = this.state.inclination;
+        params.longitude = this.state.longitude;
+        params.eccentricity = this.state.eccentricity;
+        //params.separation = separationSlider.value * 1.49598e11;
+
+        this.lightcurve.setParameters(params);
+        this.lightcurve.update();
+
+        params.minPhase = this.lightcurve.minPhase;
+        params.maxPhase = this.lightcurve.maxPhase;
+        params.phase = this.lightcurve.cursorPhase;
+
+        //visualizationMC.setParameters(params);
     }
     handleInputChange(event) {
         const target = event.target;

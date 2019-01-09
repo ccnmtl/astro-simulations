@@ -4,6 +4,10 @@
  * https://gist.github.com/chris-siedell/662dd6f5dd253519f172b288520bf537#file-lightcurve-as
  */
 export default class Lightcurve {
+    constructor() {
+        this.curveParams = {};
+    }
+
     setParameters(params) {
         if (typeof params.separation !== 'undefined') {
             this.separation = params.separation;
@@ -11,28 +15,28 @@ export default class Lightcurve {
         if (typeof params.eccentricity !== 'undefined') {
             this.eccentricity = params.eccentricity;
         }
-        if (params.longitude != undefined) {
+        if (typeof params.longitude !== 'undefined') {
             this.theta = (90 - params.longitude)*Math.PI/180;
         }
         if (typeof params.inclination !== 'undefined') {
             this.phi = (90 - params.inclination) * Math.PI / 180;
         }
-        if (params.mass1 != undefined) {
+        if (typeof params.mass1 !== 'undefined') {
             this.mass1 = params.mass1;
         }
-        if (params.mass2 != undefined) {
+        if (typeof params.mass2 !== 'undefined') {
             this.mass2 = params.mass2;
         }
-        if (params.radius1 != undefined) {
+        if (typeof params.radius1 !== 'undefined') {
             this.radius1 = params.radius1;
         }
-        if (params.radius2 != undefined) {
+        if (typeof params.radius2 !== 'undefined') {
             this.radius2 = params.radius2;
         }
-        if (params.temperature1 != undefined) {
+        if (typeof params.temperature1 !== 'undefined') {
             this.curveParams.temperature1 = params.temperature1;
         }
-        if (params.temperature2 != undefined) {
+        if (typeof params.temperature2 !== 'undefined') {
             this.curveParams.temperature2 = params.temperature2;
         }
 
@@ -51,7 +55,7 @@ export default class Lightcurve {
         this.eclipseOfBody1Duration = null;
         this.eclipseOfBody2Duration = null;
 
-        this.systemIsInOvercontact = this.checkForOvercontant(this.curveParams);
+        this.systemIsInOvercontact = this.checkForOvercontact(this.curveParams);
 
         if (this.systemIsDefined) {
             this.curveEvents = this.getCurveEventsObject(this.curveParams);
@@ -61,26 +65,34 @@ export default class Lightcurve {
                ) {
                 var a = this.curveParams.separation;
                 this.systemPeriod = Math.sqrt(
-                    4*Math.PI*Math.PI*a*a*a /
-                        (6.67300e-11 *
-                         (this.curveParams.mass1 + this.curveParams.mass2)
-                        )
+                    4 *Math .PI * Math.PI * a * a * a /
+                        (6.67300e-11 * (
+                            this.curveParams.mass1 + this.curveParams.mass2))
                 );
 
                 if (this.curveEvents.eclipseOfBody1.occurs) {
-                    this.eclipseOfBody1Duration = this.systemPeriod*this.curveEvents.eclipseOfBody1.duration.phase;
+                    this.eclipseOfBody1Duration =
+                        this.systemPeriod *
+                        this.curveEvents.eclipseOfBody1.duration.phase;
                 } else {
                     this.eclipseOfBody1Duration = 0;
                 }
 
                 if (this.curveEvents.eclipseOfBody2.occurs) {
-                    this.eclipseOfBody2Duration = this.systemPeriod*this.curveEvents.eclipseOfBody2.duration.phase;
+                    this.eclipseOfBody2Duration =
+                        this.systemPeriod *
+                        this.curveEvents.eclipseOfBody2.duration.phase;
                 } else {
                     this.eclipseOfBody2Duration = 0;
                 }
             }
         }
 
+    }
+
+    checkForOvercontact(params) {
+        var minSep = (params.radius1 + params.radius2)/(1 - params.eccentricity);
+        return (params.separation<minSep);
     }
 
     /**
@@ -93,62 +105,66 @@ export default class Lightcurve {
                                 duration - (object) has trueAnomaly and phase properties
                                 maxDepth - (object) has trueAnomaly and phase properties
      */
-    getCurveEventsObject(
-        separation, eccentricity, inclination,
-        argument, radius1, radius2
-    ) {
+    getCurveEventsObject(params) {
         let curveEvents = {
             eclipseOfBody1: {occurs: false},
             eclipseOfBody2: {occurs: false}
         };
 
-        const R = (radius1 + radius2) / separation;
-        const C1 = Math.sqrt((1 + eccentricity) / (1 - eccentricity));
+        const separation = params.separation;
+        const e = params.eccentricity;
+        const inclination = params.inclination;
+        const w = params.argument;
+        const r1 = params.radius1;
+        const r2 = params.radius2;
+
+        const R = (r1 + r2) / separation;
+        const C1 = Math.sqrt((1 + e) / (1 - e));
         const S2 = Math.cos(inclination) * Math.cos(inclination);
         const S1 = 1 - S2;
-        const K1 = (1 - eccentricity * eccentricity) * (
-            1 - eccentricity * eccentricity) * S1;
-        const K2 = -eccentricity * eccentricity * R * R;
-        const K3 = -2 * eccentricity * R * R;
-        const K4 = (1 - eccentricity * eccentricity) * (
-            1 - eccentricity * eccentricity) * S2 - R * R;
+        const K1 = (1 - e * e) * (
+            1 - e * e) * S1;
+        const K2 = -e * e * R * R;
+        const K3 = -2 * e * R * R;
+        const K4 = (1 - e * e) * (
+            1 - e * e) * S2 - R * R;
         const L1 = -K1;
         const L2 = 2 * K2;
         const L3 = K3;
 
         let tempList = [];
-        var n = 100;
-        var vStep = 2 * Math.PI / n;
-        var v = -vStep;
-        var vLast = v;
-        var derLast = L1*Math.sin(2*(v+w)) - sin(v)*(L2*Math.cos(v)+L3);
-        var negLast = derLast<0;
+        let n = 100;
+        let vStep = 2 * Math.PI / n;
+        let v = -vStep;
+        let vLast = v;
+        let derLast = L1*Math.sin(2*(v+w)) - Math.sin(v)*(L2*Math.cos(v)+L3);
+        let negLast = derLast<0;
 
         for (var j=0; j<n; j++) {
-                var v = j*vStep;
-                var der = L1*sin(2*(v+w)) - sin(v)*(L2*cos(v)+L3);
-                var neg = der<0;
+                let v = j * vStep;
+                let der = L1*Math.sin(2*(v+w)) - Math.sin(v)*(L2*Math.cos(v)+L3);
+                let neg = der<0;
                 if (neg!=negLast) {
-                        var a = vLast;
-                        var b = v;
-                        var c = a;
+                        let a = vLast;
+                        let b = v;
+                        let c = a;
                         var counter = 0;
                         do {
-                                var fa = L1*sin(2*(a+w)) - sin(a)*(L2*cos(a)+L3);
-                                var fb = L1*sin(2*(b+w)) - sin(b)*(L2*cos(b)+L3);
-                                var fc = L1*sin(2*(c+w)) - sin(c)*(L2*cos(c)+L3);
+                                var fa = L1*Math.sin(2*(a+w)) - Math.sin(a)*(L2*Math.cos(a)+L3);
+                                var fb = L1*Math.sin(2*(b+w)) - Math.sin(b)*(L2*Math.cos(b)+L3);
+                                var fc = L1*Math.sin(2*(c+w)) - Math.sin(c)*(L2*Math.cos(c)+L3);
                                 if ((fa!=fc) && (fb!=fc)) var d = ((a*fb*fc)/((fa-fb)*(fa-fc))) + ((b*fa*fc)/((fb-fa)*(fb-fc))) + ((c*fa*fb)/((fc-fa)*(fc-fb)));
                                 else var d = b - fb*((b-a)/(fb-fa));
                                 var m = (a+b)/2;
                                 if ((m<b && (d>b || d<m)) || (m>b && (d<b || d>m))) d = m;
-                                var fd = L1*sin(2*(d+w)) - sin(d)*(L2*cos(d)+L3);
+                                var fd = L1*Math.sin(2*(d+w)) - Math.sin(d)*(L2*Math.cos(d)+L3);
                                 if ((fb*fd)<0) a = b;
                                 c = b;
                                 b = d;
                                 counter++;
                         } while ((fd<-5e-15 || fd>5e-15) && counter<200);
                         if (counter>=200) console.log("*** warning, iteration limit reached at point A ***");
-                        var f = K1*cos(d+w)*cos(d+w) + K2*cos(d)*cos(d) + K3*cos(d) + K4;
+                        var f = K1*Math.cos(d+w)*Math.cos(d+w) + K2*Math.cos(d)*Math.cos(d) + K3*Math.cos(d) + K4;
                         if (f<0) tempList.push({min: ((d+w)%(2*Math.PI) + (2*Math.PI))%(2*Math.PI) - w});
                 }
                 negLast = neg;
@@ -228,11 +244,11 @@ export default class Lightcurve {
 
                 var vMid = eclipse.start.trueAnomaly + (eclipse.duration.trueAnomaly/2);
 
-                var n = 50;
-                var vStep = Math.PI/(2*n);
+                n = 50;
+                vStep = Math.PI/(2*n);
 
                 var counter = 0;
-                var v = vMid;
+                v = vMid;
                 do {
                     v -= vStep;
                     var S3 = Math.cos(v+w);
@@ -246,7 +262,7 @@ export default class Lightcurve {
                 var vLeft = v;
 
                 var counter = 0;
-                var v = vMid;
+                v = vMid;
                 do {
                     v += vStep;
                     var S3 = Math.cos(v+w);
@@ -439,14 +455,18 @@ export default class Lightcurve {
                 this.minPhase = 0;
                 this.maxPhase = 1;
             } else {
-
-                var eclipse = this.curveEvents["eclipseOfBody"+this.regionShown];
-                if (eclipse.occurs) {
-                    this.xScale = this.plotWidth*(1 - 2*this.horizontalMargin)/eclipse.duration.phase;
-                    this.minPhase = ((eclipse.start.phase - this.horizontalMargin*this.plotWidth/this.xScale)%1 + 1)%1;
-                    this.maxPhase = (this.minPhase + (this.plotWidth/this.xScale))%1;
-                }
-                else {
+                var eclipse = this.curveEvents[
+                    "eclipseOfBody" + this.regionShown
+                ];
+                if (eclipse && eclipse.occurs) {
+                    this.xScale = this.plotWidth * (
+                        1 - 2 * this.horizontalMargin) / eclipse.duration.phase;
+                    this.minPhase = (
+                        (eclipse.start.phase - this.horizontalMargin *
+                         this.plotWidth / this.xScale) % 1 + 1) % 1;
+                    this.maxPhase = (this.minPhase + (
+                        this.plotWidth / this.xScale)) % 1;
+                } else {
                     // in this case the eclipse doesn't occur, but we still want to show the lightcurve,
                     // so what we do is plot a small window around where the eclipse would occur
                     // if it did (and importantly, where the other eclipse will never occur)
@@ -454,8 +474,8 @@ export default class Lightcurve {
                     var w = this.curveParams.argument;
                     var e = this.curveParams.eccentricity;
 
-                    if (this.regionShown==1) var _TA = (Math.PI/2) - w;
-                    else var _TA = (3*Math.PI/2) - w;
+                    if (this.regionShown === 1) var _TA = (Math.PI/2) - w;
+                    else var _TA = (3 * Math.PI/2) - w;
 
                     var _EA = 2*Math.atan(Math.tan(0.5*_TA)/Math.sqrt((1+e)/(1-e)));
                     var _MA = _EA - e*Math.sin(_EA);
@@ -473,8 +493,8 @@ export default class Lightcurve {
             this.maxPhase = null;
         }
 
-        this.updateCurve();
-        this.updateMeasurements();
-        this.updateVerticalScale();
+        //this.updateCurve();
+        //this.updateMeasurements();
+        //this.updateVerticalScale();
     }
 }
