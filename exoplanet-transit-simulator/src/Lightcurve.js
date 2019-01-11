@@ -9,8 +9,8 @@ export default class Lightcurve {
         if (typeof this.width === 'undefined' ||
             typeof this.height === 'undefined'
            ) {
-            this.width = 480;
-            this.height = 280;
+            this.width = 400;
+            this.height = 240;
         }
 
         this._xscale = 100;

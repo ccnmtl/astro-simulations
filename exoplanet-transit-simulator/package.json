@@ -9,7 +9,7 @@
     "serve": "webpack-dev-server",
     "dev": "webpack --mode development --watch",
     "build": "webpack --mode production",
-    "eslint": "eslint src/*.jsx"
+    "eslint": "eslint src/*.jsx src/**/*.jsx"
   },
   "repository": {
     "type": "git",

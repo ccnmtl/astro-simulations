@@ -5,18 +5,12 @@ import DataCircles from './DataCircles';
 import PhaseControl from './PhaseControl';
 import Axis from './Axis';
 
-// Returns the largest X coordinate from the data set.
-const xMax = data => d3.max(data, d => d[0]);
-
-// Returns the higest Y coordinate from the data set.
-const yMax = data => d3.max(data, d => d[1]);
-
 // Returns a function that "scales" X coordinates from the data to fit
 // the chart.
 const xScale = props => {
     return d3
         .scaleLinear()
-        .domain([0, xMax(props.lightcurveData)])
+        .domain(d3.extent(props.lightcurveData, d => d[0]))
         .range([props.paddingLeft, props.width]);
 };
 
@@ -25,24 +19,19 @@ const xScale = props => {
 const yScale = props => {
     return d3
         .scaleLinear()
-        .domain([
-            0,
-            props.showSimulatedMeasurements ?
-            yMax(props.noiseData) : yMax(props.lightcurveData)
-        ])
+        .domain(d3.extent(props.lightcurveData, d => d[1]))
         .range([props.height - props.padding, props.padding]);
 };
 
-const yCurveScale = props => {
+const yNoiseScale = props => {
     return d3
         .scaleLinear()
-        .domain([0, yMax(props.lightcurveData)])
+        .domain(d3.extent(props.noiseData, d => d[1]))
         .range([props.height - props.padding, props.padding]);
 };
 
 class Line extends React.Component {
     render() {
-        const self = this;
         const data = this.props.data;
 
         const x = this.props.xScale;
@@ -50,21 +39,12 @@ class Line extends React.Component {
 
         const line = d3
             .line()
-            .x(function(d) { return x(d[0]); })
-            .y(function(d) { return y(d[1]); });
-
-        if (self.props.showSimulatedMeasurements) {
-            data.forEach(function(d) {
-                x.domain(d3.extent(data, function(d) { return d[0]; }));
-                self.props.yCurveScale.domain(
-                    d3.extent(data, function(d) { return d[1]; }));
+            .x(function(d) {
+                return x(d[0]);
+            })
+            .y(function(d) {
+                return y(d[1]);
             });
-        } else {
-            data.forEach(function(d) {
-                x.domain(d3.extent(data, function(d) { return d[0]; }));
-                y.domain(d3.extent(data, function(d) { return d[1]; }));
-            });
-        }
 
         const newline = line(data);
         const visibility = this.props.showTheoreticalCurve ?
@@ -77,10 +57,13 @@ class Line extends React.Component {
                   d={newline} />
         );
     }
-};
+}
 
 Line.propTypes = {
-    showTheoreticalCurve: PropTypes.bool.isRequired
+    data: PropTypes.array.isRequired,
+    showTheoreticalCurve: PropTypes.bool.isRequired,
+    xScale: PropTypes.func.isRequired,
+    yScale: PropTypes.func.isRequired
 };
 
 export default class Plot extends React.Component {
@@ -89,7 +72,8 @@ export default class Plot extends React.Component {
 
         const scales = {
             xScale: xScale(props),
-            yScale: yScale(props)
+            yScale: yScale(props),
+            yNoiseScale: yNoiseScale(props)
         };
 
         return (
@@ -100,17 +84,23 @@ export default class Plot extends React.Component {
                 <Line
                     showTheoreticalCurve={this.props.showTheoreticalCurve}
                     showSimulatedMeasurements={this.props.showSimulatedMeasurements}
-                    data={this.props.lightcurveData} {...scales}
-                    yCurveScale={yCurveScale(props)}
+                    data={this.props.lightcurveData}
+                    {...scales}
                 />
                 <Axis ax={'y'} {...props} {...scales} />
                 <PhaseControl {...props} {...scales} />
             </svg>
         )
     }
-};
+}
 
 Plot.propTypes = {
+    width: PropTypes.number.isRequired,
+    height: PropTypes.number.isRequired,
+    padding: PropTypes.number.isRequired,
+    paddingLeft: PropTypes.number.isRequired,
+    lightcurveData: PropTypes.array.isRequired,
+    noiseData: PropTypes.array.isRequired,
     showTheoreticalCurve: PropTypes.bool.isRequired,
     showSimulatedMeasurements: PropTypes.bool.isRequired
 };

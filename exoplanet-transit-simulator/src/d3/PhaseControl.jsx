@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 const PhaseControl = props => {
     const xPos = props.phase * (
@@ -8,6 +9,14 @@ const PhaseControl = props => {
                  x2={xPos} y2={props.height - props.padding}
                  cursor="pointer"
                  stroke="#ff7070" strokeWidth={3} />;
+};
+
+PhaseControl.propTypes = {
+    phase: PropTypes.number.isRequired,
+    width: PropTypes.number.isRequired,
+    padding: PropTypes.number.isRequired,
+    paddingLeft: PropTypes.number.isRequired,
+    height: PropTypes.number.isRequired
 };
 
 export default PhaseControl;

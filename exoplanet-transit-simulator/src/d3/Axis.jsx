@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 
 export default class Axis extends Component {
@@ -37,3 +38,8 @@ export default class Axis extends Component {
         </React.Fragment>;
     }
 }
+
+Axis.propTypes = {
+    yScale: PropTypes.func.isRequired,
+    paddingLeft: PropTypes.number.isRequired
+};
