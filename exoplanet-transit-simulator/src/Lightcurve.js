@@ -177,7 +177,7 @@ export default class Lightcurve {
     setPhaseOffset(arg, callChangeHandler) {
         //var cP = this.getCursorPhase();
         this._phaseOffset = (arg%1+1)%1;
-        if (this._regionShown==0) {
+        if (this._regionShown === 0) {
             //this.plotAreaMC._x = this._phaseOffset*this._plotWidth;
             //this.setCursorPhase(cP, false);
             if (callChangeHandler) this._parent[this.phaseOffsetChangeHandler](this._phaseOffset);
@@ -186,7 +186,6 @@ export default class Lightcurve {
             //this.plotAreaMC._x = 0;
         }
         //this.updateCursorPosition();
-        this.updateHorizontalScale();
     };
 
     checkForOvercontact(params) {
@@ -203,9 +202,9 @@ export default class Lightcurve {
             this._dataType = 1;
             //this.yAxisLabelMC.axisLabel = "Absolute Magnitude";
         }
-        if (regionShown=="full" || regionShown=="full curve" || regionShown=="all") this._regionShown = 0;
-        else if (regionShown=="eclipse of body 1") this._regionShown = 1;
-        else if (regionShown=="eclipse of body 2") this._regionShown = 2;
+        if (regionShown === "full" || regionShown === "full curve" || regionShown === "all") this._regionShown = 0;
+        else if (regionShown === "eclipse of body 1") this._regionShown = 1;
+        else if (regionShown === "eclipse of body 2") this._regionShown = 2;
         this.setPhaseOffset(this._phaseOffset, false);
     };
 
@@ -636,7 +635,7 @@ export default class Lightcurve {
                     var w = this._curveParams.argument;
                     var e = this._curveParams.eccentricity;
 
-                    if (this._regionShown==1) var _TA = (Math.PI/2) - w;
+                    if (this._regionShown === 1) var _TA = (Math.PI/2) - w;
                     else var _TA = (3*Math.PI/2) - w;
 
                     var _EA = 2*Math.atan(Math.tan(0.5*_TA)/Math.sqrt((1+e)/(1-e)));
@@ -660,18 +659,6 @@ export default class Lightcurve {
         //this.updateVerticalScale();
 
         return curve;
-    };
-
-    updateHorizontalScale() {
-        if (this._regionShown==0) {
-            //this.xAxisLabelMC.axisLabel = "Phase";
-        }
-        else if (this._regionShown==1) {
-            //this.xAxisLabelMC.axisLabel = "";
-        }
-        else if (this._regionShown==2) {
-            //this.xAxisLabelMC.axisLabel = "";
-        }
     };
 
     getBolometricCorrection(T) {
@@ -780,7 +767,7 @@ export default class Lightcurve {
 
         let pL = [];
 
-        if (this._regionShown==0) {
+        if (this._regionShown === 0) {
             // show full lightcurve
             addPhases(pL, this._curveEvents.eclipseOfBody1);
             addPhases(pL, this._curveEvents.eclipseOfBody2);
