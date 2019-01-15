@@ -59,6 +59,42 @@ export default class TransitView extends React.Component {
         this.onDragStart = this.onDragStart.bind(this);
         this.onDragEnd = this.onDragEnd.bind(this);
         this.onMove = this.onMove.bind(this);
+
+        this._c = {};
+        this._scale = 2000;
+
+        this._minPhase = 0;
+        this._maxPhase = 1;
+        this._size = 350;
+
+        this._phi = (90 - this.props.inclination)*Math.PI/180;
+        this._theta = (90 - this.props.longitude)*Math.PI/180;
+
+        this._massTotal = this.props.starMass + this.props.planetMass;
+        this._a1 = (this.props.semimajorAxis * this.props.planetMass) / this._massTotal;
+        this._a2 = (this.props.semimajorAxis * this.props.starMass) / this._massTotal;
+
+        this.initA();
+    }
+    initA() {
+        // a0 through a8 are constants used to transform a world coordinate to a screen coordinate
+        var ct = Math.cos(this._theta);
+        var st = Math.sin(this._theta);
+        var cp = Math.cos(this._phi);
+        var sp = Math.sin(this._phi);
+        var s = this._scale;
+
+        this._c = {
+            a0: -s * st,
+            a1: s * ct,
+            a2: 0,
+            a3: s * ct * sp,
+            a4: s * st * sp,
+            a5: -s * cp,
+            a6: s * ct * cp,
+            a7: s * st * cp,
+            a8: s * sp
+        };
     }
     render() {
         return <div ref={(el) => {this.el = el}}></div>;
@@ -109,9 +145,11 @@ export default class TransitView extends React.Component {
              * this.distanceHelper = g; */
         //}
 
+
         if (
             prevProps.starMass !== this.props.starMass ||
             prevProps.planetRadius !== this.props.planetRadius ||
+            prevProps.planetEccentricity !== this.props.planetEccentricity ||
             prevProps.inclination !== this.props.inclination ||
             prevProps.semimajorAxis !== this.props.semimajorAxis
         ) {
@@ -119,14 +157,9 @@ export default class TransitView extends React.Component {
                 this.props.starMass, this.props.planetRadius);
             this.setState({orbitWidth: pw});
 
-            const phaseCenter = this.entityData.phaseCenter;
+            const orbitLine = this.makeOrbitLine(
+                this.getOrbitalPath(this.props.planetEccentricity));
 
-            const orbitLine = this.makePhaseLine(
-                phaseCenter.x - (this.state.orbitWidth / 2),
-                phaseCenter.x + (this.state.orbitWidth / 2),
-                getPlanetY(
-                    this.props.inclination, this.props.semimajorAxis,
-                    this.app.view.height));
             this.app.stage.removeChild(this.orbitLine);
             this.orbitLine.destroy();
             // Re-add orbitLine behind the planet, in front of the
@@ -156,18 +189,158 @@ export default class TransitView extends React.Component {
                 this.props.starMass, this.props.inclination);
         }
     }
-    makePhaseLine(orbitLeft, phaseMax, y) {
+
+    makeOrbitLine(path) {
         const orbitLine = new PIXI.Graphics();
         const phaseCenter = this.entityData.phaseCenter
         orbitLine.pivot = phaseCenter;
         orbitLine.position = phaseCenter;
         orbitLine.lineStyle(1, 0xd0d0d0);
-        orbitLine.moveTo(
-            orbitLeft, y);
-        orbitLine.lineTo(
-            phaseMax, y);
+
+        if (path.length >= 1) {
+            orbitLine.moveTo(path[0][0], path[0][1]);
+        }
+
+        for (let i = 1; i < path.length; i++) {
+            orbitLine.lineTo(path[i][0], path[i][1]);
+        }
+
         return orbitLine;
     }
+
+    getOrbitalPath(eccentricity) {
+        const sin = Math.sin;
+        const cos = Math.cos;
+        const abs = Math.abs;
+
+        const a1 = this._a1;
+        const a2 = this._a2;
+        const e = eccentricity;
+
+        const cx = this.entityData.planetCenter.x;
+        const cy = this.entityData.planetCenter.y;
+
+        let ma = this._minPhase * 2 * Math.PI;
+        let ea0 = 0;
+        let ea1 = ma;
+        let iCount = 0;
+        do {
+            ea0 = ea1;
+            ea1 = ea0+(ma+e*sin(ea0)-ea0)/(1-e*cos(ea0));
+            iCount++;
+        } while (abs(ea1-ea0)>0.001 && iCount<100);
+        let minEA = ea1;
+
+        ma = this._maxPhase*2*Math.PI;
+        ea0 = 0;
+        ea1 = ma;
+        iCount = 0;
+        do {
+            ea0 = ea1;
+            ea1 = ea0+(ma+e*sin(ea0)-ea0)/(1-e*cos(ea0));
+            iCount++;
+        } while (abs(ea1-ea0)>0.001 && iCount<100);
+        let maxEA = ea1;
+
+        let diffEA = maxEA - minEA;
+        if (diffEA < 0) {
+            diffEA += 2 * Math.PI;
+        }
+
+        let n = 40;
+        let step = diffEA / n;
+        const B = Math.sqrt(1 - (e * e));
+        let aAngle = minEA;
+
+        let k0 = this._c.a0;
+        let k1 = this._c.a1;
+        let k3 = this._c.a3;
+        let k4 = this._c.a4;
+
+        var maxD2 = 5 * this._size * this._size;
+
+        let wx = Math.cos(aAngle)-e;
+        let wy = B * Math.sin(aAngle);
+        let wx1 = -a1*wx;
+        let wy1 = -a1*wy;
+        let wx2 = a2*wx;
+        let wy2 = a2*wy;
+        let sx1 = wx1*k0+wy1*k1;
+        let sy1 = wx1*k3+wy1*k4;
+        let sx2 = wx2*k0+wy2*k1;
+        let sy2 = wx2*k3+wy2*k4;
+        let sx = cx + sx2 - sx1;
+        let sy = cy + sy2 - sy1;
+
+        let coords = [[sx, sy]];
+        for (let i = 0; i < n; i++) {
+            aAngle += step;
+            wx = Math.cos(aAngle)-e;
+            wy = B * Math.sin(aAngle);
+            wx1 = -a1*wx;
+            wy1 = -a1*wy;
+            wx2 = a2*wx;
+            wy2 = a2*wy;
+            sx1 = wx1*k0+wy1*k1;
+            sy1 = wx1*k3+wy1*k4;
+            sx2 = wx2*k0+wy2*k1;
+            sy2 = wx2*k3+wy2*k4;
+
+            sx = cx + sx2 - sx1;
+            sy = cy + sy2 - sy1;
+
+            if ((sx * sx + sy * sy) > maxD2) {
+                continue;
+            }
+            coords.push([sx, sy]);
+        }
+
+        return coords;
+    }
+
+    getPlanetPosition() {
+        const ma = this.phase*(2*Math.PI);
+        const e = this.props.planetEccentricity;
+
+        let ea0 = 0;
+        let ea1 = ma;
+        let iCount = 0;
+
+        do {
+            ea0 = ea1;
+            ea1 = ea0+(ma+e*Math.sin(ea0)-ea0)/(1-e*Math.cos(ea0));
+            iCount++;
+        } while (Math.abs(ea1-ea0)>0.001 && iCount<100);
+
+        const ta = 2*Math.atan(Math.sqrt((1+e)/(1-e))*Math.tan(ea1/2));
+
+        const cosTa = Math.cos(ta);
+        const sinTa = Math.sin(ta);
+
+        const k = (1-e*e)/(1+e*cosTa);
+        const r1 = this._a1*k;
+        const r2 = this._a2*k;
+
+        const wx1 = -r1*cosTa;
+        const wy1 = -r1*sinTa;
+
+        const wx2 = r2*cosTa;
+        const wy2 = r2*sinTa;
+
+        const c = this._c;
+
+        const sx1 = wx1*c.a0 + wy1*c.a1;
+        const sy1 = wx1*c.a3 + wy1*c.a4;
+
+        const sx2 = wx2*c.a0 + wy2*c.a1;
+        const sy2 = wx2*c.a3 + wy2*c.a4;
+
+        return {
+            x: this.entityData.planetCenter.x + sx2 - sx1,
+            y: this.entityData.planetCenter.y + sy2 - sy1
+        };
+    }
+
     drawScene(app) {
         const starRadius = this.entityData.baseStarRadius * this.props.starMass;
         const star = new PIXI.Graphics();
@@ -187,18 +360,13 @@ export default class TransitView extends React.Component {
             this.props.starMass * 0.75, this.props.starMass * 0.75);
         app.stage.addChild(star);
 
-        const phaseCenter = this.entityData.phaseCenter
-        const orbitLine = this.makePhaseLine(
-            phaseCenter.x - (this.state.orbitWidth / 2),
-            phaseCenter.x + (this.state.orbitWidth / 2),
-            getPlanetY(
-                this.props.inclination, this.props.semimajorAxis,
-                app.view.height)
-        );
+        const orbitLine = this.makeOrbitLine(
+            this.getOrbitalPath(this.props.planetEccentricity));
 
         const orbitLeft = orbitLine.currentPath.shape.points[0];
         const orbitWidth =
             orbitLine.currentPath.shape.points[2] - orbitLeft;
+
         this.props.onPhaseCoordsChange(orbitLeft, orbitWidth);
 
         this.orbitLine = orbitLine;
@@ -249,12 +417,8 @@ export default class TransitView extends React.Component {
      */
     updateScene(
         // Each of these params maps to a user input.
-        phase, planetRadius, starMass, inclination
+        phase, planetRadius, starMass
     ) {
-        // The amount to scale the phase line. This also affects
-        // planet position.
-        const orbitWidth = getOrbitWidth(starMass, planetRadius);
-
         // Update star color and size
         this.star.clear();
         this.star.beginFill(getStarColor(starMass));
@@ -269,12 +433,7 @@ export default class TransitView extends React.Component {
         // Make phase a number between -1 and 1.
         phase = (phase - 0.5) * 2;
 
-        const planetPos = this.entityData.phaseCenter.x + (
-            phase * (orbitWidth / 2));
-        this.planet.x = planetPos;
-        this.planet.y = getPlanetY(
-            inclination, this.props.semimajorAxis,
-            this.app.view.height);
+        this.planet.position = this.getPlanetPosition();
         this.arrow.x = this.planet.x;
         this.arrow.position.y = this.planet.y + 16;
 
@@ -301,8 +460,11 @@ export default class TransitView extends React.Component {
 TransitView.propTypes = {
     phase: PropTypes.number.isRequired,
     planetRadius: PropTypes.number.isRequired,
+    planetEccentricity: PropTypes.number.isRequired,
+    planetMass: PropTypes.number.isRequired,
     starMass: PropTypes.number.isRequired,
     inclination: PropTypes.number.isRequired,
+    longitude: PropTypes.number.isRequired,
     semimajorAxis: PropTypes.number.isRequired,
     onPhaseCoordsChange: PropTypes.func.isRequired
 };
