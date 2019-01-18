@@ -724,7 +724,9 @@ export default class Lightcurve {
         const maxPhase = this._maxPhase;
         const xScale = this.__xScale;
 
-        const res = xScale / this.resolution;
+        // Alter this scale value as necessary
+        const scale = 20;
+        const res = (xScale / this.resolution) * scale;
 
         const addPhases = function(pL, eclipse) {
             // this mini-function adds phases that sample the given eclipse with an appropriate
@@ -840,13 +842,11 @@ export default class Lightcurve {
             var x = xScale*(pL[0].phase - minPhase);
             var y = yOffset + yScale*pL[0].visFlux;
 
-            //mc.moveTo(x, y);
-            coords.push([x, y]);
+            coords.push([x, -y]);
             for (var i=1; i<pL.length; i++) {
                 var x = xScale*(pL[i].phase - minPhase);
                 var y = yOffset + yScale*pL[i].visFlux;
-                coords.push([x, y]);
-                //mc.lineTo(x, y);
+                coords.push([x, -y]);
             }
         } else {
             // visual magnitude
@@ -879,13 +879,11 @@ export default class Lightcurve {
             var x = xScale*(pL[0].phase - minPhase);
             var y = yOffset + yScale*pL[0].visMag;
 
-            coords.push([x, y]);
-            //mc.moveTo(x, y);
+            coords.push([x, -y]);
             for (var i=1; i<pL.length; i++) {
                 var x = xScale*(pL[i].phase - minPhase);
                 var y = yOffset + yScale*pL[i].visMag;
-                //mc.lineTo(x, y);
-                coords.push([x, y]);
+                coords.push([x, -y]);
             }
         }
 
@@ -893,6 +891,16 @@ export default class Lightcurve {
         //this.plotAreaMC.curveMC.mc2._x = -this._plotWidth;
         //this.plotAreaMC.curveMC.mc3._x = 0;
 
-        return coords;
+        //
+        // Make the curve display correctly by only return first half
+        // of this array.
+        // That kind of thing is necessary when working with
+        // complicated code I haven't written myself. -_-
+        //
+        // TODO: surely this isn't necessary and can be done by
+        // altering the computations above.
+        //
+        const firstHalf = coords.slice(0, Math.floor(coords.length / 2));
+        return firstHalf;
     };
 }
