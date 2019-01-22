@@ -199,6 +199,18 @@ const getTimeString = function(time) {
     return timeStr;
 };
 
+/**
+ * Return the given array, normalized.
+ */
+const normalize = function(array) {
+    const max = Math.max(...array);
+    const nArray = [];
+    array.forEach(function(element) {
+        nArray.push(element / max);
+    });
+    return nArray;
+}
+
 export {
     forceNumber,
     roundToOnePlace,
@@ -211,5 +223,6 @@ export {
     getSystemPeriod,
     shuffleArray,
     formatNumber,
-    getTimeString
+    getTimeString,
+    normalize
 };

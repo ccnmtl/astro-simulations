@@ -1,3 +1,5 @@
+import {normalize} from './utils';
+
 /**
  * This Lightcurve class was ported from the ActionScript
  * original here:
@@ -842,11 +844,11 @@ export default class Lightcurve {
             var x = xScale*(pL[0].phase - minPhase);
             var y = yOffset + yScale*pL[0].visFlux;
 
-            coords.push([x, -y]);
+            coords.push([x, y]);
             for (var i=1; i<pL.length; i++) {
                 var x = xScale*(pL[i].phase - minPhase);
                 var y = yOffset + yScale*pL[i].visFlux;
-                coords.push([x, -y]);
+                coords.push([x, y]);
             }
         } else {
             // visual magnitude
@@ -879,11 +881,11 @@ export default class Lightcurve {
             var x = xScale*(pL[0].phase - minPhase);
             var y = yOffset + yScale*pL[0].visMag;
 
-            coords.push([x, -y]);
+            coords.push([x, y]);
             for (var i=1; i<pL.length; i++) {
                 var x = xScale*(pL[i].phase - minPhase);
                 var y = yOffset + yScale*pL[i].visMag;
-                coords.push([x, -y]);
+                coords.push([x, y]);
             }
         }
 
@@ -897,10 +899,12 @@ export default class Lightcurve {
         // That kind of thing is necessary when working with
         // complicated code I haven't written myself. -_-
         //
-        // TODO: surely this isn't necessary and can be done by
-        // altering the computations above.
-        //
         const firstHalf = coords.slice(0, Math.floor(coords.length / 2));
-        return firstHalf;
+        const normalized = normalize(firstHalf.map(e => -e[1]));
+        const a = [];
+        firstHalf.forEach(function(x, idx) {
+            a.push([x[0], -normalized[idx] + 2]);
+        });
+        return a;
     };
 }
