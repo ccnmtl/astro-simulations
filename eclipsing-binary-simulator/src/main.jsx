@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {RangeStepInput} from 'react-range-step-input';
 import LightcurveView from './LightcurveView';
-import SystemView from './SystemView';
+import BinarySystemView from './BinarySystemView';
 import {forceNumber} from './utils';
 
 
@@ -73,36 +73,13 @@ class EclipsingBinarySimulator extends React.Component {
 
             <div className="row mt-2">
                 <div className="col-6">
-                    <SystemView
+                    <BinarySystemView
                         inclination={this.state.inclination}
                         longitude={this.state.longitude} />
 
-                    <h5>System Orientation</h5>
+                    <h6>System Orientation</h6>
 
                     <div className="form-inline">
-                        <div className="form-group row">
-                            <label className="col-2 col-form-label col-form-label-sm">
-                                Inclination:
-                            </label>
-
-                            <div className="col-10">
-                                <input
-                                    type="number"
-                                    className="form-control form-control-sm"
-                                    name="inclination"
-                                    value={this.state.inclination}
-                                    onChange={this.handleInputChange}
-                                    min={0} max={180} step={0.001} />&deg;
-
-        <RangeStepInput
-            className="form-control"
-            name="inclination"
-            value={this.state.inclination}
-            onChange={this.handleInputChange}
-            min={0} max={180} step={0.001} />
-                            </div>
-                        </div>
-
                         <div className="form-group row">
                             <label className="col-2 col-form-label col-form-label-sm">
                                 Longitude:
@@ -117,17 +94,40 @@ class EclipsingBinarySimulator extends React.Component {
                                     onChange={this.handleInputChange}
                                     step={0.1} />&deg;
 
-        <RangeStepInput
-            className="form-control"
-            name="longitude"
-            value={this.state.longitude}
-            onChange={this.handleInputChange}
-            min={0} max={360} step={0.1} />
+                                <RangeStepInput
+                                    className="form-control"
+                                    name="longitude"
+                                    value={this.state.longitude}
+                                    onChange={this.handleInputChange}
+                                    min={0} max={360} step={0.1} />
+                            </div>
+                        </div>
+
+                        <div className="form-group row">
+                            <label className="col-2 col-form-label col-form-label-sm">
+                                Inclination:
+                            </label>
+
+                            <div className="col-10">
+                                <input
+                                    type="number"
+                                    className="form-control form-control-sm"
+                                    name="inclination"
+                                    value={this.state.inclination}
+                                    onChange={this.handleInputChange}
+                                    min={0} max={180} step={0.001} />&deg;
+
+                                <RangeStepInput
+                                    className="form-control"
+                                    name="inclination"
+                                    value={this.state.inclination}
+                                    onChange={this.handleInputChange}
+                                    min={0} max={180} step={0.001} />
                             </div>
                         </div>
                     </div>
 
-                <h5>Animation Controls</h5>
+                <h6>Animation and Visualization Controls</h6>
 
                 <div className="form-inline">
                     <div className="form-group row">
@@ -162,12 +162,12 @@ class EclipsingBinarySimulator extends React.Component {
                                 onChange={this.handleInputChange}
                                 min={0} max={180} step={0.001} />
 
-        <RangeStepInput
-            className="form-control"
-            name="phase"
-            value={this.state.phase}
-            onChange={this.handleInputChange}
-            min={0} max={180} step={0.001} />
+                            <RangeStepInput
+                                className="form-control"
+                                name="phase"
+                                value={this.state.phase}
+                                onChange={this.handleInputChange}
+                                min={0} max={180} step={0.001} />
                         </div>
                     </div>
                 </div>
@@ -221,7 +221,7 @@ class EclipsingBinarySimulator extends React.Component {
                         showLightcurve={this.state.showLightcurve}
                         phase={this.state.phase} />
 
-                    <h5>Presets</h5>
+                    <h6>Presets</h6>
 
                     <select className="form-control form-control-sm" onChange={this.onPresetSelect}>
                         <option value={-1}>- Select a preset -</option>
@@ -289,7 +289,7 @@ class EclipsingBinarySimulator extends React.Component {
                         <option value={53}>54. EF Dra</option>
                     </select>
 
-                    <h5>Star 1 Properties</h5>
+                    <h6>Star 1 Properties</h6>
 
                     <div className="form-inline">
                         <div className="form-group row">
@@ -362,7 +362,7 @@ class EclipsingBinarySimulator extends React.Component {
                         </div>
                     </div>
 
-                    <h5>Star 2 Properties</h5>
+                    <h6>Star 2 Properties</h6>
 
                     <div className="form-inline">
                         <div className="form-group row">
@@ -435,7 +435,7 @@ class EclipsingBinarySimulator extends React.Component {
                         </div>
                     </div>
 
-                    <h5>System Properties</h5>
+                    <h6>System Properties</h6>
 
                     <div className="form-inline">
                         <div className="form-group row">
