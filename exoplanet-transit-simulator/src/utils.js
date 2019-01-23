@@ -121,15 +121,6 @@ const getInclinationOffset = function(inclination, semimajorAxis) {
 };
 
 /**
- * Return the y-position of the planet and phase line in the Pixi
- * scene.
- */
-const getPlanetY = function(inclination, semimajorAxis, viewHeight=350) {
-    const offset = getInclinationOffset(-inclination + 90, semimajorAxis);
-    return (viewHeight / 2) + kmToPx(offset);
-};
-
-/**
  * From original source.
  */
 const getSystemPeriod = function(planetSemimajorAxis, planetMass, starMass) {
@@ -219,7 +210,7 @@ export {
     getSpectralType,
     rJupToKm, rSunToKm,
     kmToPx,
-    getDist, getPlanetY,
+    getDist,
     getSystemPeriod,
     shuffleArray,
     formatNumber,

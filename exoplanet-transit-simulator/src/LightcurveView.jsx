@@ -137,12 +137,5 @@ LightcurveView.propTypes = {
     inclination: PropTypes.number.isRequired,
     longitude: PropTypes.number.isRequired,
     phase: PropTypes.number.isRequired,
-
-    // orbitLeft is the min X co-ordinates of the
-    // planet's orbitLine in the Pixi scene. This is needed to
-    // calculate the lightcurve.
-    orbitLeft: PropTypes.number.isRequired,
-    orbitWidth: PropTypes.number.isRequired,
-
     curveCoords: PropTypes.array.isRequired
 };
