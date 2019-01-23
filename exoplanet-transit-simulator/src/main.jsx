@@ -63,13 +63,10 @@ class ExoplanetTransitSimulator extends React.Component {
             longitude: 0,
             phase: 0.5,
 
-            // Pixi scene co-ordinates. Initialize these to accurate
-            // values.
-            // This is hardcoded because the TransitView doesn't know
-            // its width and height right when the DOM is created, and these
-            // values depend on that.
-            orbitLeft: 45.61,
-            orbitWidth: 260.62
+            // These values change as the lightcurve changes. They
+            // represent just a tiny part of the planet's orbit.
+            minPhase: 0,
+            maxPhase: 1
         };
         this.state = this.initialState;
 
@@ -163,8 +160,6 @@ class ExoplanetTransitSimulator extends React.Component {
                         inclination={this.state.inclination}
                         longitude={this.state.longitude}
                         phase={this.state.phase}
-                        orbitLeft={this.state.orbitLeft}
-                        orbitWidth={this.state.orbitWidth}
                     />
                     <div className="text-center">
                         {getEclipseText(
@@ -510,11 +505,7 @@ class ExoplanetTransitSimulator extends React.Component {
             [name]: value
         });
     }
-    onPhaseCoordsChange(orbitLeft, orbitWidth) {
-        this.setState({
-            orbitLeft: orbitLeft,
-            orbitWidth: orbitWidth
-        });
+    onPhaseCoordsChange() {
     }
     onResetClick(e) {
         e.preventDefault();
