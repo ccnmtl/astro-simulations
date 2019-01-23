@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {RangeStepInput} from 'react-range-step-input';
+import LightcurveView from './LightcurveView';
 import SystemView from './SystemView';
 import {forceNumber} from './utils';
 
@@ -21,6 +22,13 @@ class EclipsingBinarySimulator extends React.Component {
 
             animationSpeed: 1,
             phase: 0.7,
+
+            lightcurveCoords: [
+                // TODO
+                [0, 0],
+                [1, 1]
+            ],
+            showLightcurve: true,
 
             // Star 1 Properties
             star1Mass: 1,
@@ -208,6 +216,11 @@ class EclipsingBinarySimulator extends React.Component {
                 </div>
 
                 <div className="col-6">
+                    <LightcurveView
+                        curveCoords={this.state.lightcurveCoords}
+                        showLightcurve={this.state.showLightcurve}
+                        phase={this.state.phase} />
+
                     <h5>Presets</h5>
 
                     <select className="form-control form-control-sm" onChange={this.onPresetSelect}>
