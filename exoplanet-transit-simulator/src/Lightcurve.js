@@ -20,7 +20,14 @@ export default class Lightcurve {
 
         this._yLabelCount = 0;
 
-        if (this.initRegionShown==undefined) this.initRegionShown = "full curve";
+        if (typeof this.initRegionShown === 'undefined') {
+            // So, this is set to "full curve" in the original code.
+            // But something else is actually setting it to "eclipse
+            // of body 1", which is actually what we want for this
+            // particular graph. So just force that here.
+            this.initRegionShown = "eclipse of body 1";
+        }
+
         if (this.initDataType==undefined) this.initDataType = "visual flux";
         if (this.resolution==undefined) this.resolution = 2; // resolution is pixels per sample
         if (this.horizontalMargin==undefined) this.horizontalMargin = 0.15;
@@ -190,6 +197,41 @@ export default class Lightcurve {
         //this.updateCursorPosition();
     };
 
+    getCursorPhase() {
+        if (this._minPhase==null) return null;
+        if (this._regionShown==0) return ((this._cPhase - this._phaseOffset)%1 + 1)%1;
+        else {
+            var range = this._maxPhase - this._minPhase;
+            if (range<0) range += 1;
+            return (this._minPhase + this._cPhase*range)%1;
+        }
+    };
+
+    setCursorPhase(arg, callChangeHandler) {
+        arg = (arg % 1 + 1) % 1;
+        if (this._minPhase==null) this.setCPhase(arg, callChangeHandler);
+        else if (this._regionShown==0) {
+            var newCPhase =	arg + this._phaseOffset;
+            this.setCPhase(newCPhase, callChangeHandler);
+        }
+        else {
+            var range = this._maxPhase - this._minPhase;
+            if (range<0) range += 1;
+            var u = arg - this._minPhase;
+            var newCPhase = u/range;
+            if (newCPhase<0) newCPhase = 0;
+            else if (newCPhase>1) newCPhase = 1;
+            if (u<0) u += 1;
+            this.setCPhase(newCPhase, callChangeHandler);
+        }
+    };
+
+    setCPhase(arg, callChangeHandler) {
+        this._cPhase = (arg%1 + 1)%1;
+        //this.updateCursorPosition();
+        if (callChangeHandler) this._parent[this.phaseChangeHandler](this.cursorPhase);
+    };
+
     checkForOvercontact(params) {
         var minSep = (params.radius1 + params.radius2)/(1 - params.eccentricity);
         return (params.separation<minSep);
@@ -204,9 +246,15 @@ export default class Lightcurve {
             this._dataType = 1;
             //this.yAxisLabelMC.axisLabel = "Absolute Magnitude";
         }
-        if (regionShown === "full" || regionShown === "full curve" || regionShown === "all") this._regionShown = 0;
-        else if (regionShown === "eclipse of body 1") this._regionShown = 1;
-        else if (regionShown === "eclipse of body 2") this._regionShown = 2;
+
+        if (regionShown === "full" || regionShown === "full curve" || regionShown === "all") {
+            this._regionShown = 0;
+        } else if (regionShown === "eclipse of body 1") {
+            this._regionShown = 1;
+        } else if (regionShown === "eclipse of body 2") {
+            this._regionShown = 2;
+        }
+
         this.setPhaseOffset(this._phaseOffset, false);
     };
 
@@ -504,24 +552,34 @@ export default class Lightcurve {
         const maxVisFlux = (R12*H1 + R22*H2)*Math.PI;
         const minVisMag = -18.9669559998301 - (2.5/Math.LN10)*log(maxVisFlux);
 
-        // the function getRegion will return 0 if the given phase does not occur during an eclispe,
-        // 1 if it occurs during the eclipse of body 1, and 2 if it occurs during the eclispe of body 2
+        // the function getRegion will return 0 if the given phase does not occur during an eclipse,
+        // 1 if it occurs during the eclipse of body 1, and 2 if it occurs during the eclipse of body 2
+        var getRegion = function(phase) { return null; };
+
         if (eclipse1.occurs && eclipse2.occurs) {
             var end1 = eclipse1.end.phase;
             var start1 = eclipse1.start.phase;
             var end2 = eclipse2.end.phase;
             var start2 = eclipse2.start.phase;
-            if (end1<start1) var getRegion = function(phase) {if ((phase<end1) || (phase>start1)) return 1; else if ((phase>start2) && (phase<end2)) return 2; else return 0;};
+            if (end1<start1) {
+                getRegion = function(phase) {
+                    if ((phase<end1) || (phase>start1))
+                        return 1;
+                    else if ((phase>start2) && (phase<end2))
+                        return 2;
+                    else return 0;
+                };
+            }
             else {
-                if (end2<start2) var getRegion = function(phase) {if ((phase>start1) && (phase<end1)) return 1; else if ((phase<end2) || (phase>start2)) return 2; else return 0;};
-                else var getRegion = function(phase) {if ((phase>start1) && (phase<end1)) return 1; else if ((phase>start2) && (phase<end2)) return 2; else return 0;};
+                if (end2<start2) getRegion = function(phase) {if ((phase>start1) && (phase<end1)) return 1; else if ((phase<end2) || (phase>start2)) return 2; else return 0;};
+                else getRegion = function(phase) {if ((phase>start1) && (phase<end1)) return 1; else if ((phase>start2) && (phase<end2)) return 2; else return 0;};
             }
         }
         else if (eclipse1.occurs) {
             var end = eclipse1.end.phase;
             var start = eclipse1.start.phase;
             if (end<start) {
-                var getRegion = function(phase) {
+                getRegion = function(phase) {
                     if ((phase<end) || (phase>start)) {
                         return 1;
                     } else {
@@ -529,7 +587,7 @@ export default class Lightcurve {
                     }
                 };
             } else {
-                var getRegion = function(phase) {
+                getRegion = function(phase) {
                     if ((phase>start) && (phase<end)) {
                         return 1;
                     } else {
@@ -541,7 +599,7 @@ export default class Lightcurve {
             var end = eclipse2.end.phase;
             var start = eclipse2.start.phase;
             if (end < start) {
-                var getRegion = function(phase) {
+                getRegion = function(phase) {
                     if ((phase < end) || (phase > start)) {
                         return 2;
                     } else {
@@ -549,7 +607,7 @@ export default class Lightcurve {
                     };
                 }
             } else {
-                var getRegion = function(phase) {
+                getRegion = function(phase) {
                     if ((phase > start) && (phase < end)) {
                         return 2;
                     } else {
@@ -558,7 +616,7 @@ export default class Lightcurve {
                 };
             }
         } else {
-            var getRegion = function(phase) {
+            getRegion = function(phase) {
                 return 0;
             };
         }
@@ -569,8 +627,7 @@ export default class Lightcurve {
             if (region === 0) {
                 pt.visMag = minVisMag;
                 pt.visFlux = maxVisFlux;
-            }
-            else {
+            } else {
                 var ma = pt.phase*2*Math.PI;
                 var ea0 = 0;
                 var ea1 = ma;
@@ -628,11 +685,12 @@ export default class Lightcurve {
                             % 1 + 1) % 1;
                     this._maxPhase = (
                         this._minPhase + (this._plotWidth/this.__xScale))%1;
-                }
-                else {
-                    // in this case the eclipse doesn't occur, but we still want to show the lightcurve,
-                    // so what we do is plot a small window around where the eclipse would occur
-                    // if it did (and importantly, where the other eclipse will never occur)
+                } else {
+                    // in this case the eclipse doesn't occur, but we
+                    // still want to show the lightcurve, so what we
+                    // do is plot a small window around where the
+                    // eclipse would occur if it did (and importantly,
+                    // where the other eclipse will never occur)
 
                     var w = this._curveParams.argument;
                     var e = this._curveParams.eccentricity;
@@ -899,10 +957,11 @@ export default class Lightcurve {
         // That kind of thing is necessary when working with
         // complicated code I haven't written myself. -_-
         //
-        const firstHalf = coords.slice(0, Math.floor(coords.length / 2));
-        const normalized = normalize(firstHalf.map(e => -e[1]));
+        //const firstHalf = coords.slice(0, Math.floor(coords.length / 2));
+
+        const normalized = normalize(coords.map(e => -e[1]));
         const a = [];
-        firstHalf.forEach(function(x, idx) {
+        coords.forEach(function(x, idx) {
             a.push([x[0], -normalized[idx] + 2]);
         });
         return a;
