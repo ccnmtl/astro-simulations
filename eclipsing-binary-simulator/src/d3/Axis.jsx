@@ -34,7 +34,7 @@ export default class Axis extends Component {
                 dy=".8em"
                 fontSize=".9em"
                 fontWeight="bold"
-                textAnchor="end">Normalized Flux</text>
+                textAnchor="end">Normalized Visual Flux</text>
         </React.Fragment>;
     }
 }
