@@ -76,8 +76,6 @@ class ExoplanetTransitSimulator extends React.Component {
 
         this.lightcurve = new Lightcurve();
         this.lightcurveCoords = [];
-    }
-    componentDidMount() {
         this.updateParameters();
     }
     componentDidUpdate(prevProps, prevState) {
