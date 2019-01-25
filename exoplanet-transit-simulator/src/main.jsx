@@ -77,6 +77,8 @@ class ExoplanetTransitSimulator extends React.Component {
         this.lightcurve = new Lightcurve();
         this.lightcurveCoords = [];
         this.updateParameters();
+
+        this.transitViewRef = React.createRef();
     }
     componentDidUpdate(prevProps, prevState) {
         if (
@@ -86,8 +88,13 @@ class ExoplanetTransitSimulator extends React.Component {
             prevState.planetRadius !== this.state.planetRadius ||
             prevState.inclination !== this.state.inclination ||
             prevState.longitude !== this.state.longitude ||
-            prevState.planetEccentricity !== this.state.planetEccentricity
+            prevState.planetEccentricity !== this.state.planetEccentricity ||
+            prevState.phase !== this.state.phase
         ) {
+            this.setState({
+                minPhase: this.lightcurve._minPhase,
+                maxPhase: this.lightcurve._maxPhase
+            });
             this.updateParameters();
         }
     }
@@ -117,10 +124,14 @@ class ExoplanetTransitSimulator extends React.Component {
 
                 <div className="col-4">
                     <TransitView
+                        ref={this.transitViewRef}
                         phase={this.state.phase}
+                        minPhase={this.state.minPhase}
+                        maxPhase={this.state.maxPhase}
                         planetRadius={this.state.planetRadius}
                         planetEccentricity={this.state.planetEccentricity}
                         planetMass={this.state.planetMass}
+                        planetSemimajorAxis={this.state.planetSemimajorAxis}
                         starMass={this.state.starMass}
                         inclination={this.state.inclination}
                         longitude={this.state.longitude}
@@ -481,11 +492,13 @@ class ExoplanetTransitSimulator extends React.Component {
         this.lightcurve.setParameters(params);
         this.lightcurveCoords = this.lightcurve.update();
 
-        params.minPhase = this.lightcurve.minPhase;
-        params.maxPhase = this.lightcurve.maxPhase;
+        params.minPhase = this.lightcurve._minPhase;
+        params.maxPhase = this.lightcurve._maxPhase;
         params.phase = this.lightcurve.cursorPhase;
 
-        //visualizationMC.setParameters(params);
+        if (this.transitViewRef) {
+            this.transitViewRef.current.setParameters(params);
+        }
     }
     handleInputChange(event) {
         const target = event.target;
