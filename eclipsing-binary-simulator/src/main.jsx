@@ -46,7 +46,12 @@ class EclipsingBinarySimulator extends React.Component {
         };
         this.state = this.initialState;
 
+        this.star1 = {};
+        this.star2 = {};
+
         this.handleInputChange = this.handleInputChange.bind(this);
+
+        this.lightcurveViewRef = React.createRef();
     }
     render() {
         let startBtnText = 'Start Animation';
@@ -217,6 +222,7 @@ class EclipsingBinarySimulator extends React.Component {
 
                 <div className="col-6">
                     <LightcurveView
+                        ref={this.lightcurveViewRef}
                         curveCoords={this.state.lightcurveCoords}
                         showLightcurve={this.state.showLightcurve}
                         phase={this.state.phase} />
@@ -489,6 +495,49 @@ class EclipsingBinarySimulator extends React.Component {
             </div>
 
         </React.Fragment>;
+    }
+    componentDidUpdate(prevProps, prevState) {
+        if (
+            prevState.inclination !== this.state.inclination ||
+            prevState.longitude !== this.state.longitude ||
+            prevState.lightcurveCoords !== this.state.lightcurveCoords ||
+            prevState.showLightcurve !== this.state.showLightcurve ||
+
+            prevState.star1Mass !== this.state.star1Mass ||
+            prevState.star1Radius !== this.state.star1Radius ||
+            prevState.star1Temp !== this.state.star1Temp ||
+
+            prevState.star2Mass !== this.state.star2Mass ||
+            prevState.star2Radius !== this.state.star2Radius ||
+            prevState.star2Temp !== this.state.star2Temp ||
+
+            prevState.separation !== this.state.separation ||
+            prevState.eccentricity !== this.state.eccentricity
+        ) {
+            this.drawLightcurve();
+        }
+    }
+    getSystemTheta() {
+        return (90 - this.state.longitude) * Math.PI / 180;
+    }
+    getSystemPhi() {
+        return (90 - this.state.inclination) * Math.PI / 180;
+    }
+    drawLightcurve() {
+        const dataObj = {
+            eccentricity: this.state.eccentricity,
+            separation: this.state.separation,
+            theta: this.getSystemTheta(),
+            phi: this.getSystemPhi(),
+            radius1: this.star1.r,
+            radius2: this.star2.r,
+            temperature1: this.star1.t,
+            temperature2: this.star2.t
+        };
+
+        if (this.lightcurveViewRef) {
+            this.lightcurveViewRef.current.setParameters(dataObj);
+        }
     }
     onResetClick(e) {
         e.preventDefault();
