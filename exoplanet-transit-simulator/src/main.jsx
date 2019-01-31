@@ -61,7 +61,13 @@ class ExoplanetTransitSimulator extends React.Component {
             // System orientation and phase
             inclination: 86.929,
             longitude: 0,
+
+            // The actual phase may not correspond to the cursor's
+            // phase. The cursor's phase always ranges between 0 and 1,
+            // the input's range. Actual phase's range changes
+            // depending on scene settings.
             phase: 0.5,
+            cursorPhase: 0.5,
 
             // These values change as the lightcurve changes. They
             // represent just a tiny part of the planet's orbit.
@@ -89,7 +95,7 @@ class ExoplanetTransitSimulator extends React.Component {
             prevState.inclination !== this.state.inclination ||
             prevState.longitude !== this.state.longitude ||
             prevState.planetEccentricity !== this.state.planetEccentricity ||
-            prevState.phase !== this.state.phase
+            prevState.cursorPhase !== this.state.cursorPhase
         ) {
             this.setState({
                 minPhase: this.lightcurve._minPhase,
@@ -449,8 +455,8 @@ class ExoplanetTransitSimulator extends React.Component {
                             <div className="col-10">
                                 <RangeStepInput
                                     className="form-control"
-                                    name="phase" id="phaseSlider"
-                                    value={this.state.phase}
+                                    name="cursorPhase" id="phaseSlider"
+                                    value={this.state.cursorPhase}
                                     onChange={this.handleInputChange}
                                     min={0} max={1} step={0.01} />
                             </div>
@@ -494,7 +500,7 @@ class ExoplanetTransitSimulator extends React.Component {
 
         params.minPhase = this.lightcurve._minPhase;
         params.maxPhase = this.lightcurve._maxPhase;
-        params.phase = this.lightcurve.cursorPhase;
+        params.phase = this.state.cursorPhase;
 
         if (this.transitViewRef) {
             this.transitViewRef.current.setParameters(params);
