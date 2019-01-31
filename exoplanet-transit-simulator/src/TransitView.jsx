@@ -41,12 +41,13 @@ export default class TransitView extends React.Component {
         this.onMove = this.onMove.bind(this);
 
         this._c = {};
-        this._scale = 4000;
+
+        //this._scale = 4000;
 
         // TODO
         // This is scale in the original code. For debugging purposes the
         // scale is smaller so I can see the entire orbit.
-        //this._scale = 9.0e-8;
+        this._scale = 9.0e-8;
 
         this._size = 350;
         this._centerX = this._size / 2;
@@ -58,13 +59,11 @@ export default class TransitView extends React.Component {
         this._massTotal = this.props.starMass + this.props.planetMass;
         this._a1 = (this.props.planetSemimajorAxis * this.props.planetMass) / this._massTotal;
         this._a2 = (this.props.planetSemimajorAxis * this.props.starMass) / this._massTotal;
-
-        this.doA();
     }
     setParameters(params) {
-        if (params.scale!=undefined) this._scale = params.scale;
+        if (typeof params.scale !== 'undefined') this._scale = params.scale;
         if (params.eccentricity!=undefined) this._eccentricity = this.props.planetEccentricity;
-        if (params.separation!=undefined) this._separation = this.props.planetSemimajorAxis.separation;
+        if (params.separation!=undefined) this._separation = this.props.planetSemimajorAxis;
         if (params.inclination!=undefined) this._phi = (90 - this.props.inclination)*Math.PI/180;
         if (params.longitude!=undefined) this._theta = (90 - this.props.longitude)*Math.PI/180;
         if (typeof params.mass1 !== 'undefined') this._mass1 = params.mass1;
@@ -77,11 +76,11 @@ export default class TransitView extends React.Component {
         if (params.phase!=undefined) this._phase = params.phase;
 
         this._massTotal = this.props.starMass + this.props.planetMass;
-        this._a1 = this.props.planetSemimajorAxis * this.props.planetMass/this._massTotal;
-        this._a2 = this.props.planetSemimajorAxis * this.props.starMass/this._massTotal;
+        this._a1 = this.props.planetSemimajorAxis * this.props.planetMass / this._massTotal;
+        this._a2 = this.props.planetSemimajorAxis * this.props.starMass / this._massTotal;
 
-        this.star._xscale = this.star._yscale = this._scale * this._radius1;
-        this.planet._xscale = this.planet._yscale = this._scale * this.props.planetRadius;
+        this.star.scale = this._scale * this._radius1;
+        this.planet.scale = this._scale * this._radius2;
 
         this.doA();
 
@@ -188,9 +187,10 @@ export default class TransitView extends React.Component {
 
         this.app = app;
         this.el.appendChild(app.view);
+
         this.drawScene(app);
 
-        this.setParameters({});
+        //this.setParameters({});
         this.setSize();
     }
     componentDidUpdate(prevProps) {
@@ -479,8 +479,8 @@ export default class TransitView extends React.Component {
         star.endFill();
 
         this.star = star;
-        this.star.scale = new PIXI.Point(
-            this.props.starMass * 0.75, this.props.starMass * 0.75);
+        /*this.star.scale = new PIXI.Point(
+            this.props.starMass * 0.75, this.props.starMass * 0.75);*/
         app.stage.addChild(star);
 
         const orbitLine = this.makeOrbitLine(
@@ -499,8 +499,8 @@ export default class TransitView extends React.Component {
             planetCenter.x, planetCenter.y,
             kmToPx(rJupToKm(this.props.planetRadius)));
         planet.endFill();
-        planet.scale = new PIXI.Point(
-            this.props.planetRadius, this.props.planetRadius);
+        /*planet.scale = new PIXI.Point(
+            this.props.planetRadius, this.props.planetRadius);*/
         planet.x = this.props.phase * (
             this.entityData.baseStarRadius * 3) + 60;
 
