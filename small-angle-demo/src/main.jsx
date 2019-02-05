@@ -8,12 +8,17 @@ import {forceNumber} from './utils';
 class SmallAngleDemo extends React.Component {
     constructor(props) {
         super(props);
+
         this.initialState = {
             distance: 40,
-            diameter: 2
+            distanceField: 40,
+            diameter: 2,
+            diameterField: 2
         };
+
         this.state = this.initialState;
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleInputFieldChange = this.handleInputFieldChange.bind(this);
         this.onResetClick = this.onResetClick.bind(this);
         this.onDistanceUpdate = this.onDistanceUpdate.bind(this);
     }
@@ -23,7 +28,7 @@ class SmallAngleDemo extends React.Component {
         / 10;
         const tex = `\\alpha = 206{,}265 \\times ` +
               `{\\text{linear diameter} \\over \\text{distance}} ` +
-              `= ${result} \\text{arcsec}`;
+              `= ${result} \\text{ arcsec}`;
         return <React.Fragment>
             <nav className="navbar navbar-expand-md navbar-light bg-light d-flex justify-content-between">
                 <span className="navbar-brand mb-0 h1">Small-Angle Approximation Demonstrator</span>
@@ -72,8 +77,10 @@ class SmallAngleDemo extends React.Component {
                                     <input type="number" size="4"
                                            className="form-control form-control-sm"
                                            step="0.1" name="distance"
-                                           value={this.state.distance}
-                                           onChange={this.handleInputChange} /> units
+                                           min={20} max={60}
+                                           value={this.state.distanceField}
+                                           onChange={this.handleInputFieldChange}
+                                           onBlur={this.handleInputChange} /> units
                                     <RangeStepInput
                                         step={0.1}
                                         min={20} max={60}
@@ -95,8 +102,10 @@ class SmallAngleDemo extends React.Component {
                                     <input type="number" size="4"
                                            className="form-control form-control-sm"
                                            step="0.1" name="diameter"
-                                           value={this.state.diameter}
-                                           onChange={this.handleInputChange} /> units
+                                           value={this.state.diameterField}
+                                           min={1} max={3}
+                                           onChange={this.handleInputFieldChange}
+                                           onBlur={this.handleInputChange} /> units
                                     <RangeStepInput
                                         step={0.1}
                                         min={1} max={3}
@@ -115,8 +124,35 @@ class SmallAngleDemo extends React.Component {
     handleInputChange(event) {
         const target = event.target;
 
+        if (typeof target.value === 'undefined') {
+            return;
+        }
+
+        const val = forceNumber(target.value);
+        if (val < target.min || val > target.max) {
+            // Reset the number input
+            this.setState({
+                [target.name + 'Field']: this.state[target.name]
+            });
+            return;
+        }
+
         this.setState({
-            [target.name]: forceNumber(target.value)
+            [target.name]: val,
+            [target.name + 'Field']: val
+        });
+    }
+    handleInputFieldChange(event) {
+        const target = event.target;
+
+        if (typeof target.value === 'undefined') {
+            return;
+        }
+
+        const val = forceNumber(target.value);
+
+        this.setState({
+            [target.name + 'Field']: val
         });
     }
     onDistanceUpdate(distance) {
