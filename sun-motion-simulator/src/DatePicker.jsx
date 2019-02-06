@@ -25,6 +25,7 @@ export default class DatePicker extends React.Component {
                     <input type="number"
                            maxLength="2"
                            value={this.state.dayField}
+                           onFocus={this.handleFocus}
                            onChange={this.onDayFieldUpdate}
                            onBlur={this.props.onDayUpdate}
                            min={1} max={31}
@@ -229,6 +230,9 @@ export default class DatePicker extends React.Component {
         if (newDay >= e.target.min && newDay <= e.target.max) {
             this.setState({dayField: newDay});
         }
+    }
+    handleFocus(e) {
+        e.target.select();
     }
 }
 

@@ -96,6 +96,7 @@ class EclipsingBinarySimulator extends React.Component {
                                     className="form-control form-control-sm"
                                     name="longitude"
                                     value={this.state.longitude}
+                                    onFocus={this.handleFocus}
                                     onChange={this.handleInputChange}
                                     step={0.1} />&deg;
 
@@ -119,6 +120,7 @@ class EclipsingBinarySimulator extends React.Component {
                                     className="form-control form-control-sm"
                                     name="inclination"
                                     value={this.state.inclination}
+                                    onFocus={this.handleFocus}
                                     onChange={this.handleInputChange}
                                     min={0} max={180} step={0.001} />&deg;
 
@@ -164,6 +166,7 @@ class EclipsingBinarySimulator extends React.Component {
                                 className="form-control form-control-sm"
                                 name="phase"
                                 value={this.state.phase}
+                                onFocus={this.handleFocus}
                                 onChange={this.handleInputChange}
                                 min={0} max={180} step={0.001} />
 
@@ -180,6 +183,7 @@ class EclipsingBinarySimulator extends React.Component {
                 <div className="custom-control custom-checkbox">
                     <input type="checkbox" className="custom-control-input"
                            name="lockOnPerspectiveFromEarth"
+                           onFocus={this.handleFocus}
                            onChange={this.handleInputChange}
                            checked={this.state.lockOnPerspectiveFromEarth}
                            id="lockOnPerspectiveFromEarthToggle" />
@@ -192,6 +196,7 @@ class EclipsingBinarySimulator extends React.Component {
                 <div className="custom-control custom-checkbox">
                     <input type="checkbox" className="custom-control-input"
                            name="showOrbitalPlane"
+                           onFocus={this.handleFocus}
                            onChange={this.handleInputChange}
                            checked={this.state.showOrbitalPlane}
                            id="showOrbitalPathsToggle" />
@@ -204,6 +209,7 @@ class EclipsingBinarySimulator extends React.Component {
                 <div className="custom-control custom-checkbox">
                     <input type="checkbox" className="custom-control-input"
                            name="showOrbitalPlane"
+                           onFocus={this.handleFocus}
                            onChange={this.handleInputChange}
                            checked={this.state.showOrbitalPlane}
                            id="showOrbitalPlaneToggle" />
@@ -309,6 +315,7 @@ class EclipsingBinarySimulator extends React.Component {
                                     className="form-control form-control-sm"
                                     name="star1Mass"
                                     value={this.state.star1Mass}
+                                    onFocus={this.handleFocus}
                                     onChange={this.handleInputChange}
                                     step={0.1} />
 
@@ -332,6 +339,7 @@ class EclipsingBinarySimulator extends React.Component {
                                     className="form-control form-control-sm"
                                     name="star1Radius"
                                     value={this.state.star1Radius}
+                                    onFocus={this.handleFocus}
                                     onChange={this.handleInputChange}
                                     step={0.1} />
 
@@ -355,6 +363,7 @@ class EclipsingBinarySimulator extends React.Component {
                                     className="form-control form-control-sm"
                                     name="star1Temp"
                                     value={this.state.star1Temp}
+                                    onFocus={this.handleFocus}
                                     onChange={this.handleInputChange}
                                     step={0.1} />
 
@@ -382,6 +391,7 @@ class EclipsingBinarySimulator extends React.Component {
                                     className="form-control form-control-sm"
                                     name="star2Mass"
                                     value={this.state.star2Mass}
+                                    onFocus={this.handleFocus}
                                     onChange={this.handleInputChange}
                                     step={0.1} />
 
@@ -405,6 +415,7 @@ class EclipsingBinarySimulator extends React.Component {
                                     className="form-control form-control-sm"
                                     name="star2Radius"
                                     value={this.state.star2Radius}
+                                    onFocus={this.handleFocus}
                                     onChange={this.handleInputChange}
                                     step={0.1} />
 
@@ -428,6 +439,7 @@ class EclipsingBinarySimulator extends React.Component {
                                     className="form-control form-control-sm"
                                     name="star2Temp"
                                     value={this.state.star2Temp}
+                                    onFocus={this.handleFocus}
                                     onChange={this.handleInputChange}
                                     step={0.1} />
 
@@ -455,6 +467,7 @@ class EclipsingBinarySimulator extends React.Component {
                                     className="form-control form-control-sm"
                                     name="separation"
                                     value={this.state.separation}
+                                    onFocus={this.handleFocus}
                                     onChange={this.handleInputChange}
                                     step={0.1} />
 
@@ -478,6 +491,7 @@ class EclipsingBinarySimulator extends React.Component {
                                     className="form-control form-control-sm"
                                     name="eccentricity"
                                     value={this.state.eccentricity}
+                                    onFocus={this.handleFocus}
                                     onChange={this.handleInputChange}
                                     step={0.1} />
 
@@ -558,6 +572,9 @@ class EclipsingBinarySimulator extends React.Component {
         this.setState({
             [name]: value
         });
+    }
+    handleFocus(e) {
+        e.target.select();
     }
 }
 
