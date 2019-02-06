@@ -297,6 +297,7 @@ class SunMotionSim extends React.Component {
     }
     onResetClick(e) {
         e.preventDefault();
+        cancelAnimationFrame(this.frameId);
         this.setState(this.initialState);
     }
     onLatitudeUpdate(e) {
