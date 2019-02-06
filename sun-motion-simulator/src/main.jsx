@@ -299,8 +299,15 @@ class SunMotionSim extends React.Component {
         e.preventDefault();
         this.setState(this.initialState);
     }
-    onLatitudeUpdate(latitude) {
-        this.setState({latitude: forceNumber(latitude)});
+    onLatitudeUpdate(e) {
+        let lat = e;
+        if (typeof lat !== 'number') {
+            lat = roundToOnePlace(forceNumber(e.target.value));
+        } else {
+            lat = roundToOnePlace(lat);
+        }
+
+        this.setState({latitude: lat});
     }
     onDateTimeUpdate(dateTime) {
         this.setState({dateTime: dateTime});
