@@ -28,7 +28,7 @@
     "@babel/cli": "^7.0.0",
     "pixi.js": "~4.8.5",
     "react": "~16.8.0",
-    "react-dom": "~16.7.0",
+    "react-dom": "~16.8.0",
     "react-range-step-input": "^1.2.1",
     "three": "~0.101.0"
   },
