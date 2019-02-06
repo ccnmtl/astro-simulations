@@ -178,12 +178,14 @@ export default class DatePicker extends React.Component {
      * Given an x-position on the calendar control, return the Date
      * that point represents.
      *
+     * This function wraps the calendar around, so negative values
+     * of x will just correspond to a previous year.
+     *
      * This control only modifies the day, not the time.
      */
     localPosToDate(x, app) {
         const year = this.props.dateTime.getFullYear();
         const d = new Date(`1/1/${year}`);
-        x = Math.min(Math.max(x - 10, 0), (app.view.width - 20));
         const dayOfYear = (x / (app.view.width - 20)) * 365.25;
 
         const newDate = new Date(
