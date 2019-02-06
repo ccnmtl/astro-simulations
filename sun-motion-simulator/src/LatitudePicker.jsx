@@ -1,37 +1,43 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import * as PIXI from 'pixi.js';
-import {roundToOnePlace} from './utils';
+import {forceNumber, roundToOnePlace} from './utils';
 
 export default class LatitudePicker extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            isDraggingLatitude: false
+            isDraggingLatitude: false,
+            latitudeField: roundToOnePlace(Math.abs(this.props.latitude))
         }
 
         this.onLatDragStart = this.onLatDragStart.bind(this);
         this.onLatDragEnd = this.onLatDragEnd.bind(this);
         this.onLatMove = this.onLatMove.bind(this);
         this.onClick = this.onClick.bind(this);
+        this.onLatitudeFieldUpdate = this.onLatitudeFieldUpdate.bind(this);
+        this.onLatitudeBlur = this.onLatitudeBlur.bind(this);
+        this.onClickLatHemisphere = this.onClickLatHemisphere.bind(this);
 
         this.loader = new PIXI.loaders.Loader();
         this.loader.add('earthmap', 'img/earthmap.png');
     }
     render() {
-        const latUnit = this.props.latitude > 0 ? 'N' : 'S';
+        const latHemisphere = this.props.latitude >= 0 ? 'N' : 'S';
         return (
             <div className="col">
                 <div className="form-inline">
-                    <label>
+                    <label style={{whiteSpace: 'nowrap'}}>
                         The observer&apos;s latitude:
                         <input type="number"
                                style={{width: '75px'}}
-                               value={roundToOnePlace(Math.abs(this.props.latitude))}
-                               onChange={this.props.onLatitudeUpdate}
-                               min="-90" max="90"
-                               className="form-control form-control-sm ml-2" />
-            &deg;{latUnit}
+                               value={this.state.latitudeField}
+                               onChange={this.onLatitudeFieldUpdate}
+                               onBlur={this.onLatitudeBlur}
+                               min={0} max={90}
+                               className="form-control form-control-sm ml-2" />&nbsp;&deg;
+                        <span style={{cursor: 'pointer'}}
+                              onClick={this.onClickLatHemisphere}>&nbsp;{latHemisphere}</span>
                     </label>
                 </div>
                 <div ref={(el) => {this.latitudePicker = el}}></div>
@@ -71,6 +77,10 @@ export default class LatitudePicker extends React.Component {
             const latPos = this.latitudeToLocalPos(
                 this.props.latitude, 126)
             this.lPicker.position.y = latPos;
+
+            if (this.props.latitude !== this.state.latitudeField) {
+                this.setState({latitudeField: Math.abs(this.props.latitude)});
+            }
         }
     }
     componentWillUnmount() {
@@ -174,6 +184,32 @@ export default class LatitudePicker extends React.Component {
         } else if (pos.y > currentPos) {
             this.props.onLatitudeUpdate(this.props.latitude - 1);
         }
+    }
+    onLatitudeFieldUpdate(e) {
+        if (typeof e.target.value === 'undefined') {
+            return;
+        }
+
+        const lat = forceNumber(e.target.value);
+
+        if (lat >= e.target.min && lat <= e.target.max) {
+            this.setState({latitudeField: lat});
+        }
+    }
+    onLatitudeBlur(e) {
+        let lat = forceNumber(e.target.value);
+        if (this.props.latitude < 0) {
+            lat = -lat;
+        }
+        this.props.onLatitudeUpdate(lat);
+    }
+    // Toggle the latitude's hemisphere by changing its sign.
+    onClickLatHemisphere(e) {
+        // Don't highlight the input field, even though this is part
+        // of the label.
+        e.preventDefault();
+
+        this.props.onLatitudeUpdate(-this.props.latitude);
     }
     /**
      * Convert a latitude to Canvas-style co-ordinates.

@@ -1,19 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import * as PIXI from 'pixi.js';
-import {getDayOfYear} from './utils';
+import {forceNumber, getDayOfYear} from './utils';
 
 export default class DatePicker extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            isDragging: false
+            isDragging: false,
+            dayField: props.dateTime.getDate()
         };
 
         this.onDragStart = this.onDragStart.bind(this);
         this.onDragEnd = this.onDragEnd.bind(this);
         this.onMove = this.onMove.bind(this);
         this.onClick = this.onClick.bind(this);
+        this.onDayFieldUpdate = this.onDayFieldUpdate.bind(this);
     }
     render() {
         return <React.Fragment>
@@ -22,9 +24,10 @@ export default class DatePicker extends React.Component {
                     The day of year:
                     <input type="number"
                            maxLength="2"
-                           value={this.props.dateTime.getDate()}
-                           onChange={this.props.onDayUpdate}
-                           min="0" max="32"
+                           value={this.state.dayField}
+                           onChange={this.onDayFieldUpdate}
+                           onBlur={this.props.onDayUpdate}
+                           min={1} max={31}
                            className="form-control form-control-sm ml-2" />
                 </label>
                 <select className="form-control form-control-sm ml-2"
@@ -68,6 +71,11 @@ export default class DatePicker extends React.Component {
     }
     componentDidUpdate(prevProps) {
         if (prevProps.dateTime !== this.props.dateTime) {
+            const day = this.props.dateTime.getDate();
+            if (day !== this.state.dayField) {
+                this.setState({dayField: day});
+            }
+
             const pos = this.dateToLocalPos(this.props.dateTime,
                                             this.app);
 
@@ -209,6 +217,17 @@ export default class DatePicker extends React.Component {
         } else if (pos.x > currentPos) {
             this.props.onDateControlUpdate(
                 new Date(this.props.dateTime.getTime() + (3600 * 24 * 1000)));
+        }
+    }
+    onDayFieldUpdate(e) {
+        if (typeof e.target.value === 'undefined') {
+            return;
+        }
+
+        const newDay = forceNumber(e.target.value);
+
+        if (newDay >= e.target.min && newDay <= e.target.max) {
+            this.setState({dayField: newDay});
         }
     }
 }
