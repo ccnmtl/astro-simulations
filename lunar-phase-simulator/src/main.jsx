@@ -340,6 +340,7 @@ class LunarPhaseSim extends React.Component {
     }
     onResetClick(e) {
         e.preventDefault();
+        cancelAnimationFrame(this.raf);
         this.setState(this.initialState);
     }
 }
