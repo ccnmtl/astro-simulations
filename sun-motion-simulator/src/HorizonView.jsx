@@ -128,6 +128,12 @@ export default class HorizonView extends React.Component {
 
         controls.update();
 
+        this.planeTexture = new THREE.TextureLoader().load('img/plane.svg');
+        this.planeTexSouthPole = new THREE.TextureLoader()
+                                          .load('img/plane_all_n.svg');
+        this.planeTexNorthPole = new THREE.TextureLoader()
+                                          .load('img/plane_all_s.svg');
+
         this.plane = this.drawPlane(scene);
 
         this.stickFigure = this.drawStickFigure();
@@ -222,6 +228,19 @@ export default class HorizonView extends React.Component {
             this.updateOrbitPlanePosition(
                 this.orbitPlane, this.props.latitude,
                 this.props.sunDeclination);
+
+            // Did the latitude update to either the north or south pole? If so,
+            // update the plane's texture: the compass labels need to change.
+            if (this.props.latitude === 90) {
+                this.plane.material.map = this.planeTexNorthPole;
+                this.plane.material.map.needsUpdate = true;
+            } else if (this.props.latitude === -90) {
+                this.plane.material.map = this.planeTexSouthPole;
+                this.plane.material.map.needsUpdate = true;
+            } else if (this.plane.material.map !== this.planeTexture) {
+                this.plane.material.map = this.planeTexture;
+                this.plane.material.map.needsUpdate = true;
+            }
         }
 
         if (prevProps.sunAzimuth !== this.props.sunAzimuth ||
@@ -369,9 +388,8 @@ export default class HorizonView extends React.Component {
         }
     }
     drawPlane(scene) {
-        const texture = new THREE.TextureLoader().load('img/plane.svg');
         const material = new THREE.MeshLambertMaterial({
-            map: texture
+            map: this.planeTexture
         });
         material.map.minFilter = THREE.LinearFilter;
         const geometry = new THREE.CircleBufferGeometry(this.sphereRadius, 64);
