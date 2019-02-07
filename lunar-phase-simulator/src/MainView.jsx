@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import * as PIXI from 'pixi.js';
+import * as PIXI from 'pixi.js-legacy';
 import {degToRad, radToDeg, roundToOnePlace} from './utils';
 
 /**
@@ -55,6 +55,7 @@ export default class MainView extends React.Component {
             // guessing there's just some filters or settings I can add
             // to make it look good in webgl.
             forceCanvas: true,
+            antialias: true,
 
             // as far as I know the ticker isn't necessary at the
             // moment.
@@ -186,8 +187,7 @@ export default class MainView extends React.Component {
     }
     drawOrbit() {
         const graphics = new PIXI.Graphics();
-        graphics.lineColor = 0xffffff;
-        graphics.lineWidth = 1;
+        graphics.lineStyle(1, 0xffffff);
         graphics.drawCircle(this.orbitCenter.x, this.orbitCenter.y, 200);
         this.app.stage.addChild(graphics);
     }
@@ -274,8 +274,7 @@ export default class MainView extends React.Component {
         const landmark = new PIXI.Graphics();
         landmark.name = 'landmark';
         landmark.visible = false;
-        landmark.lineColor = 0xff95ff;
-        landmark.lineWidth = 4;
+        landmark.lineStyle(4, 0xff95ff);
         landmark.moveTo(-10, 0);
         landmark.lineTo(-20, 0);
         this.landmark = landmark;
@@ -365,8 +364,7 @@ export default class MainView extends React.Component {
     drawArrows() {
         for (let i = 1; i < 8; i++) {
             let line = new PIXI.Graphics();
-            line.lineColor = 0xffff80;
-            line.lineWidth = 2;
+            line.lineStyle(2, 0xffff80);
 
             line.moveTo(60, i * 50 + 30);
             line.lineTo(120, i * 50 + 30);
