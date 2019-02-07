@@ -79,6 +79,7 @@ class SmallAngleDemo extends React.Component {
                                            step="0.1" name="distance"
                                            min={20} max={60}
                                            value={this.state.distanceField}
+                                           onFocus={this.handleFocus}
                                            onChange={this.handleInputFieldChange}
                                            onBlur={this.handleInputChange} /> units
                                     <RangeStepInput
@@ -104,6 +105,7 @@ class SmallAngleDemo extends React.Component {
                                            step="0.1" name="diameter"
                                            value={this.state.diameterField}
                                            min={1} max={3}
+                                           onFocus={this.handleFocus}
                                            onChange={this.handleInputFieldChange}
                                            onBlur={this.handleInputChange} /> units
                                     <RangeStepInput
@@ -154,6 +156,9 @@ class SmallAngleDemo extends React.Component {
         this.setState({
             [target.name + 'Field']: val
         });
+    }
+    handleFocus(e) {
+        e.target.select();
     }
     onDistanceUpdate(distance) {
         this.setState({distance: distance});

@@ -189,6 +189,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                            name="showTheoreticalCurve"
                                            id="showTheoreticalCurveToggle"
                                            checked={this.state.showTheoreticalCurve}
+                                           onFocus={this.handleFocus}
                                            onChange={this.handleInputChange}
                                     />
                                     <label className="custom-control-label" htmlFor="showTheoreticalCurveToggle">
@@ -200,6 +201,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                            name="showSimulatedMeasurements"
                                            id="showSimulatedMeasurementsToggle"
                                            checked={this.state.showSimulatedMeasurements}
+                                           onFocus={this.handleFocus}
                                            onChange={this.handleInputChange}
                                     />
                                     <label className="custom-control-label" htmlFor="showSimulatedMeasurementsToggle">
@@ -218,6 +220,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                             disabled={!this.state.showSimulatedMeasurements}
                                             name="noise"
                                             value={this.state.noise}
+                                            onFocus={this.handleFocus}
                                             onChange={this.handleInputChange}
                                             min={0.00001} max={0.2} step={0.01} />
                                         <RangeStepInput
@@ -240,6 +243,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                             disabled={!this.state.showSimulatedMeasurements}
                                             name="simMeasurementNumber"
                                             value={this.state.simMeasurementNumber}
+                                            onFocus={this.handleFocus}
                                             onChange={this.handleInputChange}
                                             min={5} max={250} step={1} />
                                         <RangeStepInput
@@ -276,6 +280,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                     className="form-control form-control-sm"
                                     name="planetMass"
                                     value={this.state.planetMass}
+                                    onFocus={this.handleFocus}
                                     onChange={this.handleInputChange}
                                     min={0.001} max={100}
                                     step={0.001} />
@@ -299,6 +304,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                     className="form-control form-control-sm"
                                     name="planetRadius"
                                     value={this.state.planetRadius}
+                                    onFocus={this.handleFocus}
                                     onChange={this.handleInputChange}
                                     min={0.01} max={2}
                                     step={0.001} />
@@ -322,6 +328,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                     className="form-control form-control-sm"
                                     name="planetSemimajorAxis"
                                     value={this.state.planetSemimajorAxis}
+                                    onFocus={this.handleFocus}
                                     onChange={this.handleInputChange}
                                     min={0.01} max={2}
                                     step={0.001} />
@@ -346,6 +353,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                     className="form-control form-control-sm"
                                     name="planetEccentricity"
                                     value={this.state.planetEccentricity}
+                                    onFocus={this.handleFocus}
                                     onChange={this.handleInputChange}
                                     min={0} max={0.4}
                                     step={0.01} />
@@ -375,6 +383,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                        className="form-control form-control-sm"
                                        name="starMass"
                                        value={this.state.starMass}
+                                       onFocus={this.handleFocus}
                                        onChange={this.handleInputChange}
                                        min={0.5} max={2}
                                        step={0.01} />
@@ -411,6 +420,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                     className="form-control form-control-sm"
                                     name="inclination"
                                     value={this.state.inclination}
+                                    onFocus={this.handleFocus}
                                     onChange={this.handleInputChange}
                                     min={0} max={180} step={0.001} />&deg;
 
@@ -434,6 +444,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                     className="form-control form-control-sm"
                                     name="longitude"
                                     value={this.state.longitude}
+                                    onFocus={this.handleFocus}
                                     onChange={this.handleInputChange}
                                     step={0.1} />&deg;
 
@@ -521,6 +532,9 @@ class ExoplanetTransitSimulator extends React.Component {
         this.setState({
             [name]: value
         });
+    }
+    handleFocus(e) {
+        e.target.select();
     }
     onPhaseCoordsChange() {
     }

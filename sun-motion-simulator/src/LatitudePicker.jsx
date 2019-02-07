@@ -32,6 +32,7 @@ export default class LatitudePicker extends React.Component {
                         <input type="number"
                                style={{width: '75px'}}
                                value={this.state.latitudeField}
+                               onFocus={this.handleFocus}
                                onChange={this.onLatitudeFieldUpdate}
                                onBlur={this.onLatitudeBlur}
                                min={0} max={90}
@@ -210,6 +211,9 @@ export default class LatitudePicker extends React.Component {
         e.preventDefault();
 
         this.props.onLatitudeUpdate(-this.props.latitude);
+    }
+    handleFocus(e) {
+        e.target.select();
     }
     /**
      * Convert a latitude to Canvas-style co-ordinates.
