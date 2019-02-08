@@ -256,14 +256,11 @@ export default class HorizonView extends React.Component {
             this.sunOrbitGroup.rotation.y = sunRotation;
             this.eclipticOrbitGroup.rotation.y =
                 -this.props.sunAzimuth + this.props.sunDeclination;
-            this.skyMaterial.color = this.getSkyColor();
         }
 
         if (prevProps.sunDeclination !== this.props.sunDeclination ||
             prevProps.dateTime !== this.props.dateTime
         ) {
-            this.skyMaterial.color = this.getSkyColor();
-
             const doy = getDayOfYear(this.props.dateTime);
             this.eclipticOrbitGroup.rotation.y =
                 -this.props.sunAzimuth -
@@ -300,10 +297,6 @@ export default class HorizonView extends React.Component {
                 this.sunDeclination.geometry = new THREE.TorusBufferGeometry(
                     declinationRad, 0.3, 16, 64);
             }
-        }
-
-        if (prevProps.latitude !== this.props.latitude) {
-            this.skyMaterial.color = this.getSkyColor();
         }
 
         if (prevState.mouseoverSun !== this.state.mouseoverSun) {
@@ -770,6 +763,11 @@ export default class HorizonView extends React.Component {
     renderScene() {
         this.composer.render();
         //this.renderer.render(this.scene, this.camera);
+
+        // getSkyColor relies on the sun's position in the
+        // world. wait until everything is rendered before
+        // setting the color
+        this.skyMaterial.color = this.getSkyColor();
     }
 
     /*
