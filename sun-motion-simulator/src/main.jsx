@@ -182,13 +182,13 @@ class SunMotionSim extends React.Component {
                             onMonthUpdate={this.onMonthUpdate}
                             onDateControlUpdate={this.onDateControlUpdate} />
                         <div className="row">
-                            <div className="col">
+                            <div className="col-5">
                                 <Clock
                                     dateTime={this.state.dateTime}
                                     onDateTimeUpdate={this.onDateTimeUpdate} />
                             </div>
 
-                            <div className="col">
+                            <div className="col-5">
                                 <LatitudePicker
                                     latitude={this.state.latitude}
                                     onLatitudeUpdate={this.onLatitudeUpdate} />
