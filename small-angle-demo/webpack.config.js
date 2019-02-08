@@ -6,7 +6,8 @@ module.exports = {
     mode: process.env.WEBPACK_SERVE ? 'development' : 'production',
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'bundle.js'
+        filename: 'bundle.js',
+        publicPath: '/dist/',
     },
     resolve: {
         extensions: ['*', '.js', '.jsx'],
