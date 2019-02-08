@@ -610,7 +610,7 @@ export default class HorizonView extends React.Component {
         sprite.customDepthMaterial = depthMaterial;
         sprite.castShadow = true;
         sprite.receiveShadow = false;
-        sprite.position.y = 6.5;
+        sprite.position.y = 5.4;
         return sprite;
     }
     drawSun() {
