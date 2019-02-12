@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import * as PIXI from 'pixi.js';
+import * as PIXI from 'pixi.js-legacy';
 import {forceNumber, hourAngleToTime, minuteAngleToTime} from './utils';
 
 export default class Clock extends React.Component {
@@ -19,7 +19,7 @@ export default class Clock extends React.Component {
         this.onHourMove = this.onHourMove.bind(this);
         this.onTimeUpdate = this.onTimeUpdate.bind(this);
 
-        this.loader = new PIXI.loaders.Loader();
+        this.loader = new PIXI.Loader();
         this.loader.add('clock', 'img/clock.png');
 
         this.center = new PIXI.Point(100, 100);

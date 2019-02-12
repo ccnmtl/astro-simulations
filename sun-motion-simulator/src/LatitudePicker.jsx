@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import * as PIXI from 'pixi.js';
+import * as PIXI from 'pixi.js-legacy';
 import {forceNumber, roundToOnePlace} from './utils';
 
 export default class LatitudePicker extends React.Component {
@@ -19,7 +19,7 @@ export default class LatitudePicker extends React.Component {
         this.onLatitudeBlur = this.onLatitudeBlur.bind(this);
         this.onClickLatHemisphere = this.onClickLatHemisphere.bind(this);
 
-        this.loader = new PIXI.loaders.Loader();
+        this.loader = new PIXI.Loader();
         this.loader.add('earthmap', 'img/earthmap.png');
     }
     render() {
