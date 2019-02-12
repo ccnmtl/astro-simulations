@@ -35,7 +35,7 @@ export default class LatitudePicker extends React.Component {
                                onFocus={this.handleFocus}
                                onChange={this.onLatitudeFieldUpdate}
                                onBlur={this.onLatitudeBlur}
-                               min={0} max={90}
+                               min={0} max={90} step={0.1}
                                className="form-control form-control-sm ml-2" />&nbsp;&deg;
                         <span style={{cursor: 'pointer'}}
                               onClick={this.onClickLatHemisphere}>&nbsp;{latHemisphere}</span>
