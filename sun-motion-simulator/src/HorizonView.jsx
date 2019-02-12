@@ -41,6 +41,8 @@ export default class HorizonView extends React.Component {
         this.onMouseMove = this.onMouseMove.bind(this);
         this.onMouseDown = this.onMouseDown.bind(this);
         this.onMouseUp = this.onMouseUp.bind(this);
+
+        this.zVec = new THREE.Vector3(0, 0, 1);
     }
 
     componentDidMount() {
@@ -179,15 +181,17 @@ export default class HorizonView extends React.Component {
 
         // This plane's position follows the sunDeclination line,
         // changing with latitude and sunDeclination.
-        this.orbitPlane = new THREE.Plane();
+        this.orbitPlane = new THREE.Plane(
+            // The default vector of an Object3d
+            this.zVec,
+            -THREE.Math.radToDeg(this.props.sunDeclination));
         this.updateOrbitPlanePosition(
-            this.orbitPlane, this.props.latitude,
-            this.props.sunDeclination);
+            this.orbitPlane, this.orbitGroup, this.props.sunDeclination);
 
         // For visualizing the orbitPlane
-        //const planeHelper = new THREE.PlaneHelper(
-        //    this.orbitPlane, 80, 0xff0000);
-        //scene.add(planeHelper);
+        /* const planeHelper = new THREE.PlaneHelper(
+         *     this.orbitPlane, 80, 0xff0000);
+         * scene.add(planeHelper); */
 
         this.eclipticOrbitGroup = new THREE.Group();
         this.eclipticOrbitGroup.add(this.primeHourCircle);
@@ -226,8 +230,7 @@ export default class HorizonView extends React.Component {
                 THREE.Math.degToRad(this.props.latitude) - (Math.PI / 2);
 
             this.updateOrbitPlanePosition(
-                this.orbitPlane, this.props.latitude,
-                this.props.sunDeclination);
+                this.orbitPlane, this.orbitGroup, this.props.sunDeclination);
 
             // Did the latitude update to either the north or south pole? If so,
             // update the plane's texture: the compass labels need to change.
@@ -286,8 +289,7 @@ export default class HorizonView extends React.Component {
             this.light.rotation.x = this.props.sunDeclination;
 
             this.updateOrbitPlanePosition(
-                this.orbitPlane, this.props.latitude,
-                this.props.sunDeclination);
+                this.orbitPlane, this.orbitGroup, this.props.sunDeclination);
 
             if (this.props.showDeclinationCircle) {
                 this.sunDeclination.position.y =
@@ -856,11 +858,26 @@ export default class HorizonView extends React.Component {
         );
     }
 
-    updateOrbitPlanePosition(orbitPlane, latitude, sunDeclination) {
-        const lr = THREE.Math.degToRad(latitude);
+    /**
+     * Updates the orbit plane based on the rotation of the given
+     * orbit group.
+     */
+    updateOrbitPlanePosition(orbitPlane, orbitGroup, sunDeclination) {
+        let q = orbitGroup.quaternion.clone();
+
+        // The orbitGroup's rotation actually needs to be offset 90 degrees
+        // along the X axis in order for the plane to match up with it.
+        // https://answers.unity.com/questions/187506/add-90-degrees-to-transformrotation.html
+        const rotation = new THREE.Quaternion();
+        rotation.setFromAxisAngle(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
+        q.multiply(rotation);
+
+        // TODO: probably don't need to reset the surface normal here
+        // twice every time. Find a way to just set the constant.
         orbitPlane.set(
-            new THREE.Vector3(0, lr, -1),
-            -THREE.Math.radToDeg(sunDeclination));
+            this.zVec, -THREE.Math.radToDeg(sunDeclination));
+
+        orbitPlane.normal.set(0, 0, 1).applyQuaternion(q);
     }
 
     /**
