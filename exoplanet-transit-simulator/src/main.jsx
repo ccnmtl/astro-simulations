@@ -103,6 +103,10 @@ class ExoplanetTransitSimulator extends React.Component {
             });
             this.updateParameters();
         }
+
+        if (prevState.cursorPhase !== this.state.cursorPhase) {
+            this.setState({phase: this.state.cursorPhase});
+        }
     }
     render() {
         const starType = getSpectralType(this.state.starMass);

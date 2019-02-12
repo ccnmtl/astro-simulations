@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import * as PIXI from 'pixi.js';
+import * as PIXI from 'pixi.js-legacy';
 import {
     rJupToKm, kmToPx
 } from './utils';
