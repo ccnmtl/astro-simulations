@@ -74,9 +74,26 @@ class ExoplanetTransitSimulator extends React.Component {
             minPhase: 0,
             maxPhase: 1
         };
+
+        this.inputs = [
+            'noise',
+            'simMeasurementNumber',
+            'planetMass',
+            'planetRadius',
+            'planetSemimajorAxis',
+            'planetEccentricity',
+            'starMass',
+            'inclination',
+            'longitude'
+        ];
+
+        this.initialState = this.initializeNumberInputs(
+            this.initialState, this.inputs);
+
         this.state = this.initialState;
 
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleInputBlur = this.handleInputBlur.bind(this);
         this.onPhaseCoordsChange = this.onPhaseCoordsChange.bind(this);
         this.onPresetSelect = this.onPresetSelect.bind(this);
 
@@ -86,7 +103,29 @@ class ExoplanetTransitSimulator extends React.Component {
 
         this.transitViewRef = React.createRef();
     }
+    /**
+     * Set up initial input field state.
+     */
+    initializeNumberInputs(state, inputs) {
+        let newState = state;
+
+        inputs.forEach(function(name) {
+            newState[name + 'Field'] = state[name];
+        });
+
+        return newState;
+    }
     componentDidUpdate(prevProps, prevState) {
+        const me = this;
+        this.inputs.forEach(function(name) {
+            if (prevState[name] !== me.state[name]) {
+                // Update the number field
+                me.setState({
+                    [name + 'Field']: me.state[name]
+                });
+            }
+        });
+
         if (
             prevState.starMass !== this.state.starMass ||
             prevState.planetSemimajorAxis !== this.state.planetSemimajorAxis ||
@@ -219,9 +258,10 @@ class ExoplanetTransitSimulator extends React.Component {
                                             className="form-control form-control-sm"
                                             disabled={!this.state.showSimulatedMeasurements}
                                             name="noise"
-                                            value={this.state.noise}
+                                            value={this.state.noiseField}
                                             onFocus={this.handleFocus}
                                             onChange={this.handleInputChange}
+                                            onBlur={this.handleInputBlur}
                                             min={0.00001} max={0.2} step={0.01} />
                                         <RangeStepInput
                                             className="form-control"
@@ -242,9 +282,10 @@ class ExoplanetTransitSimulator extends React.Component {
                                             className="form-control form-control-sm"
                                             disabled={!this.state.showSimulatedMeasurements}
                                             name="simMeasurementNumber"
-                                            value={this.state.simMeasurementNumber}
+                                            value={this.state.simMeasurementNumberField}
                                             onFocus={this.handleFocus}
                                             onChange={this.handleInputChange}
+                                            onBlur={this.handleInputBlur}
                                             min={5} max={250} step={1} />
                                         <RangeStepInput
                                             className="form-control"
@@ -279,9 +320,10 @@ class ExoplanetTransitSimulator extends React.Component {
                                     type="number"
                                     className="form-control form-control-sm"
                                     name="planetMass"
-                                    value={this.state.planetMass}
+                                    value={this.state.planetMassField}
                                     onFocus={this.handleFocus}
                                     onChange={this.handleInputChange}
+                                    onBlur={this.handleInputBlur}
                                     min={0.001} max={100}
                                     step={0.001} />
                                 M<sub>jup</sub>
@@ -303,9 +345,10 @@ class ExoplanetTransitSimulator extends React.Component {
                                     type="number"
                                     className="form-control form-control-sm"
                                     name="planetRadius"
-                                    value={this.state.planetRadius}
+                                    value={this.state.planetRadiusField}
                                     onFocus={this.handleFocus}
                                     onChange={this.handleInputChange}
+                                    onBlur={this.handleInputBlur}
                                     min={0.01} max={2}
                                     step={0.001} />
                                 R<sub>jup</sub>
@@ -327,9 +370,10 @@ class ExoplanetTransitSimulator extends React.Component {
                                     type="number"
                                     className="form-control form-control-sm"
                                     name="planetSemimajorAxis"
-                                    value={this.state.planetSemimajorAxis}
+                                    value={this.state.planetSemimajorAxisField}
                                     onFocus={this.handleFocus}
                                     onChange={this.handleInputChange}
+                                    onBlur={this.handleInputBlur}
                                     min={0.01} max={2}
                                     step={0.001} />
                                 AU
@@ -352,9 +396,10 @@ class ExoplanetTransitSimulator extends React.Component {
                                     type="number"
                                     className="form-control form-control-sm"
                                     name="planetEccentricity"
-                                    value={this.state.planetEccentricity}
+                                    value={this.state.planetEccentricityField}
                                     onFocus={this.handleFocus}
                                     onChange={this.handleInputChange}
+                                    onBlur={this.handleInputBlur}
                                     min={0} max={0.4}
                                     step={0.01} />
 
@@ -382,9 +427,10 @@ class ExoplanetTransitSimulator extends React.Component {
                                 <input type="number"
                                        className="form-control form-control-sm"
                                        name="starMass"
-                                       value={this.state.starMass}
+                                       value={this.state.starMassField}
                                        onFocus={this.handleFocus}
                                        onChange={this.handleInputChange}
+                                       onBlur={this.handleInputBlur}
                                        min={0.5} max={2}
                                        step={0.01} />
                                 M<sub>sun</sub>
@@ -419,9 +465,10 @@ class ExoplanetTransitSimulator extends React.Component {
                                     type="number"
                                     className="form-control form-control-sm"
                                     name="inclination"
-                                    value={this.state.inclination}
+                                    value={this.state.inclinationField}
                                     onFocus={this.handleFocus}
                                     onChange={this.handleInputChange}
+                                    onBlur={this.handleInputBlur}
                                     min={0} max={180} step={0.001} />&deg;
 
         <RangeStepInput
@@ -443,9 +490,10 @@ class ExoplanetTransitSimulator extends React.Component {
                                     type="number"
                                     className="form-control form-control-sm"
                                     name="longitude"
-                                    value={this.state.longitude}
+                                    value={this.state.longitudeField}
                                     onFocus={this.handleFocus}
                                     onChange={this.handleInputChange}
+                                    onBlur={this.handleInputBlur}
                                     step={0.1} />&deg;
 
         <RangeStepInput
@@ -527,6 +575,34 @@ class ExoplanetTransitSimulator extends React.Component {
             value = target.id === (target.name + 'Radio');
         } else if (target.type === 'range' || target.type === 'number') {
             value = forceNumber(value);
+        }
+
+        // Free-form text fields (i.e. number fields) set state on blur,
+        // not on change.
+        if (target.type === 'number') {
+            this.setState({
+                [name + 'Field']: value
+            });
+        } else {
+            this.setState({
+                [name]: value
+            });
+        }
+    }
+    handleInputBlur(event) {
+        const target = event.target;
+        const name = target.name;
+        const value = forceNumber(target.value);
+        const min = forceNumber(target.min);
+        const max = forceNumber(target.max);
+
+        // Don't update the state if the user is out of bounds.
+        if (value < min || value > max) {
+            // In fact, revert the input to its internal value.
+            this.setState({
+                [name + 'Field']: this.state[name]
+            });
+            return;
         }
 
         this.setState({
