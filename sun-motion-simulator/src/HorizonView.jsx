@@ -43,6 +43,10 @@ export default class HorizonView extends React.Component {
         this.onMouseUp = this.onMouseUp.bind(this);
 
         this.zVec = new THREE.Vector3(0, 0, 1);
+
+        // Gap between the inside of the sphere and the celestial
+        // equator, sun declination, etc.
+        this.visualLineGap = 0.5;
     }
 
     componentDidMount() {
@@ -297,7 +301,7 @@ export default class HorizonView extends React.Component {
 
                 this.sunDeclination.verticesNeedUpdate = true;
                 this.sunDeclination.geometry = new THREE.TorusBufferGeometry(
-                    declinationRad, 0.3, 16, 64);
+                    declinationRad - this.visualLineGap, 0.3, 16, 64);
             }
         }
 
@@ -315,10 +319,10 @@ export default class HorizonView extends React.Component {
             if (this.state.mouseoverEcliptic) {
                 this.ecliptic.verticesNeedUpdate = true;
                 this.ecliptic.geometry = new THREE.TorusBufferGeometry(
-                    this.sphereRadius, 0.6, 16, 64);
+                    this.sphereRadius - this.visualLineGap, 0.6, 16, 64);
             } else {
                 this.ecliptic.geometry = new THREE.TorusBufferGeometry(
-                    this.sphereRadius, 0.3, 16, 64);
+                    this.sphereRadius - this.visualLineGap, 0.3, 16, 64);
             }
         }
 
@@ -326,11 +330,11 @@ export default class HorizonView extends React.Component {
             this.sunDeclination.verticesNeedUpdate = true;
             if (this.state.mouseoverDeclination) {
                 this.sunDeclination.geometry = new THREE.TorusBufferGeometry(
-                    this.getSunDeclinationRadius(this.props.sunDeclination),
+                    this.getSunDeclinationLineRadius(this.props.sunDeclination),
                     0.6, 16, 64);
             } else {
                 this.sunDeclination.geometry = new THREE.TorusBufferGeometry(
-                    this.getSunDeclinationRadius(this.props.sunDeclination),
+                    this.getSunDeclinationLineRadius(this.props.sunDeclination),
                     0.3, 16, 64);
             }
         }
@@ -342,10 +346,10 @@ export default class HorizonView extends React.Component {
             this.celestialEquator.verticesNeedUpdate = true;
             if (this.state.mouseoverCelestialEquator) {
                 this.celestialEquator.geometry = new THREE.TorusBufferGeometry(
-                    this.sphereRadius, 0.6, 16, 64);
+                    this.sphereRadius - this.visualLineGap, 0.6, 16, 64);
             } else {
                 this.celestialEquator.geometry = new THREE.TorusBufferGeometry(
-                    this.sphereRadius, 0.3, 16, 64);
+                    this.sphereRadius - this.visualLineGap, 0.3, 16, 64);
             }
         }
 
@@ -354,10 +358,10 @@ export default class HorizonView extends React.Component {
             primeHourCurve.verticesNeedUpdate = true;
             if (this.state.mouseoverPrimeHour) {
                 primeHourCurve.geometry = new THREE.TorusBufferGeometry(
-                    this.sphereRadius, 0.6, 16, 64, Math.PI);
+                    this.sphereRadius - this.visualLineGap, 0.6, 16, 64, Math.PI);
             } else {
                 primeHourCurve.geometry = new THREE.TorusBufferGeometry(
-                    this.sphereRadius, 0.3, 16, 64, Math.PI);
+                    this.sphereRadius - this.visualLineGap, 0.3, 16, 64, Math.PI);
             }
         }
 
@@ -472,7 +476,7 @@ export default class HorizonView extends React.Component {
         });
 
         const declinationGeometry = new THREE.TorusBufferGeometry(
-            this.getSunDeclinationRadius(this.props.sunDeclination),
+            this.getSunDeclinationLineRadius(this.props.sunDeclination),
             0.3, 16, 64);
         this.sunDeclination = new THREE.Mesh(declinationGeometry, yellowMaterial);
         this.sunDeclination.name = 'Declination';
@@ -481,7 +485,7 @@ export default class HorizonView extends React.Component {
         this.sunDeclination.rotation.x = THREE.Math.degToRad(90);
 
         const thickTorusGeometry = new THREE.TorusBufferGeometry(
-            this.sphereRadius - 0.1, 0.3, 16, 64);
+            this.sphereRadius - this.visualLineGap, 0.3, 16, 64);
         const blueMaterial = new THREE.MeshBasicMaterial({
             color: 0x6070ff
         });
@@ -491,7 +495,7 @@ export default class HorizonView extends React.Component {
         this.celestialEquator.rotation.x = THREE.Math.degToRad(90);
 
         const primeHourGeometry = new THREE.TorusBufferGeometry(
-            this.sphereRadius, 0.3, 16, 64, Math.PI);
+            this.sphereRadius - this.visualLineGap, 0.3, 16, 64, Math.PI);
         const primeHour = new THREE.Mesh(primeHourGeometry, blueMaterial);
         primeHour.name = 'PrimeHour';
         primeHour.rotation.z = THREE.Math.degToRad(90);
@@ -636,7 +640,7 @@ export default class HorizonView extends React.Component {
         group.position.x = declinationRad * Math.cos(
             this.props.sunAzimuth + THREE.Math.degToRad(90));
         group.position.z = declinationRad * Math.sin(
-            this.props.sunAzimuth + THREE.Math.degToRad(90)) - 0.1;
+            this.props.sunAzimuth + THREE.Math.degToRad(90));
 
         group.rotation.x = this.props.sunDeclination;
 
@@ -812,6 +816,15 @@ export default class HorizonView extends React.Component {
         return this.sphereRadius * (Math.cos(sunDeclination) ** 1.25);
     }
 
+    /**
+     * The visible line for the sun's declination needs to be slightly
+     * smaller than the actual declination radius.
+     */
+    getSunDeclinationLineRadius(sunDeclination) {
+        return this.sphereRadius * (Math.cos(sunDeclination) ** 1.25) -
+               this.visualLineGap;
+    }
+
     render() {
         let infoContents = null;
         if (this.state.mouseoverEcliptic) {
@@ -891,12 +904,12 @@ export default class HorizonView extends React.Component {
         // Some of these objects (sun and primeHourCircle) are
         // actually groups of objects, so flatten them out.
         const objs = [
+            ...this.sun.children,
             this.plane,
             this.ecliptic,
             this.sunDeclination,
             this.celestialEquator
-        ].concat(this.sun.children)
-         .concat(this.primeHourCircle.children);
+        ].concat(this.primeHourCircle.children);
 
         const intersects = this.raycaster.intersectObjects(objs);
         return intersects;
