@@ -6,8 +6,11 @@ const getLuminosityFromMass = function(mass) {
         //   main sequence star, also in solar units
         // - this function is based on the approximation given in Zeilick, page 239
 
-        if (mass<0.43) return 0.232220431737728*Math.pow(mass, 2.26);
-        else return Math.pow(mass, 3.99);
+    if (mass < 0.43) {
+        return 0.232220431737728 * Math.pow(mass, 2.26);
+    } else {
+        return Math.pow(mass, 3.99);
+    }
 };
 
 const getTempFromLuminosity = function(lum) {
@@ -19,73 +22,69 @@ const getTempFromLuminosity = function(lum) {
     //   for luminosities between 10^-4.5 and 10^5.9 (corresponding to temperatures in the
     //   range 2100 K to 49500 K) this ratio is within 1e-6 of 1
 
-    var logL = Math.log(lum)/Math.LN10;
+    const logL = Math.log(lum) / Math.LN10;
+
+    let a, b, c, d, e, f, g;
 
     if (logL < -1.61) {
-        var a = 3.764248474913030E+00;
-        var b = 1.403164363373530E-01;
-        var c = 1.397096488347830E-02;
-        var d = 1.462579521663530E-03;
-        var e = 1.142039910577920E-04;
-        var f = 5.340095201939730E-06;
-        var g = 1.008975018735050E-07;
-    }
-    else if (logL < 0.22) {
-        var a = 3.764047490649370E+00;
-        var b = 1.397208360516620E-01;
-        var c = 1.319494711074820E-02;
-        var d = 8.780162179209580E-04;
-        var e = -1.608767853404600E-04;
-        var f = -7.189237786420370E-05;
-        var g = -9.843092175989100E-06;
-    }
-    else if (logL < 1.48) {
-        var a = 3.764049359999160E+00;
-        var b = 1.397005055143710E-01;
-        var c = 1.328345123920250E-02;
-        var d = 6.811486841687640E-04;
-        var e = 5.156479540298310E-05;
-        var f = -2.309315279008070E-04;
-        var g = 1.344297768709770E-05;
-    }
-    else if (logL < 2.61) {
-        var a = 3.762086821782850E+00;
-        var b = 1.454166837534800E-01;
-        var c = 6.845847579637430E-03;
-        var d = 3.960765438353460E-03;
-        var e = -4.646552016102080E-04;
-        var f = -3.810074383330720E-04;
-        var g = 6.235862541187450E-05;
-    }
-    else if (logL < 3.62) {
-        var a = 3.778550743814600E+00;
-        var b = 1.298970959402520E-01;
-        var c = 1.428107077288620E-03;
-        var d = 1.670453994945310E-02;
-        var e = -6.932502291820940E-03;
-        var f = 1.038456655083010E-03;
-        var g = -5.599205585786900E-05;
-    }
-    else if (logL < 5.43) {
-        var a = 3.949431460366080E+00;
-        var b = -1.542812513214520E-01;
-        var c = 1.979230342627000E-01;
-        var d = -5.559610061930400E-02;
-        var e = 7.995396102079130E-03;
-        var f = -6.008467485100630E-04;
-        var g = 1.877705306970320E-05;
-    }
-    else {
-        var a = 4.367970995185480E+00;
-        var b = -3.148711784564640E-01;
-        var c = 1.433999680976210E-01;
-        var d = -1.307401291373810E-02;
-        var e = -1.592553698503740E-03;
-        var f = 3.579732273982070E-04;
-        var g = -1.780455698059300E-05;
+        a = 3.764248474913030E+00;
+        b = 1.403164363373530E-01;
+        c = 1.397096488347830E-02;
+        d = 1.462579521663530E-03;
+        e = 1.142039910577920E-04;
+        f = 5.340095201939730E-06;
+        g = 1.008975018735050E-07;
+    } else if (logL < 0.22) {
+        a = 3.764047490649370E+00;
+        b = 1.397208360516620E-01;
+        c = 1.319494711074820E-02;
+        d = 8.780162179209580E-04;
+        e = -1.608767853404600E-04;
+        f = -7.189237786420370E-05;
+        g = -9.843092175989100E-06;
+    } else if (logL < 1.48) {
+        a = 3.764049359999160E+00;
+        b = 1.397005055143710E-01;
+        c = 1.328345123920250E-02;
+        d = 6.811486841687640E-04;
+        e = 5.156479540298310E-05;
+        f = -2.309315279008070E-04;
+        g = 1.344297768709770E-05;
+    } else if (logL < 2.61) {
+        a = 3.762086821782850E+00;
+        b = 1.454166837534800E-01;
+        c = 6.845847579637430E-03;
+        d = 3.960765438353460E-03;
+        e = -4.646552016102080E-04;
+        f = -3.810074383330720E-04;
+        g = 6.235862541187450E-05;
+    } else if (logL < 3.62) {
+        a = 3.778550743814600E+00;
+        b = 1.298970959402520E-01;
+        c = 1.428107077288620E-03;
+        d = 1.670453994945310E-02;
+        e = -6.932502291820940E-03;
+        f = 1.038456655083010E-03;
+        g = -5.599205585786900E-05;
+    } else if (logL < 5.43) {
+        a = 3.949431460366080E+00;
+        b = -1.542812513214520E-01;
+        c = 1.979230342627000E-01;
+        d = -5.559610061930400E-02;
+        e = 7.995396102079130E-03;
+        f = -6.008467485100630E-04;
+        g = 1.877705306970320E-05;
+    } else {
+        a = 4.367970995185480E+00;
+        b = -3.148711784564640E-01;
+        c = 1.433999680976210E-01;
+        d = -1.307401291373810E-02;
+        e = -1.592553698503740E-03;
+        f = 3.579732273982070E-04;
+        g = -1.780455698059300E-05;
     }
 
-    var logT = a + logL*(b + logL*(c + logL*(d + logL*(e + logL*(f + logL*g)))));
+    const logT = a + logL*(b + logL*(c + logL*(d + logL*(e + logL*(f + logL*g)))));
 
     return Math.pow(10, logT);
 };
@@ -96,7 +95,7 @@ const getRadiusFromTempAndLuminosity = function(temp, luminosity) {
         // - this function uses an effective solar temperature of about 5808.3 K in order to be
         //   as consistent as possible with other functions such as getTempFromLuminosity
 
-        return 33736108.2311059*Math.sqrt(luminosity)/(temp*temp);
+        return 33736108.2311059 * Math.sqrt(luminosity) / (temp * temp);
 };
 
 const spectralTypesAndTemps = {
