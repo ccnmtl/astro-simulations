@@ -189,13 +189,12 @@ export default class Lightcurve {
 
     setPhaseOffset(arg, callChangeHandler) {
         var cP = this.getCursorPhase();
-        this._phaseOffset = (arg%1+1)%1;
+        this._phaseOffset = (arg % 1 + 1) % 1;
+
         if (this._regionShown === 0) {
             //this.plotAreaMC._x = this._phaseOffset*this._plotWidth;
             this.setCursorPhase(cP, false);
             if (callChangeHandler) this._parent[this.phaseOffsetChangeHandler](this._phaseOffset);
-        } else {
-            //this.plotAreaMC._x = 0;
         }
         //this.updateCursorPosition();
     };
@@ -692,7 +691,7 @@ export default class Lightcurve {
                     this.__xScale = this._plotWidth * (
                         1 - 2* this.horizontalMargin)/eclipse.duration.phase;
                     this._minPhase = (
-                        (eclipse.start.phase - this.horizontalMargin*this._plotWidth/this.__xScale)
+                        (eclipse.start.phase - this.horizontalMargin * this._plotWidth/this.__xScale)
                             % 1 + 1) % 1;
                     this._maxPhase = (
                         this._minPhase + (this._plotWidth/this.__xScale))%1;

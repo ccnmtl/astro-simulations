@@ -93,6 +93,7 @@ class ExoplanetTransitSimulator extends React.Component {
         this.onPresetSelect = this.onPresetSelect.bind(this);
 
         this.lightcurve = new Lightcurve();
+        this.lightcurve.setCPhase(this.state.phase);
         this.lightcurveCoords = [];
 
         this.transitViewRef = React.createRef();
@@ -145,8 +146,7 @@ class ExoplanetTransitSimulator extends React.Component {
             this.lightcurve.setCPhase(this.state.phase);
             if (this.transitViewRef) {
                 this.transitViewRef.current.setPhase(
-                    // TODO: needs to be: this.lightcurve.cursorPhase
-                    this.state.phase);
+                    this.lightcurve.getCursorPhase());
             }
         }
     }
@@ -381,7 +381,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                     onFocus={this.handleFocus}
                                     onChange={this.handleInputChange}
                                     onBlur={this.handleInputBlur}
-                                    min={0.01} max={2}
+                                    min={0.015} max={2}
                                     step={0.001} />
                                 &nbsp;AU&nbsp;
 
@@ -390,7 +390,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                     name="planetSemimajorAxis"
                                     value={this.state.planetSemimajorAxis}
                                     onChange={this.handleInputChange}
-                                    min={0.01} max={2}
+                                    min={0.015} max={2}
                                     step={0.001} />
                             </div>
                         </div>
@@ -561,7 +561,7 @@ class ExoplanetTransitSimulator extends React.Component {
 
         params.minPhase = this.lightcurve._minPhase;
         params.maxPhase = this.lightcurve._maxPhase;
-        params.phase = this.lightcurve.cursorPhase;
+        params.phase = this.lightcurve.getCursorPhase();
 
         if (this.transitViewRef && this.transitViewRef.current) {
             this.transitViewRef.current.setParameters(params);

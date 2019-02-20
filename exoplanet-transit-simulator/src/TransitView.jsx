@@ -168,11 +168,11 @@ export default class TransitView extends React.Component {
 
         const c = this._c;
 
-        const sx1 = (wx1*c.a0 + wy1*c.a1) * this.pixiScale;
-        const sy1 = (wx1*c.a3 + wy1*c.a4) * this.pixiScale;
+        const sx1 = (wx1*c.a0 + wy1*c.a1);
+        const sy1 = (wx1*c.a3 + wy1*c.a4);
 
-        const sx2 = (wx2*c.a0 + wy2*c.a1) * this.pixiScale;
-        const sy2 = (wx2*c.a3 + wy2*c.a4) * this.pixiScale;
+        const sx2 = (wx2*c.a0 + wy2*c.a1);
+        const sy2 = (wx2*c.a3 + wy2*c.a4);
 
         this.planet.x = (this._centerX + sx2 - sx1);
         this.planet.y = (this._centerY + sy2 - sy1);
@@ -180,7 +180,7 @@ export default class TransitView extends React.Component {
         if (this.planet.scale.x < (3 * this.pixiScale)) {
             this.arrow.visible = true;
             this.arrow.x = this.planet.x;
-            this.arrow.y = this.planet.y + (5 / this.pixiScale);
+            this.arrow.y = this.planet.y + (5 / (this.pixiScale * 3));
         } else {
             this.arrow.visible = false;
         }
