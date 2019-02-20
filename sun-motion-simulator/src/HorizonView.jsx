@@ -92,6 +92,8 @@ export default class HorizonView extends React.Component {
             'mousedown', this.onMouseDown, false);
         renderer.domElement.addEventListener(
             'mouseup', this.onMouseUp, false);
+        renderer.domElement.addEventListener(
+            'mouseout', this.onMouseUp, false);
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setClearColor(0x000000);
         renderer.shadowMap.enabled = true;
