@@ -96,6 +96,8 @@ class ExoplanetTransitSimulator extends React.Component {
         this.lightcurveCoords = [];
 
         this.transitViewRef = React.createRef();
+
+        this.updateParameters();
     }
     /**
      * Set up initial input field state.
@@ -140,17 +142,12 @@ class ExoplanetTransitSimulator extends React.Component {
         }
 
         if (prevState.phase !== this.state.phase) {
-            this.setState({phase: this.state.phase});
-
             this.lightcurve.setCPhase(this.state.phase);
             if (this.transitViewRef) {
                 this.transitViewRef.current.setPhase(
                     // TODO: needs to be: this.lightcurve.cursorPhase
                     this.state.phase);
-
             }
-
-            //this.updateParameters();
         }
     }
     render() {
@@ -566,7 +563,7 @@ class ExoplanetTransitSimulator extends React.Component {
         params.maxPhase = this.lightcurve._maxPhase;
         params.phase = this.lightcurve.cursorPhase;
 
-        if (this.transitViewRef) {
+        if (this.transitViewRef && this.transitViewRef.current) {
             this.transitViewRef.current.setParameters(params);
         }
     }
