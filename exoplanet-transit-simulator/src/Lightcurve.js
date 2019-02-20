@@ -55,13 +55,17 @@ export default class Lightcurve {
         if (this.backgroundAlpha==undefined) this.backgroundAlpha = 100;
         if (this.initPhaseOffset==undefined) this.initPhaseOffset = -0.25;
         if (this.initAllowDragging==undefined) this.initAllowDragging = true;
-        if (this.cursorPhase==undefined) this.cursorPhase = 0;
+        if (typeof this.cursorPhase === 'undefined') {
+            this.cursorPhase = 0;
+        }
         if (this.initShowPhaseCursor==undefined) this.initShowPhaseCursor = false;
         if (this.phaseCursorNormalColor==undefined) this.phaseCursorNormalColor = 0xee9090;
         if (this.phaseCursorNormalWidth==undefined) this.phaseCursorNormalWidth = 3;
         if (this.phaseCursorActiveColor==undefined) this.phaseCursorActiveColor = 0xff5050;
         if (this.phaseCursorActiveWidth==undefined) this.phaseCursorActiveWidth = 4;
-        if (this.initCursorPhase==undefined) this.initCursorPhase = 0.5;
+        if (typeof this.initCursorPhase === 'undefined') {
+            this.initCursorPhase = 0.5;
+        }
         if (this.xAxisTickmarksList==undefined) {
             var a = 7;
             var b = 4;
@@ -184,26 +188,31 @@ export default class Lightcurve {
     }
 
     setPhaseOffset(arg, callChangeHandler) {
-        //var cP = this.getCursorPhase();
+        var cP = this.getCursorPhase();
         this._phaseOffset = (arg%1+1)%1;
         if (this._regionShown === 0) {
             //this.plotAreaMC._x = this._phaseOffset*this._plotWidth;
-            //this.setCursorPhase(cP, false);
+            this.setCursorPhase(cP, false);
             if (callChangeHandler) this._parent[this.phaseOffsetChangeHandler](this._phaseOffset);
-        }
-        else {
+        } else {
             //this.plotAreaMC._x = 0;
         }
         //this.updateCursorPosition();
     };
 
     getCursorPhase() {
-        if (this._minPhase==null) return null;
-        if (this._regionShown==0) return ((this._cPhase - this._phaseOffset)%1 + 1)%1;
-        else {
+        if (this._minPhase == null) {
+            return null;
+        }
+
+        if (this._regionShown == 0) {
+            return ((this._cPhase - this._phaseOffset) % 1 + 1) % 1;
+        } else {
             var range = this._maxPhase - this._minPhase;
-            if (range<0) range += 1;
-            return (this._minPhase + this._cPhase*range)%1;
+            if (range < 0) {
+                range += 1;
+            }
+            return (this._minPhase + this._cPhase * range) % 1;
         }
     };
 
@@ -216,7 +225,9 @@ export default class Lightcurve {
         }
         else {
             var range = this._maxPhase - this._minPhase;
-            if (range<0) range += 1;
+            if (range<0) {
+                range += 1;
+            }
             var u = arg - this._minPhase;
             var newCPhase = u/range;
             if (newCPhase<0) newCPhase = 0;
@@ -227,7 +238,7 @@ export default class Lightcurve {
     };
 
     setCPhase(arg, callChangeHandler) {
-        this._cPhase = (arg%1 + 1)%1;
+        this._cPhase = (arg % 1 + 1) % 1;
         //this.updateCursorPosition();
         if (callChangeHandler) this._parent[this.phaseChangeHandler](this.cursorPhase);
     };
@@ -695,8 +706,11 @@ export default class Lightcurve {
                     var w = this._curveParams.argument;
                     var e = this._curveParams.eccentricity;
 
-                    if (this._regionShown === 1) var _TA = (Math.PI/2) - w;
-                    else var _TA = (3*Math.PI/2) - w;
+                    if (this._regionShown === 1) {
+                        var _TA = (Math.PI/2) - w;
+                    } else {
+                        var _TA = (3*Math.PI/2) - w;
+                    }
 
                     var _EA = 2*Math.atan(Math.tan(0.5*_TA)/Math.sqrt((1+e)/(1-e)));
                     var _MA = _EA - e*Math.sin(_EA);
@@ -950,14 +964,6 @@ export default class Lightcurve {
         //this.plotAreaMC.curveMC.mc1._x = -2*this._plotWidth;
         //this.plotAreaMC.curveMC.mc2._x = -this._plotWidth;
         //this.plotAreaMC.curveMC.mc3._x = 0;
-
-        //
-        // Make the curve display correctly by only return first half
-        // of this array.
-        // That kind of thing is necessary when working with
-        // complicated code I haven't written myself. -_-
-        //
-        //const firstHalf = coords.slice(0, Math.floor(coords.length / 2));
 
         const normalized = normalize(coords.map(e => -e[1]));
         const a = [];

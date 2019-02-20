@@ -12,7 +12,7 @@ import {
 
 import {
     getLuminosityFromMass, getTempFromLuminosity,
-    getRadiusFromTempAndLuminosity, getSpectralTypeFromTemp
+    getRadiusFromTempAndLuminosity
 } from './star-utils';
 
 import {systemPresets} from './presets';
@@ -62,12 +62,7 @@ class ExoplanetTransitSimulator extends React.Component {
             inclination: 86.929,
             longitude: 0,
 
-            // The actual phase may not correspond to the cursor's
-            // phase. The cursor's phase always ranges between 0 and 1,
-            // the input's range. Actual phase's range changes
-            // depending on scene settings.
             phase: 0.5,
-            cursorPhase: 0.5,
 
             // These values change as the lightcurve changes. They
             // represent just a tiny part of the planet's orbit.
@@ -99,7 +94,6 @@ class ExoplanetTransitSimulator extends React.Component {
 
         this.lightcurve = new Lightcurve();
         this.lightcurveCoords = [];
-        this.updateParameters();
 
         this.transitViewRef = React.createRef();
     }
@@ -114,6 +108,9 @@ class ExoplanetTransitSimulator extends React.Component {
         });
 
         return newState;
+    }
+    componentDidMount() {
+        this.updateParameters();
     }
     componentDidUpdate(prevProps, prevState) {
         const me = this;
@@ -133,8 +130,7 @@ class ExoplanetTransitSimulator extends React.Component {
             prevState.planetRadius !== this.state.planetRadius ||
             prevState.inclination !== this.state.inclination ||
             prevState.longitude !== this.state.longitude ||
-            prevState.planetEccentricity !== this.state.planetEccentricity ||
-            prevState.cursorPhase !== this.state.cursorPhase
+            prevState.planetEccentricity !== this.state.planetEccentricity
         ) {
             this.setState({
                 minPhase: this.lightcurve._minPhase,
@@ -143,8 +139,18 @@ class ExoplanetTransitSimulator extends React.Component {
             this.updateParameters();
         }
 
-        if (prevState.cursorPhase !== this.state.cursorPhase) {
-            this.setState({phase: this.state.cursorPhase});
+        if (prevState.phase !== this.state.phase) {
+            this.setState({phase: this.state.phase});
+
+            this.lightcurve.setCPhase(this.state.phase);
+            if (this.transitViewRef) {
+                this.transitViewRef.current.setPhase(
+                    // TODO: needs to be: this.lightcurve.cursorPhase
+                    this.state.phase);
+
+            }
+
+            //this.updateParameters();
         }
     }
     render() {
@@ -330,7 +336,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                     onBlur={this.handleInputBlur}
                                     min={0.001} max={100}
                                     step={0.001} />
-                                M<sub>jup</sub>
+                                &nbsp;M<sub>jup</sub>&nbsp;
 
                                 <RangeStepInput
                                     className="form-control"
@@ -355,7 +361,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                     onBlur={this.handleInputBlur}
                                     min={0.01} max={2}
                                     step={0.001} />
-                                R<sub>jup</sub>
+                                &nbsp;R<sub>jup</sub>&nbsp;
 
                                 <RangeStepInput
                                     className="form-control"
@@ -380,7 +386,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                     onBlur={this.handleInputBlur}
                                     min={0.01} max={2}
                                     step={0.001} />
-                                AU
+                                &nbsp;AU&nbsp;
 
                                 <RangeStepInput
                                     className="form-control"
@@ -437,7 +443,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                        onBlur={this.handleInputBlur}
                                        min={0.5} max={2}
                                        step={0.01} />
-                                M<sub>sun</sub>
+                                &nbsp;M<sub>sun</sub>&nbsp;
 
                                 <RangeStepInput
                                     className="form-control"
@@ -473,7 +479,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                     onFocus={this.handleFocus}
                                     onChange={this.handleInputChange}
                                     onBlur={this.handleInputBlur}
-                                    min={0} max={180} step={0.001} />&deg;
+                                    min={0} max={180} step={0.001} />&deg;&nbsp;
 
         <RangeStepInput
             className="form-control"
@@ -498,7 +504,7 @@ class ExoplanetTransitSimulator extends React.Component {
                                     onFocus={this.handleFocus}
                                     onChange={this.handleInputChange}
                                     onBlur={this.handleInputBlur}
-                                    step={0.1} />&deg;
+                                    step={0.1} />&deg;&nbsp;
 
         <RangeStepInput
             className="form-control"
@@ -518,8 +524,8 @@ class ExoplanetTransitSimulator extends React.Component {
                             <div className="col-10">
                                 <RangeStepInput
                                     className="form-control"
-                                    name="cursorPhase" id="phaseSlider"
-                                    value={this.state.cursorPhase}
+                                    name="phase" id="phaseSlider"
+                                    value={this.state.phase}
                                     onChange={this.handleInputChange}
                                     min={0} max={1} step={0.01} />
                             </div>
@@ -537,12 +543,7 @@ class ExoplanetTransitSimulator extends React.Component {
         const starLum = getLuminosityFromMass(starMass);
         const starTemp = getTempFromLuminosity(starLum);
         const starRadius = getRadiusFromTempAndLuminosity(starTemp, starLum);
-        const starType = getSpectralTypeFromTemp(starTemp);
-
-        let num = Math.round(starType.number);
-        if (num === 10) {
-            num = 9;
-        }
+        //const starType = getSpectralTypeFromTemp(starTemp);
 
         //displayStarInfo(starType, starTemp, starRadius);
 
@@ -563,7 +564,7 @@ class ExoplanetTransitSimulator extends React.Component {
 
         params.minPhase = this.lightcurve._minPhase;
         params.maxPhase = this.lightcurve._maxPhase;
-        params.phase = this.state.cursorPhase;
+        params.phase = this.lightcurve.cursorPhase;
 
         if (this.transitViewRef) {
             this.transitViewRef.current.setParameters(params);
