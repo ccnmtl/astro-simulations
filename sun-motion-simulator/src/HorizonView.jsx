@@ -441,8 +441,7 @@ export default class HorizonView extends React.Component {
         scene.add(domeGroup);
         this.solidBlackDome = domeGroup;
 
-        // Make a slightly larger black dome, positioned
-        // a little lower than the first one, to hide the
+        // Make a slightly larger black dome to hide the
         // months text when showUnderside is false.
         const hideTextDomeCoverGeometry = new THREE.SphereBufferGeometry(
             54, 64, 64, 0, Math.PI * 2, 0, Math.PI / 2);
