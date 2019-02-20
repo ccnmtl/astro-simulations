@@ -378,6 +378,7 @@ export default class HorizonView extends React.Component {
         }
         if (prevProps.showUnderside !== this.props.showUnderside) {
             this.solidBlackDome.visible = !this.props.showUnderside;
+            this.primeHourBottomCyl.visible = this.props.showUnderside;
         }
         if (prevProps.showAnalemma !== this.props.showAnalemma) {
             this.analemma.visible = this.props.showAnalemma;
@@ -436,11 +437,20 @@ export default class HorizonView extends React.Component {
         const domeGroup = new THREE.Group()
         domeGroup.add(solidBlackDome);
         domeGroup.add(plane);
-        domeGroup.rotation.x = Math.PI;
-        domeGroup.visible = false;
 
         scene.add(domeGroup);
         this.solidBlackDome = domeGroup;
+
+        // Make a slightly larger black dome to hide the
+        // months text when showUnderside is false.
+        const hideTextDomeCoverGeometry = new THREE.SphereBufferGeometry(
+            54, 64, 64, 0, Math.PI * 2, 0, Math.PI / 2);
+        const hideTextDome = new THREE.Mesh(
+            hideTextDomeCoverGeometry, solidBlackMaterial);
+
+        domeGroup.add(hideTextDome);
+        domeGroup.rotation.x = Math.PI;
+        domeGroup.visible = !this.props.showUnderside;
 
         this.skyMaterial = new THREE.MeshBasicMaterial({
             transparent: true,
@@ -514,6 +524,11 @@ export default class HorizonView extends React.Component {
         const primeHourBottomCyl = new THREE.Mesh(
             primeHourBottomCylGeo, blueMaterial);
         primeHourBottomCyl.position.y = -55;
+        primeHourBottomCyl.visible = this.props.showUnderside;
+
+        // Save a reference to the bottom cylinder because
+        // it gets turned off when showUnderside is false.
+        this.primeHourBottomCyl = primeHourBottomCyl;
 
         this.primeHourCircle = new THREE.Group();
 
