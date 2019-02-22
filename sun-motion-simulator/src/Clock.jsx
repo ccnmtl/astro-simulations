@@ -22,7 +22,7 @@ export default class Clock extends React.Component {
         this.loader = new PIXI.Loader();
         this.loader.add('clock', 'img/clock.svg');
 
-        this.center = new PIXI.Point(100, 100);
+        this.center = new PIXI.Point(200, 200);
 
         // For keeping track of clockwise/counter-clockwise motion on
         // the clock hands.
@@ -42,7 +42,8 @@ export default class Clock extends React.Component {
                            className="form-control form-control-sm ml-2" />
                 </label>
             </div>
-            <div ref={(el) => {this.timePicker = el}}></div>
+            <div className="pixi-scene"
+                 ref={(el) => {this.timePicker = el}}></div>
         </React.Fragment>;
     }
     componentDidMount() {
@@ -50,13 +51,13 @@ export default class Clock extends React.Component {
 
         const timePickerApp = new PIXI.Application({
             backgroundColor: 0xffffff,
-            width: 200,
-            height: 200,
+            // Scaled to half-size in CSS.
+            width: 400,
+            height: 400,
             sharedLoader: true,
             sharedTicker: true,
             forceCanvas: true,
-            antialias: true,
-            autoDensity: true
+            antialias: true
         });
         this.timePickerApp = timePickerApp;
         this.timePicker.appendChild(timePickerApp.view);
@@ -107,7 +108,7 @@ export default class Clock extends React.Component {
         // Draw a thin border around the clock
         const border = new PIXI.Graphics()
                                .lineStyle(1, 0x000000)
-                               .drawCircle(center.x, center.y, 96.5);
+                               .drawCircle(center.x, center.y, 96.5 * 2);
         app.stage.addChild(border);
 
         // Draw the hour hand
@@ -127,9 +128,9 @@ export default class Clock extends React.Component {
         const hourHand = new PIXI.Graphics()
                                  .beginFill(0x000000)
                                  .drawRoundedRect(
-                                     0, 0,
-                                     8, bg.height / 4.5,
-                                     5);
+                                     -3, 0,
+                                     14, bg.height / 4.5,
+                                     7);
         hourContainer.addChild(hourHand);
         hourContainer.position.set(this.center.x, this.center.y);
         hourContainer.pivot = new PIXI.Point(4, 5);
@@ -144,9 +145,9 @@ export default class Clock extends React.Component {
         const minuteHand = new PIXI.Graphics()
                                  .beginFill(0x666666)
                                  .drawRoundedRect(
-                                     0, 0,
-                                     4, bg.height / 2.3,
-                                     4);
+                                     -2, 0,
+                                     8, (bg.height / 2.5),
+                                     6);
         minuteContainer.addChild(minuteHand);
         minuteContainer.position.set(this.center.x, this.center.y);
         minuteContainer.pivot = new PIXI.Point(2, 5);
@@ -157,7 +158,7 @@ export default class Clock extends React.Component {
         // Draw brown circle at the center
         const cog = new PIXI.Graphics()
                             .beginFill(0x80522d)
-                            .drawCircle(this.center.x, this.center.y, 3);
+                            .drawCircle(this.center.x, this.center.y, 6);
         app.stage.addChild(cog);
 
         // Set up events
