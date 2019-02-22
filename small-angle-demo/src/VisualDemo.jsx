@@ -13,7 +13,7 @@ export default class VisualDemo extends React.Component {
 
         // The person avatar's eye level.
         this.eyePos = {
-            x: 35,
+            x: 35 * 2,
             y: 85
         };
 
@@ -22,15 +22,17 @@ export default class VisualDemo extends React.Component {
         this.onMove = this.onMove.bind(this);
     }
     render() {
-        return <div ref={(el) => {this.el = el}}></div>;
+        return <div className="pixi-scene"
+                    ref={(el) => {this.el = el}}></div>;
     }
     componentDidMount() {
         const app = new PIXI.Application({
             backgroundColor: 0xffffff,
-            width: 700,
-            height: 200,
+            width: 700 * 2,
+            height: 200 * 2,
             sharedTicker: true,
-            forceCanvas: true
+            forceCanvas: true,
+            antialias: true
         });
 
         app.loader.add('person', 'img/person.png');
@@ -75,7 +77,7 @@ export default class VisualDemo extends React.Component {
 
             // re-position the alpha symbol
             const ratio = this.props.diameter / this.props.distance;
-            this.lines.alphaText.position.y = 60 - (ratio * 80);
+            this.lines.alphaText.position.y = 30 - (ratio * 80 * 2);
         }
     }
     drawStatic(app, resources) {
@@ -96,6 +98,8 @@ export default class VisualDemo extends React.Component {
         person.position.y = 80;
         person.width *= 0.15;
         person.height *= 0.15;
+        person.width *= 2;
+        person.height *= 2;
         app.stage.addChild(person);
     }
     drawBall(app, resource) {
@@ -148,8 +152,8 @@ export default class VisualDemo extends React.Component {
         arc.clear();
         arc.lineStyle(1);
         arc.arc(
-            55, this.eyePos.y,
-            100,
+            55 * 2, this.eyePos.y,
+            100 * 2,
             4 / (5 / ratio),
             -4 / (5 / ratio),
             true);
@@ -166,12 +170,12 @@ export default class VisualDemo extends React.Component {
         const ratio = this.props.diameter / this.props.distance;
         const alphaText = new PIXI.Text('α', {
             fontFamily: 'Arial',
-            fontSize: 18,
+            fontSize: 18 * 2,
             fill: 0x000000,
             align: 'center'
         });
-        alphaText.position.x = 150;
-        alphaText.position.y = 60 - (ratio * 80);
+        alphaText.position.x = 150 * 2;
+        alphaText.position.y = 30 - (ratio * 80 * 2);
         app.stage.addChild(alphaText);
 
         const arc = new PIXI.Graphics();
@@ -191,10 +195,10 @@ export default class VisualDemo extends React.Component {
      * and pixel dimensions.
      */
     unitToPixel(n) {
-        return n * 11;
+        return (n * 11) * 2;
     }
     pixelToUnit(n) {
-        return n / 11;
+        return (n / 11) / 2;
     }
 
     onDragStart() {
