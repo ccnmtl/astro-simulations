@@ -20,7 +20,7 @@ export default class Clock extends React.Component {
         this.onTimeUpdate = this.onTimeUpdate.bind(this);
 
         this.loader = new PIXI.Loader();
-        this.loader.add('clock', 'img/clock.png');
+        this.loader.add('clock', 'img/clock.svg');
 
         this.center = new PIXI.Point(100, 100);
 
@@ -54,7 +54,9 @@ export default class Clock extends React.Component {
             height: 200,
             sharedLoader: true,
             sharedTicker: true,
-            forceCanvas: true
+            forceCanvas: true,
+            antialias: true,
+            autoDensity: true
         });
         this.timePickerApp = timePickerApp;
         this.timePicker.appendChild(timePickerApp.view);
@@ -88,8 +90,7 @@ export default class Clock extends React.Component {
         const sprite = new PIXI.Sprite(resource.texture);
         sprite.position.x = (app.view.width - sprite.width) / 2;
         sprite.position.y = (app.view.height - sprite.height) / 2;
-        // cacheAsBitmap is for sprites that don't move.
-        sprite.cacheAsBitmap = true;
+        sprite.roundPixels = true;
         app.stage.addChild(sprite);
         return sprite;
     }
