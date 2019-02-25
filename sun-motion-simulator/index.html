@@ -3,13 +3,13 @@
     <head>
         <meta charset="UTF-8" />
         <title>Motions of the Sun Simulator</title>
- 
+
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
 
         <style type="text/css">
         body>.container {
             width: 1140px;
-        }        
+        }
         #sim-container {
             -webkit-touch-callout: none;
             -webkit-user-select: none;
@@ -20,9 +20,19 @@
             width: 1110px;
         }
 
-        #sim-container .pixi-scene canvas {
+        #sim-container .pixi-scene.astro-clock canvas {
             width: 200px;
             height: 200px;
+        }
+
+        #sim-container .pixi-scene.astro-datepicker canvas {
+            width: 500px;
+            height: 30px;
+        }
+
+        #sim-container .pixi-scene.astro-earthmap canvas {
+            width: 271px;
+            height: 140px;
         }
 
         #HorizonView,
@@ -92,7 +102,7 @@
                             changes. For example, one can use this
                             mode to see the path the noon time sun
                             traces over the year.
-                        </p>                        
+                        </p>
                     </div>
                 </div>
             </div>
