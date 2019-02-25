@@ -6,13 +6,14 @@ import TransitView from './TransitView';
 import {RangeStepInput} from 'react-range-step-input';
 
 import {
-    forceNumber, getStarRadius, getStarTemp, getSpectralType,
+    forceNumber, getStarRadius,
     formatNumber, getTimeString
 } from './utils';
 
 import {
     getLuminosityFromMass, getTempFromLuminosity,
-    getRadiusFromTempAndLuminosity
+    getRadiusFromTempAndLuminosity,
+    getSpectralTypeFromTemp
 } from './star-utils';
 
 import {systemPresets} from './presets';
@@ -151,8 +152,13 @@ class ExoplanetTransitSimulator extends React.Component {
         }
     }
     render() {
-        const starType = getSpectralType(this.state.starMass);
-        const starTemp = getStarTemp(this.state.starMass);
+
+        const lum = getLuminosityFromMass(this.state.starMass);
+        const starTemp = getTempFromLuminosity(lum);
+
+        const st = getSpectralTypeFromTemp(starTemp);
+        const starType = st.type + Math.round(st.number) + st.starClass;
+
         const starRadius = getStarRadius(this.state.starMass);
         return <React.Fragment>
             <nav className="navbar navbar-expand-md navbar-light bg-light d-flex justify-content-between">
@@ -453,7 +459,7 @@ class ExoplanetTransitSimulator extends React.Component {
                     </div>
                     <p>
                         A main sequence star of this mass would have
-                        spectral type {starType}, temperature {starTemp} K, and
+                        spectral type {starType}, temperature {Math.round(starTemp)} K, and
                         radius {starRadius} R<sub>sun</sub>
                     </p>
                 </div>
