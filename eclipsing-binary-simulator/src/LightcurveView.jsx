@@ -8,22 +8,37 @@ export default class LightcurveView extends React.Component {
         super(props);
         this.state = {
             isDragging: false,
-            noiseData: []
+            noiseData: [],
+            curveCoords: []
         };
+
+        this.plotWidth = 320;
+        this.plotHeight = 200;
+
+        this.minMagDiff = 0.01;
+
+        this.yTopMargin = 17;
+        this.yBottomMargin = 5;
+        this.xMargin = 1;
+
+        this.totalHeight = this.plotHeight + this.yTopMargin + this.yBottomMargin;
+
+        this.minMagTickSpacing = 20;
+        this.minMagMinorTickSpacing = 7;
+
+        this.solarRadius = 6.96e8;
 
         this.maxNumberOfMagTicks = Math.ceil(this.totalHeight/this.minMagTickSpacing);
 
-        let i;
-
-        for (i = 0; i<this.maxNumberOfMagTicks; i++) {
-            this.magTicksMC.attachMovie("Mag Tick And Label", "tick"+i, i, {visible: false});
-        }
+        /*for (i = 0; i<this.maxNumberOfMagTicks; i++) {
+            //this.magTicksMC.attachMovie("Mag Tick And Label", "tick"+i, i, {visible: false});
+        }*/
 
         this.maxNumberOfMagMinorTicks = this.maxNumberOfMagTicks*11;
 
-        for (i = 0; i<this.maxNumberOfMagMinorTicks; i++) {
-            this.magTicksMC.minorTicksMC.attachMovie("Mag Minor Tick", "minorTick"+i, i, {visible: false});
-        }
+        /*for (i = 0; i<this.maxNumberOfMagMinorTicks; i++) {
+            //this.magTicksMC.minorTicksMC.attachMovie("Mag Minor Tick", "minorTick"+i, i, {visible: false});
+        }*/
 
         this.onDragStart = this.onDragStart.bind(this);
         this.onDragEnd = this.onDragEnd.bind(this);
@@ -47,31 +62,36 @@ export default class LightcurveView extends React.Component {
     }
     setParameters(dataObj) {
         var currObj = this._c;
-        if (dataObj.eccentricity != currObj.eccentricity) {
+
+        let coords = [];
+
+        if (dataObj.eccentricity !== currObj.eccentricity) {
             this._c = dataObj;
             this.generatePositionTable();
             this.generateOverlapTable();
             this.generateMagnitudeTable();
-            this.plotCurve();
+            coords = this.plotCurve();
         } else if (
-            dataObj.separation != currObj.separation ||
-            dataObj.theta != currObj.theta ||
-            dataObj.phi != currObj.phi ||
-            dataObj.radius1 != currObj.radius1 ||
-            dataObj.radius2 != currObj.radius2
+            dataObj.separation !== currObj.separation ||
+            dataObj.theta !== currObj.theta ||
+            dataObj.phi !== currObj.phi ||
+            dataObj.radius1 !== currObj.radius1 ||
+            dataObj.radius2 !== currObj.radius2
         ) {
             this._c = dataObj;
             this.generateOverlapTable();
             this.generateMagnitudeTable();
-            this.plotCurve();
+            coords = this.plotCurve();
         } else if (
-            dataObj.temperature1 != currObj.temperature1 ||
-            dataObj.temperature2 != currObj.temperature2
+            dataObj.temperature1 !== currObj.temperature1 ||
+            dataObj.temperature2 !== currObj.temperature2
         ) {
             this._c = dataObj;
             this.generateMagnitudeTable();
-            this.plotCurve();
+            coords = this.plotCurve();
         }
+
+        this.setState({curveCoords: coords});
     }
     displayDataset() {
         var mc = {};
@@ -84,7 +104,7 @@ export default class LightcurveView extends React.Component {
         mc.attachMovie(arg+" - mag", "_2", 2);
         mc.attachMovie(arg+" - mag", "_3", 3, {_x: this.plotWidth});*/
 
-        if (mc==undefined) {
+        if (typeof mc === 'undefined') {
             this.data.flux.visible = false;
             this.data.mag.visible = false;
         }
@@ -152,20 +172,24 @@ export default class LightcurveView extends React.Component {
             //mc.moveTo(0, -this.plotHeight);
             //mc.lineTo(this.plotWidth, -this.plotHeight);
         } else {
-            var w = this.plotWidth;
+            let w = this.plotWidth;
 
-            var si = Math.floor(this._closestIndex);
-            var xOffset = -(w/this._numCurvePoints)*(this._closestIndex-si);
+            let si = Math.floor(this._closestIndex);
+            let xOffset = -(w / this._numCurvePoints) * (this._closestIndex - si);
 
-            var y0 = yOffset + yScale*dT[si];
+            let y0 = yOffset + yScale*dT[si];
             //mc.moveTo(0, y0);
             coords.push([0, y0]);
 
-            var len = dT.length;
-            var xScale = w/len;
-            for (var i=0; i<len; i++) {
+            let len = dT.length;
+            let xScale = w / len;
+
+            for (let i = 0; i < len; i++) {
                 //mc.lineTo(xOffset + i*xScale, yOffset + yScale*dT[(i+si)%len]);
-                coords.push([xOffset + i*xScale, yOffset + yScale*dT[(i+si)%len]]);
+                coords.push([
+                    xOffset + i * xScale,
+                    yOffset + yScale * dT[(i+si) % len]]
+                );
             }
             //mc.lineTo(w, y0);
             coords.push([w, y0]);
@@ -176,54 +200,54 @@ export default class LightcurveView extends React.Component {
         return coords;
     }
     generatePositionTable() {
-        var cos = Math.cos;
-        var sin = Math.sin;
-        var tan = Math.tan;
-        var atan = Math.atan;
-        var abs = Math.abs;
+        const cos = Math.cos;
+        const sin = Math.sin;
+        const tan = Math.tan;
+        const atan = Math.atan;
+        const abs = Math.abs;
 
-        var pT = this._positionTable;
+        let np = this._numCurvePoints;
+        let n = np/2;
+        let step = (2*Math.PI)/np;
+        let e = this._c.eccentricity;
 
-        var np = this._numCurvePoints;
-        var n = np/2;
-        var step = (2*Math.PI)/np;
-        var e = this._c.eccentricity;
         if (isNaN(e) || !isFinite(e) || e>=1 || e<0) {
             e = 0;
             this._c.eccentricity = e;
         }
 
-        var k1 = Math.sqrt((1+e)/(1-e));
-        var k2 = this.solarRadius*(1-e*e);
+        const k1 = Math.sqrt((1+e)/(1-e));
+        const k2 = this.solarRadius*(1-e*e);
 
-        pT[0] = {x: k2/(1+e), y: 0};
-        pT[n] = {x: -k2/(1-e), y: 0};
+        this._positionTable[0] = {x: k2/(1+e), y: 0};
+        this._positionTable[n] = {x: -k2/(1-e), y: 0};
 
-        for (var i=1; i<n; i++) {
-            var ma = i*step;
-            var ea0 = 0;
-            var ea1 = ma + e*sin(ma);
+        for (let i=1; i<n; i++) {
+            let ma = i*step;
+            let ea0 = 0;
+            let ea1 = ma + e*sin(ma);
+
             do {
                 ea0 = ea1;
                 ea1 = ma + e*sin(ea0);
             } while (abs(ea1-ea0)>0.001);
-            var ta = 2*atan(k1*tan(ea1/2));
-            var k3 = k2/(1+e*cos(ta));
-            var fpT = pT[i];
-            var spT = pT[np-i];
+
+            let ta = 2*atan(k1*tan(ea1/2));
+            let k3 = k2/(1+e*cos(ta));
+            let fpT = this._positionTable[i];
+            let spT = this._positionTable[np-i];
+
             spT.x = fpT.x = k3*cos(ta);
             fpT.y = k3*sin(ta);
             spT.y = -fpT.y;
         }
     }
     generateOverlapTable() {
-        var acos = Math.acos;
-        var sin = Math.sin;
-        var sqrt = Math.sqrt;
+        const acos = Math.acos;
+        const sin = Math.sin;
+        const sqrt = Math.sqrt;
 
         this._overlapTable = [];
-        var oT = this._overlapTable;
-        var pT = this._positionTable;
 
         var c = this._c;
         var a = c.separation;
@@ -257,7 +281,7 @@ export default class LightcurveView extends React.Component {
 
         let i;
         for (i=0; i<np; i++) {
-            var p = pT[i];
+            var p = this._positionTable[i];
             var dx = k0*p.x + k1*p.y;
             var dy = k3*p.x + k4*p.y;
             var dz = k6*p.x + k7*p.y;
@@ -266,7 +290,7 @@ export default class LightcurveView extends React.Component {
                 minD2 = d2;
                 closestIndex = i;
             }
-            if (d2>=RSQRD) oT.push(0);
+            if (d2>=RSQRD) this._overlapTable.push(0);
             else {
                 var d = sqrt(d2);
                 if (d==0) d = 1e-8;
@@ -279,8 +303,8 @@ export default class LightcurveView extends React.Component {
                 var alpha = acos(ca);
                 var beta = acos(cb);
                 var o = r22*(alpha - ca*sin(alpha)) + r12*(beta - cb*sin(beta));
-                if (dz<0) oT.push(o); // star 1 in front
-                else oT.push(-o);
+                if (dz<0) this._overlapTable.push(o); // star 1 in front
+                else this._overlapTable.push(-o);
             }
         }
 
@@ -334,7 +358,7 @@ export default class LightcurveView extends React.Component {
         //   1.52183774688135e+18 = Pi * (solarRadius in meters)^2
         //   1.89553328524593e-43 = [stefan-boltzmann constant] / [Pi * (10 parsecs in meters)^2]
 
-        var log = Math.log;
+        const log = Math.log;
 
         this._visualMagnitudeTable = [];
         this._visualFluxTable = [];
@@ -399,7 +423,7 @@ export default class LightcurveView extends React.Component {
         // https://github.com/freddyrangel/playing-with-react-and-d3
         return (
             <Plot
-            lightcurveData={this.props.curveCoords}
+            lightcurveData={this.state.curveCoords}
             phase={this.props.phase}
             showLightcurve={this.props.showLightcurve}
             width={460}
@@ -425,6 +449,5 @@ export default class LightcurveView extends React.Component {
 
 LightcurveView.propTypes = {
     showLightcurve: PropTypes.bool.isRequired,
-    phase: PropTypes.number.isRequired,
-    curveCoords: PropTypes.array.isRequired
+    phase: PropTypes.number.isRequired
 };

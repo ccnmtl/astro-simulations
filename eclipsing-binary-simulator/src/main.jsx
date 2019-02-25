@@ -23,11 +23,6 @@ class EclipsingBinarySimulator extends React.Component {
             animationSpeed: 1,
             phase: 0.7,
 
-            lightcurveCoords: [
-                // TODO
-                [0, 0],
-                [1, 1]
-            ],
             showLightcurve: true,
 
             // Star 1 Properties
@@ -45,9 +40,6 @@ class EclipsingBinarySimulator extends React.Component {
             eccentricity: 0.3
         };
         this.state = this.initialState;
-
-        this.star1 = {};
-        this.star2 = {};
 
         this.handleInputChange = this.handleInputChange.bind(this);
 
@@ -229,7 +221,6 @@ class EclipsingBinarySimulator extends React.Component {
                 <div className="col-6">
                     <LightcurveView
                         ref={this.lightcurveViewRef}
-                        curveCoords={this.state.lightcurveCoords}
                         showLightcurve={this.state.showLightcurve}
                         phase={this.state.phase} />
 
@@ -510,11 +501,13 @@ class EclipsingBinarySimulator extends React.Component {
 
         </React.Fragment>;
     }
+    componentDidMount() {
+        this.drawLightcurve();
+    }
     componentDidUpdate(prevProps, prevState) {
         if (
             prevState.inclination !== this.state.inclination ||
             prevState.longitude !== this.state.longitude ||
-            prevState.lightcurveCoords !== this.state.lightcurveCoords ||
             prevState.showLightcurve !== this.state.showLightcurve ||
 
             prevState.star1Mass !== this.state.star1Mass ||
@@ -543,10 +536,10 @@ class EclipsingBinarySimulator extends React.Component {
             separation: this.state.separation,
             theta: this.getSystemTheta(),
             phi: this.getSystemPhi(),
-            radius1: this.star1.r,
-            radius2: this.star2.r,
-            temperature1: this.star1.t,
-            temperature2: this.star2.t
+            radius1: this.state.star1Radius,
+            radius2: this.state.star2Radius,
+            temperature1: this.state.star1Temp,
+            temperature2: this.state.star2Temp
         };
 
         if (this.lightcurveViewRef) {
