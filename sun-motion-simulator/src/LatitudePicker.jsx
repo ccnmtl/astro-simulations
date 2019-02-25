@@ -20,7 +20,7 @@ export default class LatitudePicker extends React.Component {
         this.onClickLatHemisphere = this.onClickLatHemisphere.bind(this);
 
         this.loader = new PIXI.Loader();
-        this.loader.add('earthmap', 'img/earthmap.png');
+        this.loader.add('earthmap', 'img/earthmap.svg');
     }
     render() {
         const latHemisphere = this.props.latitude >= 0 ? 'N' : 'S';
@@ -41,7 +41,8 @@ export default class LatitudePicker extends React.Component {
                               onClick={this.onClickLatHemisphere}>&nbsp;{latHemisphere}</span>
                     </label>
                 </div>
-                <div ref={(el) => {this.latitudePicker = el}}></div>
+                <div className="pixi-scene astro-earthmap"
+                     ref={(el) => {this.latitudePicker = el}}></div>
             </div>
         );
     }
@@ -52,8 +53,8 @@ export default class LatitudePicker extends React.Component {
             backgroundColor: 0xffffff,
             // Make this width an odd number so centering the map doesn't
             // cause width pixel artifacts when drawing border.
-            width: 271,
-            height: 140,
+            width: 271 * 2,
+            height: 140 * 2,
             sharedLoader: true,
             sharedTicker: true,
             forceCanvas: true
@@ -76,7 +77,7 @@ export default class LatitudePicker extends React.Component {
         if (prevProps.latitude !== this.props.latitude) {
             // Update the latitude picker.
             const latPos = this.latitudeToLocalPos(
-                this.props.latitude, 126)
+                this.props.latitude, 126 * 2)
             this.lPicker.position.y = latPos;
 
             if (this.props.latitude !== this.state.latitudeField) {
@@ -92,6 +93,8 @@ export default class LatitudePicker extends React.Component {
      */
     drawBackground(app, resource) {
         const sprite = new PIXI.Sprite(resource.texture);
+        sprite.width *= 1.4;
+        sprite.height *= 1.4;
         sprite.position.x = (app.view.width - sprite.width) / 2;
         sprite.position.y = (app.view.height - sprite.height) / 2;
         // cacheAsBitmap is for sprites that don't move.
@@ -106,7 +109,7 @@ export default class LatitudePicker extends React.Component {
         const g = new PIXI.Graphics();
         g.cacheAsBitmap = true;
         g.beginFill(0x000000, 0);
-        g.lineStyle(2, 0x000000);
+        g.lineStyle(4, 0x000000);
         g.drawRect(bg.position.x, bg.position.y, bg.width, bg.height);
         app.stage.addChild(g);
 
@@ -119,7 +122,7 @@ export default class LatitudePicker extends React.Component {
         const pickerTop = (app.view.height - bg.height) / 2;
 
         const line = new PIXI.Graphics()
-                             .lineStyle(2, 0x000000)
+                             .lineStyle(4, 0x000000)
                              .moveTo(0, pickerTop)
                              .lineTo(app.view.width, pickerTop);
         picker.addChild(line);
@@ -127,16 +130,16 @@ export default class LatitudePicker extends React.Component {
         const arrowhead1 = new PIXI.Graphics()
                                    .beginFill(0x000000)
                                    .drawPolygon([
-                                       0, pickerTop - 7,
-                                       0, pickerTop + 7,
-                                       10, pickerTop
+                                       0, pickerTop - 14,
+                                       0, pickerTop + 14,
+                                       20, pickerTop
                                    ]);
         const arrowhead2 = new PIXI.Graphics()
                                    .beginFill(0x000000)
                                    .drawPolygon([
-                                       app.view.width, pickerTop - 7,
-                                       app.view.width, pickerTop + 7,
-                                       app.view.width - 10, pickerTop
+                                       app.view.width, pickerTop - 14,
+                                       app.view.width, pickerTop + 14,
+                                       app.view.width - 20, pickerTop
                                    ]);
         picker.addChild(arrowhead1);
         picker.addChild(arrowhead2);
@@ -171,7 +174,7 @@ export default class LatitudePicker extends React.Component {
     onLatMove(e) {
         if (this.state.isDraggingLatitude) {
             const pos = e.data.getLocalPosition(this.app.stage);
-            const lat = this.localPosToLatitude(pos.y, 126);
+            const lat = this.localPosToLatitude(pos.y, 126 * 2);
             this.props.onLatitudeUpdate(lat);
         }
     }

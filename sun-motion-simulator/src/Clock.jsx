@@ -42,7 +42,7 @@ export default class Clock extends React.Component {
                            className="form-control form-control-sm ml-2" />
                 </label>
             </div>
-            <div className="pixi-scene"
+            <div className="pixi-scene astro-clock"
                  ref={(el) => {this.timePicker = el}}></div>
         </React.Fragment>;
     }

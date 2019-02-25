@@ -48,15 +48,15 @@ export default class DatePicker extends React.Component {
                     <option value={11}>December</option>
                 </select>
             </div>
-            <div className="mt-2"
+            <div className="mt-2 pixi-scene astro-datepicker"
                  ref={(el) => {this.calendarPicker = el}}></div>
         </React.Fragment>;
     }
     componentDidMount() {
         const app = new PIXI.Application({
             backgroundColor: 0xaaaaff,
-            width: 500,
-            height: 30,
+            width: 500 * 2,
+            height: 30 * 2,
             sharedLoader: true,
             sharedTicker: true,
             forceCanvas: true
@@ -98,25 +98,25 @@ export default class DatePicker extends React.Component {
             'Sep', 'Oct', 'Nov', 'Dec'
         ];
 
-        let offset = 18;
+        let offset = 18 * 2;
         months = months.map(month => {
             const text = new PIXI.Text(month, {
                 fontFamily: 'Arial',
-                fontSize: 14,
+                fontSize: 28,
                 fill: 0x000000,
                 align: 'center'
             });
-            text.position.y = 10;
+            text.position.y = 20;
             text.position.x = offset;
             text.cacheAsBitmap = true;
 
             const line = new PIXI.Graphics()
-                                 .lineStyle(1)
-                                 .moveTo(offset - 8, 12)
-                                 .lineTo(offset - 8, 24);
+                                 .lineStyle(2)
+                                 .moveTo(offset - 16, 24)
+                                 .lineTo(offset - 16, 48);
             line.cacheAsBitmap = true;
 
-            offset += 40;
+            offset += 80;
             return [line, text];
         });
         months.forEach(month => {
@@ -131,17 +131,17 @@ export default class DatePicker extends React.Component {
         control.interactive = true;
         control.buttonMode = true;
         const line = new PIXI.Graphics()
-                             .lineStyle(2, 0x000000)
+                             .lineStyle(4, 0x000000)
                              .moveTo(0, 0)
-                             .lineTo(0, 35);
+                             .lineTo(0, 70);
         control.addChild(line);
 
         const arrowhead = new PIXI.Graphics()
                                   .beginFill(0x000000)
                                   .drawPolygon([
-                                      -7, 0,
-                                      7, 0,
-                                      0, 10
+                                      -7 * 2, 0,
+                                      7 * 2, 0,
+                                      0, 10 * 2
                                   ]);
         control.addChild(arrowhead);
 
