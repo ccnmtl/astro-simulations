@@ -14,15 +14,36 @@ const roundToOnePlace = function(n) {
 }
 
 /**
- * Get the sun's azimuth, given a JavaScript Date object.
- *
- * This function only pays attention to the time part of the Date
- * object, not the date.
+ * https://en.wikipedia.org/wiki/Solar_zenith_angle
  */
-const timeToAngle = function(dateTime) {
-    const hours = dateTime.getHours();
-    const minutes = dateTime.getMinutes();
-    return ((hours + (minutes / 60)) / 24) * (Math.PI * 2);
+const getSunZenith = function(
+    latitude, declination, hourAngle
+) {
+    const cos = Math.cos;
+    const sin = Math.sin;
+    const cos_theta = sin(latitude) * sin(declination) +
+          cos(latitude) * cos(declination) * cos(hourAngle);
+    return Math.acos(cos_theta);
+}
+
+/**
+ * Get the sun's azimuth angle, given sun zenith,
+ * hour angle, declination, and observer latitude.
+ *
+ * https://en.wikipedia.org/wiki/Solar_azimuth_angle
+ */
+const getSunAzimuth = function(
+    zenithAngle, hourAngle, declination, latitude
+) {
+    const cos = Math.cos;
+    const sin = Math.sin;
+
+    const cos_phi = (
+        sin(declination) * cos(latitude) - cos(hourAngle) * cos(declination) *
+            sin(latitude)) /
+          sin(zenithAngle);
+
+    return Math.acos(cos_phi);
 };
 
 /**
@@ -87,6 +108,17 @@ const getHourAngle = function(siderealTime, rightAscension) {
     // From on original (actionscript) source
     return ((siderealTime - rightAscension) % 24) % 24;
 }
+
+/**
+ * Get the hour angle from a JS Date object.
+ */
+const getHourAngleFromDate = function(datetime) {
+    const doy = getDayOfYear(datetime);
+    const siderealTime = getSiderealTime(doy - 0.5);
+    const hourAngle = getHourAngle(
+        siderealTime, getPosition(doy).ra);
+    return hourAngle;
+};
 
 /**
  * Given a Date object, return the day of year.
@@ -171,12 +203,13 @@ const getPosition = function(day) {
 }
 
 export {
-    forceNumber, roundToOnePlace, timeToAngle,
+    forceNumber, roundToOnePlace,
+    getSunZenith, getSunAzimuth,
     hourAngleToTime, minuteAngleToTime,
     degToRad, radToDeg,
     getSunAltitude,
     getRightAscension, getSiderealTime,
-    getHourAngle,
+    getHourAngle, getHourAngleFromDate,
     getDayOfYear, formatMinutes, formatHours,
     getEqnOfTime, getPosition
 };

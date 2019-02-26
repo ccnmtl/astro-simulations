@@ -8,8 +8,18 @@ import 'three/FXAAShader';
 import 'three/EffectComposer';
 import 'three/RenderPass';
 import 'three/ShaderPass';
-import {getDayOfYear, getEqnOfTime, getPosition} from './utils';
+import {getEqnOfTime, getPosition} from './utils';
 import MutedColorsShader from './shaders/MutedColorsShader';
+
+/**
+ * hourAngle is in hours, so convert it to a fraction of
+ * a full circle in radians.
+ */
+const hourAngleToRadians = function(hourAngle) {
+    const radians = -(hourAngle / 24) * (Math.PI * 2)
+                  - Math.PI;
+    return radians;
+}
 
 // three.js/react integration based on:
 // https://stackoverflow.com/a/46412546/173630
@@ -158,7 +168,7 @@ export default class HorizonView extends React.Component {
         // The sun actually needs to be in a separate group to account
         // for the hour angle offset. sunOrbitGroup and orbitGroup both
         // have the same x-rotation (latitude), but slightly different
-        // y-rotation (azimuth).
+        // y-rotation (hour angle).
         this.sunOrbitGroup = new THREE.Group();
         this.sunOrbitGroup.add(this.sun);
         this.sunOrbitGroup.add(this.light);
@@ -172,12 +182,12 @@ export default class HorizonView extends React.Component {
 
         this.orbitGroup.rotation.x =
             THREE.Math.degToRad(this.props.latitude) - (Math.PI / 2);
-        this.orbitGroup.rotation.y = -this.props.sunAzimuth;
+        this.orbitGroup.rotation.y = hourAngleToRadians(this.props.hourAngle);
         scene.add(this.orbitGroup);
 
         this.sunOrbitGroup.rotation.x =
             THREE.Math.degToRad(this.props.latitude) - (Math.PI / 2);
-        this.sunOrbitGroup.rotation.y = -this.props.sunAzimuth;
+        this.sunOrbitGroup.rotation.y = hourAngleToRadians(this.props.hourAngle);
         scene.add(this.sunOrbitGroup);
 
         // Make an invisible plane on the orbitGroup's axis.
@@ -205,10 +215,8 @@ export default class HorizonView extends React.Component {
 
         this.eclipticOrbitGroup.rotation.x =
             THREE.Math.degToRad(this.props.latitude) - (Math.PI / 2);
-        const doy = getDayOfYear(this.props.dateTime);
-        this.eclipticOrbitGroup.rotation.y = -this.props.sunAzimuth -
-                                             THREE.Math.degToRad(
-                                                 (((doy - 140) / 365.24) * 360));
+        this.eclipticOrbitGroup.rotation.y =
+            hourAngleToRadians(this.props.hourAngle) - THREE.Math.degToRad(10);
         scene.add(this.eclipticOrbitGroup);
 
         this.scene = scene;
@@ -252,30 +260,20 @@ export default class HorizonView extends React.Component {
             }
         }
 
-        if (prevProps.sunAzimuth !== this.props.sunAzimuth ||
+        if (
             prevProps.hourAngle !== this.props.hourAngle
         ) {
-            // Offset the azimuth with the hour angle.
-            // hourAngle is in hours, so convert it to a fraction of
-            // a full circle in radians.
-            const sunRotation = -(this.props.hourAngle / 24) * (Math.PI * 2)
-                         - Math.PI;
+            const sunRotation = hourAngleToRadians(this.props.hourAngle);
 
-            this.orbitGroup.rotation.y = -this.props.sunAzimuth;
+            this.orbitGroup.rotation.y = sunRotation;
             this.sunOrbitGroup.rotation.y = sunRotation;
             this.eclipticOrbitGroup.rotation.y =
-                -this.props.sunAzimuth + this.props.sunDeclination;
+                sunRotation - THREE.Math.degToRad(10);
         }
 
         if (prevProps.sunDeclination !== this.props.sunDeclination ||
             prevProps.dateTime !== this.props.dateTime
         ) {
-            const doy = getDayOfYear(this.props.dateTime);
-            this.eclipticOrbitGroup.rotation.y =
-                -this.props.sunAzimuth -
-                THREE.Math.degToRad(
-                    (((doy - 140) / 365.24) * 360));
-
             const declinationRad = this.getSunDeclinationRadius(
                 this.props.sunDeclination);
             this.sun.position.x = declinationRad * Math.cos(
@@ -293,9 +291,6 @@ export default class HorizonView extends React.Component {
             this.light.position.y = THREE.Math.radToDeg(
                 this.props.sunDeclination);
             this.light.rotation.x = this.props.sunDeclination;
-
-            this.updateOrbitPlanePosition(
-                this.orbitPlane, this.orbitGroup, this.props.sunDeclination);
 
             if (this.props.showDeclinationCircle) {
                 this.sunDeclination.position.y =
@@ -655,9 +650,9 @@ export default class HorizonView extends React.Component {
         const declinationRad = this.getSunDeclinationRadius(
             this.props.sunDeclination);
         group.position.x = declinationRad * Math.cos(
-            this.props.sunAzimuth + THREE.Math.degToRad(90));
+            hourAngleToRadians(this.props.hourAngle) + THREE.Math.degToRad(90));
         group.position.z = declinationRad * Math.sin(
-            this.props.sunAzimuth + THREE.Math.degToRad(90));
+            hourAngleToRadians(this.props.hourAngle) + THREE.Math.degToRad(90));
 
         group.rotation.x = this.props.sunDeclination;
 
@@ -1047,7 +1042,6 @@ HorizonView.propTypes = {
     dateTime: PropTypes.object.isRequired,
     onDateTimeUpdate: PropTypes.func.isRequired,
     latitude: PropTypes.number.isRequired,
-    sunAzimuth: PropTypes.number.isRequired,
     sunDeclination: PropTypes.number.isRequired,
     hourAngle: PropTypes.number.isRequired,
     showDeclinationCircle: PropTypes.bool.isRequired,
