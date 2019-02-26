@@ -8,11 +8,12 @@ import DatePicker from './DatePicker';
 import LatitudePicker from './LatitudePicker';
 import Clock from './Clock';
 import {
-    forceNumber, roundToOnePlace, timeToAngle,
+    forceNumber, roundToOnePlace,
+    getSunZenith, getSunAzimuth,
     degToRad, radToDeg,
     getSunAltitude,
     getRightAscension, getSiderealTime,
-    getHourAngle, getPosition,
+    getHourAngle, getHourAngleFromDate, getPosition,
     getDayOfYear, formatMinutes, formatHours
 } from './utils';
 
@@ -25,9 +26,16 @@ class SunMotionSim extends React.Component {
                 (new Date()).getFullYear(),
                 // Initial state is always May 27th, at noon
                 4, 27, 12),
+
+            // These three properties are calculated off of the
+            // dateTime by onDateUpdate.
+            hourAngle: null,
+            siderealTime: null,
+            sunDeclination: null,
+
             latitude: 40.8,
-            sunAzimuth: degToRad(180),
-            sunDeclination: degToRad(21.4),
+            sunAzimuth: degToRad(182),
+
             isPlaying: false,
             animationRate: 1,
             loopDay: false,
@@ -43,6 +51,10 @@ class SunMotionSim extends React.Component {
             // Advanced
             showAnalemma: false
         };
+        Object.assign(
+            this.initialState,
+            this.onDateUpdate(this.initialState.dateTime));
+
         this.state = this.initialState;
 
         this.frameId = null;
@@ -59,14 +71,12 @@ class SunMotionSim extends React.Component {
     render() {
         const doy = getDayOfYear(this.state.dateTime);
 
-        const siderealTime = getSiderealTime(doy - 0.5);
-        const siderealTimeDisplay = formatHours(siderealTime);
+        const siderealTimeDisplay = formatHours(this.state.siderealTime);
 
         const sunAltitude = getSunAltitude(
             this.state.latitude, this.state.sunDeclination);
         const sunAltitudeDisplay = roundToOnePlace(radToDeg(sunAltitude));
-        const sunAzimuth = roundToOnePlace(
-            radToDeg(this.state.sunAzimuth));
+        const sunAzimuthDisplay = roundToOnePlace(radToDeg(this.state.sunAzimuth));
         const sunDeclination = roundToOnePlace(
             radToDeg(this.state.sunDeclination));
         const sunRightAscension = getRightAscension(doy);
@@ -75,9 +85,7 @@ class SunMotionSim extends React.Component {
         const centuryDate = solar.century(this.state.dateTime);
         const eot = formatMinutes(solar.equationOfTime(centuryDate));
 
-        const hourAngle = getHourAngle(
-            siderealTime, getPosition(doy).ra);
-        const hourAngleDisplay = formatHours(hourAngle);
+        const hourAngleDisplay = formatHours(this.state.hourAngle);
 
         const formattedDate = this.state.dateTime
                                   .toLocaleDateString([], {
@@ -121,9 +129,8 @@ class SunMotionSim extends React.Component {
                         showStickfigure={this.state.showStickfigure}
                         showUnderside={this.state.showUnderside}
                         showAnalemma={this.state.showAnalemma}
-                        sunAzimuth={this.state.sunAzimuth}
                         sunDeclination={this.state.sunDeclination}
-                        hourAngle={hourAngle} />
+                        hourAngle={this.state.hourAngle} />
                     <div className="mt-2">
                         <h5>Information</h5>
                         <p>
@@ -159,7 +166,7 @@ class SunMotionSim extends React.Component {
                                     Sun&apos;s altitude: {sunAltitudeDisplay}&deg;
                                 </div>
                                 <div>
-                                    Sun&apos;s azimuth: {sunAzimuth}&deg;
+                                    Sun&apos;s azimuth: {sunAzimuthDisplay}&deg;
                                 </div>
 
                                 <div>
@@ -222,15 +229,44 @@ class SunMotionSim extends React.Component {
             </div>
         </React.Fragment>;
     }
+    /**
+     * Get a few values that change based on the date.
+     */
+    onDateUpdate(dateTime) {
+        const doy = getDayOfYear(dateTime);
+        const siderealTime = getSiderealTime(doy - 0.5);
+        const hourAngle = getHourAngle(
+            siderealTime, getPosition(doy).ra);
+
+        const centuryDate = solar.century(dateTime);
+        const sunDeclination = degToRad(solar.declination(centuryDate));
+
+        return {
+            siderealTime: siderealTime,
+            hourAngle: hourAngle,
+            sunDeclination: sunDeclination
+        };
+    }
     componentDidUpdate(prevProps, prevState) {
         if (prevState.dateTime !== this.state.dateTime) {
-            // The sun's azimuth and declination are derived from the
-            // dateTime, so keep them up to date.
-            const centuryDate = solar.century(this.state.dateTime);
+            this.setState(this.onDateUpdate(this.state.dateTime));
+        }
+
+        if (prevState.dateTime !== this.state.dateTime ||
+            prevState.latitude !== this.state.latitude
+        ) {
+            const hourAngle = getHourAngleFromDate(this.state.dateTime);
+
+            const zenith = getSunZenith(
+                this.state.latitude, this.state.sunDeclination,
+                this.state.hourAngle);
+            const azimuth = getSunAzimuth(
+                zenith, hourAngle,
+                this.state.sunDeclination, this.state.latitude
+            );
+
             this.setState({
-                sunAzimuth: timeToAngle(new Date(
-                    this.state.dateTime.getTime())),
-                sunDeclination: degToRad(solar.declination(centuryDate))
+                sunAzimuth: azimuth
             });
         }
     }
