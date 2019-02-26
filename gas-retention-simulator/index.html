@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8" />
-        <title>Gas Retention Simulator</title>
-
-       <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> 
-        <style type="text/css">
-        body>.container {
+ <head>
+  <meta charset="utf-8"/>
+  <title>
+   Gas Retention Simulator
+  </title>
+  <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" rel="stylesheet"/>
+  <style type="text/css">
+   body>.container {
             width: 1140px;
         }
         #sim-container {
@@ -26,26 +27,30 @@
         input[type="number"][name="noise"],
         input[type="number"][name="planetMass"] {
             width: 84px !important;
-        }        
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <div id="sim-container"></div>
-        </div>
-
-        <div class="modal" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="helpModalLabel">Help</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>
-                            This simulator demonstrates how gases of
+        }
+  </style>
+ </head>
+ <body>
+  <div class="container">
+   <div id="sim-container">
+   </div>
+  </div>
+  <div aria-hidden="true" aria-labelledby="helpModalLabel" class="modal" id="helpModal" role="dialog" tabindex="-1">
+   <div class="modal-dialog" role="document">
+    <div class="modal-content">
+     <div class="modal-header">
+      <h5 class="modal-title" id="helpModalLabel">
+       Help
+      </h5>
+      <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+       <span aria-hidden="true">
+        ×
+       </span>
+      </button>
+     </div>
+     <div class="modal-body">
+      <p>
+       This simulator demonstrates how gases of
                             different molecular masses behave when
                             maintained at thermodynamic equilibrium in
                             a chamber. The chamber can be set to allow
@@ -53,73 +58,101 @@
                             escape, providing an analogy for the
                             bleeding of a planet's atmosphere into
                             space.
-                        </p>
-                        <p>
-                            To begin select a gas from the drop-down
-                            menu in the <strong>Gases</strong> panel.
+      </p>
+      <p>
+       To begin select a gas from the drop-down
+                            menu in the
+       <strong>
+        Gases
+       </strong>
+       panel.
                             You can add up to three gases at a
-                            time. Click the <strong>start
-                            simulation</strong> button in the
-                            <strong>Chamber Properties</strong> panel
+                            time. Click the
+       <strong>
+        start
+                            simulation
+       </strong>
+       button in the
+       <strong>
+        Chamber Properties
+       </strong>
+       panel
                             to see the particles in motion. When the
                             simulation is running the sliders and most
                             other options are disabled, so you will
                             need to stop the simulation to make
                             changes.
-                        </p>
-                        <p>
-                            Note that in this simulation the particles
+      </p>
+      <p>
+       Note that in this simulation the particles
                             in the chamber are meant to be interpreted
-                            as tracer particles &mdash; each particle shown
+                            as tracer particles — each particle shown
                             represents a great many more particles.
-                        </p>
-                        <p>
-                            The bar chart at the left side of the
-                            <strong>Gases</strong> panel indicates the
+      </p>
+      <p>
+       The bar chart at the left side of the
+       <strong>
+        Gases
+       </strong>
+       panel indicates the
                             absoluate amount of each gas in the
                             chamber.  The relative amounts are given
                             as percentages in the gases list.  You can
                             drag the bars to adjust their heights, or
-                            you can click the <strong>reset
-                            proportions</strong> button to restore all
+                            you can click the
+       <strong>
+        reset
+                            proportions
+       </strong>
+       button to restore all
                             the gases to their full amounts.
-                        </p>
-                        <p>
-                            One caveat: phase changes are ignored in
+      </p>
+      <p>
+       One caveat: phase changes are ignored in
                             this simulator. That is, we assume that
                             the particles in the chamber stay in a
                             gaseous state regardless of the
                             temperature or pressure in the chamber.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="modal" id="aboutModal" tabindex="-1" role="dialog" aria-labelledby="aboutModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="aboutModalLabel">About</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>
-                            See <a
-                            href="https://github.com/ccnmtl/astro-simulations">github.com/ccnmtl/astro-simulations</a>
-                            for more info.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>        
-
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-
-        <script src="dist/bundle.js"></script>
-    </body>
+      </p>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div aria-hidden="true" aria-labelledby="aboutModalLabel" class="modal" id="aboutModal" role="dialog" tabindex="-1">
+   <div class="modal-dialog" role="document">
+    <div class="modal-content">
+     <div class="modal-header">
+      <h5 class="modal-title" id="aboutModalLabel">
+       About
+      </h5>
+      <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+       <span aria-hidden="true">
+        ×
+       </span>
+      </button>
+     </div>
+     <div class="modal-body">
+      <p class="sim-version">
+       gas-retention-simulator 0.0.1 (build date: 2019-02-26)
+      </p>
+      <p>
+       See
+       <a href="https://github.com/ccnmtl/astro-simulations">
+        github.com/ccnmtl/astro-simulations
+       </a>
+       for more info.
+      </p>
+     </div>
+    </div>
+   </div>
+  </div>
+  <script crossorigin="anonymous" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" src="https://code.jquery.com/jquery-3.3.1.slim.min.js">
+  </script>
+  <script crossorigin="anonymous" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js">
+  </script>
+  <script crossorigin="anonymous" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js">
+  </script>
+  <script src="dist/bundle.js">
+  </script>
+ </body>
 </html>

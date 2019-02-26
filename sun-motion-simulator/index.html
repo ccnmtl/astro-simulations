@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8" />
-        <title>Motions of the Sun Simulator</title>
- 
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
-        <style type="text/css">
-        body>.container {
+ <head>
+  <meta charset="utf-8"/>
+  <title>
+   Motions of the Sun Simulator
+  </title>
+  <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" rel="stylesheet"/>
+  <style type="text/css">
+   body>.container {
             width: 1140px;
         }
         #sim-container {
@@ -54,84 +54,104 @@
             padding: 4px;
             border: 1px solid black;
         }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <div id="sim-container"></div>
-        </div>
-
-        <div class="modal" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="helpModalLabel">Help</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>
-                            This simulator models the motions of the
+  </style>
+ </head>
+ <body>
+  <div class="container">
+   <div id="sim-container">
+   </div>
+  </div>
+  <div aria-hidden="true" aria-labelledby="helpModalLabel" class="modal" id="helpModal" role="dialog" tabindex="-1">
+   <div class="modal-dialog" role="document">
+    <div class="modal-content">
+     <div class="modal-header">
+      <h5 class="modal-title" id="helpModalLabel">
+       Help
+      </h5>
+      <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+       <span aria-hidden="true">
+        ×
+       </span>
+      </button>
+     </div>
+     <div class="modal-body">
+      <p>
+       This simulator models the motions of the
                             sun in the sky using a horizon diagram,
                             demonstrating daily and seasonal changes
                             in the sun's position.
-                        </p>
-                        <p>
-                            The upper left panel shows the horizon
+      </p>
+      <p>
+       The upper left panel shows the horizon
                             diagram visualization. This is a
                             representation of the sky as if it were a
                             large sphere centered on an observer (the
                             stickfigure). The location and local time
                             for this observer are set in the
-                            <strong>Time and Location
-                            Controls</strong> panel.
-                        </p>
-                        <p>
-                            The <strong>General Settings</strong>
-                            panel allows one to show or hide various
+       <strong>
+        Time and Location
+                            Controls
+       </strong>
+       panel.
+      </p>
+      <p>
+       The
+       <strong>
+        General Settings
+       </strong>
+       panel allows one to show or hide various
                             features of the horizon diagram, as well
                             as controlling the behavior when dragging
                             the sun disk on the horizon diagram.
-                        </p>
-                        <p>
-                            When animating, this simulator can run
+      </p>
+      <p>
+       When animating, this simulator can run
                             continuously (as if in fast forward) or it
                             can step by day. Stepping by day keeps the
                             time of day fixed as the day of year
                             changes. For example, one can use this
                             mode to see the path the noon time sun
                             traces over the year.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="modal" id="aboutModal" tabindex="-1" role="dialog" aria-labelledby="aboutModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="aboutModalLabel">About</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>
-                            See <a
-                            href="https://github.com/ccnmtl/astro-interactives">github.com/ccnmtl/astro-interactives</a>
-                            for more info.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-
-        <script src="dist/bundle.js"></script>
-    </body>
+      </p>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div aria-hidden="true" aria-labelledby="aboutModalLabel" class="modal" id="aboutModal" role="dialog" tabindex="-1">
+   <div class="modal-dialog" role="document">
+    <div class="modal-content">
+     <div class="modal-header">
+      <h5 class="modal-title" id="aboutModalLabel">
+       About
+      </h5>
+      <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+       <span aria-hidden="true">
+        ×
+       </span>
+      </button>
+     </div>
+     <div class="modal-body">
+      <p class="sim-version">
+       sun-motion-simulator 0.8.0 (build date: 2019-02-26)
+      </p>
+      <p>
+       See
+       <a href="https://github.com/ccnmtl/astro-interactives">
+        github.com/ccnmtl/astro-interactives
+       </a>
+       for more info.
+      </p>
+     </div>
+    </div>
+   </div>
+  </div>
+  <script crossorigin="anonymous" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" src="https://code.jquery.com/jquery-3.3.1.slim.min.js">
+  </script>
+  <script crossorigin="anonymous" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js">
+  </script>
+  <script crossorigin="anonymous" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js">
+  </script>
+  <script src="dist/bundle.js">
+  </script>
+ </body>
 </html>
