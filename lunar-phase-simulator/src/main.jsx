@@ -22,7 +22,10 @@ class LunarPhaseSim extends React.Component {
             animationRate: 1,
             showAngle: false,
             showLunarLandmark: false,
-            showTimeTickmarks: false
+            showTimeTickmarks: false,
+
+            horizonViewIsHidden: false,
+            moonPhaseViewIsHidden: false
         };
         this.state = this.initialState;
         this.raf = null;
@@ -30,6 +33,10 @@ class LunarPhaseSim extends React.Component {
         // The moon's synodic period
         this.synodicPeriod = 29.530589;
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.onHideShowMoonPhaseToggle =
+            this.onHideShowMoonPhaseToggle.bind(this);
+        this.onHideShowHorizonViewToggle =
+            this.onHideShowHorizonViewToggle.bind(this);
     }
     render() {
         let startBtnText = 'Start Animation';
@@ -177,6 +184,8 @@ class LunarPhaseSim extends React.Component {
                     <div>
                         <h4>Moon Phase</h4>
                         <MoonPhaseView
+                            isHidden={this.state.moonPhaseViewIsHidden}
+                            onHideShowToggle={this.onHideShowMoonPhaseToggle}
                             showLunarLandmark={this.state.showLunarLandmark}
                             moonAngle={this.state.moonAngle}
                             onMoonAngleUpdate={this.onMoonAngleUpdate.bind(this)} />
@@ -184,6 +193,8 @@ class LunarPhaseSim extends React.Component {
                     <div>
                         <h4>Horizon Diagram</h4>
                         <HorizonView
+                            isHidden={this.state.horizonViewIsHidden}
+                            onHideShowToggle={this.onHideShowHorizonViewToggle}
                             observerAngle={this.state.observerAngle}
                             onObserverAngleUpdate={this.onObserverAngleUpdate.bind(this)}
                             moonAngle={this.state.moonAngle}
@@ -342,6 +353,16 @@ class LunarPhaseSim extends React.Component {
         e.preventDefault();
         cancelAnimationFrame(this.raf);
         this.setState(this.initialState);
+    }
+    onHideShowMoonPhaseToggle() {
+        this.setState({
+            moonPhaseViewIsHidden: !this.state.moonPhaseViewIsHidden
+        });
+    }
+    onHideShowHorizonViewToggle() {
+        this.setState({
+            horizonViewIsHidden: !this.state.horizonViewIsHidden
+        });
     }
 }
 

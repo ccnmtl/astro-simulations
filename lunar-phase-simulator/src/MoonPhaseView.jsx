@@ -9,9 +9,7 @@ import {
 export default class MoonPhaseView extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            isHidden: false
-        }
+
         this.id = 'MoonPhaseView'
         this.moon = null;
         this.radius = 100.5;
@@ -25,7 +23,7 @@ export default class MoonPhaseView extends React.Component {
             getTimeSinceNewMoon(this.props.moonAngle));
         return <div>
             <div style={{
-                visibility: this.state.isHidden ? 'hidden' : 'visible'
+                visibility: this.props.isHidden ? 'hidden' : 'visible'
             }}>
                 <select className="form-control form-control-sm"
                         onChange={this.onMoonAngleUpdate.bind(this)}
@@ -54,9 +52,9 @@ export default class MoonPhaseView extends React.Component {
             </div>
             <div className="text-right">
                 <button type="button"
-                        onClick={this.onHideShowToggle.bind(this)}
+                        onClick={this.props.onHideShowToggle}
                         className="btn btn-primary btn-sm">
-                    {this.state.isHidden ? 'Show' : 'Hide'}
+                    {this.props.isHidden ? 'Show' : 'Hide'}
                 </button>
             </div>
         </div>;
@@ -196,13 +194,13 @@ export default class MoonPhaseView extends React.Component {
             degToRad(forceNumber(e.target.value))
         );
     }
-    onHideShowToggle() {
-        this.setState({isHidden: !this.state.isHidden});
-    }
 }
 
 MoonPhaseView.propTypes = {
     moonAngle: PropTypes.number.isRequired,
     onMoonAngleUpdate: PropTypes.func.isRequired,
-    showLunarLandmark: PropTypes.bool.isRequired
+    showLunarLandmark: PropTypes.bool.isRequired,
+
+    isHidden: PropTypes.bool.isRequired,
+    onHideShowToggle: PropTypes.func.isRequired
 };
