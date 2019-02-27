@@ -1036,6 +1036,9 @@ export default class HorizonView extends React.Component {
             isDraggingSun: false
         });
     }
+    onResetClicked() {
+        this.controls.reset();
+    }
 }
 
 HorizonView.propTypes = {

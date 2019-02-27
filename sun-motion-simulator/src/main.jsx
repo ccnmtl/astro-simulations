@@ -66,6 +66,8 @@ class SunMotionSim extends React.Component {
         this.onDayUpdate = this.onDayUpdate.bind(this);
         this.onDateControlUpdate = this.onDateControlUpdate.bind(this);
         this.onMonthUpdate = this.onMonthUpdate.bind(this);
+
+        this.horizonViewRef = React.createRef();
     }
     render() {
         const doy = getDayOfYear(this.state.dateTime);
@@ -120,6 +122,7 @@ class SunMotionSim extends React.Component {
             <div className="row mt-2">
                 <div className="col-5">
                     <HorizonView
+                        ref={this.horizonViewRef}
                         dateTime={this.state.dateTime}
                         onDateTimeUpdate={this.onDateTimeUpdate}
                         latitude={this.state.latitude}
@@ -334,6 +337,11 @@ class SunMotionSim extends React.Component {
         e.preventDefault();
         cancelAnimationFrame(this.frameId);
         this.setState(this.initialState);
+
+        // Reset the orbitControls camera
+        if (this.horizonViewRef && this.horizonViewRef.current) {
+            this.horizonViewRef.current.onResetClicked();
+        }
     }
     onLatitudeUpdate(e) {
         let lat = e;
