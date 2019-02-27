@@ -2,6 +2,7 @@
 
 import {
     degToRad, radToDeg,
+    hourAngleToRadians,
     formatMinutes, formatHours,
     getSolarAzimuth, getSolarZenith,
     roundToOnePlace
@@ -69,4 +70,15 @@ test('gets the sun\'s zenith', () => {
             // hourAngle
             0.012118913174852253))
     ).toBe(19.488698097526363);
+
+    // 6am, May 26 at the equator (around sunrise)
+    expect(
+        radToDeg(getSolarZenith(
+            // latitude
+            degToRad(0),
+            // declination
+            0.36839941411876237,
+            // hourAngle
+            hourAngleToRadians(18.01468846166465)))
+    ).toBe(89.79445598729);
 });

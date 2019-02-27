@@ -61,6 +61,14 @@ const getSolarAzimuth = function(
 };
 
 /**
+ * Convert the solar hour angle (not a clock's hour angle) from hours
+ * to radians.
+ */
+const hourAngleToRadians = function(hours) {
+    return (hours / 24) * (Math.PI * 2);
+};
+
+/**
  * Convert angle for the hour hand of a clock to the hour.
  */
 const hourAngleToTime = function(angle) {
@@ -196,6 +204,7 @@ const getPosition = function(day) {
 export {
     forceNumber, roundToOnePlace,
     getSolarZenith, getSolarAzimuth,
+    hourAngleToRadians,
     hourAngleToTime, minuteAngleToTime,
     degToRad, radToDeg,
     getRightAscension, getSiderealTime,
