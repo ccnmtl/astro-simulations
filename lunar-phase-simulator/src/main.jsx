@@ -30,6 +30,8 @@ class LunarPhaseSim extends React.Component {
         // The moon's synodic period
         this.synodicPeriod = 29.530589;
         this.handleInputChange = this.handleInputChange.bind(this);
+
+        this.horizonViewRef = React.createRef();
     }
     render() {
         let startBtnText = 'Start Animation';
@@ -184,6 +186,7 @@ class LunarPhaseSim extends React.Component {
                     <div>
                         <h4>Horizon Diagram</h4>
                         <HorizonView
+                            ref={this.horizonViewRef}
                             observerAngle={this.state.observerAngle}
                             onObserverAngleUpdate={this.onObserverAngleUpdate.bind(this)}
                             moonAngle={this.state.moonAngle}
@@ -342,6 +345,11 @@ class LunarPhaseSim extends React.Component {
         e.preventDefault();
         cancelAnimationFrame(this.raf);
         this.setState(this.initialState);
+
+        // Reset the orbitControls camera
+        if (this.horizonViewRef && this.horizonViewRef.current) {
+            this.horizonViewRef.current.onResetClicked();
+        }
     }
 }
 
