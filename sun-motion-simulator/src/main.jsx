@@ -9,7 +9,7 @@ import LatitudePicker from './LatitudePicker';
 import Clock from './Clock';
 import {
     forceNumber, roundToOnePlace,
-    getSunZenith, getSunAzimuth,
+    getSolarZenith, getSolarAzimuth,
     degToRad, radToDeg,
     getRightAscension, getSiderealTime,
     getHourAngle, getPosition,
@@ -66,13 +66,15 @@ class SunMotionSim extends React.Component {
         this.onDayUpdate = this.onDayUpdate.bind(this);
         this.onDateControlUpdate = this.onDateControlUpdate.bind(this);
         this.onMonthUpdate = this.onMonthUpdate.bind(this);
+
+        this.horizonViewRef = React.createRef();
     }
     render() {
         const doy = getDayOfYear(this.state.dateTime);
 
         const siderealTimeDisplay = formatHours(this.state.siderealTime);
 
-        const sunAltitude = getSunZenith(
+        const sunAltitude = getSolarZenith(
             degToRad(this.state.latitude), this.state.sunDeclination,
             this.state.hourAngle, true);
         const sunAltitudeDisplay = roundToOnePlace(radToDeg(sunAltitude));
@@ -120,6 +122,7 @@ class SunMotionSim extends React.Component {
             <div className="row mt-2">
                 <div className="col-5">
                     <HorizonView
+                        ref={this.horizonViewRef}
                         dateTime={this.state.dateTime}
                         onDateTimeUpdate={this.onDateTimeUpdate}
                         latitude={this.state.latitude}
@@ -255,11 +258,11 @@ class SunMotionSim extends React.Component {
         if (prevState.dateTime !== this.state.dateTime ||
             prevState.latitude !== this.state.latitude
         ) {
-            const zenith = getSunZenith(
+            const zenith = getSolarZenith(
                 degToRad(this.state.latitude), this.state.sunDeclination,
                 this.state.hourAngle);
 
-            const azimuth = getSunAzimuth(
+            const azimuth = getSolarAzimuth(
                 zenith, this.state.hourAngle,
                 this.state.sunDeclination, this.state.latitude
             );
@@ -334,6 +337,11 @@ class SunMotionSim extends React.Component {
         e.preventDefault();
         cancelAnimationFrame(this.frameId);
         this.setState(this.initialState);
+
+        // Reset the orbitControls camera
+        if (this.horizonViewRef && this.horizonViewRef.current) {
+            this.horizonViewRef.current.onResetClicked();
+        }
     }
     onLatitudeUpdate(e) {
         let lat = e;

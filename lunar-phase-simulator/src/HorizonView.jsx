@@ -15,7 +15,6 @@ export default class HorizonView extends React.Component {
         super(props);
 
         this.initialState = {
-            isHidden: false,
             isDragging: false,
             isDraggingSun: false,
             isDraggingMoon: false,
@@ -465,26 +464,23 @@ export default class HorizonView extends React.Component {
                  style={{
                      width: '228px',
                      height: '228px',
-                     visibility: this.state.isHidden ? 'hidden' : 'visible'
+                     visibility: this.props.isHidden ? 'hidden' : 'visible'
                  }}
                  ref={(mount) => { this.mount = mount }}>
                 <canvas id={this.id + 'Canvas'} width={228 * 2} height={228 * 2} />
             </div>
             <div style={{
-                visibility: this.state.isHidden ? 'hidden' : 'visible'
+                visibility: this.props.isHidden ? 'hidden' : 'visible'
             }}>Observer&apos;s local time: {time}</div>
             <div className="text-right">
                 <button type="button"
-                        onClick={this.onHideShowToggle.bind(this)}
+                        onClick={this.props.onHideShowToggle}
                         className="btn btn-primary btn-sm">
-                    {this.state.isHidden ? 'Show' : 'Hide'}
+                    {this.props.isHidden ? 'Show' : 'Hide'}
                 </button>
             </div>
             </React.Fragment>
         );
-    }
-    onHideShowToggle() {
-        this.setState({isHidden: !this.state.isHidden});
     }
 
     /**
@@ -640,5 +636,8 @@ HorizonView.propTypes = {
     onObserverAngleUpdate: PropTypes.func.isRequired,
     moonAngle: PropTypes.number.isRequired,
     onMoonAngleUpdate: PropTypes.func.isRequired,
-    showAngle: PropTypes.bool.isRequired
+    showAngle: PropTypes.bool.isRequired,
+
+    isHidden: PropTypes.bool.isRequired,
+    onHideShowToggle: PropTypes.func.isRequired
 };
