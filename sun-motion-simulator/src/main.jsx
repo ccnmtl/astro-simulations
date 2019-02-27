@@ -9,7 +9,7 @@ import LatitudePicker from './LatitudePicker';
 import Clock from './Clock';
 import {
     forceNumber, roundToOnePlace,
-    getSunZenith, getSunAzimuth,
+    getSolarZenith, getSolarAzimuth,
     degToRad, radToDeg,
     getRightAscension, getSiderealTime,
     getHourAngle, getPosition,
@@ -72,7 +72,7 @@ class SunMotionSim extends React.Component {
 
         const siderealTimeDisplay = formatHours(this.state.siderealTime);
 
-        const sunAltitude = getSunZenith(
+        const sunAltitude = getSolarZenith(
             degToRad(this.state.latitude), this.state.sunDeclination,
             this.state.hourAngle, true);
         const sunAltitudeDisplay = roundToOnePlace(radToDeg(sunAltitude));
@@ -255,11 +255,11 @@ class SunMotionSim extends React.Component {
         if (prevState.dateTime !== this.state.dateTime ||
             prevState.latitude !== this.state.latitude
         ) {
-            const zenith = getSunZenith(
+            const zenith = getSolarZenith(
                 degToRad(this.state.latitude), this.state.sunDeclination,
                 this.state.hourAngle);
 
-            const azimuth = getSunAzimuth(
+            const azimuth = getSolarAzimuth(
                 zenith, this.state.hourAngle,
                 this.state.sunDeclination, this.state.latitude
             );

@@ -16,10 +16,12 @@ const roundToOnePlace = function(n) {
 /**
  * https://en.wikipedia.org/wiki/Solar_zenith_angle
  *
+ * Units are in radians for everything here.
+ *
  * If altitude is true, returns altitude instead of zenith (the
  * complement of this angle).
  */
-const getSunZenith = function(
+const getSolarZenith = function(
     latitude, declination, hourAngle, altitude=false
 ) {
     const cos = Math.cos;
@@ -32,16 +34,19 @@ const getSunZenith = function(
         return Math.asin(angle);
     }
 
-    return Math.acos(angle);
+    const zenith = Math.acos(Math.min(Math.max(angle, -1), 1));
+    return zenith;
 }
 
 /**
  * Get the sun's azimuth angle, given sun zenith,
  * hour angle, declination, and observer latitude.
  *
+ * Units are in radians for everything here.
+ *
  * https://en.wikipedia.org/wiki/Solar_azimuth_angle
  */
-const getSunAzimuth = function(
+const getSolarAzimuth = function(
     zenithAngle, hourAngle, declination, latitude
 ) {
     const cos = Math.cos;
@@ -52,7 +57,7 @@ const getSunAzimuth = function(
             sin(latitude)) /
           sin(zenithAngle);
 
-    return Math.acos(cos_phi);
+    return Math.acos(Math.min(Math.max(cos_phi, -1), 1));
 };
 
 /**
@@ -190,7 +195,7 @@ const getPosition = function(day) {
 
 export {
     forceNumber, roundToOnePlace,
-    getSunZenith, getSunAzimuth,
+    getSolarZenith, getSolarAzimuth,
     hourAngleToTime, minuteAngleToTime,
     degToRad, radToDeg,
     getRightAscension, getSiderealTime,
