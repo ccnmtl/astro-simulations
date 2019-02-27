@@ -14,7 +14,7 @@ test-all:
 
 all:
 	@$(foreach dir, $(sims), cd $(dir) && npm i && npm run build && cd ..;)
-	@$(foreach dir, $(sims), ./scripts/update-build-info.py $(dir))
+	@$(foreach dir, $(sims), ./scripts/update-build-info.py $(dir);)
 
 update-build-info:
 	@$(foreach dir, $(sims), ./scripts/update-build-info.py $(dir);)
