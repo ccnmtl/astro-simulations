@@ -1,6 +1,6 @@
 {
   "name": "gas-retention-simulator",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Gas Retention Simulator",
   "private": true,
   "main": "main.js",

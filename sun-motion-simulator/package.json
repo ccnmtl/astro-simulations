@@ -1,6 +1,6 @@
 {
   "name": "sun-motion-simulator",
-  "version": "1.0.0",
+  "version": "0.8.0",
   "description": "Motions of the Sun Simulator",
   "private": true,
   "main": "main.js",
