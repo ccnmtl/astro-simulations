@@ -11,6 +11,7 @@ import {
     forceNumber, roundToOnePlace,
     getSolarZenith, getSolarAzimuth,
     degToRad, radToDeg,
+    hourAngleToRadians,
     getRightAscension, getSiderealTime,
     getHourAngle, getPosition,
     getDayOfYear, formatMinutes, formatHours
@@ -76,7 +77,7 @@ class SunMotionSim extends React.Component {
 
         const sunAltitude = getSolarZenith(
             degToRad(this.state.latitude), this.state.sunDeclination,
-            this.state.hourAngle, true);
+            hourAngleToRadians(this.state.hourAngle), true);
         const sunAltitudeDisplay = roundToOnePlace(radToDeg(sunAltitude));
         const sunAzimuthDisplay = roundToOnePlace(radToDeg(this.state.sunAzimuth));
         const sunDeclination = roundToOnePlace(
@@ -260,7 +261,7 @@ class SunMotionSim extends React.Component {
         ) {
             const zenith = getSolarZenith(
                 degToRad(this.state.latitude), this.state.sunDeclination,
-                this.state.hourAngle);
+                hourAngleToRadians(this.state.hourAngle));
 
             const azimuth = getSolarAzimuth(
                 zenith, this.state.hourAngle,
