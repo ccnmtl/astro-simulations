@@ -264,8 +264,8 @@ class SunMotionSim extends React.Component {
                 hourAngleToRadians(this.state.hourAngle));
 
             const azimuth = getSolarAzimuth(
-                zenith, this.state.hourAngle,
-                this.state.sunDeclination, this.state.latitude
+                zenith, hourAngleToRadians(this.state.hourAngle),
+                this.state.sunDeclination, degToRad(this.state.latitude)
             );
 
             this.setState({
