@@ -32,16 +32,14 @@ export default class Clock extends React.Component {
     }
     render() {
         return <React.Fragment>
-            <div className="form-inline">
-                <label>
-                    The time of day:
-                    <input type="time"
-                           style={{width: '115px'}}
-                           value={this.displayTime(this.props.dateTime)}
-                           onChange={this.onTimeUpdate}
-                           className="form-control form-control-sm ml-2" />
-                </label>
-            </div>
+            <label>
+                The time of day:
+                <input type="time"
+                       value={this.displayTime(this.props.dateTime)}
+                       onChange={this.onTimeUpdate}
+                       className="form-control form-control-sm"
+                       required />
+            </label>
             <div className="pixi-scene astro-clock"
                  ref={(el) => {this.timePicker = el}}></div>
         </React.Fragment>;
