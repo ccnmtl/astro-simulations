@@ -57,7 +57,16 @@ const getSolarAzimuth = function(
             sin(latitude)) /
           sin(zenithAngle);
 
-    return Math.acos(Math.min(Math.max(cos_phi, -1), 1));
+    const az = Math.acos(Math.min(Math.max(cos_phi, -1), 1));
+
+    // The angle offset needs to be adjusted based on whether the hour angle
+    // is in the morning or the evening.
+    //   https://en.wikipedia.org/wiki/Solar_azimuth_angle#Formulas
+    if (hourAngle < 0 || hourAngle > Math.PI) {
+        return az;
+    }
+
+    return (Math.PI * 2) - az;
 };
 
 /**

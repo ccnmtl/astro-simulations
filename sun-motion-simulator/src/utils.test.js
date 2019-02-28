@@ -28,10 +28,9 @@ test('rounds numbers to one place', () => {
 });
 
 
-// TODO
 test('gets the sun\'s azimuth', () => {
     // The initial state
-    /*expect(
+    expect(
         radToDeg(getSolarAzimuth(
             // zenith (90° - altitude)
             0.34014194872899,
@@ -41,10 +40,10 @@ test('gets the sun\'s azimuth', () => {
             0.37210763886126974,
             // latitude
             degToRad(40.8)))
-    ).toBe(182);*/
+    ).toBe(181.93917772698404);
 
     // At the equator
-    /*expect(
+    expect(
         radToDeg(getSolarAzimuth(
             // zenith (90° - altitude)
             degToRad(21.29876),
@@ -54,7 +53,7 @@ test('gets the sun\'s azimuth', () => {
             0.37210763886126974,
             // latitude
             0))
-    ).toBe(182);*/
+    ).toBe(360);
 });
 
 test('gets the sun\'s zenith', () => {
