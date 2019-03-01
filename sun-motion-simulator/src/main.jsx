@@ -239,8 +239,7 @@ class SunMotionSim extends React.Component {
     onDateUpdate(dateTime) {
         const doy = getDayOfYear(dateTime);
         const siderealTime = getSiderealTime(doy - 0.5);
-        const hourAngle = getHourAngle(
-            siderealTime, getPosition(doy).ra);
+        const hourAngle = getHourAngle(siderealTime, getPosition(doy).ra);
 
         const centuryDate = solar.century(dateTime);
         const sunDeclination = degToRad(solar.declination(centuryDate));
