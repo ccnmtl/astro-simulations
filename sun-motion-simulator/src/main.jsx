@@ -12,7 +12,7 @@ import {
     getSolarZenith, getSolarAzimuth,
     degToRad, radToDeg,
     hourAngleToRadians,
-    getRightAscension, getSiderealTime,
+    getSiderealTime,
     getHourAngle, getPosition,
     getDayOfYear, formatMinutes, formatHours
 } from './utils';
@@ -82,7 +82,7 @@ class SunMotionSim extends React.Component {
         const sunAzimuthDisplay = roundToOnePlace(radToDeg(this.state.sunAzimuth));
         const sunDeclination = roundToOnePlace(
             radToDeg(this.state.sunDeclination));
-        const sunRightAscension = getRightAscension(doy);
+        const sunRightAscension = getPosition(doy).ra;
         const sunRightAscensionDisplay = formatHours(sunRightAscension);
 
         const centuryDate = solar.century(this.state.dateTime);
@@ -238,7 +238,7 @@ class SunMotionSim extends React.Component {
      */
     onDateUpdate(dateTime) {
         const doy = getDayOfYear(dateTime);
-        const siderealTime = getSiderealTime(doy - 0.5);
+        const siderealTime = getSiderealTime(doy);
         const hourAngle = getHourAngle(siderealTime, getPosition(doy).ra);
 
         const centuryDate = solar.century(dateTime);
