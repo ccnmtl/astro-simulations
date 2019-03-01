@@ -15,33 +15,37 @@ import {
 test('gets the sun\'s hour angle', () => {
     // Initial position
     let doy = getDayOfYear(new Date('2019-5-27 12:00'));
-    let siderealTime = getSiderealTime(doy - 0.5);
+    let siderealTime = getSiderealTime(doy);
     let hourAngle = getHourAngle(siderealTime, getPosition(doy).ra);
     expect(Math.round(hourAngle)).toBe(0);
 
     doy = getDayOfYear(new Date('2019-5-27 18:00'));
-    siderealTime = getSiderealTime(doy - 0.5);
+    siderealTime = getSiderealTime(doy);
     hourAngle = getHourAngle(siderealTime, getPosition(doy).ra);
     expect(Math.round(hourAngle)).toBe(6);
 
     doy = getDayOfYear(new Date('2019-5-27 23:00'));
-    siderealTime = getSiderealTime(doy - 0.5);
+    siderealTime = getSiderealTime(doy);
     hourAngle = getHourAngle(siderealTime, getPosition(doy).ra);
     expect(Math.round(hourAngle)).toBe(11);
 
     doy = getDayOfYear(new Date('2019-5-28 11:00'));
-    siderealTime = getSiderealTime(doy - 0.5);
+    siderealTime = getSiderealTime(doy);
     hourAngle = getHourAngle(siderealTime, getPosition(doy).ra);
     expect(Math.round(hourAngle)).toBe(-1);
 
-    doy = getDayOfYear(new Date('2019-5-28 3:00'));
-    siderealTime = getSiderealTime(doy - 0.5);
+    doy = getDayOfYear(new Date('2019-5-27 3:00'));
+    siderealTime = getSiderealTime(doy);
     hourAngle = getHourAngle(siderealTime, getPosition(doy).ra);
-    // TODO
-    // expect(Math.round(hourAngle)).toBe(-9);
+    expect(Math.round(hourAngle)).toBe(-9);
+
+    doy = getDayOfYear(new Date('2019-5-28 3:00'));
+    siderealTime = getSiderealTime(doy);
+    hourAngle = getHourAngle(siderealTime, getPosition(doy).ra);
+    expect(Math.round(hourAngle)).toBe(-9);
 
     doy = getDayOfYear(new Date('2019-5-28 11:00'));
-    siderealTime = getSiderealTime(doy - 0.5);
+    siderealTime = getSiderealTime(doy);
     hourAngle = getHourAngle(siderealTime, getPosition(doy).ra);
     expect(Math.round(hourAngle)).toBe(-1);
 });
