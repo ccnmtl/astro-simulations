@@ -2,11 +2,56 @@
 
 import {
     degToRad, radToDeg,
+    getHourAngle,
+    getSiderealTime,
+    getPosition,
+    getDayOfYear,
     hourAngleToRadians,
     formatMinutes, formatHours,
     getSolarAzimuth, getSolarZenith,
     roundToOnePlace
 } from './utils';
+
+test('gets the sun\'s hour angle', () => {
+    // Initial position
+    let doy = getDayOfYear(new Date('2019-5-27 12:00'));
+    let siderealTime = getSiderealTime(doy - 0.5);
+    let hourAngle = getHourAngle(siderealTime, getPosition(doy).ra);
+    expect(Math.round(hourAngle)).toBe(0);
+
+    doy = getDayOfYear(new Date('2019-5-27 18:00'));
+    siderealTime = getSiderealTime(doy - 0.5);
+    hourAngle = getHourAngle(siderealTime, getPosition(doy).ra);
+    expect(Math.round(hourAngle)).toBe(6);
+
+    doy = getDayOfYear(new Date('2019-5-27 23:00'));
+    siderealTime = getSiderealTime(doy - 0.5);
+    hourAngle = getHourAngle(siderealTime, getPosition(doy).ra);
+    expect(Math.round(hourAngle)).toBe(11);
+
+    doy = getDayOfYear(new Date('2019-5-28 11:00'));
+    siderealTime = getSiderealTime(doy - 0.5);
+    hourAngle = getHourAngle(siderealTime, getPosition(doy).ra);
+    expect(Math.round(hourAngle)).toBe(-1);
+
+    doy = getDayOfYear(new Date('2019-5-28 3:00'));
+    siderealTime = getSiderealTime(doy - 0.5);
+    hourAngle = getHourAngle(siderealTime, getPosition(doy).ra);
+    // TODO
+    // expect(Math.round(hourAngle)).toBe(-9);
+
+    doy = getDayOfYear(new Date('2019-5-28 11:00'));
+    siderealTime = getSiderealTime(doy - 0.5);
+    hourAngle = getHourAngle(siderealTime, getPosition(doy).ra);
+    expect(Math.round(hourAngle)).toBe(-1);
+});
+
+test('gets day of year', () => {
+    expect(getDayOfYear(new Date('2000-1-1'))).toBe(1);
+    expect(getDayOfYear(new Date('2015-1-1'))).toBe(1);
+    expect(Math.round(getDayOfYear(new Date('2015-12-31')))).toBe(365);
+    expect(Math.round(getDayOfYear(new Date('2015-4-10')))).toBe(100);
+});
 
 test('formats minutes/seconds correctly', () => {
     expect(formatMinutes(1)).toBe('1:00');
