@@ -387,6 +387,8 @@ export default class MainView extends React.Component {
 
         this.data = event.data;
         this.dragStartPos = this.data.getLocalPosition(this.app.stage);
+        // Save the initial observer angle to use for offset.
+        this.dragStartAngle = this.props.observerAngle;
 
         if (event.target.name === 'earth') {
             this.draggingEarth = true;
@@ -420,10 +422,16 @@ export default class MainView extends React.Component {
             // where it is now.
             const vAngle =
                 Math.atan2(newPosition.y - this.orbitCenter.y,
-                           newPosition.x - this.orbitCenter.x) -
-                Math.atan2(this.dragStartPos.y - this.orbitCenter.y,
-                           this.dragStartPos.x - this.orbitCenter.x);
-            this.props.onObserverAngleUpdate(-vAngle);
+                           newPosition.x - this.orbitCenter.x);
+
+            const offset = Math.atan2(
+                this.dragStartPos.y - this.orbitCenter.y,
+                this.dragStartPos.x - this.orbitCenter.x) + (Math.PI / 2);
+
+            this.props.onObserverAngleUpdate(
+                // Offset vAngle with initial angle, as well as current
+                // dragging offset angle.
+                -vAngle + offset + (this.dragStartAngle - (Math.PI / 2)));
         }
     }
     onMoonMove(e) {
