@@ -38,6 +38,7 @@ class LunarPhaseSim extends React.Component {
             this.onHideShowMoonPhaseToggle.bind(this);
         this.onHideShowHorizonViewToggle =
             this.onHideShowHorizonViewToggle.bind(this);
+        this.stopAnimation = this.stopAnimation.bind(this);
 
         this.horizonViewRef = React.createRef();
     }
@@ -73,6 +74,7 @@ class LunarPhaseSim extends React.Component {
                         showTimeTickmarks={this.state.showTimeTickmarks}
                         onObserverAngleUpdate={this.onObserverAngleUpdate.bind(this)}
                         onMoonAngleUpdate={this.onMoonAngleUpdate.bind(this)}
+                        stopAnimation={this.stopAnimation}
                     />
 
                     <div className="row">
@@ -254,19 +256,19 @@ class LunarPhaseSim extends React.Component {
             this.raf = requestAnimationFrame(this.animate.bind(this));
             this.setState({isPlaying: true});
         } else {
-            cancelAnimationFrame(this.raf);
+            this.stopAnimation();
             this.setState({isPlaying: false});
         }
     }
     onObserverAngleUpdate(newAngle) {
-        cancelAnimationFrame(this.raf);
+        this.stopAnimation();
         this.setState({
             isPlaying: false,
             observerAngle: newAngle
         });
     }
     onMoonAngleUpdate(newAngle) {
-        cancelAnimationFrame(this.raf);
+        this.stopAnimation();
         this.setState({
             isPlaying: false,
             moonAngle: newAngle
@@ -353,9 +355,12 @@ class LunarPhaseSim extends React.Component {
             [name]: value
         });
     }
+    stopAnimation() {
+        cancelAnimationFrame(this.raf);
+    }
     onResetClick(e) {
         e.preventDefault();
-        cancelAnimationFrame(this.raf);
+        this.stopAnimation();
         this.setState(this.initialState);
 
         // Reset the orbitControls camera
