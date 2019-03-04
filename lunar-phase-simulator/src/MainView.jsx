@@ -383,6 +383,8 @@ export default class MainView extends React.Component {
         }
     }
     onDragStart(event) {
+        this.props.stopAnimation();
+
         this.data = event.data;
         this.dragStartPos = this.data.getLocalPosition(this.app.stage);
 
@@ -462,5 +464,6 @@ MainView.propTypes = {
     onMoonAngleUpdate: PropTypes.func.isRequired,
     showAngle: PropTypes.bool.isRequired,
     showTimeTickmarks: PropTypes.bool.isRequired,
-    showLunarLandmark: PropTypes.bool.isRequired
+    showLunarLandmark: PropTypes.bool.isRequired,
+    stopAnimation: PropTypes.func.isRequired
 };
