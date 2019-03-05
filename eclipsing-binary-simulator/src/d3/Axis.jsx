@@ -5,8 +5,10 @@ import * as d3 from 'd3';
 export default class Axis extends Component {
     constructor(props) {
         super(props);
-        this.axis = React.createRef();
+        this.xAxis = React.createRef();
+        this.yAxis = React.createRef();
     }
+
     componentDidMount() {
         this.renderAxis();
     }
@@ -16,16 +18,23 @@ export default class Axis extends Component {
     }
 
     renderAxis() {
-        const axis = d3.axisLeft(this.props.yScale).ticks(4);
+        const xAxis = d3.axisBottom(this.props.xScale || 1).ticks(10);
+        const yAxis = d3.axisLeft(this.props.yScale).ticks(4);
 
-        const node = this.axis.current;
-        d3.select(node).call(axis);
+        const node1 = this.xAxis.current;
+        d3.select(node1).call(xAxis);
+
+        const node2 = this.yAxis.current;
+        d3.select(node2).call(yAxis);
     }
 
     render() {
         return <React.Fragment>
-            <g className="yAxis" ref={this.axis}
+            <g className="yAxis" ref={this.yAxis}
                transform={`translate(${this.props.paddingLeft}, 0)`}
+            />
+            <g className="xAxis" ref={this.xAxis}
+               transform={`translate(0, 260)`}
             />
             <text
                 transform="rotate(-90)"
@@ -41,5 +50,6 @@ export default class Axis extends Component {
 
 Axis.propTypes = {
     yScale: PropTypes.func.isRequired,
+    xScale: PropTypes.func,
     paddingLeft: PropTypes.number.isRequired
 };

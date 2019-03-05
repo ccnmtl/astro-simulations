@@ -525,10 +525,11 @@ class EclipsingBinarySimulator extends React.Component {
         }
     }
     getSystemTheta() {
-        return (90 - this.state.longitude) * Math.PI / 180;
+        return ((90 - this.state.longitude) % 360 + 360) % 360;
+
     }
     getSystemPhi() {
-        return (90 - this.state.inclination) * Math.PI / 180;
+        return 90 - this.state.inclination;
     }
     drawLightcurve() {
         const dataObj = {

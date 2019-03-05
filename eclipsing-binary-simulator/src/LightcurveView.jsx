@@ -94,15 +94,7 @@ export default class LightcurveView extends React.Component {
         this.setState({curveCoords: coords});
     }
     displayDataset() {
-        var mc = {};
-        /*mc.attachMovie(arg+" - flux", "_1", 1, {_x: -this.plotWidth});
-        mc.attachMovie(arg+" - flux", "_2", 2);
-        mc.attachMovie(arg+" - flux", "_3", 3, {_x: this.plotWidth});*/
-
-        mc = {};
-        /*mc.attachMovie(arg+" - mag", "_1", 1, {_x: -this.plotWidth});
-        mc.attachMovie(arg+" - mag", "_2", 2);
-        mc.attachMovie(arg+" - mag", "_3", 3, {_x: this.plotWidth});*/
+        let mc = {};
 
         if (typeof mc === 'undefined') {
             this.data.flux.visible = false;
@@ -147,7 +139,7 @@ export default class LightcurveView extends React.Component {
                 this.data.mag.visible = true;
                 if (!noEclipse) {
                     dT = this._visualMagnitudeTable;
-                    yScale = this.plotHeight/(this._maxVisMag-this._minVisMag);
+                    yScale = this.plotHeight / (this._maxVisMag - this._minVisMag);
                     yOffset = -this.plotHeight - yScale*this._minVisMag;
                 }
                 this.positionMagTicks();
@@ -317,10 +309,10 @@ export default class LightcurveView extends React.Component {
 
         var refinement = 15;
 
-        var cos = Math.cos;
-        var tan = Math.tan;
-        var atan = Math.atan;
-        var abs = Math.abs;
+        const cos = Math.cos;
+        const tan = Math.tan;
+        const atan = Math.atan;
+        const abs = Math.abs;
         var e = c.eccentricity;
         var q1 = sqrt((1+e)/(1-e));
         var q2 = this.solarRadius*(1-e*e);
@@ -350,7 +342,7 @@ export default class LightcurveView extends React.Component {
             }
         }
 
-        this._closestIndex = (refinedIndex%np + np)%np;
+        this._closestIndex = (refinedIndex % np + np) % np;
     }
     generateMagnitudeTable() {
         // where some numbers come from:
@@ -423,13 +415,13 @@ export default class LightcurveView extends React.Component {
         // https://github.com/freddyrangel/playing-with-react-and-d3
         return (
             <Plot
-            lightcurveData={this.state.curveCoords}
-            phase={this.props.phase}
-            showLightcurve={this.props.showLightcurve}
-            width={460}
-            height={280}
-            paddingLeft={60}
-            padding={20} />
+                lightcurveData={this.state.curveCoords}
+                phase={this.props.phase}
+                showLightcurve={this.props.showLightcurve}
+                width={460}
+                height={280}
+                paddingLeft={60}
+                padding={20} />
         );
 
     }
