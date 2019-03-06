@@ -114,14 +114,14 @@ class EclipsingBinarySimulator extends React.Component {
                                     value={this.state.inclination}
                                     onFocus={this.handleFocus}
                                     onChange={this.handleInputChange}
-                                    min={0} max={180} step={0.001} />&deg;
+                                    min={0} max={90} step={0.01} />&deg;
 
                                 <RangeStepInput
                                     className="form-control"
                                     name="inclination"
                                     value={this.state.inclination}
                                     onChange={this.handleInputChange}
-                                    min={0} max={180} step={0.001} />
+                                    min={0} max={90} step={0.01} />
                             </div>
                         </div>
                     </div>
@@ -160,14 +160,14 @@ class EclipsingBinarySimulator extends React.Component {
                                 value={this.state.phase}
                                 onFocus={this.handleFocus}
                                 onChange={this.handleInputChange}
-                                min={0} max={180} step={0.001} />
+                                min={0} max={1} step={0.01} />
 
                             <RangeStepInput
                                 className="form-control"
                                 name="phase"
                                 value={this.state.phase}
                                 onChange={this.handleInputChange}
-                                min={0} max={180} step={0.001} />
+                                min={0} max={1} step={0.01} />
                         </div>
                     </div>
                 </div>
@@ -356,14 +356,16 @@ class EclipsingBinarySimulator extends React.Component {
                                     value={this.state.star1Temp}
                                     onFocus={this.handleFocus}
                                     onChange={this.handleInputChange}
-                                    step={0.1} />
+                                    min={3000} max={45000}
+                                    step={1} />
 
                                 <RangeStepInput
                                     className="form-control"
                                     name="star1Temp"
                                     value={this.state.star1Temp}
                                     onChange={this.handleInputChange}
-                                    min={0.1} max={5} step={0.1} />
+                                    min={3000} max={45000}
+                                    step={1} />
                             </div>
                         </div>
                     </div>
@@ -432,14 +434,16 @@ class EclipsingBinarySimulator extends React.Component {
                                     value={this.state.star2Temp}
                                     onFocus={this.handleFocus}
                                     onChange={this.handleInputChange}
-                                    step={0.1} />
+                                    min={3000} max={45000}
+                                    step={1} />
 
                                 <RangeStepInput
                                     className="form-control"
                                     name="star2Temp"
                                     value={this.state.star2Temp}
                                     onChange={this.handleInputChange}
-                                    min={0.1} max={5} step={0.1} />
+                                    min={3000} max={45000}
+                                    step={1} />
                             </div>
                         </div>
                     </div>
@@ -460,14 +464,16 @@ class EclipsingBinarySimulator extends React.Component {
                                     value={this.state.separation}
                                     onFocus={this.handleFocus}
                                     onChange={this.handleInputChange}
-                                    step={0.1} />
+                                    min={0.1} max={60}
+                                    step={0.01} />
 
                                 <RangeStepInput
                                     className="form-control"
                                     name="separation"
                                     value={this.state.separation}
                                     onChange={this.handleInputChange}
-                                    min={0.1} max={10} step={0.1} />
+                                    min={0.1} max={60}
+                                    step={0.01} />
                             </div>
                         </div>
 
@@ -484,14 +490,16 @@ class EclipsingBinarySimulator extends React.Component {
                                     value={this.state.eccentricity}
                                     onFocus={this.handleFocus}
                                     onChange={this.handleInputChange}
-                                    step={0.1} />
+                                    min={0.1} max={0.6}
+                                    step={0.01} />
 
                                 <RangeStepInput
                                     className="form-control"
                                     name="eccentricity"
                                     value={this.state.eccentricity}
                                     onChange={this.handleInputChange}
-                                    min={0.1} max={5} step={0.1} />
+                                    min={0.1} max={0.6}
+                                    step={0.01} />
                             </div>
                         </div>
                     </div>
