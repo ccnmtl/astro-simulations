@@ -2,18 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Plot from './d3/Plot';
 
-
 export default class LightcurveView extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             isDragging: false,
-            noiseData: [],
             curveCoords: []
         };
 
-        this.plotWidth = 320;
-        this.plotHeight = 200;
+        this.plotWidth = 460;
+        this.plotHeight = 280;
 
         this.minMagDiff = 0.01;
 
@@ -54,7 +52,9 @@ export default class LightcurveView extends React.Component {
         this._numCurvePoints = 300;
 
         this._positionTable = [];
-        for (let i = 0; i<this._numCurvePoints; i++) this._positionTable[i] = {};
+        for (let i = 0; i<this._numCurvePoints; i++) {
+            this._positionTable[i] = {};
+        }
 
         this._dataType = "visual flux";
 
@@ -130,7 +130,7 @@ export default class LightcurveView extends React.Component {
                 this.data.mag.visible = false;
                 if (!noEclipse) {
                     dT = this._visualFluxTable;
-                    yScale = -this.plotHeight/(this._maxVisFlux);
+                    yScale = -this.plotHeight / this._maxVisFlux;
                     yOffset = 0;
                 }
                 break;
@@ -187,9 +187,12 @@ export default class LightcurveView extends React.Component {
             coords.push([w, y0]);
         }
 
-        //this.positionClips();
+        this.positionClips();
 
         return coords;
+    }
+    positionClips() {
+        //const x = this._phaseOffset * this.plotWidth;
     }
     generatePositionTable() {
         const cos = Math.cos;
@@ -307,7 +310,7 @@ export default class LightcurveView extends React.Component {
         // To get a better estimate of the closest approach, we will look at refinement-1 fractional indices
         // in the interval (closestIndex-1, closestIndex+1) -- ie. the fractional precision is 2/refinement.
 
-        var refinement = 15;
+        const refinement = 15;
 
         const cos = Math.cos;
         const tan = Math.tan;
@@ -321,7 +324,7 @@ export default class LightcurveView extends React.Component {
         var start = (closestIndex-1)/q4;
         var refinedIndex = closestIndex;
 
-        for (i=1; i<refinement; i++) {
+        for (i = 1; i < refinement; i++) {
             var ma = start + i*step;
             var ea0 = 0;
             var ea1 = ma + e*sin(ma);
@@ -362,9 +365,23 @@ export default class LightcurveView extends React.Component {
         let k;
 
         let logTeff = log(c.temperature1)/Math.LN10;
-        if (logTeff>3.9) k = {a: -100139.4991, b: 116264.1842, c: -53931.97541, d: 12495.04227, e: -1445.868048, f: 66.84924471};
-        else if (logTeff<3.7) k = {a: -13884.14899, b: 8595.127427, c: -488.3425525, d: -627.0092238, e: 137.4608131, f: -7.549572042};
-        else k = {a: 1439.981506, b: -151.9002581, c: -995.1089203, d: 582.5176671, e: -123.3293641, f: 9.160761128};
+        if (logTeff > 3.9) {
+            k = {
+                a: -100139.4991, b: 116264.1842, c: -53931.97541,
+                d: 12495.04227, e: -1445.868048, f: 66.84924471
+            };
+        } else if (logTeff<3.7) {
+            k = {
+                a: -13884.14899, b: 8595.127427, c: -488.3425525,
+                d: -627.0092238, e: 137.4608131, f: -7.549572042
+            };
+        } else {
+            k = {
+                a: 1439.981506, b: -151.9002581, c: -995.1089203,
+                d: 582.5176671, e: -123.3293641, f: 9.160761128
+            };
+        }
+
         var BC1 = k.a + logTeff*(k.b + logTeff*(k.c + logTeff*(k.d + logTeff*(k.e + k.f*logTeff))));
 
         logTeff = log(c.temperature2)/Math.LN10;
@@ -418,8 +435,8 @@ export default class LightcurveView extends React.Component {
                 lightcurveData={this.state.curveCoords}
                 phase={this.props.phase}
                 showLightcurve={this.props.showLightcurve}
-                width={460}
-                height={280}
+                width={this.plotWidth}
+                height={this.plotHeight}
                 paddingLeft={60}
                 padding={20} />
         );

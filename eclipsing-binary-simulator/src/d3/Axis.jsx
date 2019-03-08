@@ -31,10 +31,10 @@ export default class Axis extends Component {
     render() {
         return <React.Fragment>
             <g className="yAxis" ref={this.yAxis}
-               transform={`translate(${this.props.paddingLeft}, 0)`}
+               transform={`translate(${this.props.paddingLeft}, ${this.props.padding})`}
             />
             <g className="xAxis" ref={this.xAxis}
-               transform={`translate(0, 260)`}
+               transform={`translate(${this.props.offset}, 260)`}
             />
             <text
                 transform="rotate(-90)"
@@ -51,5 +51,6 @@ export default class Axis extends Component {
 Axis.propTypes = {
     yScale: PropTypes.func.isRequired,
     xScale: PropTypes.func,
+    offset: PropTypes.number.isRequired,
     paddingLeft: PropTypes.number.isRequired
 };
