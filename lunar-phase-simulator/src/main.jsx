@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import MainView from './MainView';
 import MoonPhaseView from './MoonPhaseView';
-import HorizonView from './HorizonView';
+import CelestialSphere from './CelestialSphere';
 import {RangeStepInput} from 'react-range-step-input';
 import {degToRad, forceNumber} from './utils';
 
@@ -24,7 +24,7 @@ class LunarPhaseSim extends React.Component {
             showLunarLandmark: false,
             showTimeTickmarks: false,
 
-            horizonViewIsHidden: false,
+            celestialSphereIsHidden: false,
             moonPhaseViewIsHidden: false
         };
         this.state = this.initialState;
@@ -36,11 +36,11 @@ class LunarPhaseSim extends React.Component {
 
         this.onHideShowMoonPhaseToggle =
             this.onHideShowMoonPhaseToggle.bind(this);
-        this.onHideShowHorizonViewToggle =
-            this.onHideShowHorizonViewToggle.bind(this);
+        this.onHideShowCelestialSphereToggle =
+            this.onHideShowCelestialSphereToggle.bind(this);
         this.stopAnimation = this.stopAnimation.bind(this);
 
-        this.horizonViewRef = React.createRef();
+        this.celestialSphereRef = React.createRef();
     }
     render() {
         let startBtnText = 'Start Animation';
@@ -197,10 +197,10 @@ class LunarPhaseSim extends React.Component {
                     </div>
                     <div>
                         <h4>Horizon Diagram</h4>
-                        <HorizonView
-                            ref={this.horizonViewRef}
-                            isHidden={this.state.horizonViewIsHidden}
-                            onHideShowToggle={this.onHideShowHorizonViewToggle}
+                        <CelestialSphere
+                            ref={this.celestialSphereRef}
+                            isHidden={this.state.celestialSphereIsHidden}
+                            onHideShowToggle={this.onHideShowCelestialSphereToggle}
                             observerAngle={this.state.observerAngle}
                             onObserverAngleUpdate={this.onObserverAngleUpdate.bind(this)}
                             moonAngle={this.state.moonAngle}
@@ -364,8 +364,8 @@ class LunarPhaseSim extends React.Component {
         this.setState(this.initialState);
 
         // Reset the orbitControls camera
-        if (this.horizonViewRef && this.horizonViewRef.current) {
-            this.horizonViewRef.current.onResetClicked();
+        if (this.celestialSphereRef && this.celestialSphereRef.current) {
+            this.celestialSphereRef.current.onResetClicked();
         }
     }
     onHideShowMoonPhaseToggle() {
@@ -373,9 +373,9 @@ class LunarPhaseSim extends React.Component {
             moonPhaseViewIsHidden: !this.state.moonPhaseViewIsHidden
         });
     }
-    onHideShowHorizonViewToggle() {
+    onHideShowCelestialSphereToggle() {
         this.setState({
-            horizonViewIsHidden: !this.state.horizonViewIsHidden
+            celestialSphereIsHidden: !this.state.celestialSphereIsHidden
         });
     }
 }

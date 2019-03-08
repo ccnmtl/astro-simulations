@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import * as solar from 'solar-calculator';
-import HorizonView from './HorizonView';
+import CelestialSphere from './CelestialSphere';
 import AnimationControls from './AnimationControls';
 import GeneralSettings from './GeneralSettings';
 import DatePicker from './DatePicker';
@@ -68,7 +68,7 @@ class SunMotionSim extends React.Component {
         this.onDateControlUpdate = this.onDateControlUpdate.bind(this);
         this.onMonthUpdate = this.onMonthUpdate.bind(this);
 
-        this.horizonViewRef = React.createRef();
+        this.celestialSphereRef = React.createRef();
     }
     render() {
         const doy = getDayOfYear(this.state.dateTime);
@@ -122,8 +122,8 @@ class SunMotionSim extends React.Component {
             </nav>
             <div className="row mt-2">
                 <div className="col-5">
-                    <HorizonView
-                        ref={this.horizonViewRef}
+                    <CelestialSphere
+                        ref={this.celestialSphereRef}
                         dateTime={this.state.dateTime}
                         onDateTimeUpdate={this.onDateTimeUpdate}
                         latitude={this.state.latitude}
@@ -358,8 +358,8 @@ class SunMotionSim extends React.Component {
         this.setState(this.initialState);
 
         // Reset the orbitControls camera
-        if (this.horizonViewRef && this.horizonViewRef.current) {
-            this.horizonViewRef.current.onResetClicked();
+        if (this.celestialSphereRef && this.celestialSphereRef.current) {
+            this.celestialSphereRef.current.onResetClicked();
         }
     }
     onLatitudeUpdate(e) {

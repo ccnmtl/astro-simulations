@@ -10,7 +10,7 @@ import 'three/ShaderPass';
 
 // three.js/react integration based on:
 // https://stackoverflow.com/a/46412546/173630
-export default class HorizonView extends React.Component {
+export default class CelestialSphere extends React.Component {
     constructor(props) {
         super(props);
 
@@ -25,7 +25,7 @@ export default class HorizonView extends React.Component {
 
         this.dayColor = 0x90c0ff;
 
-        this.id = 'HorizonView';
+        this.id = 'CelestialSphere';
         this.start = this.start.bind(this);
         this.stop = this.stop.bind(this);
         this.animate = this.animate.bind(this);
@@ -631,7 +631,7 @@ export default class HorizonView extends React.Component {
     }
 }
 
-HorizonView.propTypes = {
+CelestialSphere.propTypes = {
     observerAngle: PropTypes.number.isRequired,
     onObserverAngleUpdate: PropTypes.func.isRequired,
     moonAngle: PropTypes.number.isRequired,
