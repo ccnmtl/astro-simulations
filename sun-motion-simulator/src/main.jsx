@@ -278,30 +278,49 @@ class SunMotionSim extends React.Component {
         const now = Date.now();
         const elapsed = now - this.then;
 
-        const fps = this.state.stepByDay ? this.state.animationRate : 60;
+        // Increment simulation time.
+        // Based on: https://stackoverflow.com/a/19772220/173630
 
-        // Handle time throttling.
-        // See: https://stackoverflow.com/a/19772220/173630
-        if (!this.state.stepByDay || (elapsed > 1000 / fps)) {
-            if (this.state.stepByDay) {
-                const nextDay = new Date(this.state.dateTime);
-                nextDay.setDate(nextDay.getDate() + 1);
-                this.setState({dateTime: nextDay});
+        let milliseconds = null;
+
+        if (!this.state.stepByDay) {
+            // Convert elapsed milliseconds to hours, for the
+            // simulation's new date.
+            // (animationRate == 1) is 3 hours per second.
+            milliseconds = elapsed * (3 * 3600 * this.state.animationRate);
+            this.then = now;
+        } else {
+            // When stepping by day, (animationRate == 1) is 1 day per
+            // second, rounded to the nearest day.
+            milliseconds = elapsed * (24 * 3600 * this.state.animationRate);
+
+            const mDay = 24 * 3600 * 1000;
+            if (milliseconds < mDay) {
+                // If a day hasn't been reached, don't update the
+                // scene, and don't update this.then.
+                milliseconds = 0;
             } else {
-                const newDate = new Date(this.state.dateTime.getTime() + (
-                    100000 * this.state.animationRate));
-
-                if (this.state.loopDay) {
-                    // If loopDay is selected, then always keep newDate on
-                    // the current day while letting the time increment.
-                    const dayOfMonth = this.state.dateTime.getDate();
-                    newDate.setDate(dayOfMonth);
-                }
-
-                this.setState({dateTime: newDate});
+                // Enough milliseconds have elapsed, so update the
+                // scene by one day.
+                milliseconds = mDay;
+                this.then = now;
             }
+        }
 
-            this.then = now - (elapsed % fps);
+        let newDate = null;
+        if (milliseconds > 0) {
+            newDate = new Date(this.state.dateTime.getTime() + milliseconds);
+        }
+
+        if (!this.state.stepByDay && this.state.loopDay) {
+            // If loopDay is selected, then always keep newDate on
+            // the current day while letting the time increment.
+            const dayOfMonth = this.state.dateTime.getDate();
+            newDate.setDate(dayOfMonth);
+        }
+
+        if (newDate && newDate !== this.state.dateTime) {
+            this.setState({dateTime: newDate});
         }
     }
     handleInputChange(event) {
