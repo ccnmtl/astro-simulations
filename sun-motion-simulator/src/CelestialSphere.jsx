@@ -23,7 +23,7 @@ const hourAngleToRadians = function(hourAngle) {
 
 // three.js/react integration based on:
 // https://stackoverflow.com/a/46412546/173630
-export default class HorizonView extends React.Component {
+export default class CelestialSphere extends React.Component {
     constructor(props) {
         super(props);
 
@@ -39,7 +39,7 @@ export default class HorizonView extends React.Component {
         this.state = this.initialState;
 
         this.sphereRadius = 50;
-        this.id = 'HorizonView';
+        this.id = 'CelestialSphere';
         this.start = this.start.bind(this);
         this.stop = this.stop.bind(this);
         this.animate = this.animate.bind(this);
@@ -1041,7 +1041,7 @@ export default class HorizonView extends React.Component {
     }
 }
 
-HorizonView.propTypes = {
+CelestialSphere.propTypes = {
     dateTime: PropTypes.object.isRequired,
     onDateTimeUpdate: PropTypes.func.isRequired,
     latitude: PropTypes.number.isRequired,
