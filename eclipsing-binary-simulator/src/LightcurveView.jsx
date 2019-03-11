@@ -437,6 +437,7 @@ export default class LightcurveView extends React.Component {
                 showLightcurve={this.props.showLightcurve}
                 width={this.plotWidth}
                 height={this.plotHeight}
+                onPhaseUpdate={this.props.onPhaseUpdate}
                 paddingLeft={60}
                 padding={20} />
         );
@@ -458,5 +459,6 @@ export default class LightcurveView extends React.Component {
 
 LightcurveView.propTypes = {
     showLightcurve: PropTypes.bool.isRequired,
-    phase: PropTypes.number.isRequired
+    phase: PropTypes.number.isRequired,
+    onPhaseUpdate: PropTypes.func.isRequired
 };
