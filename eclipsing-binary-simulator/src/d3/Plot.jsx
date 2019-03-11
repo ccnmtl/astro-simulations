@@ -94,17 +94,9 @@ export default class Plot extends React.Component {
     }
     updateGraph() {
         const svg = d3.select('svg');
-        d3.select('.background').call(this.drag);
+        d3.select('.plot-pan').call(this.drag);
     }
     componentDidMount() {
-        const svg = d3.select('svg');
-        svg.append('rect')
-           .attr('class', 'background')
-           .attr('pointer-events', 'all')
-           .attr('fill', 'none')
-           .attr('width', this.props.width)
-           .attr('height', this.props.height);
-
         this.drag = d3.drag()
                       .on('start', this.dragstart.bind(this))
                       .on('end', this.dragend.bind(this))
@@ -122,6 +114,8 @@ export default class Plot extends React.Component {
 
         return (
             <svg width={props.width} height={props.height}>
+                <rect className="plot-pan" pointerEvents="all" fill="none"
+                      width={props.width} height={props.height}></rect>
                 <Line
                     showLightcurve={this.props.showLightcurve}
                     data={this.props.lightcurveData}
@@ -144,5 +138,6 @@ Plot.propTypes = {
     padding: PropTypes.number.isRequired,
     paddingLeft: PropTypes.number.isRequired,
     lightcurveData: PropTypes.array.isRequired,
-    showLightcurve: PropTypes.bool.isRequired
+    showLightcurve: PropTypes.bool.isRequired,
+    onPhaseUpdate: PropTypes.func.isRequired
 };

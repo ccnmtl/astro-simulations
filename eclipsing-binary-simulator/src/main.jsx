@@ -42,6 +42,7 @@ class EclipsingBinarySimulator extends React.Component {
         this.state = this.initialState;
 
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.onPhaseUpdate = this.onPhaseUpdate.bind(this);
 
         this.lightcurveViewRef = React.createRef();
     }
@@ -222,7 +223,8 @@ class EclipsingBinarySimulator extends React.Component {
                     <LightcurveView
                         ref={this.lightcurveViewRef}
                         showLightcurve={this.state.showLightcurve}
-                        phase={this.state.phase} />
+                        phase={this.state.phase}
+                        onPhaseUpdate={this.onPhaseUpdate} />
 
                     <h6>Presets</h6>
 
@@ -577,6 +579,9 @@ class EclipsingBinarySimulator extends React.Component {
     }
     handleFocus(e) {
         e.target.select();
+    }
+    onPhaseUpdate(newPhase) {
+        this.setState({phase: newPhase});
     }
 }
 
