@@ -4,7 +4,7 @@ import {RangeStepInput} from 'react-range-step-input';
 import LightcurveView from './LightcurveView';
 import BinarySystemView from './BinarySystemView';
 import {forceNumber} from './utils';
-
+import {systemPresets} from './presets';
 
 class EclipsingBinarySimulator extends React.Component {
     constructor(props) {
@@ -43,6 +43,7 @@ class EclipsingBinarySimulator extends React.Component {
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.onPhaseUpdate = this.onPhaseUpdate.bind(this);
+        this.onPresetSelect = this.onPresetSelect.bind(this);
 
         this.lightcurveViewRef = React.createRef();
     }
@@ -228,71 +229,75 @@ class EclipsingBinarySimulator extends React.Component {
 
                     <h6>Presets</h6>
 
-                    <select className="form-control form-control-sm" onChange={this.onPresetSelect}>
-                        <option value={-1}>- Select a preset -</option>
-                        <option value={-1}></option>
-                        <option value={-1}>Student guide examples</option>
-                        <option value={0}>1. Example 1</option>
-                        <option value={1}>2. Example 2</option>
-                        <option value={2}>3. Example 3</option>
-                        <option value={3}>4. Example 4</option>
-                        <option value={4}>5. Example 5</option>
-                        <option value={5}>6. Example 6</option>
-                        <option value={6}>7. Example 7</option>
-                        <option value={7}>8. Example 8</option>
-                        <option value={-1}></option>
-                        <option value={-1}>Datasets with Complete Parameters</option>
-                        <option value={8}>9. KP Aql</option>
-                        <option value={9}>10. EW Ori</option>
-                        <option value={10}>11. FL Lyr</option>
-                        <option value={11}>12. EK Cep</option>
-                        <option value={12}>13. TW Cas</option>
-                        <option value={13}>14. AD Her</option>
-                        <option value={14}>15. AW UMa</option>
-                        <option value={15}>16. AW Lac</option>
-                        <option value={16}>17. DM Del</option>
-                        <option value={-1}></option>
-                        <option value={-1}>Datasets with Incomplete Parameters</option>
-                        <option value={17}>18. RT CrB</option>
-                        <option value={18}>19. V478 Cyg</option>
-                        <option value={19}>20. V477 Cyg</option>
-                        <option value={20}>21. DI Her</option>
-                        <option value={21}>22. AG Phe</option>
-                        <option value={22}>23. RZ Cas</option>
-                        <option value={23}>24. AF Gem</option>
-                        <option value={-1}></option>
-                        <option value={-1}>More Datasets</option>
-                        <option value={24}>25. CW CMa</option>
-                        <option value={25}>26. RX Ari</option>
-                        <option value={26}>27. MR Cyg</option>
-                        <option value={27}>28. TX UMa</option>
-                        <option value={28}>29. V442 Cyg</option>
-                        <option value={29}>30. AD Boo</option>
-                        <option value={30}>31. UZ Dra</option>
-                        <option value={31}>32. AR Aur</option>
-                        <option value={32}>33. HS Aur</option>
-                        <option value={33}>34. AY Cam</option>
-                        <option value={34}>35. CD Tau</option>
-                        <option value={35}>36. FS Mon</option>
-                        <option value={36}>37. BP Vul</option>
-                        <option value={37}>38. V459 Cas</option>
-                        <option value={38}>39. V364 Lac</option>
-                        <option value={39}>40. V526 Sgr</option>
-                        <option value={40}>41. GG Ori</option>
-                        <option value={41}>42. SW CMa</option>
-                        <option value={42}>43. V541 Cyg</option>
-                        <option value={43}>44. IQ Per</option>
-                        <option value={44}>45. IM Aur</option>
-                        <option value={45}>46. TT Lyr</option>
-                        <option value={46}>47. T LMi</option>
-                        <option value={47}>48. SW Cyg</option>
-                        <option value={48}>49. V380 Cyg</option>
-                        <option value={49}>50. NN Cep</option>
-                        <option value={50}>51. AE Phe</option>
-                        <option value={51}>52. V885 Cyg</option>
-                        <option value={52}>53. RS Ind</option>
-                        <option value={53}>54. EF Dra</option>
-                    </select>
+                    <form>
+                        <div className="form-group">
+                            <select className="form-control form-control-sm" onChange={this.onPresetSelect}>
+                                <option value={-1}>- Select a preset -</option>
+                                <option value={-1}></option>
+                                <option value={-1}>Student guide examples</option>
+                                <option value={1}>1. Example 1</option>
+                                <option value={2}>2. Example 2</option>
+                                <option value={3}>3. Example 3</option>
+                                <option value={4}>4. Example 4</option>
+                                <option value={5}>5. Example 5</option>
+                                <option value={6}>6. Example 6</option>
+                                <option value={7}>7. Example 7</option>
+                                <option value={8}>8. Example 8</option>
+                                <option value={-1}></option>
+                                <option value={-1}>Datasets with Complete Parameters</option>
+                                <option value={9}>9. KP Aql</option>
+                                <option value={10}>10. EW Ori</option>
+                                <option value={11}>11. FL Lyr</option>
+                                <option value={12}>12. EK Cep</option>
+                                <option value={13}>13. TW Cas</option>
+                                <option value={14}>14. AD Her</option>
+                                <option value={15}>15. AW UMa</option>
+                                <option value={16}>16. AW Lac</option>
+                                <option value={17}>17. DM Del</option>
+                                <option value={-1}></option>
+                                <option value={-1}>Datasets with Incomplete Parameters</option>
+                                <option value={18}>18. RT CrB</option>
+                                <option value={19}>19. V478 Cyg</option>
+                                <option value={20}>20. V477 Cyg</option>
+                                <option value={21}>21. DI Her</option>
+                                <option value={22}>22. AG Phe</option>
+                                <option value={23}>23. RZ Cas</option>
+                                <option value={24}>24. AF Gem</option>
+                                <option value={-1}></option>
+                                <option value={-1}>More Datasets</option>
+                                <option value={25}>25. CW CMa</option>
+                                <option value={26}>26. RX Ari</option>
+                                <option value={27}>27. MR Cyg</option>
+                                <option value={28}>28. TX UMa</option>
+                                <option value={29}>29. V442 Cyg</option>
+                                <option value={30}>30. AD Boo</option>
+                                <option value={31}>31. UZ Dra</option>
+                                <option value={32}>32. AR Aur</option>
+                                <option value={33}>33. HS Aur</option>
+                                <option value={34}>34. AY Cam</option>
+                                <option value={35}>35. CD Tau</option>
+                                <option value={36}>36. FS Mon</option>
+                                <option value={37}>37. BP Vul</option>
+                                <option value={38}>38. V459 Cas</option>
+                                <option value={39}>39. V364 Lac</option>
+                                <option value={40}>40. V526 Sgr</option>
+                                <option value={41}>41. GG Ori</option>
+                                <option value={42}>42. SW CMa</option>
+                                <option value={43}>43. V541 Cyg</option>
+                                <option value={44}>44. IQ Per</option>
+                                <option value={45}>45. IM Aur</option>
+                                <option value={46}>46. TT Lyr</option>
+                                <option value={47}>47. T LMi</option>
+                                <option value={48}>48. SW Cyg</option>
+                                <option value={49}>49. V380 Cyg</option>
+                                <option value={50}>50. NN Cep</option>
+                                <option value={51}>51. AE Phe</option>
+                                <option value={52}>52. V885 Cyg</option>
+                                <option value={53}>53. RS Ind</option>
+                                <option value={54}>54. EF Dra</option>
+                            </select>
+                        </div>
+                    </form>
 
                     <h6>Star 1 Properties</h6>
 
@@ -582,6 +587,21 @@ class EclipsingBinarySimulator extends React.Component {
     }
     onPhaseUpdate(newPhase) {
         this.setState({phase: newPhase});
+    }
+    onPresetSelect(e) {
+        if (!e.target || typeof e.target.value === 'undefined') {
+            return;
+        }
+
+        const preset = forceNumber(e.target.value);
+        if (preset === -1) {
+            return;
+        }
+
+        if ((preset - 1) < systemPresets.length) {
+            const values = systemPresets[preset - 1];
+            this.setState(values);
+        }
     }
 }
 
