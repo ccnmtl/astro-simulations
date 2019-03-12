@@ -685,31 +685,6 @@ export default class BinarySystemView extends React.Component {
 
         controls.update();
 
-        // Put the sun and orbit line into a group so I can
-        // rotate them all on the same axis.
-        this.orbitGroup = new THREE.Group();
-
-        scene.add(this.orbitGroup);
-
-        // Make an invisible plane on the orbitGroup's axis.
-        // This is for interactivity: casting a ray from the mouse
-        // position to find out where the Sun should get dragged to.
-        // https://discourse.threejs.org/t/finding-nearest-vertex-of-a-mesh-to-mouse-cursor/4167/4
-
-        // This plane's position follows the sunDeclination line,
-        // changing with latitude and sunDeclination.
-        this.orbitPlane = new THREE.Plane();
-
-        // For visualizing the orbitPlane
-        //const planeHelper = new THREE.PlaneHelper(
-        //    this.orbitPlane, 80, 0xff0000);
-        //scene.add(planeHelper);
-
-        this.eclipticOrbitGroup = new THREE.Group();
-        this.eclipticOrbitGroup.add(this.primeHourCircle);
-        this.eclipticOrbitGroup.add(this.ecliptic);
-        scene.add(this.eclipticOrbitGroup);
-
         this.scene = scene;
         this.camera = camera;
         this.renderer = renderer;

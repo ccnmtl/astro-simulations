@@ -161,8 +161,6 @@ export default class LightcurveView extends React.Component {
         if (noEclipse) {
             coords.push([0, -this.plotHeight]);
             coords.push([this.plotWidth, -this.plotHeight]);
-            //mc.moveTo(0, -this.plotHeight);
-            //mc.lineTo(this.plotWidth, -this.plotHeight);
         } else {
             let w = this.plotWidth;
 
@@ -170,7 +168,6 @@ export default class LightcurveView extends React.Component {
             let xOffset = -(w / this._numCurvePoints) * (this._closestIndex - si);
 
             let y0 = yOffset + yScale*dT[si];
-            //mc.moveTo(0, y0);
             coords.push([0, y0]);
 
             let len = dT.length;
@@ -183,7 +180,6 @@ export default class LightcurveView extends React.Component {
                     yOffset + yScale * dT[(i+si) % len]]
                 );
             }
-            //mc.lineTo(w, y0);
             coords.push([w, y0]);
         }
 

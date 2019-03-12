@@ -3,24 +3,25 @@ import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 import 'd3-drag';
 import PhaseControl from './PhaseControl';
-import Axis from './Axis';
+import Axes from './Axes';
 
 // Returns a function that "scales" X coordinates from the data to fit
 // the chart.
 const xScale = props => {
     return d3
         .scaleLinear()
-        .domain(d3.extent(props.lightcurveData, d => d[0]))
+        .domain([0, 1])
         .range([props.paddingLeft, props.width]);
 };
 
 // Returns a function that "scales" Y coordinates from the data to fit
 // the chart.
 const yScale = props => {
+    const domain = d3.extent(props.lightcurveData, d => d[1]);
     return d3
         .scaleLinear()
-        .domain(d3.extent(props.lightcurveData, d => -d[1]))
-        .range([props.height - (props.padding * 2), props.padding]);
+        .domain([0, 1.1])
+        .range([props.height - (props.padding), props.padding]);
 };
 
 class Line extends React.Component {
@@ -33,13 +34,26 @@ class Line extends React.Component {
         const me = this;
         const line = d3
             .line()
+            // Cut off the graph edge so the line doesn't wrap around to
+            // the beginning.
+            .defined(function(d) {
+                const xPos = (
+                    ((d[0] + me.props.offset) / me.props.width)
+                    + 0.5) % 1;
+                if (xPos > 0.995) {
+                    return false;
+                }
+
+                return true;
+            })
             .x(function(d) {
-                const graphWidth = me.props.width - me.props.paddingLeft;
-                return ((x(d[0]) + me.props.offset) % graphWidth) +
-                       me.props.paddingLeft;
+                return x((
+                    ((d[0] + me.props.offset) / me.props.width)
+                    + 0.5) % 1);
             })
             .y(function(d) {
-                return y(-d[1]);
+                const yPos = -d[1] / me.props.height;
+                return y(-d[1] / me.props.height);
             });
 
         const newline = line(data);
@@ -49,7 +63,9 @@ class Line extends React.Component {
         return (
             <path className="line"
                   visibility={visibility}
-                  stroke="#6080ff" fill="none"
+                  stroke="#000000"
+                  strokeWidth="2"
+                  fill="none"
                   d={newline} />
         );
     }
@@ -61,7 +77,10 @@ Line.propTypes = {
     xScale: PropTypes.func.isRequired,
     yScale: PropTypes.func.isRequired,
     offset: PropTypes.number.isRequired,
-    paddingLeft: PropTypes.number.isRequired
+    paddingLeft: PropTypes.number.isRequired,
+    height: PropTypes.number.isRequired,
+    graphHeight: PropTypes.number.isRequired,
+    graphWidth: PropTypes.number.isRequired
 };
 
 export default class Plot extends React.Component {
@@ -117,16 +136,20 @@ export default class Plot extends React.Component {
                 <rect className="plot-pan" pointerEvents="all" fill="none"
                       width={props.width} height={props.height}></rect>
                 <Line
-                    showLightcurve={this.props.showLightcurve}
-                    data={this.props.lightcurveData}
-                    width={this.props.width}
                     offset={this.state.offset}
-                    paddingLeft={this.props.paddingLeft}
+                    data={this.props.lightcurveData}
+                    graphWidth={this.props.width - this.props.paddingLeft}
+                    graphHeight={this.props.height - this.props.padding}
+                    {...props}
                     {...scales}
                 />
-                <Axis offset={this.state.offset}
+                <Axes offset={this.state.offset}
+                      graphWidth={this.props.width - this.props.paddingLeft}
                       {...props} {...scales} />
-                <PhaseControl {...props} {...scales} />
+                <PhaseControl
+                    offset={this.state.offset}
+                    graphWidth={this.props.width - this.props.paddingLeft}
+                    {...props} {...scales} />
             </svg>
         )
     }
@@ -139,5 +162,6 @@ Plot.propTypes = {
     paddingLeft: PropTypes.number.isRequired,
     lightcurveData: PropTypes.array.isRequired,
     showLightcurve: PropTypes.bool.isRequired,
+    phase: PropTypes.number.isRequired,
     onPhaseUpdate: PropTypes.func.isRequired
 };
