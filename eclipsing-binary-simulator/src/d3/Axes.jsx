@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 
-export default class Axis extends Component {
+export default class Axes extends Component {
     constructor(props) {
         super(props);
         this.xAxis = React.createRef();
@@ -10,14 +10,14 @@ export default class Axis extends Component {
     }
 
     componentDidMount() {
-        this.renderAxis();
+        this.renderAxes();
     }
 
     componentDidUpdate() {
-        this.renderAxis();
+        this.renderAxes();
     }
 
-    renderAxis() {
+    renderAxes() {
         const xAxis = d3.axisBottom(this.props.xScale || 1).ticks(10);
         const yAxis = d3.axisLeft(this.props.yScale).ticks(4);
 
@@ -31,10 +31,13 @@ export default class Axis extends Component {
     render() {
         return <React.Fragment>
             <g className="yAxis" ref={this.yAxis}
-               transform={`translate(${this.props.paddingLeft}, ${this.props.padding})`}
+               transform={`translate(${this.props.paddingLeft}, 0)`}
             />
             <g className="xAxis" ref={this.xAxis}
-               transform={`translate(${this.props.offset}, 260)`}
+               transform={
+               `translate(${(this.props.offset + (this.props.graphWidth / 2)) % this.props.graphWidth},` +
+                          `${this.props.height - this.props.padding})`
+               }
             />
             <text
                 transform="rotate(-90)"
@@ -48,9 +51,12 @@ export default class Axis extends Component {
     }
 }
 
-Axis.propTypes = {
+Axes.propTypes = {
     yScale: PropTypes.func.isRequired,
     xScale: PropTypes.func,
+    graphWidth: PropTypes.number.isRequired,
+    height: PropTypes.number.isRequired,
     offset: PropTypes.number.isRequired,
+    padding: PropTypes.number.isRequired,
     paddingLeft: PropTypes.number.isRequired
 };
