@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import {RangeStepInput} from 'react-range-step-input';
 import LightcurveView from './LightcurveView';
 import BinarySystemView from './BinarySystemView';
-import {forceNumber} from './utils';
+import {forceNumber, roundToTwoPlaces} from './utils';
 import {systemPresets} from './presets';
 
 class EclipsingBinarySimulator extends React.Component {
@@ -44,13 +44,16 @@ class EclipsingBinarySimulator extends React.Component {
         this.handleInputChange = this.handleInputChange.bind(this);
         this.onPhaseUpdate = this.onPhaseUpdate.bind(this);
         this.onPresetSelect = this.onPresetSelect.bind(this);
+        this.onStartClick = this.onStartClick.bind(this);
+
+        this.animate = this.animate.bind(this);
 
         this.lightcurveViewRef = React.createRef();
     }
     render() {
         let startBtnText = 'Start Animation';
         if (this.state.isPlaying) {
-            startBtnText = 'Stop Animation';
+            startBtnText = 'Pause Animation';
         }
 
         return <React.Fragment>
@@ -134,18 +137,16 @@ class EclipsingBinarySimulator extends React.Component {
                     <div className="form-group row">
                         <button type="button"
                                 className="btn btn-primary btn-sm"
-                                onClick={this.state.onStartClick}>
+                                onClick={this.onStartClick}>
                             {startBtnText}
                         </button>
                         <div className="col-6">
                             <RangeStepInput
                                 className="form-control-range"
-                                name="animationRate"
-                                min={this.state.stepByDay ? 5 : 0.01}
-                                max={this.state.stepByDay ? 122 : 10}
-                                step={this.state.stepByDay ? 1 : 0.01}
-                                value={this.state.animationRate}
-                                onChange={this.state.onChange} />
+                                name="animationSpeed"
+                                min={0.01} max={2} step={0.01}
+                                value={this.state.animationSpeed}
+                                onChange={this.handleInputChange} />
                         </div>
                     </div>
 
@@ -159,7 +160,7 @@ class EclipsingBinarySimulator extends React.Component {
                                 type="number"
                                 className="form-control form-control-sm"
                                 name="phase"
-                                value={this.state.phase}
+                                value={roundToTwoPlaces(this.state.phase)}
                                 onFocus={this.handleFocus}
                                 onChange={this.handleInputChange}
                                 min={0} max={1} step={0.01} />
@@ -562,6 +563,22 @@ class EclipsingBinarySimulator extends React.Component {
             this.lightcurveViewRef.current.setParameters(dataObj);
         }
     }
+
+    animate() {
+        this.frameId = requestAnimationFrame(this.animate);
+
+        const now = Date.now();
+        const elapsed = now - this.then;
+
+        if (elapsed > 50) {
+            const newPhase = (this.state.phase + (
+                0.005 * this.state.animationSpeed)) % 1;
+            this.setState({phase: newPhase});
+
+            this.then = now;
+        }
+    }
+
     onResetClick(e) {
         e.preventDefault();
         this.setState(this.initialState);
@@ -602,6 +619,18 @@ class EclipsingBinarySimulator extends React.Component {
             const values = systemPresets[preset - 1];
             this.setState(values);
         }
+    }
+    onStartClick() {
+        if (!this.state.isPlaying) {
+            this.then = Date.now();
+            this.animate();
+        } else {
+            cancelAnimationFrame(this.frameId);
+        }
+
+        this.setState({
+            isPlaying: !this.state.isPlaying
+        });
     }
 }
 
