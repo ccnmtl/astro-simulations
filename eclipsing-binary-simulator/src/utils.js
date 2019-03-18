@@ -11,8 +11,12 @@ const forceNumber = function(n) {
 
 const roundToOnePlace = function(n) {
     return Math.round(n * 10) / 10;
-}
+};
+
+const roundToTwoPlaces = function(n) {
+    return Math.round(n * 100) / 100;
+};
 
 export {
-    forceNumber, roundToOnePlace
+    forceNumber, roundToOnePlace, roundToTwoPlaces
 };
