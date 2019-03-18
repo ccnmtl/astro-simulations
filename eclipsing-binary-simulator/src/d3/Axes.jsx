@@ -29,14 +29,19 @@ export default class Axes extends Component {
     }
 
     render() {
+        const xPos =
+            this.props.xScale(
+                (
+                    (this.props.offset - this.props.paddingLeft) / this.props.width
+               + 0.5) % 1);
+
         return <React.Fragment>
             <g className="yAxis" ref={this.yAxis}
                transform={`translate(${this.props.paddingLeft}, 0)`}
             />
             <g className="xAxis" ref={this.xAxis}
                transform={
-               `translate(${(this.props.offset + (this.props.graphWidth / 2)) % this.props.graphWidth},` +
-                          `${this.props.height - this.props.padding})`
+               `translate(${xPos}, ${this.props.height - this.props.padding})`
                }
             />
             <text
@@ -54,7 +59,6 @@ export default class Axes extends Component {
 Axes.propTypes = {
     yScale: PropTypes.func.isRequired,
     xScale: PropTypes.func,
-    graphWidth: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,
     offset: PropTypes.number.isRequired,
     padding: PropTypes.number.isRequired,

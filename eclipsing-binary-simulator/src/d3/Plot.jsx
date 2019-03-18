@@ -93,19 +93,16 @@ export default class Plot extends React.Component {
     }
     dragstart(e) {
         this.setState({isDragging: true});
-        const graphWidth = this.props.width - this.props.paddingLeft;
-        this.dragStartOffset = (d3.event.x - this.state.offset) % graphWidth;
+        this.dragStartOffset = (d3.event.x - this.state.offset) % this.props.width;
     }
     dragend(e) {
         this.setState({isDragging: false});
     }
     dragmove(e) {
         if (this.state.isDragging) {
-            const graphWidth = this.props.width - this.props.paddingLeft;
-
-            let newOffset = (d3.event.x - this.dragStartOffset) % graphWidth;
+            let newOffset = (d3.event.x - this.dragStartOffset) % this.props.width;
             if (newOffset < 0) {
-                newOffset += graphWidth;
+                newOffset += this.props.width;
             }
 
             this.setState({offset: newOffset});
@@ -144,11 +141,9 @@ export default class Plot extends React.Component {
                     {...scales}
                 />
                 <Axes offset={this.state.offset}
-                      graphWidth={this.props.width - this.props.paddingLeft}
                       {...props} {...scales} />
                 <PhaseControl
                     offset={this.state.offset}
-                    graphWidth={this.props.width - this.props.paddingLeft}
                     {...props} {...scales} />
             </svg>
         )
