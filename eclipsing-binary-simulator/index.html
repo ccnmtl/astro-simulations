@@ -36,6 +36,35 @@
   input[type="number"][name="planetMass"] {
       width: 84px !important;
   }
+
+  .window {
+      z-index: 2;
+      border: 1px solid black;
+      background-color: white;
+      width: 400px;
+      height: 300px;
+      position: absolute;
+  }
+
+  .window .window-bar {
+      padding-left: 6px;
+      padding-top: 3px;
+      cursor: move;
+      background-color: #666666;
+      color: white;
+  }
+  .window .window-bar .window-close {
+      cursor: pointer;
+      display: inline-block;
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      background-color: white;
+      width: 14px;
+      height: 14px;
+      padding-left: 1px;
+      padding-top: 1px;
+  }
   </style>
  </head>
  <body>
