@@ -5,10 +5,12 @@ import 'd3-drag';
 
 export default class PhaseControl extends React.Component {
     render() {
-        const xPos = this.props.paddingLeft + ((((
-            this.props.phase + 0.5) % 1) *
-            this.props.graphWidth) + this.props.offset
-        ) % this.props.graphWidth;
+        const xPos =
+            this.props.xScale(
+                ((
+                    ((this.props.phase * this.props.width) + this.props.offset) /
+                    this.props.width)
+               + 0.5) % 1);
 
         return <line x1={xPos} y1={this.props.padding}
                      x2={xPos} y2={this.props.height - this.props.padding}
@@ -30,9 +32,9 @@ export default class PhaseControl extends React.Component {
 };
 
 PhaseControl.propTypes = {
+    xScale: PropTypes.func.isRequired,
     phase: PropTypes.number.isRequired,
     width: PropTypes.number.isRequired,
-    graphWidth: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,
     offset: PropTypes.number.isRequired,
     padding: PropTypes.number.isRequired,
