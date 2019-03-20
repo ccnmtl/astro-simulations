@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import {RangeStepInput} from 'react-range-step-input';
 import LightcurveView from './LightcurveView';
 import BinarySystemView from './BinarySystemView';
+import Window from './Window';
 import {forceNumber, roundToTwoPlaces} from './utils';
 import {systemPresets} from './presets';
 
@@ -11,6 +12,7 @@ class EclipsingBinarySimulator extends React.Component {
         super(props);
         this.initialState = {
             isPlaying: false,
+            showHRDiagram: false,
 
             // System Orientation
             longitude: 150,
@@ -42,6 +44,8 @@ class EclipsingBinarySimulator extends React.Component {
         this.state = this.initialState;
 
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.onWindowOpen = this.onWindowOpen.bind(this);
+        this.onWindowClose = this.onWindowClose.bind(this);
         this.onPhaseUpdate = this.onPhaseUpdate.bind(this);
         this.onPresetSelect = this.onPresetSelect.bind(this);
         this.onStartClick = this.onStartClick.bind(this);
@@ -57,6 +61,8 @@ class EclipsingBinarySimulator extends React.Component {
         }
 
         return <React.Fragment>
+            <Window isHidden={!this.state.showHRDiagram}
+                    onWindowClose={this.onWindowClose} />
             <nav className="navbar navbar-expand-md navbar-light bg-light d-flex justify-content-between">
                 <span className="navbar-brand mb-0 h1">Eclipsing Binary Simulator</span>
 
@@ -215,6 +221,7 @@ class EclipsingBinarySimulator extends React.Component {
                 </div>
 
                 <button type="button"
+                        onClick={this.onWindowOpen}
                         className="btn btn-primary btn-sm">
                     Show HR Diagram
                 </button>
@@ -631,6 +638,12 @@ class EclipsingBinarySimulator extends React.Component {
         this.setState({
             isPlaying: !this.state.isPlaying
         });
+    }
+    onWindowOpen() {
+        this.setState({showHRDiagram: true});
+    }
+    onWindowClose() {
+        this.setState({showHRDiagram: false});
     }
 }
 
