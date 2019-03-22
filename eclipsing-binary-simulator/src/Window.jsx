@@ -7,12 +7,14 @@ export default class Window extends React.Component {
         this.state = {
             isDragging: false,
             x: 50,
-            y: 50
+            y: 50,
+            showMainSequence: false
         };
 
         this.onDragStart = this.onDragStart.bind(this);
         this.onDragStop = this.onDragStop.bind(this);
         this.onDrag = this.onDrag.bind(this);
+        this.toggleMainSequence = this.toggleMainSequence.bind(this);
     }
     render() {
         if (this.props.isHidden) {
@@ -45,7 +47,21 @@ export default class Window extends React.Component {
                         </svg>
                     </span>
                 </div>
-                <div className="window-body"></div>
+                <div className="window-body">
+                    <img src="./img/hrcloud.png" width="300" height="200" />
+                    {this.state.showMainSequence &&
+                     <img className="main-sequence"
+                          src="./img/mainsequence.png" width="300" height="200" />
+                    }
+                    <div className="ml-2">
+                        <input type="checkbox" name="showMainSequence"
+                               id="showMainSequenceCheckbox"
+                               onChange={this.toggleMainSequence} />
+                        <label className="ml-1" htmlFor="showMainSequenceCheckbox">
+                            Show main sequence track
+                        </label>
+                    </div>
+                </div>
             </div>
         );
 
@@ -63,6 +79,11 @@ export default class Window extends React.Component {
                 y: e.pageY - 10
             });
         }
+    }
+    toggleMainSequence(e) {
+        this.setState({
+            showMainSequence: !!e.target.checked
+        });
     }
 }
 
