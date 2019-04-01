@@ -32,7 +32,7 @@
     "react": "~16.8.3",
     "react-dom": "~16.8.3",
     "react-range-step-input": "^1.2.4",
-    "three": "^0.102.0"
+    "three": "^0.103.0"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
