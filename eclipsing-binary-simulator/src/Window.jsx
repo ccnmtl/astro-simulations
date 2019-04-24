@@ -6,6 +6,8 @@ export default class Window extends React.Component {
         super(props);
         this.state = {
             isDragging: false,
+            xDiff: 0,
+            yDiff: 0,
             x: 50,
             y: 50,
             showMainSequence: false
@@ -21,12 +23,13 @@ export default class Window extends React.Component {
             return null;
         }
 
+        const style = {
+            position: 'absolute',
+            transform: `translate(${this.state.x}px, ${this.state.y}px)`
+        };
+
         return (
-            <div className="window"
-                 style={{
-                     left: this.state.x,
-                     top: this.state.y
-                 }}>
+            <div className="window" style={style}>
                 <div className="window-bar"
                      onMouseDown={this.onDragStart.bind(this)}
                      onMouseUp={this.onDragStop.bind(this)}
@@ -66,8 +69,12 @@ export default class Window extends React.Component {
         );
 
     }
-    onDragStart() {
+    onDragStart(e) {
         this.setState({isDragging: true});
+        this.setState({
+            xDiff: e.pageX - this.state.x,
+            yDiff: e.pageY - this.state.y
+        });
     }
     onDragStop() {
         this.setState({isDragging: false});
@@ -75,8 +82,8 @@ export default class Window extends React.Component {
     onDrag(e) {
         if (this.state.isDragging) {
             this.setState({
-                x: e.pageX - 40,
-                y: e.pageY - 10
+                x: e.pageX - this.state.xDiff,
+                y: e.pageY - this.state.yDiff
             });
         }
     }
