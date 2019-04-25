@@ -5,18 +5,21 @@ export default class Window extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            showMainSequence: false,
             isDragging: false,
             xDiff: 0,
             yDiff: 0,
             x: 50,
-            y: 50,
-            showMainSequence: false
+            y: 50
         };
 
         this.onDragStart = this.onDragStart.bind(this);
-        this.onDragStop = this.onDragStop.bind(this);
-        this.onDrag = this.onDrag.bind(this);
+
         this.toggleMainSequence = this.toggleMainSequence.bind(this);
+    }
+    componentDidMount() {
+        document.addEventListener('mousemove', this.onDrag.bind(this));
+        document.addEventListener('mouseup', this.onDragStop.bind(this));
     }
     render() {
         if (this.props.isHidden) {
@@ -29,11 +32,9 @@ export default class Window extends React.Component {
         };
 
         return (
-            <div className="window" style={style}>
-                <div className="window-bar"
-                     onMouseDown={this.onDragStart.bind(this)}
-                     onMouseUp={this.onDragStop.bind(this)}
-                     onMouseMove={this.onDrag.bind(this)}>
+            <div className="window" style={style}
+                 onMouseDown={this.onDragStart}>
+                <div className="window-bar">
                     <div>HR Diagram</div>
                     <span className="window-close"
                           onClick={this.props.onWindowClose}>
@@ -69,6 +70,12 @@ export default class Window extends React.Component {
         );
 
     }
+    toggleMainSequence(e) {
+        this.setState({
+            showMainSequence: !!e.target.checked
+        });
+    }
+
     onDragStart(e) {
         this.setState({isDragging: true});
         this.setState({
@@ -86,11 +93,6 @@ export default class Window extends React.Component {
                 y: e.pageY - this.state.yDiff
             });
         }
-    }
-    toggleMainSequence(e) {
-        this.setState({
-            showMainSequence: !!e.target.checked
-        });
     }
 }
 
