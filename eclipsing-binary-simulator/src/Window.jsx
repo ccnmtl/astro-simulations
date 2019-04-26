@@ -1,6 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+const clamp = function(n) {
+    return Math.min(
+        Math.max(n, 0),
+        // container width - window width
+        1110 - 400);
+};
+
 export default class Window extends React.Component {
     constructor(props) {
         super(props);
@@ -32,9 +39,9 @@ export default class Window extends React.Component {
         };
 
         return (
-            <div className="window" style={style}
-                 onMouseDown={this.onDragStart}>
-                <div className="window-bar">
+            <div className="window" style={style}>
+                <div className="window-bar"
+                     onMouseDown={this.onDragStart}>
                     <div>HR Diagram</div>
                     <span className="window-close"
                           onClick={this.props.onWindowClose}>
@@ -52,16 +59,18 @@ export default class Window extends React.Component {
                     </span>
                 </div>
                 <div className="window-body">
-                    <img src="./img/hrcloud.png" width="300" height="200" />
-                    {this.state.showMainSequence &&
-                     <img className="main-sequence"
-                          src="./img/mainsequence.png" width="300" height="200" />
-                    }
-                    <div className="ml-2">
+                    <div className="hr-diagram">
+                        <img src="./img/minihrdiagram.png" width="383" height="245" />
+                        {this.state.showMainSequence &&
+                         <img className="main-sequence"
+                              src="./img/mainsequence.png" width="280" height="186.6" />
+                        }
+                    </div>
+                    <div className="main-seq-checkbox">
                         <input type="checkbox" name="showMainSequence"
                                id="showMainSequenceCheckbox"
                                onChange={this.toggleMainSequence} />
-                        <label className="ml-1" htmlFor="showMainSequenceCheckbox">
+                        <label className="ml-1 small" htmlFor="showMainSequenceCheckbox">
                             Show main sequence track
                         </label>
                     </div>
@@ -77,8 +86,8 @@ export default class Window extends React.Component {
     }
 
     onDragStart(e) {
-        this.setState({isDragging: true});
         this.setState({
+            isDragging: true,
             xDiff: e.pageX - this.state.x,
             yDiff: e.pageY - this.state.y
         });
@@ -89,8 +98,8 @@ export default class Window extends React.Component {
     onDrag(e) {
         if (this.state.isDragging) {
             this.setState({
-                x: e.pageX - this.state.xDiff,
-                y: e.pageY - this.state.yDiff
+                x: clamp(e.pageX - this.state.xDiff),
+                y: clamp(e.pageY - this.state.yDiff)
             });
         }
     }
