@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import HRDiagram from './HRDiagram';
 
 const clamp = function(n) {
     return Math.min(
@@ -46,15 +47,16 @@ export default class Window extends React.Component {
                     <span className="window-close"
                           onClick={this.props.onWindowClose}>
                         <svg viewport="0 0 12 12" version="1.1"
+                             width="16" height="16"
                              xmlns="http://www.w3.org/2000/svg">
                             <line x1="1" y1="11"
                                   x2="11" y2="1"
                                   stroke="black"
-                                  strokeWidth="2"/>
+                                  strokeWidth="2" />
                             <line x1="1" y1="1"
                                   x2="11" y2="11"
                                   stroke="black"
-                                  strokeWidth="2"/>
+                                  strokeWidth="2" />
                         </svg>
                     </span>
                 </div>
@@ -74,6 +76,7 @@ export default class Window extends React.Component {
                             Show main sequence track
                         </label>
                     </div>
+                    <HRDiagram />
                 </div>
             </div>
         );
