@@ -6,6 +6,11 @@ export default class HRDiagram extends React.Component {
     constructor(props) {
         super(props);
 
+        this.state = {
+            isHoveringDot1: false,
+            isHoveringDot2: false
+        };
+
         // - these limits can't be changed, at least not without considerable effort
         // - some of these limits have to be manually adjusted to match the slider limits
 
@@ -64,7 +69,9 @@ export default class HRDiagram extends React.Component {
         mc.endFill();
         this.rangesMC.setMask(mc);*/
 
-        this.hideRanges();
+        this.onDotMove = this.onDotMove.bind(this);
+
+        this.dotRadius = 3;
     }
 
     componentDidMount() {
@@ -96,6 +103,7 @@ export default class HRDiagram extends React.Component {
             me.resources = resources;
 
             const minihrdiagram = new PIXI.Sprite(resources.minihrdiagram.texture);
+            minihrdiagram.cacheAsBitmap = true;
             me.app.stage.addChild(minihrdiagram);
 
             const mainsequence = new PIXI.Sprite(resources.mainsequence.texture);
@@ -104,12 +112,113 @@ export default class HRDiagram extends React.Component {
             mainsequence.visible = this.props.showMainSequence;
             me.app.stage.addChild(mainsequence);
             me.mainsequence = mainsequence;
+
+            me.drawDots();
         });
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps, prevState) {
         if (prevProps.showMainSequence !== this.props.showMainSequence) {
             this.mainsequence.visible = this.props.showMainSequence;
+        }
+
+        if (prevState.isHoveringDot1 !== this.state.isHoveringDot1) {
+            this.dot1.children[0].destroy();
+
+            if (this.state.isHoveringDot1) {
+                this.dot1.addChild(this.makeDot(100, 50, this.dotRadius * 2));
+            } else {
+                this.dot1.addChild(this.makeDot(100, 50, this.dotRadius));
+            }
+        }
+
+        if (prevState.isHoveringDot2 !== this.state.isHoveringDot2) {
+            this.dot2.children[0].destroy();
+
+            if (this.state.isHoveringDot2) {
+                this.dot2.addChild(this.makeDot(200, 100, this.dotRadius * 2));
+            } else {
+                this.dot2.addChild(this.makeDot(200, 100, this.dotRadius));
+            }
+        }
+    }
+
+    makeDot(x, y, r) {
+        const dot = new PIXI.Graphics();
+        dot.beginFill(0xFF0000);
+        dot.drawCircle(x, y, r);
+        return dot;
+    }
+
+    drawDots() {
+        this.dot1 = new PIXI.Container();
+        this.dot1.name = 'dot1';
+        this.dot1.interactive = true;
+        this.dot1.addChild(this.makeDot(100, 50, this.dotRadius));
+        this.app.stage.addChild(this.dot1);
+        this.dot1
+        // events for drag start
+            .on('mousedown', this.onDragStart)
+            .on('touchstart', this.onDragStart)
+        // events for drag end
+            .on('mouseup', this.onDragEnd)
+            .on('mouseupoutside', this.onDragEnd)
+            .on('touchend', this.onDragEnd)
+            .on('touchendoutside', this.onDragEnd)
+        // events for drag move
+            .on('mousemove', this.onDotMove)
+            .on('touchmove', this.onDotMove);
+
+        this.dot2 = new PIXI.Container();
+        this.dot2.name = 'dot2';
+        this.dot2.interactive = true;
+        this.dot2.addChild(this.makeDot(200, 100, this.dotRadius));
+        this.app.stage.addChild(this.dot2);
+        this.dot2
+        // events for drag start
+            .on('mousedown', this.onDragStart)
+            .on('touchstart', this.onDragStart)
+        // events for drag end
+            .on('mouseup', this.onDragEnd)
+            .on('mouseupoutside', this.onDragEnd)
+            .on('touchend', this.onDragEnd)
+            .on('touchendoutside', this.onDragEnd)
+        // events for drag move
+            .on('mousemove', this.onDotMove)
+            .on('touchmove', this.onDotMove);
+    }
+
+    onDragStart() {
+        //this.data = event.data;
+        //const dragStartPos = this.data.getLocalPosition(this.app.stage);
+        //console.log(this.dragStartPos);
+
+        /*if (event.target.name === 'earth') {
+            this.draggingEarth = true;
+        } else if (event.target.name === 'moon') {
+            this.draggingMoon = true;
+        }*/
+    }
+
+    onDragEnd() {
+    }
+
+    onDotMove(e) {
+        if (e.target && e.target.name === 'dot1' && !this.state.isHoveringDot1) {
+            this.setState({isHoveringDot1: true});
+        }
+
+        if (e.target && e.target.name === 'dot2' && !this.state.isHoveringDot2) {
+            this.setState({isHoveringDot2: true});
+        }
+
+        if (!e.target && (
+            this.state.isHoveringDot1 || this.state.isHoveringDot2)
+        ) {
+            this.setState({
+                isHoveringDot1: false,
+                isHoveringDot2: false
+            });
         }
     }
 
@@ -195,10 +304,6 @@ export default class HRDiagram extends React.Component {
 
             mc.endFill();
         }
-    }
-
-    hideRanges() {
-        //this.rangesMC.clear();
     }
 
     findX(t) {
