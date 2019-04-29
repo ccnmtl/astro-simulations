@@ -1,8 +1,15 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import * as PIXI from 'pixi.js-legacy';
 
 export default class HRDiagram extends React.Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            isHoveringDot1: false,
+            isHoveringDot2: false
+        };
 
         // - these limits can't be changed, at least not without considerable effort
         // - some of these limits have to be manually adjusted to match the slider limits
@@ -62,17 +69,166 @@ export default class HRDiagram extends React.Component {
         mc.endFill();
         this.rangesMC.setMask(mc);*/
 
-        this.hideRanges();
+        this.onDotMove = this.onDotMove.bind(this);
+
+        this.dotRadius = 3;
+    }
+
+    componentDidMount() {
+        this.app = new PIXI.Application({
+            width: 383,
+            height: 245,
+
+            transparent: true,
+
+            // The default is webgl - I'll switch to that if necessary
+            // but for now canvas just displays my images better. I'm
+            // guessing there's just some filters or settings I can add
+            // to make it look good in webgl.
+            forceCanvas: true,
+            antialias: true,
+
+            // as far as I know the ticker isn't necessary at the
+            // moment, so don't instantiate a new one.
+            sharedTicker: true
+        });
+
+        this.el.appendChild(this.app.view);
+
+        this.app.loader.add('minihrdiagram', 'img/minihrdiagram.png')
+            .add('mainsequence', 'img/mainsequence.png');
+
+        const me = this;
+        this.app.loader.load((loader, resources) => {
+            me.resources = resources;
+
+            const minihrdiagram = new PIXI.Sprite(resources.minihrdiagram.texture);
+            minihrdiagram.cacheAsBitmap = true;
+            me.app.stage.addChild(minihrdiagram);
+
+            const mainsequence = new PIXI.Sprite(resources.mainsequence.texture);
+            mainsequence.position.x = 66;
+            mainsequence.position.y = 8;
+            mainsequence.visible = this.props.showMainSequence;
+            me.app.stage.addChild(mainsequence);
+            me.mainsequence = mainsequence;
+
+            me.drawDots();
+        });
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (prevProps.showMainSequence !== this.props.showMainSequence) {
+            this.mainsequence.visible = this.props.showMainSequence;
+        }
+
+        if (prevState.isHoveringDot1 !== this.state.isHoveringDot1) {
+            this.dot1.children[0].destroy();
+
+            if (this.state.isHoveringDot1) {
+                this.dot1.addChild(this.makeDot(100, 50, this.dotRadius * 2));
+            } else {
+                this.dot1.addChild(this.makeDot(100, 50, this.dotRadius));
+            }
+        }
+
+        if (prevState.isHoveringDot2 !== this.state.isHoveringDot2) {
+            this.dot2.children[0].destroy();
+
+            if (this.state.isHoveringDot2) {
+                this.dot2.addChild(this.makeDot(200, 100, this.dotRadius * 2));
+            } else {
+                this.dot2.addChild(this.makeDot(200, 100, this.dotRadius));
+            }
+        }
+    }
+
+    makeDot(x, y, r) {
+        const dot = new PIXI.Graphics();
+        dot.beginFill(0xFF0000);
+        dot.drawCircle(x, y, r);
+        return dot;
+    }
+
+    drawDots() {
+        this.dot1 = new PIXI.Container();
+        this.dot1.name = 'dot1';
+        this.dot1.interactive = true;
+        this.dot1.addChild(this.makeDot(100, 50, this.dotRadius));
+        this.app.stage.addChild(this.dot1);
+        this.dot1
+        // events for drag start
+            .on('mousedown', this.onDragStart)
+            .on('touchstart', this.onDragStart)
+        // events for drag end
+            .on('mouseup', this.onDragEnd)
+            .on('mouseupoutside', this.onDragEnd)
+            .on('touchend', this.onDragEnd)
+            .on('touchendoutside', this.onDragEnd)
+        // events for drag move
+            .on('mousemove', this.onDotMove)
+            .on('touchmove', this.onDotMove);
+
+        this.dot2 = new PIXI.Container();
+        this.dot2.name = 'dot2';
+        this.dot2.interactive = true;
+        this.dot2.addChild(this.makeDot(200, 100, this.dotRadius));
+        this.app.stage.addChild(this.dot2);
+        this.dot2
+        // events for drag start
+            .on('mousedown', this.onDragStart)
+            .on('touchstart', this.onDragStart)
+        // events for drag end
+            .on('mouseup', this.onDragEnd)
+            .on('mouseupoutside', this.onDragEnd)
+            .on('touchend', this.onDragEnd)
+            .on('touchendoutside', this.onDragEnd)
+        // events for drag move
+            .on('mousemove', this.onDotMove)
+            .on('touchmove', this.onDotMove);
+    }
+
+    onDragStart() {
+        //this.data = event.data;
+        //const dragStartPos = this.data.getLocalPosition(this.app.stage);
+        //console.log(this.dragStartPos);
+
+        /*if (event.target.name === 'earth') {
+            this.draggingEarth = true;
+        } else if (event.target.name === 'moon') {
+            this.draggingMoon = true;
+        }*/
+    }
+
+    onDragEnd() {
+    }
+
+    onDotMove(e) {
+        if (e.target && e.target.name === 'dot1' && !this.state.isHoveringDot1) {
+            this.setState({isHoveringDot1: true});
+        }
+
+        if (e.target && e.target.name === 'dot2' && !this.state.isHoveringDot2) {
+            this.setState({isHoveringDot2: true});
+        }
+
+        if (!e.target && (
+            this.state.isHoveringDot1 || this.state.isHoveringDot2)
+        ) {
+            this.setState({
+                isHoveringDot1: false,
+                isHoveringDot2: false
+            });
+        }
     }
 
     setPointPosition(id, t, l) {
         let thisPoint, otherPoint;
 
-        if (id==1) {
+        if (id === 1) {
             thisPoint = this.plotAreaMC.point1MC;
             otherPoint = this.plotAreaMC.point2MC;
-        }
-        else {
+        } else {
             thisPoint = this.plotAreaMC.point2MC;
             otherPoint = this.plotAreaMC.point1MC;
         }
@@ -150,10 +306,6 @@ export default class HRDiagram extends React.Component {
         }
     }
 
-    hideRanges() {
-        //this.rangesMC.clear();
-    }
-
     findX(t) {
         return this.graphW - this.xScale * Math.log(t/this.tMin);
     }
@@ -171,6 +323,10 @@ export default class HRDiagram extends React.Component {
     }
 
     render() {
-        return <div></div>;
+        return <div ref={(thisDiv) => {this.el = thisDiv}} />;
     }
 }
+
+HRDiagram.propTypes = {
+    showMainSequence: PropTypes.bool.isRequired
+};

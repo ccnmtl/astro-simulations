@@ -13,7 +13,7 @@ export default class Window extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            showMainSequence: false,
+            showMainSequence: true,
             isDragging: false,
             xDiff: 0,
             yDiff: 0,
@@ -62,21 +62,18 @@ export default class Window extends React.Component {
                 </div>
                 <div className="window-body">
                     <div className="hr-diagram">
-                        <img src="./img/minihrdiagram.png" width="383" height="245" />
-                        {this.state.showMainSequence &&
-                         <img className="main-sequence"
-                              src="./img/mainsequence.png" width="280" height="186.6" />
-                        }
+                        <HRDiagram
+                            showMainSequence={this.state.showMainSequence} />
                     </div>
                     <div className="main-seq-checkbox">
                         <input type="checkbox" name="showMainSequence"
                                id="showMainSequenceCheckbox"
+                               defaultChecked={true}
                                onChange={this.toggleMainSequence} />
                         <label className="ml-1 small" htmlFor="showMainSequenceCheckbox">
                             Show main sequence track
                         </label>
                     </div>
-                    <HRDiagram />
                 </div>
             </div>
         );
