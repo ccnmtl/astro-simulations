@@ -62,11 +62,8 @@ export default class Window extends React.Component {
                 </div>
                 <div className="window-body">
                     <div className="hr-diagram">
-                        <img src="./img/minihrdiagram.png" width="383" height="245" />
-                        {this.state.showMainSequence &&
-                         <img className="main-sequence"
-                              src="./img/mainsequence.png" width="280" height="186.6" />
-                        }
+                        <HRDiagram
+                            showMainSequence={this.state.showMainSequence} />
                     </div>
                     <div className="main-seq-checkbox">
                         <input type="checkbox" name="showMainSequence"
@@ -76,7 +73,6 @@ export default class Window extends React.Component {
                             Show main sequence track
                         </label>
                     </div>
-                    <HRDiagram />
                 </div>
             </div>
         );

@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import * as PIXI from 'pixi.js-legacy';
 
 export default class HRDiagram extends React.Component {
     constructor(props) {
@@ -65,14 +67,59 @@ export default class HRDiagram extends React.Component {
         this.hideRanges();
     }
 
+    componentDidMount() {
+        this.app = new PIXI.Application({
+            width: 383,
+            height: 245,
+
+            transparent: true,
+
+            // The default is webgl - I'll switch to that if necessary
+            // but for now canvas just displays my images better. I'm
+            // guessing there's just some filters or settings I can add
+            // to make it look good in webgl.
+            forceCanvas: true,
+            antialias: true,
+
+            // as far as I know the ticker isn't necessary at the
+            // moment, so don't instantiate a new one.
+            sharedTicker: true
+        });
+
+        this.el.appendChild(this.app.view);
+
+        this.app.loader.add('minihrdiagram', 'img/minihrdiagram.png')
+            .add('mainsequence', 'img/mainsequence.png');
+
+        const me = this;
+        this.app.loader.load((loader, resources) => {
+            me.resources = resources;
+
+            const minihrdiagram = new PIXI.Sprite(resources.minihrdiagram.texture);
+            me.app.stage.addChild(minihrdiagram);
+
+            const mainsequence = new PIXI.Sprite(resources.mainsequence.texture);
+            mainsequence.position.x = 66;
+            mainsequence.position.y = 8;
+            mainsequence.visible = this.props.showMainSequence;
+            me.app.stage.addChild(mainsequence);
+            me.mainsequence = mainsequence;
+        });
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.showMainSequence !== this.props.showMainSequence) {
+            this.mainsequence.visible = this.props.showMainSequence;
+        }
+    }
+
     setPointPosition(id, t, l) {
         let thisPoint, otherPoint;
 
-        if (id==1) {
+        if (id === 1) {
             thisPoint = this.plotAreaMC.point1MC;
             otherPoint = this.plotAreaMC.point2MC;
-        }
-        else {
+        } else {
             thisPoint = this.plotAreaMC.point2MC;
             otherPoint = this.plotAreaMC.point1MC;
         }
@@ -171,6 +218,10 @@ export default class HRDiagram extends React.Component {
     }
 
     render() {
-        return <div></div>;
+        return <div ref={(thisDiv) => {this.el = thisDiv}} />;
     }
 }
+
+HRDiagram.propTypes = {
+    showMainSequence: PropTypes.bool.isRequired
+};
