@@ -8,7 +8,9 @@ export default class HRDiagram extends React.Component {
 
         this.state = {
             isHoveringDot1: false,
-            isHoveringDot2: false
+            isHoveringDot2: false,
+            isDraggingDot1: false,
+            isDraggingDot2: false
         };
 
         // - these limits can't be changed, at least not without considerable effort
@@ -70,6 +72,8 @@ export default class HRDiagram extends React.Component {
         this.rangesMC.setMask(mc);*/
 
         this.onDotMove = this.onDotMove.bind(this);
+        this.onDragStart = this.onDragStart.bind(this);
+        this.onDragEnd = this.onDragEnd.bind(this);
 
         this.dotRadius = 3;
     }
@@ -188,19 +192,19 @@ export default class HRDiagram extends React.Component {
             .on('touchmove', this.onDotMove);
     }
 
-    onDragStart() {
-        //this.data = event.data;
-        //const dragStartPos = this.data.getLocalPosition(this.app.stage);
-        //console.log(this.dragStartPos);
-
-        /*if (event.target.name === 'earth') {
-            this.draggingEarth = true;
-        } else if (event.target.name === 'moon') {
-            this.draggingMoon = true;
-        }*/
+    onDragStart(e) {
+        if (e.target.name === 'dot1') {
+            this.setState({isDraggingDot1: true});
+        } else if (e.target.name === 'dot2') {
+            this.setState({isDraggingDot2: true});
+        }
     }
 
     onDragEnd() {
+        this.setState({
+            isDraggingDot1: false,
+            isDraggingDot2: false
+        });
     }
 
     onDotMove(e) {
@@ -219,6 +223,16 @@ export default class HRDiagram extends React.Component {
                 isHoveringDot1: false,
                 isHoveringDot2: false
             });
+        }
+
+        const pos = e.data.getLocalPosition(this.app.stage);
+        if (this.state.isDraggingDot1) {
+            this.dot1.position.x = pos.x - 100;
+            this.dot1.position.y = pos.y - 50;
+        }
+        if (this.state.isDraggingDot2) {
+            this.dot2.position.x = pos.x - 200;
+            this.dot2.position.y = pos.y - 100;
         }
     }
 
