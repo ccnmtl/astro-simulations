@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import * as PIXI from 'pixi.js-legacy';
+import {getLuminosityFromRadiusAndTemp} from './utils';
 
 export default class HRDiagram extends React.Component {
     constructor(props) {
@@ -113,11 +114,21 @@ export default class HRDiagram extends React.Component {
             const mainsequence = new PIXI.Sprite(resources.mainsequence.texture);
             mainsequence.position.x = 66;
             mainsequence.position.y = 8;
-            mainsequence.visible = this.props.showMainSequence;
+            mainsequence.visible = me.props.showMainSequence;
             me.app.stage.addChild(mainsequence);
             me.mainsequence = mainsequence;
 
             me.drawDots();
+
+            me.setPointPosition(
+                1, me.props.star1Temp,
+                getLuminosityFromRadiusAndTemp(
+                    me.props.star1Temp, me.props.star1Radius));
+
+            me.setPointPosition(
+                2, me.props.star2Temp,
+                getLuminosityFromRadiusAndTemp(
+                    me.props.star2Temp, me.props.star2Radius));
         });
     }
 
@@ -130,9 +141,9 @@ export default class HRDiagram extends React.Component {
             this.dot1.children[0].destroy();
 
             if (this.state.isHoveringDot1) {
-                this.dot1.addChild(this.makeDot(100, 50, this.dotRadius * 2));
+                this.dot1.addChild(this.makeDot(0, 0, this.dotRadius * 2));
             } else {
-                this.dot1.addChild(this.makeDot(100, 50, this.dotRadius));
+                this.dot1.addChild(this.makeDot(0, 0, this.dotRadius));
             }
         }
 
@@ -140,9 +151,9 @@ export default class HRDiagram extends React.Component {
             this.dot2.children[0].destroy();
 
             if (this.state.isHoveringDot2) {
-                this.dot2.addChild(this.makeDot(200, 100, this.dotRadius * 2));
+                this.dot2.addChild(this.makeDot(0, 0, this.dotRadius * 2));
             } else {
-                this.dot2.addChild(this.makeDot(200, 100, this.dotRadius));
+                this.dot2.addChild(this.makeDot(0, 0, this.dotRadius));
             }
         }
     }
@@ -158,7 +169,7 @@ export default class HRDiagram extends React.Component {
         this.dot1 = new PIXI.Container();
         this.dot1.name = 'dot1';
         this.dot1.interactive = true;
-        this.dot1.addChild(this.makeDot(100, 50, this.dotRadius));
+        this.dot1.addChild(this.makeDot(0, 0, this.dotRadius));
         this.app.stage.addChild(this.dot1);
         this.dot1
         // events for drag start
@@ -176,7 +187,7 @@ export default class HRDiagram extends React.Component {
         this.dot2 = new PIXI.Container();
         this.dot2.name = 'dot2';
         this.dot2.interactive = true;
-        this.dot2.addChild(this.makeDot(200, 100, this.dotRadius));
+        this.dot2.addChild(this.makeDot(0, 0, this.dotRadius));
         this.app.stage.addChild(this.dot2);
         this.dot2
         // events for drag start
@@ -227,41 +238,42 @@ export default class HRDiagram extends React.Component {
 
         const pos = e.data.getLocalPosition(this.app.stage);
         if (this.state.isDraggingDot1) {
-            this.dot1.position.x = pos.x - 100;
-            this.dot1.position.y = pos.y - 50;
+            this.dot1.position.x = pos.x;
+            this.dot1.position.y = pos.y;
         }
         if (this.state.isDraggingDot2) {
-            this.dot2.position.x = pos.x - 200;
-            this.dot2.position.y = pos.y - 100;
+            this.dot2.position.x = pos.x;
+            this.dot2.position.y = pos.y;
         }
     }
 
     setPointPosition(id, t, l) {
-        let thisPoint, otherPoint;
+        let thisPoint;
+        //let otherPoint;
 
         if (id === 1) {
-            thisPoint = this.plotAreaMC.point1MC;
-            otherPoint = this.plotAreaMC.point2MC;
+            thisPoint = this.dot1;
+            //otherPoint = this.dot2;
         } else {
-            thisPoint = this.plotAreaMC.point2MC;
-            otherPoint = this.plotAreaMC.point1MC;
+            thisPoint = this.dot2;
+            //otherPoint = this.dot1;
         }
 
         var nx = this.findX(t);
         var ny = this.findY(l);
-        thisPoint._x = nx;
-        thisPoint._y = ny;
+        thisPoint.position.x = nx;
+        thisPoint.position.y = ny;
 
-        var dx = otherPoint._x - nx;
-        var dy = otherPoint._y - ny;
+        /*var dx = otherPoint.position.x - nx;
+        var dy = otherPoint.position.y - ny;
 
-        var s = 14/Math.sqrt(dx*dx + dy*dy);
+        var s = 14/Math.sqrt(dx*dx + dy*dy);*/
 
-        thisPoint.labelMC._x = -s*dx;
-        thisPoint.labelMC._y = -s*dy;
+        /*thisPoint.labelMC.position.x = -s*dx;
+        thisPoint.labelMC.position.y = -s*dy;
 
-        otherPoint.labelMC._x = -thisPoint.labelMC._x;
-        otherPoint.labelMC._y = -thisPoint.labelMC._y;
+        otherPoint.labelMC.position.x = -thisPoint.labelMC.position.x;
+        otherPoint.labelMC.position.y = -thisPoint.labelMC.position.y;*/
     }
 
     showRanges(star) {
@@ -342,5 +354,9 @@ export default class HRDiagram extends React.Component {
 }
 
 HRDiagram.propTypes = {
+    star1Temp: PropTypes.number.isRequired,
+    star1Radius: PropTypes.number.isRequired,
+    star2Temp: PropTypes.number.isRequired,
+    star2Radius: PropTypes.number.isRequired,
     showMainSequence: PropTypes.bool.isRequired
 };

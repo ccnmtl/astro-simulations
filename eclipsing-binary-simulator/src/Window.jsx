@@ -63,6 +63,10 @@ export default class Window extends React.Component {
                 <div className="window-body">
                     <div className="hr-diagram">
                         <HRDiagram
+                            star1Temp={this.props.star1Temp}
+                            star1Radius={this.props.star1Radius}
+                            star2Temp={this.props.star2Temp}
+                            star2Radius={this.props.star2Radius}
                             showMainSequence={this.state.showMainSequence} />
                     </div>
                     <div className="main-seq-checkbox">
@@ -106,6 +110,10 @@ export default class Window extends React.Component {
 }
 
 Window.propTypes = {
+    star1Temp: PropTypes.number.isRequired,
+    star1Radius: PropTypes.number.isRequired,
+    star2Temp: PropTypes.number.isRequired,
+    star2Radius: PropTypes.number.isRequired,
     isHidden: PropTypes.bool.isRequired,
     onWindowClose: PropTypes.func.isRequired
 };

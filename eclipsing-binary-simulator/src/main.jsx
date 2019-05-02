@@ -61,8 +61,13 @@ class EclipsingBinarySimulator extends React.Component {
         }
 
         return <React.Fragment>
-            <Window isHidden={!this.state.showHRDiagram}
-                    onWindowClose={this.onWindowClose} />
+            <Window
+                star1Temp={this.state.star1Temp}
+                star1Radius={this.state.star1Radius}
+                star2Temp={this.state.star2Temp}
+                star2Radius={this.state.star2Radius}
+                isHidden={!this.state.showHRDiagram}
+                onWindowClose={this.onWindowClose} />
             <nav className="navbar navbar-expand-md navbar-light bg-light d-flex justify-content-between">
                 <span className="navbar-brand mb-0 h1">Eclipsing Binary Simulator</span>
 
