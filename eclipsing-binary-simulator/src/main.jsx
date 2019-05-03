@@ -4,7 +4,16 @@ import {RangeStepInput} from 'react-range-step-input';
 import LightcurveView from './LightcurveView';
 import BinarySystemView from './BinarySystemView';
 import Window from './Window';
-import {forceNumber, roundToTwoPlaces} from './utils';
+import {
+    forceNumber, roundToTwoPlaces,
+    getRadiusFromTempAndLuminosity,
+    getMassFromLuminosity,
+    getTempFromRadius,
+    getTempFromLuminosityAndRadius,
+    getLuminosityFromTempAndClass,
+    getLuminosityFromRadiusAndTemp,
+    getSystemTheta, getSystemPhi
+} from './utils';
 import {systemPresets} from './presets';
 
 class EclipsingBinarySimulator extends React.Component {
@@ -31,11 +40,13 @@ class EclipsingBinarySimulator extends React.Component {
             star1Mass: 1,
             star1Radius: 1.5,
             star1Temp: 8700,
+            star1Lum: 0,
 
             // Star 2 Properties
             star2Mass: 1,
             star2Radius: 1.5,
             star2Temp: 5000,
+            star2Lum: 0,
 
             // System Properties
             separation: 10,
@@ -49,10 +60,13 @@ class EclipsingBinarySimulator extends React.Component {
         this.onPhaseUpdate = this.onPhaseUpdate.bind(this);
         this.onPresetSelect = this.onPresetSelect.bind(this);
         this.onStartClick = this.onStartClick.bind(this);
+        this.onDotMove = this.onDotMove.bind(this);
 
         this.animate = this.animate.bind(this);
 
         this.lightcurveViewRef = React.createRef();
+
+        this.sysProps = {};
     }
     render() {
         let startBtnText = 'Start Animation';
@@ -67,7 +81,9 @@ class EclipsingBinarySimulator extends React.Component {
                 star2Temp={this.state.star2Temp}
                 star2Radius={this.state.star2Radius}
                 isHidden={!this.state.showHRDiagram}
-                onWindowClose={this.onWindowClose} />
+                onWindowClose={this.onWindowClose}
+                onDotMove={this.onDotMove}
+            />
             <nav className="navbar navbar-expand-md navbar-light bg-light d-flex justify-content-between">
                 <span className="navbar-brand mb-0 h1">Eclipsing Binary Simulator</span>
 
@@ -201,10 +217,10 @@ class EclipsingBinarySimulator extends React.Component {
 
                 <div className="custom-control custom-checkbox">
                     <input type="checkbox" className="custom-control-input"
-                           name="showOrbitalPlane"
+                           name="showOrbitalPaths"
                            onFocus={this.handleFocus}
                            onChange={this.handleInputChange}
-                           checked={this.state.showOrbitalPlane}
+                           checked={this.state.showOrbitalPaths}
                            id="showOrbitalPathsToggle" />
                     <label className="custom-control-label"
                            htmlFor="showOrbitalPathsToggle">
@@ -649,6 +665,210 @@ class EclipsingBinarySimulator extends React.Component {
     }
     onWindowClose() {
         this.setState({showHRDiagram: false});
+    }
+
+    setParametersToMatch() {
+        const systemsList = {};
+        const systemsArray = {};
+
+        let i = systemsList.getValue();
+
+        if (i === " ") {
+            return undefined;
+        }
+
+        let dataObject = systemsArray[i];
+        this.sysProps.a = dataObject.a;
+        this.sysProps.e = dataObject.e;
+        //star1.m = dataObject.m1;
+        //star2.m = dataObject.m2;
+        this.setState({
+            star1Mass: dataObject.m1,
+            star2Mass: dataObject.m2
+        });
+
+        /*let period = 0.115496 * Math.sqrt(
+            Math.pow(this.sysProps.a, 3) / (
+                this.state.star1Mass + this.state.star2Mass));*/
+        //systemPeriodField.text =
+        //    "system period: " + Math.toSigDigits(period,3) + " days";
+        //let infoString = "";
+
+        if (dataObject.r1 === -1) {
+            this.setState({star1Radius: 0.1});
+            //infoString = "r1 = -1, ";
+        } else {
+            this.setState({star1Radius: dataObject.a * dataObject.r1});
+        }
+
+        if (dataObject.r2 === -1) {
+            this.setState({star2Radius: 0.1});
+            //infoString = infoString + "r2 = -1";
+        } else {
+            this.setState({star2Radius: dataObject.a * dataObject.r2});
+        }
+
+        this.setState({
+            star1Temp: dataObject.t1,
+            star2Temp: dataObject.t2,
+            star1Lum: getLuminosityFromRadiusAndTemp(
+                this.state.star1Radius, this.state.star1Temp),
+            star2Lum: getLuminosityFromRadiusAndTemp(
+                this.state.star2Radius, this.state.star2Temp)
+        });
+
+        /*setMassRange(1);
+        setRadiusRange(1);
+        setTempRange(1);
+        setMassRange(2);
+        setRadiusRange(2);
+        setTempRange(2);
+        setSeparationRange();
+        setEccentricityRange();*/
+
+        /*if (restrict1Check.getValue()) {
+            restrict1Check.setValue(false);
+        }
+
+        if (restrict2Check.getValue()) {
+            restrict2Check.setValue(false);
+        }*/
+
+        /*longitudeSlider.value = dataObject.w;
+        inclinationSlider.value = dataObject.i;
+        separationSlider.value = this.sysProps.a;
+        eccentricitySlider.value = this.sysProps.e;
+        mass1Slider.value = this.state.star1Mass;
+        radius1Slider.value = this.state.star1Radius;
+        temp1Slider.value = star1.t;
+        mass2Slider.value = this.state.star2Mass;
+        radius2Slider.value = this.state.star2Radius;
+        temp2Slider.value = star2.t;
+        hrDiagramWindowMC.hrDiagramMC.setPointPosition(1,star1.t,star1.l);
+        hrDiagramWindowMC.hrDiagramMC.setPointPosition(2,star2.t,star2.l);*/
+
+        const initObject = {
+            separation: this.sysProps.a,
+            eccentricity: this.sysProps.e,
+            linePhi: getSystemPhi(),
+            lineTheta: getSystemTheta(),
+            mass1: this.state.star1Mass,
+            mass2: this.state.star2Mass,
+            radius1: this.state.star1Radius,
+            radius2: this.state.star2Radius
+        };
+
+        console.log(initObject);
+
+        /*if (perspectiveLockCheck.getValue()) {
+            initObject.phi = initObject.linePhi;
+            initObject.theta = initObject.lineTheta;
+        }*/
+
+        /*visualizationMC.initialize(initObject);
+        visualizationMC.passObjectToIcon(1,{temp:star1.t});
+        visualizationMC.passObjectToIcon(2,{temp:star2.t});*/
+        this.drawLightCurve();
+        //setPhase(curveMC.cursorPhase);
+        //setParametersToMatchButton.setEnabled(false);
+    }
+
+    setTempAndLuminosity(star, temp, lum) {
+        let otherStarNumber, thisStar, otherStar;
+
+        if (star === 1) {
+            otherStarNumber = 2;
+            thisStar = 1;
+            otherStar = 2;
+        } else if (star === 2) {
+            otherStarNumber = 1;
+            thisStar = 2;
+            otherStar = 1;
+        } else {
+            return undefined;
+        }
+
+        if (this["restrict" + star + "Check"].getValue()) {
+            var RmaxVis = this.sysProps.a * (1 - this.sysProps.e) - otherStar.r;
+            var TmaxVis = getTempFromRadius(RmaxVis);
+            const TminSld = 0, TmaxSld = 100; // TODO
+            var Tmin = TminSld;
+            var Tmax = Math.min(TmaxSld,TmaxVis);
+            if(temp < Tmin) {
+                temp = Tmin;
+            } else if(temp > Tmax) {
+                temp = Tmax;
+            }
+            thisStar.t = temp;
+            thisStar.l = getLuminosityFromTempAndClass(temp);
+            thisStar.r = getRadiusFromTempAndLuminosity(temp,thisStar.l);
+            thisStar.m = getMassFromLuminosity(thisStar.l);
+            this["mass" + star + "Slider"].value = thisStar.m;
+            this["radius" + star + "Slider"].value = thisStar.r;
+            this["temp" + star + "Slider"].value = thisStar.t;
+            var initObj = {};
+            initObj["radius" + star] = thisStar.r;
+            initObj["mass" + star] = thisStar.m;
+            console.log(initObj);
+            //visualizationMC.initialize(initObj);
+            /*var period = 0.115496 * Math.sqrt(Math.pow(this.sysProps.a,3) / (
+                this.state.star1Mass + this.state.star2Mass));*/
+            //systemPeriodField.text = "system period: " + Math.toSigDigits(period,3) + " days";
+        } else {
+            const TminSld = 0, TmaxSld = 0; // TODO
+            if (temp < TminSld) {
+                temp = TminSld;
+            } else if (temp > TmaxSld) {
+                temp = TmaxSld;
+            }
+            const Lmin = 0, Lmax = 100; // TODO
+            var rad = getRadiusFromTempAndLuminosity(temp, lum);
+            var RminHR = getRadiusFromTempAndLuminosity(temp, Lmin);
+            var RmaxHR = getRadiusFromTempAndLuminosity(temp, Lmax);
+            RmaxVis = this.sysProps.a * (
+                1 - this.sysProps.e) - otherStar.r;
+            const RminSld = 0, RmaxSld = 100; // TODO
+            var Rmin = Math.max(RminSld,RminHR);
+            var Rmax = Math.min(Math.min(RmaxSld,RmaxHR),RmaxVis);
+            if (Rmin > Rmax + 1.0e-8) {
+                rad = RmaxVis;
+                temp = getTempFromLuminosityAndRadius(Lmin, rad);
+            } else if(rad < Rmin) {
+                rad = Rmin;
+            } else if(rad > Rmax) {
+                rad = Rmax;
+            }
+            thisStar.r = rad;
+            thisStar.t = temp;
+            thisStar.l = getLuminosityFromRadiusAndTemp(rad, temp);
+            this["radius" + star + "Slider"].value = rad;
+            this["temp" + star + "Slider"].value = temp;
+            //visualizationMC["radius" + star] = rad;
+        }
+        //hrDiagramWindowMC.hrDiagramMC.setPointPosition(star,thisStar.t,thisStar.l);
+        //visualizationMC.passObjectToIcon(star,{temp:thisStar.t});
+        this.drawLightCurve();
+        /*if (systemsList.getValue() != " ") {
+            setParametersToMatchButton.setEnabled(true);
+        }*/
+        var otherRestricted = this["restrict" + otherStarNumber + "Check"].getValue();
+        var thisRestricted = this["restrict" + star + "Check"].getValue();
+        this.setSeparationRange();
+        this.setEccentricityRange();
+        if (otherRestricted) {
+            this.setRestrictedStarRanges(otherStarNumber);
+        } else {
+            this.setRadiusRange(otherStarNumber);
+        }
+
+        if (!thisRestricted) {
+            this.setRadiusRange(star);
+            this.setTempRange(star);
+        }
+    }
+
+    onDotMove(id, temp, lum) {
+        this.setTempAndLuminosity(id, temp, lum);
     }
 }
 

@@ -26,52 +26,6 @@ export default class HRDiagram extends React.Component {
         this.xScale = this.graphW/Math.log(this.tMax/this.tMin);
         this.yScale = this.graphH/Math.log(this.lMax/this.lMin);
 
-        /*var mc = {};
-        mc.clear();
-        mc.moveTo(0, 0);
-        mc.beginFill(0xff0000);
-        mc.lineTo(this.graphW, 0);
-        mc.lineTo(this.graphW, -this.graphH);
-        mc.lineTo(0, -this.graphH);
-        mc.lineTo(0, 0);
-        mc.endFill();*/
-
-        //this.plotAreaMC.setMask(this.maskMC);
-
-        /*this.plotAreaMC.point1MC.useHandCursor = false;
-        this.plotAreaMC.point1MC.onRollOver = this.pointOnRollOver;
-        this.plotAreaMC.point1MC.onPress = this.pointOnPress;
-        this.plotAreaMC.point1MC.onMouseMoveFunc = this.pointOnMouseMoveFunc;
-        this.plotAreaMC.point1MC.onRollOut = this.pointOnRollOut;
-        this.plotAreaMC.point1MC.onReleaseOutside = this.pointOnReleaseOutside;
-        this.plotAreaMC.point1MC.onRelease = this.pointOnRelease;
-
-        this.plotAreaMC.point2MC.useHandCursor = false;
-        this.plotAreaMC.point2MC.onRollOver = this.pointOnRollOver;
-        this.plotAreaMC.point2MC.onPress = this.pointOnPress;
-        this.plotAreaMC.point2MC.onMouseMoveFunc = this.pointOnMouseMoveFunc;
-        this.plotAreaMC.point2MC.onRollOut = this.pointOnRollOut;
-        this.plotAreaMC.point2MC.onReleaseOutside = this.pointOnReleaseOutside;
-        this.plotAreaMC.point2MC.onRelease = this.pointOnRelease;
-
-        this.plotAreaMC.point1MC.labelMC.labelField.text = "1";
-        this.plotAreaMC.point2MC.labelMC.labelField.text = "2";
-
-        this.lowerRadiusLimitMC._x = this.graphW;
-        this.upperRadiusLimitMC._x = 0;*/
-
-        /*mc = {};
-         mc.clear();
-        mc.lineStyle(1, 0xff0000);
-        mc.beginFill(0xff00ff, 30);
-        mc.moveTo(0, 0);
-        mc.lineTo(this.graphW, 0);
-        mc.lineTo(this.graphW, -this.graphH);
-        mc.lineTo(0, -this.graphH);
-        mc.lineTo(0, 0);
-        mc.endFill();
-        this.rangesMC.setMask(mc);*/
-
         this.onDotMove = this.onDotMove.bind(this);
         this.onDragStart = this.onDragStart.bind(this);
         this.onDragEnd = this.onDragEnd.bind(this);
@@ -240,10 +194,12 @@ export default class HRDiagram extends React.Component {
         if (this.state.isDraggingDot1) {
             this.dot1.position.x = pos.x;
             this.dot1.position.y = pos.y;
+            this.props.onDotMove(1, this.findT(pos.x), this.findL(pos.y));
         }
         if (this.state.isDraggingDot2) {
             this.dot2.position.x = pos.x;
             this.dot2.position.y = pos.y;
+            this.props.onDotMove(2, this.findT(pos.x), this.findL(pos.y));
         }
     }
 
@@ -358,5 +314,6 @@ HRDiagram.propTypes = {
     star1Radius: PropTypes.number.isRequired,
     star2Temp: PropTypes.number.isRequired,
     star2Radius: PropTypes.number.isRequired,
-    showMainSequence: PropTypes.bool.isRequired
+    showMainSequence: PropTypes.bool.isRequired,
+    onDotMove: PropTypes.func.isRequired
 };

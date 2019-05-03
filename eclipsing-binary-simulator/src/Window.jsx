@@ -67,7 +67,9 @@ export default class Window extends React.Component {
                             star1Radius={this.props.star1Radius}
                             star2Temp={this.props.star2Temp}
                             star2Radius={this.props.star2Radius}
-                            showMainSequence={this.state.showMainSequence} />
+                            showMainSequence={this.state.showMainSequence}
+                            onDotMove={this.props.onDotMove}
+                        />
                     </div>
                     <div className="main-seq-checkbox">
                         <input type="checkbox" name="showMainSequence"
@@ -115,5 +117,6 @@ Window.propTypes = {
     star2Temp: PropTypes.number.isRequired,
     star2Radius: PropTypes.number.isRequired,
     isHidden: PropTypes.bool.isRequired,
-    onWindowClose: PropTypes.func.isRequired
+    onWindowClose: PropTypes.func.isRequired,
+    onDotMove: PropTypes.func.isRequired
 };
