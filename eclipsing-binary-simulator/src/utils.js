@@ -201,10 +201,19 @@ const getTempFromRadius = function(rad) {
     return k[0] + rad*(k[1] + rad*(k[2] + rad*(k[3] + rad*(k[4] + rad*(k[5] + rad*(k[6] + rad*(k[7] + rad*k[8])))))));
 };
 
+const getSystemTheta = function(longitude) {
+    return ((90 - longitude) % 360 + 360) % 360;
+};
+
+const getSystemPhi = function(inclination) {
+    return 90 - inclination;
+};
+
 export {
     forceNumber, roundToOnePlace, roundToTwoPlaces,
     getRadiusFromTempAndLuminosity, getLuminosityFromRadiusAndTemp,
     getTempFromLuminosityAndRadius, getLuminosityFromTempAndClass,
     getTempFromLuminosity, getLuminosityFromMass,
-    getMassFromLuminosity, getTempFromRadius
+    getMassFromLuminosity, getTempFromRadius,
+    getSystemTheta, getSystemPhi
 };
