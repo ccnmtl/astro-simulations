@@ -18,10 +18,15 @@ export default class PhaseControl extends React.Component {
                      stroke="#ff7070" strokeWidth={3} />;
     }
     dragmove(e) {
-        let newPhase = (d3.event.x - this.props.paddingLeft) / (
-            this.props.width - this.props.paddingLeft);
+        const w = this.props.width - this.props.paddingLeft;
 
-        newPhase = (newPhase + 0.5) % 1;
+        let newPhase = (
+            (d3.event.x - this.props.paddingLeft)
+        ) / w;
+
+        const offset = this.props.offset / this.props.width;
+
+        newPhase = (newPhase - offset + 0.5) % 1;
 
         this.props.onPhaseUpdate(newPhase);
     }
