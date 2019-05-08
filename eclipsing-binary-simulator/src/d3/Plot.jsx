@@ -87,6 +87,7 @@ export default class Plot extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            // The view offset of the X axis.
             offset: 0,
             isDragging: false
         };

@@ -5,6 +5,7 @@ import * as d3 from 'd3';
 export default class Axes extends Component {
     constructor(props) {
         super(props);
+        this.xAxisL = React.createRef();
         this.xAxis = React.createRef();
         this.yAxis = React.createRef();
     }
@@ -18,11 +19,17 @@ export default class Axes extends Component {
     }
 
     renderAxes() {
+        const xAxisL = d3.axisBottom(this.props.xScale || 1).tickValues([
+            0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9
+        ]);
         const xAxis = d3.axisBottom(this.props.xScale || 1).ticks(10);
         const yAxis = d3.axisLeft(this.props.yScale).ticks(4);
 
         const node1 = this.xAxis.current;
         d3.select(node1).call(xAxis);
+
+        const node3 = this.xAxisL.current;
+        d3.select(node3).call(xAxisL);
 
         const node2 = this.yAxis.current;
         d3.select(node2).call(yAxis);
@@ -36,6 +43,13 @@ export default class Axes extends Component {
                + 0.5) % 1);
 
         return <React.Fragment>
+            <g className="xAxisL" ref={this.xAxisL}
+               transform={
+               `translate(${xPos - (this.props.width - this.props.paddingLeft)}, ${this.props.height - this.props.padding})`
+               }
+            />
+            <rect fill="white" width="60" height="24" x="0" y="256" />
+
             <g className="yAxis" ref={this.yAxis}
                transform={`translate(${this.props.paddingLeft}, 0)`}
             />
@@ -58,7 +72,7 @@ export default class Axes extends Component {
 
 Axes.propTypes = {
     yScale: PropTypes.func.isRequired,
-    xScale: PropTypes.func,
+    xScale: PropTypes.func.isRequired,
     height: PropTypes.number.isRequired,
     offset: PropTypes.number.isRequired,
     padding: PropTypes.number.isRequired,
