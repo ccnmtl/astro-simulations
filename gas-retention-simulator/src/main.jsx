@@ -1,8 +1,22 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {gases} from './gases';
+import {forceNumber, roundToOnePlace} from './utils';
 
 
 class GasRetentionSimulator extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.initialState = {
+            selectedGas: -1,
+            activeGases: []
+        };
+        this.state = this.initialState;
+        this.gases = gases;
+
+        this.onAddGas = this.onAddGas.bind(this);
+    }
     render() {
         return <React.Fragment>
             <nav className="navbar navbar-expand-md navbar-light bg-light d-flex justify-content-between">
@@ -36,35 +50,20 @@ class GasRetentionSimulator extends React.Component {
                         <div className="p-2">
                             <form className="ml-3">
                                 <div className="form-group">
-                                    <select className="form-control form-control-sm" onChange={this.onPresetSelect}>
+                                    <select className="form-control form-control-sm"
+                                            value={this.state.selectedGas}
+                                            onChange={this.onAddGas}>
                                         <option value={-1}>Select gas to add</option>
-                                        <option value={1}>Xenon</option>
-                                        <option value={2}>Carbon dioxide</option>
-                                        <option value={3}>Oxygen</option>
-                                        <option value={4}>Nitrogen</option>
-                                        <option value={5}>Water</option>
-                                        <option value={6}>Ammonia</option>
-                                        <option value={7}>Methane</option>
-                                        <option value={8}>Helium</option>
-                                        <option value={9}>Hydrogen</option>
+                                        {this.makeGasOptions(gases)}
                                     </select>
                                 </div>
                             </form>
 
                             <button>Remove selected gas</button>
 
-                            <table className="table table-striped">
+                            <table className="table table-striped small">
                                 <tbody>
-                                    <tr>
-                                        <td>Carbon dioxide (CO<sub>2</sub>)</td>
-                                        <td>44u</td>
-                                        <td>50.0%</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Water (H<sub>2</sub>O)</td>
-                                        <td>18u</td>
-                                        <td>50.0%</td>
-                                    </tr>
+                                    {this.makeGasTable(this.state.activeGases)}
                                 </tbody>
                             </table>
 
@@ -76,7 +75,63 @@ class GasRetentionSimulator extends React.Component {
             </div>
         </React.Fragment>;
     }
-    onPresetSelect() {
+    makeGasOptions(gList) {
+        let gas;
+        let options = [];
+        let i = 1;
+
+        for (gas in gList) {
+            let g = gList[gas];
+            options.push(
+                <option key={g.name} value={i}>{g.name}</option>
+            );
+            i++;
+        }
+
+        return options;
+    }
+    makeGasTable(activeGases) {
+        let gas;
+        let table = [];
+
+        for (gas in activeGases) {
+            let g = activeGases[gas];
+            table.push(
+                <tr key={g.name}>
+                    <td>{g.name} ({g.symbol})</td>
+                    <td>{g.mass}</td>
+                    <td>{roundToOnePlace((1 / activeGases.length) * 100)}%</td>
+                </tr>
+            );
+        }
+        return table;
+    }
+    onAddGas(e) {
+        // Max 3 gases
+        if (this.state.activeGases.length >= 3) {
+            return;
+        }
+
+        const gasId = forceNumber(e.target.value);
+        const newGas = this.gases.find(function(el) {
+            return el.id === gasId;
+        });
+
+        // Don't let duplicate gases get added.
+        for (let g in this.state.activeGases) {
+            let gas = this.state.activeGases[g];
+            if (gas.name === newGas.name) {
+                this.setState({selectedGas: -1});
+                return;
+            }
+        }
+
+        const gases = this.state.activeGases.slice(0);
+        gases.push(newGas);
+        this.setState({
+            selectedGas: -1,
+            activeGases: gases
+        });
     }
     onResetClick(e) {
         e.preventDefault();
