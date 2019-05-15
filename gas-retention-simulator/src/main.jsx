@@ -51,7 +51,7 @@ class GasRetentionSimulator extends React.Component {
                         </div>
 
                         <div className="p-2">
-                            <form className="ml-3">
+                            <form className="ml-3 form-inline">
                                 <div className="form-group">
                                     <select className="form-control form-control-sm"
                                             value={this.state.selectedGas}
@@ -59,10 +59,12 @@ class GasRetentionSimulator extends React.Component {
                                         <option value={-1}>Select gas to add</option>
                                         {this.makeGasOptions(gases)}
                                     </select>
+
+                                    <button className="ml-3" onClick={this.onRemoveGas}>
+                                        Remove selected gas
+                                    </button>
                                 </div>
                             </form>
-
-                            <button onClick={this.onRemoveGas}>Remove selected gas</button>
 
                             <table className="gas-table table table-sm">
                                 <tbody>
@@ -146,13 +148,19 @@ class GasRetentionSimulator extends React.Component {
             activeGases: gases
         });
     }
-    onRemoveGas() {
+    onRemoveGas(e) {
+        e.preventDefault();
+
+        if (this.state.selectedActiveGas === null) {
+            return;
+        }
+
         const me = this;
         const gases = this.state.activeGases.filter(function(el) {
             return el.id !== me.state.selectedActiveGas;
         });
         this.setState({
-            selectedActiveGas: -1,
+            selectedActiveGas: null,
             activeGases: gases
         });
     }
