@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {gases} from './gases';
-import {forceNumber, roundToOnePlace} from './utils';
+import {forceNumber, roundToOnePlace, closestByClass} from './utils';
 
 
 class GasRetentionSimulator extends React.Component {
@@ -10,12 +10,15 @@ class GasRetentionSimulator extends React.Component {
 
         this.initialState = {
             selectedGas: -1,
+            selectedActiveGas: null,
             activeGases: []
         };
         this.state = this.initialState;
         this.gases = gases;
 
         this.onAddGas = this.onAddGas.bind(this);
+        this.onRemoveGas = this.onRemoveGas.bind(this);
+        this.onGasClick = this.onGasClick.bind(this);
     }
     render() {
         return <React.Fragment>
@@ -59,9 +62,9 @@ class GasRetentionSimulator extends React.Component {
                                 </div>
                             </form>
 
-                            <button>Remove selected gas</button>
+                            <button onClick={this.onRemoveGas}>Remove selected gas</button>
 
-                            <table className="table table-striped small">
+                            <table className="gas-table table table-sm">
                                 <tbody>
                                     {this.makeGasTable(this.state.activeGases)}
                                 </tbody>
@@ -93,16 +96,26 @@ class GasRetentionSimulator extends React.Component {
     makeGasTable(activeGases) {
         let gas;
         let table = [];
+        let i = 0;
 
         for (gas in activeGases) {
             let g = activeGases[gas];
+            let cls = 'gas-row ';
+
+            if (this.state.selectedActiveGas === g.id) {
+                cls += 'table-active';
+            }
+
             table.push(
-                <tr key={g.name}>
+                <tr className={cls} key={i} data-id={g.id}
+                    onClick={this.onGasClick}>
                     <td>{g.name} ({g.symbol})</td>
                     <td>{g.mass}</td>
                     <td>{roundToOnePlace((1 / activeGases.length) * 100)}%</td>
                 </tr>
             );
+
+            i++;
         }
         return table;
     }
@@ -132,6 +145,21 @@ class GasRetentionSimulator extends React.Component {
             selectedGas: -1,
             activeGases: gases
         });
+    }
+    onRemoveGas() {
+        const me = this;
+        const gases = this.state.activeGases.filter(function(el) {
+            return el.id !== me.state.selectedActiveGas;
+        });
+        this.setState({
+            selectedActiveGas: -1,
+            activeGases: gases
+        });
+    }
+    onGasClick(e) {
+        const el = closestByClass(e.target, 'gas-row');
+        const gid = forceNumber(el.dataset.id);
+        this.setState({selectedActiveGas: gid});
     }
     onResetClick(e) {
         e.preventDefault();
