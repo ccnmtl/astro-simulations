@@ -1,8 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import * as PIXI from 'pixi.js-legacy';
 import {gases} from './gases';
 import {forceNumber, roundToOnePlace, closestByClass} from './utils';
 
+const clearStage = function(app) {
+    let i;
+    for (i = app.stage.children.length - 1; i >= 0; i--) {
+        app.stage.removeChild(app.stage.children[i]);
+    }
+}
 
 class GasRetentionSimulator extends React.Component {
     constructor(props) {
@@ -45,20 +52,25 @@ class GasRetentionSimulator extends React.Component {
 
                     <div className="d-flex">
                         <div className="p-2">
-                            <svg width="120" height="160" xmlns="http://www.w3.org/2000/svg">
-                                <rect width="120" height="160" />
-                            </svg>
+                            <div ref={(el) => {this.el = el}}></div>
                         </div>
 
                         <div className="p-2">
                             <form className="ml-3 form-inline">
                                 <div className="form-group">
-                                    <select className="form-control form-control-sm"
-                                            value={this.state.selectedGas}
-                                            onChange={this.onAddGas}>
-                                        <option value={-1}>Select gas to add</option>
-                                        {this.makeGasOptions(gases)}
-                                    </select>
+                                    {this.state.activeGases.length < 3 &&
+                                     <select className="form-control form-control-sm"
+                                             value={this.state.selectedGas}
+                                             onChange={this.onAddGas}>
+                                         <option value={-1}>Select gas to add</option>
+                                         {this.makeGasOptions(gases)}
+                                     </select>}
+                                    {this.state.activeGases.length === 3 &&
+                                     <select className="form-control form-control-sm"
+                                             disabled="disabled"
+                                             value={this.state.selectedGas}>
+                                         <option value={-1}>(limit reached)</option>
+                                     </select>}
 
                                     <button className="ml-3" onClick={this.onRemoveGas}>
                                         Remove selected gas
@@ -79,6 +91,45 @@ class GasRetentionSimulator extends React.Component {
 
             </div>
         </React.Fragment>;
+    }
+    componentDidMount() {
+        const app = new PIXI.Application({
+            backgroundColor: 0xffffff,
+            width: 120,
+            height: 160,
+            sharedLoader: true,
+            sharedTicker: true,
+            forceCanvas: true
+        });
+
+        this.app = app;
+        this.el.appendChild(app.view);
+
+        this.drawGasBars(app);
+    }
+    componentDidUpdate(prevProps, prevState) {
+        if (prevState.activeGases.length !== this.state.activeGases.length) {
+            this.drawGasBars(this.app);
+        }
+    }
+
+    drawGasBars(app) {
+        clearStage(app);
+
+        let g, myGas;
+        let i = 0;
+
+        for (myGas in this.state.activeGases) {
+            let gas = this.state.activeGases[myGas];
+            g = new PIXI.Graphics();
+            g.interactive = true;
+            g.cursor = 'pointer';
+            g.beginFill(gas.color);
+            g.drawRect(40 * i, 0, 20, 30);
+            g.endFill();
+            app.stage.addChild(g);
+            i++;
+        }
     }
     makeGasOptions(gList) {
         let gas;
