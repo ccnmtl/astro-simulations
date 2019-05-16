@@ -4,6 +4,12 @@ import * as PIXI from 'pixi.js-legacy';
 import {gases} from './gases';
 import {forceNumber, roundToOnePlace, closestByClass} from './utils';
 
+// https://stackoverflow.com/a/42203200/173630
+const toPaddedHexString = function(num, len) {
+    const str = num.toString(16);
+    return '0'.repeat(len - str.length) + str;
+};
+
 const clearStage = function(app) {
     let i;
     for (i = app.stage.children.length - 1; i >= 0; i--) {
@@ -124,9 +130,17 @@ class GasRetentionSimulator extends React.Component {
             g = new PIXI.Graphics();
             g.interactive = true;
             g.cursor = 'pointer';
-            g.beginFill(gas.color);
-            g.drawRect(40 * i, 0, 20, 30);
+            g.lineStyle(1, '0x' + toPaddedHexString(gas.color, 6));
+            g.beginFill(gas.color, 0.5);
+            g.drawRect(40 * i, 2, 20, 130);
             g.endFill();
+
+            if (this.state.activeGases.length === 1) {
+                g.position.x += 50;
+            } else if (this.state.activeGases.length === 2) {
+                g.position.x += 20;
+            }
+
             app.stage.addChild(g);
             i++;
         }
@@ -162,6 +176,12 @@ class GasRetentionSimulator extends React.Component {
             table.push(
                 <tr className={cls} key={i} data-id={g.id}
                     onClick={this.onGasClick}>
+                    <td>
+                        <svg height="12" width="8">
+                            <circle cx="5" cy="5" r="3"
+                                    fill={'#' + toPaddedHexString(g.color, 6)} />
+                        </svg>
+                    </td>
                     <td>{g.name} ({g.symbol})</td>
                     <td>{g.mass}</td>
                     <td>{roundToOnePlace((1 / activeGases.length) * 100)}%</td>
