@@ -43,4 +43,10 @@ const closestByClass = function(el, clazz) {
     return el;
 };
 
-export {forceNumber, roundToOnePlace, closestByClass};
+// https://stackoverflow.com/a/42203200/173630
+const toPaddedHexString = function(num, len) {
+    const str = num.toString(16);
+    return '0'.repeat(len - str.length) + str;
+};
+
+export {forceNumber, roundToOnePlace, closestByClass, toPaddedHexString};

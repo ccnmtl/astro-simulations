@@ -2,13 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import * as PIXI from 'pixi.js-legacy';
 import {gases} from './gases';
-import {forceNumber, roundToOnePlace, closestByClass} from './utils';
-
-// https://stackoverflow.com/a/42203200/173630
-const toPaddedHexString = function(num, len) {
-    const str = num.toString(16);
-    return '0'.repeat(len - str.length) + str;
-};
+import {
+    forceNumber, roundToOnePlace, closestByClass, toPaddedHexString
+} from './utils';
 
 const clearStage = function(app) {
     let i;
@@ -24,14 +20,24 @@ class GasRetentionSimulator extends React.Component {
         this.initialState = {
             selectedGas: -1,
             selectedActiveGas: null,
-            activeGases: []
+            draggingGas: null,
+            activeGases: [],
+            gasProportions: [null, null, null]
         };
         this.state = this.initialState;
+
         this.gases = gases;
+
+        this.gasBarHeight = 155;
 
         this.onAddGas = this.onAddGas.bind(this);
         this.onRemoveGas = this.onRemoveGas.bind(this);
         this.onGasClick = this.onGasClick.bind(this);
+
+        this.onGasBarClick = this.onGasBarClick.bind(this);
+        this.onGasBarDragStart = this.onGasBarDragStart.bind(this);
+        this.onGasBarDragEnd = this.onGasBarDragEnd.bind(this);
+        this.onGasBarMove = this.onGasBarMove.bind(this);
     }
     render() {
         return <React.Fragment>
@@ -58,7 +64,7 @@ class GasRetentionSimulator extends React.Component {
 
                     <div className="d-flex">
                         <div className="p-2">
-                            <div ref={(el) => {this.el = el}}></div>
+                            <div className="gas-graph" ref={(el) => {this.el = el}}></div>
                         </div>
 
                         <div className="p-2">
@@ -102,7 +108,7 @@ class GasRetentionSimulator extends React.Component {
         const app = new PIXI.Application({
             backgroundColor: 0xffffff,
             width: 120,
-            height: 160,
+            height: 170,
             sharedLoader: true,
             sharedTicker: true,
             forceCanvas: true
@@ -114,37 +120,71 @@ class GasRetentionSimulator extends React.Component {
         this.drawGasBars(app);
     }
     componentDidUpdate(prevProps, prevState) {
-        if (prevState.activeGases.length !== this.state.activeGases.length) {
+        if (
+            prevState.activeGases.length !== this.state.activeGases.length ||
+            prevState.selectedActiveGas !== this.state.selectedActiveGas
+        ) {
             this.drawGasBars(this.app);
         }
+    }
+
+    drawGasBar(app, gas, x) {
+        const g = new PIXI.Graphics();
+        g.interactive = true;
+        g.cursor = 'pointer';
+        g.name = gas.id;
+        g.lineStyle(1, '0x' + toPaddedHexString(gas.color, 6));
+
+        let gasBarOpacity = 0.5;
+        if (this.state.selectedActiveGas === gas.id) {
+            gasBarOpacity = 1;
+        }
+
+        g.beginFill(gas.color, gasBarOpacity);
+
+        g.drawRect(x, 15, 20, this.gasBarHeight);
+        g.endFill();
+
+        if (this.state.activeGases.length === 1) {
+            g.position.x += 52;
+        } else if (this.state.activeGases.length === 2) {
+            g.position.x += 30;
+        } else {
+            g.position.x += 11;
+        }
+
+        app.stage.addChild(g);
+
+        g.on('click', this.onGasBarClick)
+
+          .on('mousedown', this.onGasBarDragStart)
+          .on('touchstart', this.onGasBarDragStart)
+
+          .on('mouseup', this.onGasBarDragEnd)
+          .on('mouseupoutside', this.onGasBarDragEnd)
+
+          .on('touchend', this.onGasBarDragEnd)
+          .on('touchendoutside', this.onGasBarDragEnd)
+
+          .on('mousemove', this.onGasBarMove)
+          .on('touchmove', this.onGasBarMove);
     }
 
     drawGasBars(app) {
         clearStage(app);
 
-        let g, myGas;
+        let myGas;
         let i = 0;
 
         for (myGas in this.state.activeGases) {
             let gas = this.state.activeGases[myGas];
-            g = new PIXI.Graphics();
-            g.interactive = true;
-            g.cursor = 'pointer';
-            g.lineStyle(1, '0x' + toPaddedHexString(gas.color, 6));
-            g.beginFill(gas.color, 0.5);
-            g.drawRect(40 * i, 2, 20, 130);
-            g.endFill();
 
-            if (this.state.activeGases.length === 1) {
-                g.position.x += 50;
-            } else if (this.state.activeGases.length === 2) {
-                g.position.x += 20;
-            }
+            this.drawGasBar(app, gas, i * 40);
 
-            app.stage.addChild(g);
             i++;
         }
     }
+
     makeGasOptions(gList) {
         let gas;
         let options = [];
@@ -183,8 +223,8 @@ class GasRetentionSimulator extends React.Component {
                         </svg>
                     </td>
                     <td>{g.name} ({g.symbol})</td>
-                    <td>{g.mass}</td>
-                    <td>{roundToOnePlace((1 / activeGases.length) * 100)}%</td>
+                    <td>{Math.round(g.mass)} u</td>
+                    <td>{roundToOnePlace(this.state.gasProportions[i])}%</td>
                 </tr>
             );
 
@@ -214,9 +254,13 @@ class GasRetentionSimulator extends React.Component {
 
         const gases = this.state.activeGases.slice(0);
         gases.push(newGas);
+
+        const proportion = (1 / gases.length) * 100;
+
         this.setState({
             selectedGas: -1,
-            activeGases: gases
+            activeGases: gases,
+            gasProportions: [proportion, proportion, proportion]
         });
     }
     onRemoveGas(e) {
@@ -230,9 +274,13 @@ class GasRetentionSimulator extends React.Component {
         const gases = this.state.activeGases.filter(function(el) {
             return el.id !== me.state.selectedActiveGas;
         });
+
+        const proportion = (1 / gases.length) * 100;
+
         this.setState({
             selectedActiveGas: null,
-            activeGases: gases
+            activeGases: gases,
+            gasProportions: [proportion, proportion, proportion]
         });
     }
     onGasClick(e) {
@@ -243,6 +291,31 @@ class GasRetentionSimulator extends React.Component {
     onResetClick(e) {
         e.preventDefault();
         this.setState(this.initialState);
+    }
+
+    /* Gas Bar interaction */
+    onGasBarClick(e) {
+        // Using gas id as the Pixi object's name. It should already be
+        // a number, but just in case, use forceNumber().
+        const activeGasId = forceNumber(e.target.name);
+
+        this.setState({selectedActiveGas: activeGasId});
+    }
+    onGasBarDragStart(e) {
+        const activeGasId = forceNumber(e.target.name);
+
+        this.setState({draggingGas: activeGasId});
+    }
+    onGasBarDragEnd() {
+        this.setState({draggingGas: null});
+    }
+    onGasBarMove() {
+        if (this.state.draggingGas === null) {
+            return;
+        }
+
+        // TODO
+        //const pos = e.data.getLocalPosition(this.app.stage);
     }
 }
 
