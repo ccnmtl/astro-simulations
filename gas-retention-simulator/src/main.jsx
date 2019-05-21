@@ -118,17 +118,28 @@ class GasRetentionSimulator extends React.Component {
         this.el.appendChild(app.view);
 
         this.drawGasBars(app);
+
+        document.addEventListener('mouseup', this.onGasBarDragEnd);
+        document.addEventListener('mouseupoutside', this.onGasBarDragEnd);
+        document.addEventListener('touchup', this.onGasBarDragEnd);
+        document.addEventListener('touchupoutside', this.onGasBarDragEnd);
+
     }
     componentDidUpdate(prevProps, prevState) {
         if (
             prevState.activeGases.length !== this.state.activeGases.length ||
-            prevState.selectedActiveGas !== this.state.selectedActiveGas
+            prevState.selectedActiveGas !== this.state.selectedActiveGas ||
+            prevState.gasProportions !== this.state.gasProportions
         ) {
             this.drawGasBars(this.app);
         }
     }
 
-    drawGasBar(app, gas, x) {
+    drawGasBar(app, gas, idx) {
+        const x = idx * 40;
+        const proportion = (this.state.gasProportions[idx]
+            * this.state.activeGases.length) / 100;
+
         const g = new PIXI.Graphics();
         g.interactive = true;
         g.cursor = 'pointer';
@@ -142,7 +153,8 @@ class GasRetentionSimulator extends React.Component {
 
         g.beginFill(gas.color, gasBarOpacity);
 
-        g.drawRect(x, 15, 20, this.gasBarHeight);
+        g.drawRect(x, 15 + this.gasBarHeight - (this.gasBarHeight * proportion),
+                   20, this.gasBarHeight);
         g.endFill();
 
         if (this.state.activeGases.length === 1) {
@@ -179,7 +191,7 @@ class GasRetentionSimulator extends React.Component {
         for (myGas in this.state.activeGases) {
             let gas = this.state.activeGases[myGas];
 
-            this.drawGasBar(app, gas, i * 40);
+            this.drawGasBar(app, gas, i);
 
             i++;
         }
@@ -232,6 +244,21 @@ class GasRetentionSimulator extends React.Component {
         }
         return table;
     }
+
+    /**
+     * Given a gas id, return its index position in the array of
+     * active gases.
+     */
+    getGasIdxById(id) {
+        let i;
+        for (i = 0; i < this.state.activeGases.length; i++) {
+            if (this.state.activeGases[i].id === id) {
+                return i;
+            }
+        }
+        return null;
+    }
+
     onAddGas(e) {
         // Max 3 gases
         if (this.state.activeGases.length >= 3) {
@@ -304,18 +331,28 @@ class GasRetentionSimulator extends React.Component {
     onGasBarDragStart(e) {
         const activeGasId = forceNumber(e.target.name);
 
+        this.dragStartPos = e.data.getLocalPosition(this.app.stage).y;
+
         this.setState({draggingGas: activeGasId});
     }
     onGasBarDragEnd() {
+        this.dragStartPos = null;
         this.setState({draggingGas: null});
     }
-    onGasBarMove() {
+    onGasBarMove(e) {
         if (this.state.draggingGas === null) {
             return;
         }
 
-        // TODO
-        //const pos = e.data.getLocalPosition(this.app.stage);
+        const pos = e.data.getLocalPosition(this.app.stage);
+        const diffPercent = ((this.dragStartPos - pos.y) / this.gasBarHeight) * 100;
+
+        const idx = this.getGasIdxById(this.state.draggingGas);
+        const newProportions = this.state.gasProportions.slice();
+
+        newProportions[idx] = Math.min(
+            100, Math.max(0, this.dragStartPos + diffPercent));
+        this.setState({gasProportions: newProportions});
     }
 }
 
