@@ -9,6 +9,10 @@ const forceNumber = function(n) {
     return n;
 };
 
+const degToRad = function(degrees) {
+    return degrees * Math.PI / 180;
+};
+
 const roundToOnePlace = function(n) {
     return Math.round(n * 10) / 10;
 };
@@ -211,6 +215,7 @@ const getSystemPhi = function(inclination) {
 
 export {
     forceNumber, roundToOnePlace, roundToTwoPlaces,
+    degToRad,
     getRadiusFromTempAndLuminosity, getLuminosityFromRadiusAndTemp,
     getTempFromLuminosityAndRadius, getLuminosityFromTempAndClass,
     getTempFromLuminosity, getLuminosityFromMass,
