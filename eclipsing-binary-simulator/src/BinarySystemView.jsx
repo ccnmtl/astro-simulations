@@ -1,14 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import * as THREE from 'three';
-import WEBGL from './utils/WebGL';
-import 'three/OrbitControls';
-import 'three/CopyShader';
-import 'three/FXAAShader';
-import 'three/EffectComposer';
-import 'three/RenderPass';
-import 'three/ShaderPass';
-import MutedColorsShader from './shaders/MutedColorsShader';
+import * as PIXI from 'pixi.js-legacy';
 
 export default class BinarySystemView extends React.Component {
     constructor(props) {
@@ -609,89 +601,62 @@ export default class BinarySystemView extends React.Component {
 
     render() {
         return (
-            <div ref={(mount) => {this.mount = mount}}>
-                <canvas
-                    id={this.id + 'Canvas'} width={390} height={390} />
-            </div>
+            <div ref={(thisDiv) => {this.el = thisDiv}} />
         );
     }
     componentDidMount() {
-        if (!WEBGL.isWebGLAvailable()) {
-            document.body.appendChild(WEBGL.getWebGLErrorMessage());
-        }
+        this.app = new PIXI.Application({
+            width: 400,
+            height: 400,
 
-        const width = this.mount.clientWidth;
-        const height = this.mount.clientHeight;
-
-        // well, since it's a square for now the aspect will be 1.
-        const aspect = width / height;
-        const frustumSize = 120;
-
-        const scene = new THREE.Scene();
-        const camera = new THREE.OrthographicCamera(
-            frustumSize * aspect / -2, frustumSize * aspect / 2,
-            frustumSize / 2, frustumSize / -2,
-            1, 1000
-        );
-        camera.position.set(-60, 60, 80);
-
-        const controls = new THREE.OrbitControls(camera, this.mount);
-        // Configure the controls - we only need some basic
-        // drag-rotation behavior.
-        controls.enableKeys = false;
-        controls.enablePan = false;
-        controls.enableZoom = false;
-
-        // Only let the user see the top of the scene - no need to
-        // flip it completely over.
-        controls.minPolarAngle = THREE.Math.degToRad(0);
-        controls.maxPolarAngle = THREE.Math.degToRad(85);
-
-        const canvas = document.getElementById(this.id + 'Canvas');
-        const renderer = new THREE.WebGLRenderer({
+            // The default is webgl - I'll switch to that if necessary
+            // but for now canvas just displays my images better. I'm
+            // guessing there's just some filters or settings I can add
+            // to make it look good in webgl.
+            forceCanvas: true,
             antialias: true,
-            canvas: canvas
+
+            // as far as I know the ticker isn't necessary at the
+            // moment.
+            sharedTicker: true
         });
-        renderer.domElement.addEventListener(
-            'mousemove', this.onMouseMove, false);
-        renderer.domElement.addEventListener(
-            'mousedown', this.onMouseDown, false);
-        renderer.domElement.addEventListener(
-            'mouseup', this.onMouseUp, false);
-        renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.setClearColor(0x000000);
-        renderer.shadowMap.enabled = true;
 
-        // Lights
-        const ambient = new THREE.AmbientLight(0x909090);
-        scene.add(ambient);
+        this.el.appendChild(this.app.view);
 
-        const dpr = window.devicePixelRatio;
-        const composer = new THREE.EffectComposer(renderer);
-        composer.addPass(new THREE.RenderPass(scene, camera));
+        this.drawText();
+        this.drawOrbit();
 
-        // Add anti-aliasing pass
-        const shaderPass = new THREE.ShaderPass(THREE.FXAAShader);
-        shaderPass.uniforms.resolution.value = new THREE.Vector2(
-            1 / (width * 2 * dpr), 1 / (height * 2 * dpr));
-        composer.setSize(width * 4 * dpr, height * 4 * dpr);
-        composer.addPass(shaderPass);
+        const me = this;
+        this.app.loader.load((loader, resources) => {
+            me.resources = resources;
+        });
+    }
+    drawText() {
+        const text = new PIXI.Text('perspective from earth', {
+            fontFamily: 'Arial',
+            fontSize: 26,
+            fontStyle: 'italic',
+            fontWeight: 'regular',
+            fill: 0xffffff,
+            align: 'center'
+        });
+        text.position.x = 14;
+        text.position.y = 20;
+        this.app.stage.addChild(text);
 
-        const colorPass = new THREE.ShaderPass(MutedColorsShader);
-
-        // The last pass always needs renderToScreen = true.
-        colorPass.renderToScreen = true;
-        composer.addPass(colorPass);
-
-        controls.update();
-
-        this.scene = scene;
-        this.camera = camera;
-        this.renderer = renderer;
-        this.composer = composer;
-        this.controls = controls;
-
-        this.mount.appendChild(this.renderer.domElement);
+        const text2 = new PIXI.Text('system period: 2.58 days', {
+            fontFamily: 'Arial',
+            fontSize: 26,
+            fontStyle: 'italic',
+            fontWeight: 'regular',
+            fill: 0xffffff,
+            align: 'center'
+        });
+        text2.position.x = 270;
+        text2.position.y = 370;
+        this.app.stage.addChild(text2);
+    }
+    drawOrbit() {
     }
 }
 

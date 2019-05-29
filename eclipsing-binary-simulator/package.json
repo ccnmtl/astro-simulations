@@ -31,8 +31,7 @@
     "pixi.js-legacy": "~5.0.0",
     "react": "~16.8.3",
     "react-dom": "~16.8.3",
-    "react-range-step-input": "^1.2.4",
-    "three": "^0.104.0"
+    "react-range-step-input": "^1.2.4"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
