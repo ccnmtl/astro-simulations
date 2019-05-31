@@ -147,6 +147,13 @@ class EclipsingBinarySimulator extends React.Component {
             <div className="row mt-2">
                 <div className="col-6">
                     <BinarySystemView
+                        phase={this.state.phase}
+                        star1Mass={this.state.star1Mass}
+                        star2Mass={this.state.star2Mass}
+                        star1Radius={this.state.star1Radius}
+                        star2Radius={this.state.star2Radius}
+                        separation={this.state.separation}
+                        eccentricity={this.state.eccentricity}
                         inclination={this.state.inclination}
                         longitude={this.state.longitude} />
 
