@@ -2,6 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import * as PIXI from 'pixi.js-legacy';
 
+const convertPhase = function(phase) {
+    return (phase % 1 + 1) % 1;
+};
+
 export default class BinarySystemView extends React.Component {
     constructor(props) {
         super(props);
@@ -9,15 +13,10 @@ export default class BinarySystemView extends React.Component {
 
         this._c = {};
 
-        this.orbitalPlane = {
-            path1: {},
-            path2: {}
-        };
+        this.orbitalPlane = null;
 
-        const initObject = {
+        this.initObject = {
             phase: 0.4,
-            separation: 7.5,
-            eccentricity: 0.5,
             mass1: 2,
             mass2: 1.9,
             radius1: 1.5,
@@ -34,7 +33,30 @@ export default class BinarySystemView extends React.Component {
             lineExtra: 10
         };
 
-        this.initialize(initObject);
+        this.orbitalPathStyle = {
+            thickness: 1,
+            color: 0xffffff,
+            alpha: 0.7
+        };
+        this.gridFillStyle = {
+            color: 0x0b0b0b,
+            alpha: 0.4
+        };
+        this.gridLineStyle = {
+            thickness: 0,
+            color: 0x909090
+        };
+        this.axisGridLineStyle = {
+            thickness: 1, color: 0x4DA94D, alpha: 0.65
+        };
+        this.minGridLineAlpha = 5;
+        this.maxGridLineAlpha = 50;
+        this.minGridSpacing = 20;
+        this.objectEquatorStyle = {
+            thickness: 1, color: 0xb0b0b0, alpha: 0.8
+        };
+        this.lineThickness = 2;
+        this.lineColor = 0xff8080;
     }
     doA() {
         // a0 through a8 are constants used to transform a world
@@ -89,8 +111,8 @@ export default class BinarySystemView extends React.Component {
         var ye = x*c.a3 + y*c.a4 + z*c.a5;
         var ze = x*c.a6 + y*c.a7 + z*c.a8;
 
-        var r1 = this._radius1*this._scale;
-        var r2 = this._radius2*this._scale;
+        var r1 = this.props.star1Radius*this._scale;
+        var r2 = this.props.star2Radius*this._scale;
 
         var x1 = this._s1.x;
         var y1 = this._s1.y;
@@ -219,21 +241,15 @@ export default class BinarySystemView extends React.Component {
         if (initObject.phi!=undefined && !(initObject.phi<-90 || initObject.phi>90)) this._phi = initObject.phi*(Math.PI/180);
         if (initObject.theta!=undefined) this._theta = initObject.theta*(Math.PI/180);
         if (initObject.scale!=undefined) this._scale = initObject.scale;
-        if (initObject.phase!=undefined) this._phase = (initObject.phase%1 + 1)%1;
-        if (initObject.radius1!=undefined) this._radius1 = initObject.radius1;
-        if (initObject.radius2!=undefined) this._radius2 = initObject.radius2;
-        if (initObject.eccentricity!=undefined) this._eccentricity = initObject.eccentricity;
-        if (initObject.mass1!=undefined) this._mass1 = initObject.mass1;
-        if (initObject.mass2!=undefined) this._mass2 = initObject.mass2;
-        if (initObject.separation!=undefined) this._separation = initObject.separation;
         if (initObject.linePhi!=undefined) this._linePhi = initObject.linePhi;
         if (initObject.lineTheta!=undefined) this._lineTheta = initObject.lineTheta;
         if (initObject.showLine!=undefined) this._showLine = Boolean(initObject.showLine);
         if (initObject.lineExtra!=undefined) this._lineExtra = initObject.lineExtra;
 
-        this._massTotal = this._mass1 + this._mass2;
-        this._a1 = this._separation*this._mass2/this._massTotal;
-        this._a2 = this._separation*this._mass1/this._massTotal;
+        this._massTotal = this.props.star1Mass + this.props.star2Mass;
+
+        this._a1 = this.props.separation * this.props.star2Mass / this._massTotal;
+        this._a2 = this.props.separation * this.props.star1Mass / this._massTotal;
 
         if (this._autoScale) {
             this.rescale();
@@ -252,8 +268,8 @@ export default class BinarySystemView extends React.Component {
     rescale() {
         // rescale so that the maximum possible radius of the system is the targetSize
         const h = Math.max(
-            this._a1*(1+this._eccentricity) + this._radius1,
-            this._a2*(1+this._eccentricity) + this._radius2);
+            this._a1*(1+this.props.eccentricity) + this.props.star1Radius,
+            this._a2*(1+this.props.eccentricity) + this.props.star2Radius);
         this.setScale(this._targetSize / (2 * h));
     }
     setScale(arg) {
@@ -351,123 +367,122 @@ export default class BinarySystemView extends React.Component {
     }
 
     updateOrbitalPaths() {
-        var cos = Math.cos;
-        var sin = Math.sin;
+        const cos = Math.cos;
+        const sin = Math.sin;
 
-        this.orbitalPlane._yscale = 100*sin(this._phi);
-        this.orbitalPlane.rotation = 90 + this._theta*(180/Math.PI);
+        this.orbitalPlane.scale.y = 100 * sin(this._phi);
+        this.orbitalPlane.rotation = 90 + this._theta * (180 / Math.PI);
 
-        //var path1 = this.orbitalPlane.path1;
-        //var path2 = this.orbitalPlane.path2;
+        const path1 = this.orbitalPlane.getChildByName('path1');
+        const path2 = this.orbitalPlane.getChildByName('path2');
+
+        path1.clear();
+        path2.clear();
 
         if (!this._showOrbitalPaths) return;
 
-        /*path1.lineStyle(
+        path1.lineStyle(
             this.orbitalPathStyle.thickness,
             this.orbitalPathStyle.color,
             this.orbitalPathStyle.alpha);
         path2.lineStyle(
             this.orbitalPathStyle.thickness,
             this.orbitalPathStyle.color,
-            this.orbitalPathStyle.alpha);*/
+            this.orbitalPathStyle.alpha);
 
-        var s = this._scale;
-        var e = this._eccentricity;
+        let s = this._scale;
+        let e = this.props.eccentricity;
 
-        var n = 12;
-        var step = (2*Math.PI)/n;
+        let n = 12;
+        let step = (2 * Math.PI) / n;
 
-        var a1 = this._a1;
-        var a2 = this._a2;
+        let a1 = this._a1;
+        let a2 = this._a2;
 
-        let k = Math.sqrt(1-e*e);
-        var b1 = a1*k;
-        var b2 = a2*k;
+        let k = Math.sqrt(1 - e * e);
+        let b1 = a1*k;
+        let b2 = a2*k;
 
-        var aa1 = s*a1;
-        var ab1 = s*b1;
-        var aa2 = s*a2;
-        var ab2 = s*b2;
+        let aa1 = s*a1;
+        let ab1 = s*b1;
+        let aa2 = s*a2;
+        let ab2 = s*b2;
 
         k = 1/cos(step/2);
-        var ca1 = aa1*k;
-        var cb1 = ab1*k;
-        var ca2 = aa2*k;
-        var cb2 = ab2*k;
+        let ca1 = aa1*k;
+        let cb1 = ab1*k;
+        let ca2 = aa2*k;
+        let cb2 = ab2*k;
 
-        var dx1 = aa1*e;
-        var dx2 = -aa2*e;
+        let dx1 = aa1*e;
+        let dx2 = -aa2*e;
 
-        var aAngle = 0;
-        var cAngle = -step/2;
+        let aAngle = 0;
+        let cAngle = -step/2;
 
-        var ax1 = aa1*cos(aAngle) + dx1;
-        var ay1 = ab1*sin(aAngle);
+        let ax1 = aa1*cos(aAngle) + dx1;
+        let ay1 = ab1*sin(aAngle);
 
-        var ax2 = aa2*cos(aAngle) + dx2;
-        var ay2 = ab2*sin(aAngle);
-
-        let coords1 = [[ax1, ay1]];
-        let coords2 = [[ax2, ay2]];
+        let ax2 = aa2*cos(aAngle) + dx2;
+        let ay2 = ab2*sin(aAngle);
 
         let ccA, scA, caA, saA;
 
+        path1.moveTo(ax1, ay1);
+        path2.moveTo(ax2, ay2);
 
-
-        for (var i=0; i<n; i++) {
+        for (let i=0; i<n; i++) {
             aAngle += step;
             cAngle += step;
             ccA = cos(cAngle);
             scA = sin(cAngle);
             caA = cos(aAngle);
             saA = sin(aAngle);
-            coords1.push([ca1*ccA+dx1, cb1*scA, aa1*caA+dx1, ab1*saA]);
-            coords2.push([ca2*ccA+dx2, cb2*scA, aa2*caA+dx2, ab2*saA]);
+            path1.quadraticCurveTo(ca1*ccA+dx1, cb1*scA, aa1*caA+dx1, ab1*saA);
+            path2.quadraticCurveTo(ca2*ccA+dx2, cb2*scA, aa2*caA+dx2, ab2*saA);
         }
-
-        return [coords1, coords2];
     }
 
     updateOrbitalPlane() {
-        var grid = this.orbitalPlane.grid;
+        const grid = this.orbitalPlane.getChildByName('grid');
 
-        //grid.clear();
+        grid.clear();
 
         if (!this._showOrbitalPlane) return;
 
-        var ceil = Math.ceil;
+        let ceil = Math.ceil;
 
-        var s = this._scale;
-        var e = this._eccentricity;
-        var a1 = this._a1;
-        var a2 = this._a2;
+        let s = this._scale;
+        let e = this.props.eccentricity;
+        let a1 = this._a1;
+        let a2 = this._a2;
         let k = Math.sqrt(1-e*e);
-        var b1 = a1*k;
-        var b2 = a2*k;
-        var r1 = this._radius1;
-        var r2 = this._radius2;
+        let b1 = a1*k;
+        let b2 = a2*k;
+        let r1 = this.props.star1Radius;
+        let r2 = this.props.star2Radius;
 
-        var leftFillExtent = -(Math.max(a2*(1+e) + 1.75*r2, a1*(1-e) + 1.75*r1));
-        var rightFillExtent = Math.max(a1*(1+e) + 1.75*r1, a2*(1-e) + 1.75*r2);
-        var topFillExtent = Math.max(b1 + 1.75*r1, b2 + 1.75*r2);
-        var bottomFillExtent = -topFillExtent;
+        let leftFillExtent = -(Math.max(a2*(1+e) + 1.75*r2, a1*(1-e) + 1.75*r1));
+        let rightFillExtent = Math.max(a1*(1+e) + 1.75*r1, a2*(1-e) + 1.75*r2);
+        let topFillExtent = Math.max(b1 + 1.75*r1, b2 + 1.75*r2);
+        let bottomFillExtent = -topFillExtent;
 
-        var leftX = s*leftFillExtent;
-        var rightX = s*rightFillExtent;
-        var topY = s*topFillExtent;
-        var bottomY = s*bottomFillExtent;
+        let leftX = s*leftFillExtent;
+        let rightX = s*rightFillExtent;
+        let topY = s*topFillExtent;
+        let bottomY = s*bottomFillExtent;
 
-        /*grid.moveTo(leftX, bottomY);
+        grid.moveTo(leftX, bottomY);
         grid.lineStyle(1, 0xFF0000, 0);
         grid.beginFill(this.gridFillStyle.color, this.gridFillStyle.alpha);
         grid.lineTo(leftX, topY);
         grid.lineTo(rightX, topY);
         grid.lineTo(rightX, bottomY);
         grid.lineTo(leftX, bottomY);
-        grid.endFill();*/
+        grid.endFill();
 
-        var m = this.minGridSpacing/s;
-        var lg = Math.log(m)/Math.LN10;
+        let m = this.minGridSpacing/s;
+        let lg = Math.log(m)/Math.LN10;
         k = ceil(lg);
 
         let belowSpacing;
@@ -486,65 +501,63 @@ export default class BinarySystemView extends React.Component {
             majorMultiple = 5;
         }
 
-        var leftGridExtent = ceil(leftFillExtent/spacing);
-        var rightGridLimit = ceil(rightFillExtent/spacing);
-        var topGridLimit = ceil(topFillExtent/spacing);
-        var bottomGridExtent = ceil(bottomFillExtent/spacing);
+        let leftGridExtent = ceil(leftFillExtent/spacing);
+        let rightGridLimit = ceil(rightFillExtent/spacing);
+        let topGridLimit = ceil(topFillExtent/spacing);
+        let bottomGridExtent = ceil(bottomFillExtent/spacing);
 
-        var minorAlpha = this.minGridLineAlpha + (this.maxGridLineAlpha - this.minGridLineAlpha)*(spacing - m)/(spacing - belowSpacing);
-        var majorAlpha = this.maxGridLineAlpha;
+        let minorAlpha = this.minGridLineAlpha + (
+            this.maxGridLineAlpha - this.minGridLineAlpha) * (spacing - m) / (spacing - belowSpacing);
+        let majorAlpha = this.maxGridLineAlpha;
 
-        /*var gridThickness = this.gridLineStyle.thickness;
-        var gridColor = this.gridLineStyle.color;
+        let gridThickness = this.gridLineStyle.thickness;
+        let gridColor = this.gridLineStyle.color;
 
-        var originThickness = this.axisGridLineStyle.thickness;
-        var originColor = this.axisGridLineStyle.color
-        var originAlpha = this.axisGridLineStyle.alpha;*/
-
-        var gridThickness = 1;
-        var gridColor = 1;
-
-        var originThickness = 1;
-        var originColor = 1;
-        var originAlpha = 0;
+        let originThickness = this.axisGridLineStyle.thickness;
+        let originColor = this.axisGridLineStyle.color
+        let originAlpha = this.axisGridLineStyle.alpha;
 
         let i;
 
-        for (i=leftGridExtent; i<rightGridLimit; i++) {
-            var x = i*spacing*s;
-            if (i==0) grid.lineStyle(originThickness, originColor, originAlpha);
-            else if (i%majorMultiple==0) grid.lineStyle(gridThickness, gridColor, majorAlpha);
-            else grid.lineStyle(gridThickness, gridColor, minorAlpha);
+        for (i = leftGridExtent; i < rightGridLimit; i++) {
+            let x = i * spacing * s;
+            if (i === 0) {
+                grid.lineStyle(originThickness, originColor, originAlpha);
+            } else if (i % majorMultiple === 0) {
+                grid.lineStyle(gridThickness, gridColor, majorAlpha);
+            } else {
+                grid.lineStyle(gridThickness, gridColor, minorAlpha);
+            }
             grid.moveTo(x, bottomY);
             grid.lineTo(x, topY);
         }
 
-        for (i=bottomGridExtent; i<topGridLimit; i++) {
-            var y = i*spacing*s;
-            if (i == 0) {
+        for (i = bottomGridExtent; i < topGridLimit; i++) {
+            let y = i * spacing * s;
+            if (i === 0) {
                 grid.lineStyle(originThickness, originColor, originAlpha);
-            } else if (i%majorMultiple==0) {
+            } else if (i % majorMultiple === 0) {
                 grid.lineStyle(gridThickness, gridColor, majorAlpha);
             } else {
                 grid.lineStyle(gridThickness, gridColor, minorAlpha);
             }
             grid.moveTo(leftX, y);
-            grid.lineto(rightX, y);
+            grid.lineTo(rightX, y);
         }
     }
 
     updatePositions() {
-        var sin = Math.sin;
-        var abs = Math.abs;
+        let sin = Math.sin;
+        let abs = Math.abs;
 
         // ma - mean anomaly
-        var ma = this._phase*(2*Math.PI);
+        let ma = convertPhase(this.props.phase) * (2 * Math.PI);
 
-        var e = this._eccentricity;
+        let e = this.props.eccentricity;
 
         // ea - eccentric anomaly (ea1 is the one that gets used)
-        var ea0 = 0;
-        var ea1 = ma + e*sin(ma);
+        let ea0 = 0;
+        let ea1 = ma + e*sin(ma);
 
         // find the eccentric anomaly
         let c = 0;
@@ -555,30 +568,30 @@ export default class BinarySystemView extends React.Component {
         } while (abs(ea1-ea0)>0.001 && c<100);
 
         // ta - true anomaly
-        var ta = 2*Math.atan(Math.sqrt((1+e)/(1-e))*Math.tan(ea1/2));
+        let ta = 2*Math.atan(Math.sqrt((1+e)/(1-e))*Math.tan(ea1/2));
 
-        var cosTa = Math.cos(ta);
-        var sinTa = sin(ta);
+        let cosTa = Math.cos(ta);
+        let sinTa = sin(ta);
 
-        var k = (1-e*e)/(1+e*cosTa);
-        var r1 = this._a1*k;
-        var r2 = this._a2*k;
+        let k = (1-e*e)/(1+e*cosTa);
+        let r1 = this._a1*k;
+        let r2 = this._a2*k;
 
-        var wx1 = -r1*cosTa;
-        var wy1 = -r1*sinTa;
+        let wx1 = -r1*cosTa;
+        let wy1 = -r1*sinTa;
 
-        var wx2 = r2*cosTa;
-        var wy2 = r2*sinTa;
+        let wx2 = r2*cosTa;
+        let wy2 = r2*sinTa;
 
         c = this._c;
 
-        var sx1 = wx1*c.a0 + wy1*c.a1;
-        var sy1 = wx1*c.a3 + wy1*c.a4 + 0*c.a5;
-        var sz1 = wx1*c.a6 + wy1*c.a7 + 0*c.a8;
+        let sx1 = wx1*c.a0 + wy1*c.a1;
+        let sy1 = wx1*c.a3 + wy1*c.a4 + 0*c.a5;
+        let sz1 = wx1*c.a6 + wy1*c.a7 + 0*c.a8;
 
-        var sx2 = wx2*c.a0 + wy2*c.a1;
-        var sy2 = wx2*c.a3 + wy2*c.a4 + 0*c.a5;
-        var sz2 = wx2*c.a6 + wy2*c.a7 + 0*c.a8;
+        let sx2 = wx2*c.a0 + wy2*c.a1;
+        let sy2 = wx2*c.a3 + wy2*c.a4 + 0*c.a5;
+        let sz2 = wx2*c.a6 + wy2*c.a7 + 0*c.a8;
 
         // the line drawing function uses these points
         this._s1 = {x: sx1, y: sy1, z: sz1};
@@ -604,6 +617,7 @@ export default class BinarySystemView extends React.Component {
             <div ref={(thisDiv) => {this.el = thisDiv}} />
         );
     }
+
     componentDidMount() {
         this.app = new PIXI.Application({
             width: 400,
@@ -623,44 +637,91 @@ export default class BinarySystemView extends React.Component {
 
         this.el.appendChild(this.app.view);
 
-        this.drawText();
-        this.drawOrbit();
+        this.drawText(this.app);
+
+        this.orbitalPlane = this.drawOrbitalPlane(this.app);
+        this.app.stage.addChild(this.orbitalPlane);
 
         const me = this;
         this.app.loader.load((loader, resources) => {
             me.resources = resources;
         });
+
+        this.initialize(this.initObject);
     }
-    drawText() {
-        const text = new PIXI.Text('perspective from earth', {
+    componentDidUpdate(prevProps) {
+        if (
+            prevProps.star1Mass !== this.props.star1Mass ||
+            prevProps.star2Mass !== this.props.star2Mass ||
+            prevProps.separation !== this.props.separation
+        ) {
+            this._massTotal = this.props.star1Mass + this.props.star2Mass;
+
+            this._a1 = this.props.separation * this.props.star2Mass / this._massTotal;
+            this._a2 = this.props.separation * this.props.star1Mass / this._massTotal;
+        }
+
+        if (
+            prevProps.phase !== this.props.phase ||
+            prevProps.star1Mass !== this.props.star1Mass ||
+            prevProps.star2Mass !== this.props.star2Mass ||
+            prevProps.star1Radius !== this.props.star1Radius ||
+            prevProps.star2Radius !== this.props.star2Radius ||
+            prevProps.separation !== this.props.separation ||
+            prevProps.eccentricity !== this.props.eccentricity ||
+            prevProps.longitude !== this.props.longitude ||
+            prevProps.inclination !== this.props.inclination
+        ) {
+            this.rescale();
+        }
+    }
+
+    drawOrbitalPlane(app) {
+        const container = new PIXI.Container();
+
+        const grid = new PIXI.Graphics();
+        grid.name = 'grid';
+        const path1 = new PIXI.Graphics();
+        path1.name = 'path1';
+        const path2 = new PIXI.Graphics();
+        path2.name = 'path2';
+
+        container.addChild(grid);
+        container.addChild(path1);
+        container.addChild(path2);
+        app.stage.addChild(container);
+        return container;
+    }
+    drawText(app) {
+        const textStyle = new PIXI.TextStyle({
             fontFamily: 'Arial',
-            fontSize: 26,
+            fontSize: 14,
             fontStyle: 'italic',
-            fontWeight: 'regular',
+            fontWeight: 'normal',
             fill: 0xffffff,
             align: 'center'
-        });
+        })
+
+        const text = new PIXI.Text('perspective from earth', textStyle);
         text.position.x = 14;
         text.position.y = 20;
-        this.app.stage.addChild(text);
+        app.stage.addChild(text);
 
-        const text2 = new PIXI.Text('system period: 2.58 days', {
-            fontFamily: 'Arial',
-            fontSize: 26,
-            fontStyle: 'italic',
-            fontWeight: 'regular',
-            fill: 0xffffff,
-            align: 'center'
-        });
-        text2.position.x = 270;
+        const text2 = new PIXI.Text('system period: 2.58 days', textStyle);
+        text2.position.x = 230;
         text2.position.y = 370;
-        this.app.stage.addChild(text2);
-    }
-    drawOrbit() {
+        app.stage.addChild(text2);
     }
 }
 
 BinarySystemView.propTypes = {
+    phase: PropTypes.number.isRequired,
+    star1Mass: PropTypes.number.isRequired,
+    star2Mass: PropTypes.number.isRequired,
+    star1Radius: PropTypes.number.isRequired,
+    star2Radius: PropTypes.number.isRequired,
+    separation: PropTypes.number.isRequired,
+    eccentricity: PropTypes.number.isRequired,
     inclination: PropTypes.number.isRequired,
-    longitude: PropTypes.number.isRequired,
+    longitude: PropTypes.number.isRequired
 };
