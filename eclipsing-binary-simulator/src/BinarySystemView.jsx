@@ -611,11 +611,14 @@ export default class BinarySystemView extends React.Component {
         this._s1 = {x: sx1, y: sy1, z: sz1};
         this._s2 = {x: sx2, y: sy2, z: sz2};
 
-        /*this.backHalfMC.body1MC._x = this.frontHalfMC.body1MC._x = this.frontHalfMC.mask1MC._x = sx1;
-        this.backHalfMC.body1MC._y = this.frontHalfMC.body1MC._y = this.frontHalfMC.mask1MC._y = sy1;
+        const star1 = this.stars.getChildByName('star1');
+        const star2 = this.stars.getChildByName('star2');
 
-        this.backHalfMC.body2MC._x = this.frontHalfMC.body2MC._x = this.frontHalfMC.mask2MC._x = sx2;
-        this.backHalfMC.body2MC._y = this.frontHalfMC.body2MC._y = this.frontHalfMC.mask2MC._y = sy2;*/
+        star1.x = sx1;
+        star1.y = sy1;
+
+        star2.x = sx2;
+        star2.y = sy2;
 
         if (sz1>sz2) {
             //this.frontHalfMC.body1MC.swapDepths(200);
@@ -655,6 +658,8 @@ export default class BinarySystemView extends React.Component {
 
         this.orbitalPlane = this.drawOrbitalPlane(this.app);
         this.app.stage.addChild(this.orbitalPlane);
+
+        this.stars = this.drawStars(this.app);
 
         const me = this;
         this.app.loader.load((loader, resources) => {
@@ -741,6 +746,25 @@ export default class BinarySystemView extends React.Component {
         text2.position.x = 230;
         text2.position.y = 370;
         app.stage.addChild(text2);
+    }
+    drawStars(app) {
+        const container = new PIXI.Container();
+
+        const star1 = new PIXI.Graphics();
+        star1.name = 'star1';
+        star1.beginFill(0xffffff, 1);
+        star1.drawCircle(100, 200, 40);
+
+        const star2 = new PIXI.Graphics();
+        star2.name = 'star2';
+        star2.beginFill(0xffa0a0, 1);
+        star2.drawCircle(300, 200, 40);
+
+        container.addChild(star1);
+        container.addChild(star2);
+        app.stage.addChild(container);
+
+        return container;
     }
 }
 
