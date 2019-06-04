@@ -1,6 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import * as PIXI from 'pixi.js-legacy';
+import {
+    degToRad, radToDeg, getSystemTheta, getSystemPhi,
+    roundToTwoPlaces
+} from './utils';
 
 const convertPhase = function(phase) {
     return (phase % 1 + 1) % 1;
@@ -21,8 +25,8 @@ export default class BinarySystemView extends React.Component {
             mass2: 1.9,
             radius1: 1.5,
             radius2: 1.4,
-            phi: 23,
-            theta: 130,
+            phi: getSystemPhi(this.props.inclination),
+            theta: getSystemTheta(this.props.longitude),
             showOrbitalPlane: true,
             showOrbitalPaths: true,
             autoScale: true,
@@ -43,20 +47,28 @@ export default class BinarySystemView extends React.Component {
             alpha: 0.4
         };
         this.gridLineStyle = {
-            thickness: 0,
+            thickness: 1,
             color: 0x909090
         };
         this.axisGridLineStyle = {
-            thickness: 1, color: 0x4DA94D, alpha: 0.65
+            thickness: 1,
+            color: 0x4DA94D,
+            alpha: 0.65
         };
         this.minGridLineAlpha = 5;
         this.maxGridLineAlpha = 50;
         this.minGridSpacing = 20;
         this.objectEquatorStyle = {
-            thickness: 1, color: 0xb0b0b0, alpha: 0.8
+            thickness: 1,
+            color: 0xb0b0b0,
+            alpha: 0.8
         };
         this.lineThickness = 2;
         this.lineColor = 0xff8080;
+
+        this.period = roundToTwoPlaces(0.115496 * Math.sqrt(
+            Math.pow(this.props.separation, 3) / (
+                this.props.star1Mass + this.props.star2Mass)));
     }
     doA() {
         // a0 through a8 are constants used to transform a world
@@ -79,8 +91,8 @@ export default class BinarySystemView extends React.Component {
     updateLine() {
         if (!this._showLine) return;
 
-        var lineTheta = this._lineTheta*(Math.PI/180);
-        var linePhi = this._linePhi*(Math.PI/180);
+        var lineTheta = degToRad(this._lineTheta);
+        var linePhi = degToRad(this._linePhi);
         var lineLength = (this._lineExtra + this._targetSize/2)/(this._scale);
 
         /*let mcA, mcB, mcC;
@@ -238,8 +250,10 @@ export default class BinarySystemView extends React.Component {
         if (initObject.targetSize!=undefined) this._targetSize = initObject.targetSize;
         if (initObject.showOrbitalPaths!=undefined) this._showOrbitalPaths = Boolean(initObject.showOrbitalPaths);
         if (initObject.showOrbitalPlane!=undefined) this._showOrbitalPlane = Boolean(initObject.showOrbitalPlane);
-        if (initObject.phi!=undefined && !(initObject.phi<-90 || initObject.phi>90)) this._phi = initObject.phi*(Math.PI/180);
-        if (initObject.theta!=undefined) this._theta = initObject.theta*(Math.PI/180);
+        if (initObject.phi!=undefined && !(initObject.phi<-90 || initObject.phi>90)) {
+            this._phi = degToRad(initObject.phi);
+        }
+        if (initObject.theta!=undefined) this._theta = degToRad(initObject.theta);
         if (initObject.scale!=undefined) this._scale = initObject.scale;
         if (initObject.linePhi!=undefined) this._linePhi = initObject.linePhi;
         if (initObject.lineTheta!=undefined) this._lineTheta = initObject.lineTheta;
@@ -371,7 +385,7 @@ export default class BinarySystemView extends React.Component {
         const sin = Math.sin;
 
         this.orbitalPlane.scale.y = 100 * sin(this._phi);
-        this.orbitalPlane.rotation = 90 + this._theta * (180 / Math.PI);
+        this.orbitalPlane.rotation = 90 + radToDeg(this._theta);
 
         const path1 = this.orbitalPlane.getChildByName('path1');
         const path2 = this.orbitalPlane.getChildByName('path2');
@@ -488,13 +502,12 @@ export default class BinarySystemView extends React.Component {
         let belowSpacing;
         let spacing;
         let majorMultiple;
-        if ((k-lg) > (Math.log(2)/Math.LN10)) {
+        if ((k-lg) > (Math.log(2) / Math.LN10)) {
             // use 5*10^(k-1) as the spacing
             belowSpacing = Math.pow(10, k-1);
             spacing = 5*belowSpacing;
             majorMultiple = 2;
-        }
-        else {
+        } else {
             // use 10^k as the spacing
             spacing = Math.pow(10, k);
             belowSpacing = 0.5*spacing;
@@ -507,7 +520,8 @@ export default class BinarySystemView extends React.Component {
         let bottomGridExtent = ceil(bottomFillExtent/spacing);
 
         let minorAlpha = this.minGridLineAlpha + (
-            this.maxGridLineAlpha - this.minGridLineAlpha) * (spacing - m) / (spacing - belowSpacing);
+            this.maxGridLineAlpha - this.minGridLineAlpha
+        ) * (spacing - m) / (spacing - belowSpacing);
         let majorAlpha = this.maxGridLineAlpha;
 
         let gridThickness = this.gridLineStyle.thickness;
@@ -562,9 +576,9 @@ export default class BinarySystemView extends React.Component {
         // find the eccentric anomaly
         let c = 0;
         do {
-                ea0 = ea1;
-                ea1 = ma + e*sin(ea0);
-                c++;
+            ea0 = ea1;
+            ea1 = ma + e*sin(ea0);
+            c++;
         } while (abs(ea1-ea0)>0.001 && c<100);
 
         // ta - true anomaly
@@ -650,6 +664,14 @@ export default class BinarySystemView extends React.Component {
         this.initialize(this.initObject);
     }
     componentDidUpdate(prevProps) {
+        if (prevProps.longitude !== this.props.longitude) {
+            this._theta = degToRad(getSystemTheta(this.props.longitude));
+        }
+
+        if (prevProps.inclination !== this.props.inclination) {
+            this._phi = degToRad(getSystemPhi(this.props.inclination));
+        }
+
         if (
             prevProps.star1Mass !== this.props.star1Mass ||
             prevProps.star2Mass !== this.props.star2Mass ||
@@ -659,6 +681,13 @@ export default class BinarySystemView extends React.Component {
 
             this._a1 = this.props.separation * this.props.star2Mass / this._massTotal;
             this._a2 = this.props.separation * this.props.star1Mass / this._massTotal;
+
+            this.period = roundToTwoPlaces(0.115496 * Math.sqrt(
+                Math.pow(this.props.separation, 3) / (
+                    this.props.star1Mass + this.props.star2Mass)));
+
+            const t = this.app.stage.getChildByName('periodText');
+            t.text = `system period: ${this.period} days`;
         }
 
         if (
@@ -707,7 +736,8 @@ export default class BinarySystemView extends React.Component {
         text.position.y = 20;
         app.stage.addChild(text);
 
-        const text2 = new PIXI.Text('system period: 2.58 days', textStyle);
+        const text2 = new PIXI.Text(`system period: ${this.period} days`, textStyle);
+        text2.name = 'periodText';
         text2.position.x = 230;
         text2.position.y = 370;
         app.stage.addChild(text2);
