@@ -405,8 +405,6 @@ export default class TransitView extends React.Component {
 
         const arrow = new PIXI.Graphics();
         arrow.visible = false;
-        arrow.interactive = true;
-        arrow.buttonMode = true;
         arrow.beginFill(0xffffff);
         arrow.lineStyle(1, 0x000000);
         arrow.drawPolygon([
