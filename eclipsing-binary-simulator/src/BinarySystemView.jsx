@@ -43,7 +43,7 @@ export default class BinarySystemView extends React.Component {
             alpha: 0.7
         };
         this.gridFillStyle = {
-            color: 0x0b0b0b,
+            color: 0x7b7b7b,
             alpha: 0.4
         };
         this.gridLineStyle = {
@@ -303,7 +303,7 @@ export default class BinarySystemView extends React.Component {
         /*const bmc = this.backHalfMC["body" + arg + "MC"].iconMC;
         const fmc = this.frontHalfMC["body" + arg + "MC"].iconMC;
         const scalingFactor =
-            100 * this._scale * this["_radius" + arg] / this["_icon" + arg + "Radius"];
+            1 * this._scale * this["_radius" + arg] / this["_icon" + arg + "Radius"];
         bmc._xscale = bmc._yscale = fmc._xscale = fmc._yscale = scalingFactor;*/
     }
 
@@ -384,7 +384,7 @@ export default class BinarySystemView extends React.Component {
         const cos = Math.cos;
         const sin = Math.sin;
 
-        this.orbitalPlane.scale.y = 100 * sin(this._phi);
+        this.orbitalPlane.scale.y = sin(this._phi);
         this.orbitalPlane.rotation = 90 + radToDeg(this._theta);
 
         const path1 = this.orbitalPlane.getChildByName('path1');
@@ -470,9 +470,9 @@ export default class BinarySystemView extends React.Component {
         let e = this.props.eccentricity;
         let a1 = this._a1;
         let a2 = this._a2;
-        let k = Math.sqrt(1-e*e);
-        let b1 = a1*k;
-        let b2 = a2*k;
+        let k = Math.sqrt(1 - e * e);
+        let b1 = a1 * k;
+        let b2 = a2 * k;
         let r1 = this.props.star1Radius;
         let r2 = this.props.star2Radius;
 
@@ -505,7 +505,7 @@ export default class BinarySystemView extends React.Component {
         if ((k-lg) > (Math.log(2) / Math.LN10)) {
             // use 5*10^(k-1) as the spacing
             belowSpacing = Math.pow(10, k-1);
-            spacing = 5*belowSpacing;
+            spacing = 5 * belowSpacing;
             majorMultiple = 2;
         } else {
             // use 10^k as the spacing
@@ -528,7 +528,7 @@ export default class BinarySystemView extends React.Component {
         let gridColor = this.gridLineStyle.color;
 
         let originThickness = this.axisGridLineStyle.thickness;
-        let originColor = this.axisGridLineStyle.color
+        let originColor = this.axisGridLineStyle.color;
         let originAlpha = this.axisGridLineStyle.alpha;
 
         let i;
