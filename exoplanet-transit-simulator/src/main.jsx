@@ -6,7 +6,7 @@ import TransitView from './TransitView';
 import {RangeStepInput} from 'react-range-step-input';
 
 import {
-    forceNumber, getStarRadius,
+    forceNumber, roundToOnePlace,
     formatNumber, getTimeString
 } from './utils';
 
@@ -155,11 +155,11 @@ class ExoplanetTransitSimulator extends React.Component {
 
         const lum = getLuminosityFromMass(this.state.starMass);
         const starTemp = getTempFromLuminosity(lum);
+        const starRadius = getRadiusFromTempAndLuminosity(starTemp, lum);
 
         const st = getSpectralTypeFromTemp(starTemp);
         const starType = st.type + Math.round(st.number) + st.starClass;
 
-        const starRadius = getStarRadius(this.state.starMass);
         return <React.Fragment>
             <nav className="navbar navbar-expand-md navbar-light bg-light d-flex justify-content-between">
                 <span className="navbar-brand mb-0 h1">Exoplanet Transit Simulator</span>
@@ -460,7 +460,7 @@ class ExoplanetTransitSimulator extends React.Component {
                     <p>
                         A main sequence star of this mass would have
                         spectral type {starType}, temperature {Math.round(starTemp)} K, and
-                        radius {starRadius} R<sub>sun</sub>
+                        radius {roundToOnePlace(starRadius)} R<sub>sun</sub>
                     </p>
                 </div>
 

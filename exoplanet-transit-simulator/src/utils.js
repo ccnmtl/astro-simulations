@@ -18,13 +18,6 @@ const roundToOnePlace = function(n) {
 }
 
 /**
- * Returns the star's radius as a relationship to the sun's radius.
- */
-const getStarRadius = function(starMass) {
-    return roundToOnePlace(starMass * 0.8);
-};
-
-/**
  * Convert unit from rJupiter to kilometers.
  *
  * Jupiter's radius is 71,492 km.
@@ -163,7 +156,6 @@ const normalize = function(array) {
 export {
     forceNumber,
     roundToOnePlace,
-    getStarRadius,
     rJupToKm, rSunToKm,
     kmToPx,
     getDist,
