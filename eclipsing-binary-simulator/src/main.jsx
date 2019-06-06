@@ -45,7 +45,7 @@ class EclipsingBinarySimulator extends React.Component {
             // Dynamic range inputs
             star1MassMin: 0.1,
             star1MassMax: 85,
-            star1RadiusMin: 0,
+            star1RadiusMin: 0.1,
             star1RadiusMax: 50,
             star1TempMin: 3000,
             star1TempMax: 40000,
@@ -59,7 +59,7 @@ class EclipsingBinarySimulator extends React.Component {
             // Dynamic range inputs
             star2MassMin: 0.1,
             star2MassMax: 85,
-            star2RadiusMin: 0,
+            star2RadiusMin: 0.1,
             star2RadiusMax: 50,
             star2TempMin: 3000,
             star2TempMax: 40000,

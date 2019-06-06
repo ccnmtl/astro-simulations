@@ -269,8 +269,8 @@ export default class BinarySystemView extends React.Component {
             this.rescale();
         } else {
             this.doA();
-            this.resizeIcon(1);
-            this.resizeIcon(2);
+            this.resizeStar(1);
+            this.resizeStar(2);
             this.updateMask(1);
             this.updateMask(2);
             this.updateOrbitalPaths();
@@ -289,8 +289,8 @@ export default class BinarySystemView extends React.Component {
     setScale(arg) {
         this._scale = arg;
         this.doA();
-        this.resizeIcon(1);
-        this.resizeIcon(2);
+        this.resizeStar(1);
+        this.resizeStar(2);
         this.updateMask(1);
         this.updateMask(2);
         this.updateOrbitalPaths();
@@ -298,13 +298,23 @@ export default class BinarySystemView extends React.Component {
         this.updatePositions();
         this.updateLine();
     }
-    resizeIcon() {
+    resizeStar(arg) {
         // resize the icon of the given body (where arg = 1 or 2)
-        /*const bmc = this.backHalfMC["body" + arg + "MC"].iconMC;
-        const fmc = this.frontHalfMC["body" + arg + "MC"].iconMC;
-        const scalingFactor =
-            1 * this._scale * this["_radius" + arg] / this["_icon" + arg + "Radius"];
-        bmc._xscale = bmc._yscale = fmc._xscale = fmc._yscale = scalingFactor;*/
+        const body = this.stars.getChildByName('star' + arg);
+        if (!body) {
+            return;
+        }
+
+        let rad;
+        if (arg === 1) {
+            rad = this.props.star1Radius;
+        } else {
+            rad = this.props.star2Radius;
+        }
+
+        const scalingFactor = (this._scale * rad) / 200;
+
+        body.scale = new PIXI.Point(scalingFactor, scalingFactor);
     }
 
     updateMask() {
@@ -667,6 +677,12 @@ export default class BinarySystemView extends React.Component {
         });
 
         this.initialize(this.initObject);
+
+        // This scene offset is necessary for some reason.
+        this.stars.x += 200;
+        this.stars.y += 200;
+        this.orbitalPlane.x += 200;
+        this.orbitalPlane.y += 200;
     }
     componentDidUpdate(prevProps) {
         if (prevProps.longitude !== this.props.longitude) {
@@ -752,13 +768,15 @@ export default class BinarySystemView extends React.Component {
 
         const star1 = new PIXI.Graphics();
         star1.name = 'star1';
+        star1.pivot = new PIXI.Point(100, 200);
         star1.beginFill(0xffffff, 1);
-        star1.drawCircle(100, 200, 40);
+        star1.drawCircle(100, 200, 200);
 
         const star2 = new PIXI.Graphics();
         star2.name = 'star2';
+        star1.pivot = new PIXI.Point(300, 200);
         star2.beginFill(0xffa0a0, 1);
-        star2.drawCircle(300, 200, 40);
+        star2.drawCircle(300, 200, 200);
 
         container.addChild(star1);
         container.addChild(star2);
