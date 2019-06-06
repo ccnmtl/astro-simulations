@@ -41,7 +41,7 @@ export default class TransitView extends React.Component {
 
         this.onDragStart = this.onDragStart.bind(this);
         this.onDragEnd = this.onDragEnd.bind(this);
-        this.onMove = this.onMove.bind(this);
+        this.onPlanetMove = this.onPlanetMove.bind(this);
 
         this._c = {};
 
@@ -232,6 +232,19 @@ export default class TransitView extends React.Component {
 
         this.drawScene(app);
 
+        this.planet
+        // events for drag start
+            .on('mousedown', this.onDragStart)
+            .on('touchstart', this.onDragStart)
+        // events for drag end
+            .on('mouseup', this.onDragEnd)
+            .on('mouseupoutside', this.onDragEnd)
+            .on('touchend', this.onDragEnd)
+            .on('touchendoutside', this.onDragEnd)
+        // events for drag move
+            .on('mousemove', this.onPlanetMove)
+            .on('touchmove', this.onPlanetMove);
+
         //this.setParameters({});
         this.setSize(this._size);
     }
@@ -267,8 +280,8 @@ export default class TransitView extends React.Component {
     }
 
     updateOrbitalPath() {
-        const orbitPath = this.makeOrbitLine(
-            this.getOrbitalPath(this._eccentricity));
+        this.orbitalPath = this.getOrbitalPath(this._eccentricity);
+        const orbitPath = this.makeOrbitLine(this.orbitalPath);
 
         this.app.stage.removeChild(this.orbitPath);
         this.orbitPath.destroy();
@@ -383,8 +396,8 @@ export default class TransitView extends React.Component {
         this.star = star;
         app.stage.addChild(this.star);
 
-        const orbitPath = this.makeOrbitLine(
-            this.getOrbitalPath(this.props.planetEccentricity));
+        this.orbitalPath = this.getOrbitalPath(this.props.planetEccentricity);
+        const orbitPath = this.makeOrbitLine(this.orbitalPath);
 
         this.orbitPath = orbitPath;
         app.stage.addChild(orbitPath);
@@ -430,9 +443,14 @@ export default class TransitView extends React.Component {
     onDragEnd() {
         this.setState({isDragging: false});
     }
-    onMove() {
+    onPlanetMove(e) {
         if (this.state.isDragging) {
-            //const pos = e.data.getLocalPosition(this.app.stage);
+            const pos = e.data.getLocalPosition(this.app.stage);
+            const pathLeft = this.orbitalPath[0][0];
+            const pathLen = this.orbitalPath[this.orbitalPath.length - 1][0] -
+                            pathLeft;
+            const newPhase = Math.max(0, Math.min(1, (pos.x - pathLeft) / pathLen));
+            this.props.onPhaseUpdate(newPhase);
         }
     }
 }
@@ -449,5 +467,5 @@ TransitView.propTypes = {
     inclination: PropTypes.number.isRequired,
     longitude: PropTypes.number.isRequired,
     semimajorAxis: PropTypes.number.isRequired,
-    onPhaseCoordsChange: PropTypes.func.isRequired
+    onPhaseUpdate: PropTypes.func.isRequired
 };
