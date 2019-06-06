@@ -41,6 +41,7 @@ class ExoplanetTransitSimulator extends React.Component {
     constructor(props) {
         super(props);
         this.initialState = {
+            selectedPreset: 0,
             preset: 0,
 
             // Lightcurve view settings
@@ -92,6 +93,7 @@ class ExoplanetTransitSimulator extends React.Component {
         this.handleInputBlur = this.handleInputBlur.bind(this);
         this.onPhaseUpdate = this.onPhaseUpdate.bind(this);
         this.onPresetSelect = this.onPresetSelect.bind(this);
+        this.onPresetSet = this.onPresetSet.bind(this);
 
         this.lightcurve = new Lightcurve();
         this.lightcurve.setCPhase(this.state.phase);
@@ -196,20 +198,24 @@ class ExoplanetTransitSimulator extends React.Component {
                         semimajorAxis={this.state.planetSemimajorAxis}
                         onPhaseUpdate={this.onPhaseUpdate} />
                     <h5>Presets</h5>
-                    <select className="form-control form-control-sm" onChange={this.onPresetSelect}>
-                        <option value={-1}>--</option>
-                        <option value={0}>1. Option A</option>
-                        <option value={1}>2. Option B</option>
-                        <option value={2}>3. OGLE-TR-113 b</option>
-                        <option value={3}>4. TrES-1</option>
-                        <option value={4}>5. XO-1 b</option>
-                        <option value={5}>6. HD 209458 b</option>
-                        <option value={6}>7. OGLE-TR-111 b</option>
-                        <option value={7}>8. OGLE-TR-10 b</option>
-                        <option value={8}>9. HD 189733 b</option>
-                        <option value={9}>10. HD 149026 b</option>
-                        <option value={10}>11. OGLE-TR-132 b</option>
-                    </select>
+                    <form className="form-inline">
+                        <select className="form-control form-control-sm mr-2"
+                                onChange={this.onPresetSelect}>
+                            <option value={-1}>--</option>
+                            <option value={0}>1. Option A</option>
+                            <option value={1}>2. Option B</option>
+                            <option value={2}>3. OGLE-TR-113 b</option>
+                            <option value={3}>4. TrES-1</option>
+                            <option value={4}>5. XO-1 b</option>
+                            <option value={5}>6. HD 209458 b</option>
+                            <option value={6}>7. OGLE-TR-111 b</option>
+                            <option value={7}>8. OGLE-TR-10 b</option>
+                            <option value={8}>9. HD 189733 b</option>
+                            <option value={9}>10. HD 149026 b</option>
+                            <option value={10}>11. OGLE-TR-132 b</option>
+                        </select>
+                        <button onClick={this.onPresetSet}>Set</button>
+                    </form>
                 </div>
 
                 <div className="col-6">
@@ -630,6 +636,16 @@ class ExoplanetTransitSimulator extends React.Component {
     }
     onPresetSelect(e) {
         const idx = forceNumber(e.target.value);
+        if (idx < 0) {
+            return;
+        }
+
+        this.setState({selectedPreset: idx});
+    }
+    onPresetSet(e) {
+        e.preventDefault();
+
+        const idx = this.state.selectedPreset;
         if (idx < 0) {
             return;
         }
