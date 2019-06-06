@@ -90,7 +90,6 @@ class ExoplanetTransitSimulator extends React.Component {
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleInputBlur = this.handleInputBlur.bind(this);
-        this.onPhaseCoordsChange = this.onPhaseCoordsChange.bind(this);
         this.onPhaseUpdate = this.onPhaseUpdate.bind(this);
         this.onPresetSelect = this.onPresetSelect.bind(this);
 
@@ -195,7 +194,7 @@ class ExoplanetTransitSimulator extends React.Component {
                         inclination={this.state.inclination}
                         longitude={this.state.longitude}
                         semimajorAxis={this.state.planetSemimajorAxis}
-                        onPhaseCoordsChange={this.onPhaseCoordsChange} />
+                        onPhaseUpdate={this.onPhaseUpdate} />
                     <h5>Presets</h5>
                     <select className="form-control form-control-sm" onChange={this.onPresetSelect}>
                         <option value={-1}>--</option>
@@ -621,8 +620,6 @@ class ExoplanetTransitSimulator extends React.Component {
     }
     handleFocus(e) {
         e.target.select();
-    }
-    onPhaseCoordsChange() {
     }
     onPhaseUpdate(newPhase) {
         this.setState({phase: newPhase});
