@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Plot from './d3/Plot';
-import {shuffleArray} from './utils';
+import * as d3 from 'd3';
 
 
 export default class LightcurveView extends React.Component {
@@ -20,40 +20,34 @@ export default class LightcurveView extends React.Component {
      * Generate noise around the lightcurve data.
      */
     getNoiseData(lightcurveData) {
-        const self = this;
-
         if (!this.props.showSimulatedMeasurements) {
             return [];
         }
 
-        // Find simMeasurementNumber random samples out of lightcurve
-        // data. These will be the points where noise is generated.
-        const randomizedData = shuffleArray(lightcurveData);
-        // Get the first simMeasurementNumber samples out of the
-        // randomized data.
-        const samples = randomizedData.slice(
-            0, this.props.simMeasurementNumber);
+        const xExtent = d3.extent(lightcurveData, d => d[0]);
 
-        const a = Array.from(
-            Array(this.props.simMeasurementNumber)
-        ).map(
-            function(v, idx) {
-                if (!samples[idx]) {
-                    return [];
-                }
-                return [
-                    // The x value is the same as the original sample.
-                    samples[idx][0],
-                    // y is the same as the original, plus some small
-                    // random factor.
-                    samples[idx][1] + (
-                        // Scale the randomization factor by the value
-                        // of the "noise" slider
-                        (Math.random() - 0.5) * self.props.noise)
-                ];
-            }
-        );
-        return a;
+        const randomizedData = [];
+        for (let i = 0; i < this.props.simMeasurementNumber; i++) {
+            const randX = Math.random() * xExtent[1];
+
+            // Find the closest real data point to this random x
+            // value.
+            const idx = d3.bisector(function (d) {
+                return d[0];
+            }).left(lightcurveData, randX);
+
+            // Generate noise based on the real y val.
+            const y = lightcurveData[idx][1];
+
+            const newY = y + (
+                // Scale the randomization factor by the value
+                // of the "noise" slider
+                (Math.random() - 0.5) * this.props.noise);
+
+            randomizedData.push([randX, newY]);
+        }
+
+        return randomizedData;
     }
     render() {
         // d3 integration based on:
