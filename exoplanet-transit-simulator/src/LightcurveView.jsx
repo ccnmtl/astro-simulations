@@ -68,6 +68,7 @@ export default class LightcurveView extends React.Component {
                 planetRadius={this.props.planetRadius}
                 width={460}
                 height={280}
+                onPhaseUpdate={this.props.onPhaseUpdate}
                 paddingLeft={60}
                 padding={20} />
         );
@@ -136,6 +137,7 @@ LightcurveView.propTypes = {
     starMass: PropTypes.number.isRequired,
     inclination: PropTypes.number.isRequired,
     longitude: PropTypes.number.isRequired,
+    curveCoords: PropTypes.array.isRequired,
     phase: PropTypes.number.isRequired,
-    curveCoords: PropTypes.array.isRequired
+    onPhaseUpdate: PropTypes.func.isRequired
 };

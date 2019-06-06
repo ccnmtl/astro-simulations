@@ -91,6 +91,7 @@ class ExoplanetTransitSimulator extends React.Component {
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleInputBlur = this.handleInputBlur.bind(this);
         this.onPhaseCoordsChange = this.onPhaseCoordsChange.bind(this);
+        this.onPhaseUpdate = this.onPhaseUpdate.bind(this);
         this.onPresetSelect = this.onPresetSelect.bind(this);
 
         this.lightcurve = new Lightcurve();
@@ -227,6 +228,7 @@ class ExoplanetTransitSimulator extends React.Component {
                         inclination={this.state.inclination}
                         longitude={this.state.longitude}
                         phase={this.state.phase}
+                        onPhaseUpdate={this.onPhaseUpdate}
                     />
                     <div className="text-center">
                         {getEclipseText(
@@ -621,6 +623,9 @@ class ExoplanetTransitSimulator extends React.Component {
         e.target.select();
     }
     onPhaseCoordsChange() {
+    }
+    onPhaseUpdate(newPhase) {
+        this.setState({phase: newPhase});
     }
     onResetClick(e) {
         e.preventDefault();
