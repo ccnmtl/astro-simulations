@@ -67,6 +67,14 @@ Line.propTypes = {
 };
 
 export default class Plot extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            x: 0,
+            isDragging: false
+        };
+    }
     render() {
         const props = this.props;
 
@@ -102,5 +110,6 @@ Plot.propTypes = {
     lightcurveData: PropTypes.array.isRequired,
     noiseData: PropTypes.array.isRequired,
     showTheoreticalCurve: PropTypes.bool.isRequired,
-    showSimulatedMeasurements: PropTypes.bool.isRequired
+    showSimulatedMeasurements: PropTypes.bool.isRequired,
+    onPhaseUpdate: PropTypes.func.isRequired
 };

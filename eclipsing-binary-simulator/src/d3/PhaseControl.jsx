@@ -17,6 +17,10 @@ export default class PhaseControl extends React.Component {
                      className="phase-control"
                      stroke="#ff7070" strokeWidth={3} />;
     }
+    componentDidMount() {
+        const el = d3.select('.phase-control');
+        el.call(d3.drag().on('drag', this.dragmove.bind(this)));
+    }
     dragmove(e) {
         const w = this.props.width - this.props.paddingLeft;
 
@@ -30,10 +34,7 @@ export default class PhaseControl extends React.Component {
 
         this.props.onPhaseUpdate(newPhase);
     }
-    componentDidMount() {
-        const el = d3.select('.phase-control');
-        el.call(d3.drag().on('drag', this.dragmove.bind(this)));
-    }
+
 };
 
 PhaseControl.propTypes = {
