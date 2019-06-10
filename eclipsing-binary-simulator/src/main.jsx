@@ -152,6 +152,8 @@ class EclipsingBinarySimulator extends React.Component {
                         star2Mass={this.state.star2Mass}
                         star1Radius={this.state.star1Radius}
                         star2Radius={this.state.star2Radius}
+                        star1Temp={this.state.star1Temp}
+                        star2Temp={this.state.star2Temp}
                         separation={this.state.separation}
                         eccentricity={this.state.eccentricity}
                         inclination={this.state.inclination}
@@ -452,8 +454,8 @@ class EclipsingBinarySimulator extends React.Component {
                                     value={this.state.star1Temp}
                                     onFocus={this.handleFocus}
                                     onChange={this.handleInputChange}
-                                    min={this.state.star1MassMin}
-                                    max={this.state.star1MassMax}
+                                    min={this.state.star1TempMin}
+                                    max={this.state.star1TempMax}
                                     step={1} />
 
                                 <RangeStepInput
@@ -461,8 +463,8 @@ class EclipsingBinarySimulator extends React.Component {
                                     name="star1Temp"
                                     value={this.state.star1Temp}
                                     onChange={this.handleInputChange}
-                                    min={this.state.star1MassMin}
-                                    max={this.state.star1MassMax}
+                                    min={this.state.star1TempMin}
+                                    max={this.state.star1TempMax}
                                     step={1} />
                             </div>
                         </div>
