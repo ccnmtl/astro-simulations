@@ -48,7 +48,15 @@ export default class Axes extends Component {
                `translate(${xPos - (this.props.width - this.props.paddingLeft)}, ${this.props.height - this.props.padding})`
                }
             />
-            <rect fill="white" width="60" height="24" x="0" y="256" />
+            <rect fill="white" width="60" height="24" x="0" y="230" />
+
+            <text
+                x="250"
+                y="260"
+                dy=".8em"
+                fontSize=".9em"
+                fontWeight="bold"
+                textAnchor="end">Phase</text>
 
             <g className="yAxis" ref={this.yAxis}
                transform={`translate(${this.props.paddingLeft}, 0)`}

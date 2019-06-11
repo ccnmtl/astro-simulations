@@ -185,7 +185,9 @@ const systemPresets = [
 
         // System Properties
         separation: 13.61,
-        eccentricity: 0
+        eccentricity: 0,
+
+        img: 'flux - kp aql'
     },
 
     // 10. EW Ori
@@ -206,7 +208,9 @@ const systemPresets = [
 
         // System Properties
         separation: 19.5,
-        eccentricity: 0.07
+        eccentricity: 0.07,
+
+        img: 'flux - ew ori'
     },
 
     // 11. FL Lyr
@@ -227,7 +231,9 @@ const systemPresets = [
 
         // System Properties
         separation: 8.87,
-        eccentricity: 0
+        eccentricity: 0,
+
+        img: 'flux - fl lyr'
     },
 
     // 12. EK Cep
@@ -248,7 +254,9 @@ const systemPresets = [
 
         // System Properties
         separation: 16.58,
-        eccentricity: 0.11
+        eccentricity: 0.11,
+
+        img: 'flux - ek cep'
     },
 
     // 13. TW Cas
@@ -269,7 +277,9 @@ const systemPresets = [
 
         // System Properties
         separation: 8.17,
-        eccentricity: 0
+        eccentricity: 0,
+
+        img: 'flux - tw cas'
     },
 
     // 14. AD Her
@@ -290,7 +300,9 @@ const systemPresets = [
 
         // System Properties
         separation: 26.14,
-        eccentricity: 0
+        eccentricity: 0,
+
+        img: 'flux - ad her'
     },
 
     // 15. AW UMa
@@ -311,7 +323,9 @@ const systemPresets = [
 
         // System Properties
         separation: 2.81,
-        eccentricity: 0
+        eccentricity: 0,
+
+        img: 'flux - aw uma'
     },
 
     // 16. AW Lac
@@ -332,7 +346,9 @@ const systemPresets = [
 
         // System Properties
         separation: 10.65,
-        eccentricity: 0
+        eccentricity: 0,
+
+        img: 'flux - aw lac'
     },
 
     // 17. DM Del
@@ -353,7 +369,9 @@ const systemPresets = [
 
         // System Properties
         separation: 5.07,
-        eccentricity: 0
+        eccentricity: 0,
+
+        img: 'flux - dm del'
     },
 
     // 18. RT CrB
@@ -374,7 +392,9 @@ const systemPresets = [
 
         // System Properties
         separation: 14.5,
-        eccentricity: 0
+        eccentricity: 0,
+
+        img: 'flux - rt crb'
     },
 
     // 19. V478 Cyg
@@ -395,7 +415,9 @@ const systemPresets = [
 
         // System Properties
         separation: 24.29,
-        eccentricity: 0.03
+        eccentricity: 0.03,
+
+        img: 'mag - v478 cyg'
     },
 
     // 20. V477 Cyg
@@ -416,7 +438,9 @@ const systemPresets = [
 
         // System Properties
         separation: 60,
-        eccentricity: 0.33
+        eccentricity: 0.33,
+
+        img: 'mag - v477 cyg'
     },
 
     // 21. DI Her
@@ -437,7 +461,9 @@ const systemPresets = [
 
         // System Properties
         separation: 42.12,
-        eccentricity: 0
+        eccentricity: 0,
+
+        img: 'flux - di her'
     },
 
     // 22. AG Phe
@@ -458,7 +484,9 @@ const systemPresets = [
 
         // System Properties
         separation: 4.22,
-        eccentricity: 0
+        eccentricity: 0,
+
+        img: 'flux - ag phe'
     },
 
     // 23. RZ Cas
@@ -479,7 +507,9 @@ const systemPresets = [
 
         // System Properties
         separation: 6.44,
-        eccentricity: 0
+        eccentricity: 0,
+
+        img: 'flux - rz cas'
     },
 
     // 24. AF Gem
@@ -500,7 +530,9 @@ const systemPresets = [
 
         // System Properties
         separation: 7.13,
-        eccentricity: 0
+        eccentricity: 0,
+
+        img: 'flux - af gem'
     },
 
     // 25. CW CMa
@@ -521,7 +553,9 @@ const systemPresets = [
 
         // System Properties
         separation: 11.92,
-        eccentricity: 0
+        eccentricity: 0,
+
+        img: 'flux - cw cma'
     },
 
     // 26. RX Ari
@@ -542,7 +576,9 @@ const systemPresets = [
 
         // System Properties
         separation: 5.09,
-        eccentricity: 0
+        eccentricity: 0,
+
+        img: 'flux - rx ari'
     },
 
     // 27. MR Cyg
@@ -563,7 +599,9 @@ const systemPresets = [
 
         // System Properties
         separation: 12.33,
-        eccentricity: 0
+        eccentricity: 0,
+
+        img: 'flux - mr cyg'
     },
 
     // 28. TX UMa
@@ -584,7 +622,9 @@ const systemPresets = [
 
         // System Properties
         separation: 14.24,
-        eccentricity: 0
+        eccentricity: 0,
+
+        img: 'flux - tx uma'
     },
 
     // 29. V442 Cyg
@@ -605,7 +645,9 @@ const systemPresets = [
 
         // System Properties
         separation: 10.27,
-        eccentricity: 0
+        eccentricity: 0,
+
+        img: 'mag - v442 cyg'
     },
 
     // 30. AD Boo
@@ -626,7 +668,9 @@ const systemPresets = [
 
         // System Properties
         separation: 8.88,
-        eccentricity: 0
+        eccentricity: 0,
+
+        img: 'flux - ad boo'
     },
 
     // 31. UZ Dra
@@ -647,7 +691,9 @@ const systemPresets = [
 
         // System Properties
         separation: 11.84,
-        eccentricity: 0
+        eccentricity: 0,
+
+        img: 'flux - uz dra'
     },
 
     // 32. AR Aur
@@ -668,7 +714,9 @@ const systemPresets = [
 
         // System Properties
         separation: 18.81,
-        eccentricity: 0
+        eccentricity: 0,
+
+        img: 'flux - ar aur'
     },
 
     // 33. HS Aur
@@ -689,7 +737,9 @@ const systemPresets = [
 
         // System Properties
         separation: 23.01,
-        eccentricity: 0
+        eccentricity: 0,
+
+        img: 'flux - hs aur'
     },
 
     // 34. AY Cam
@@ -710,7 +760,9 @@ const systemPresets = [
 
         // System Properties
         separation: 11.54,
-        eccentricity: 0
+        eccentricity: 0,
+
+        img: 'flux - ay cam'
     },
 
     // 35. CD Tau
@@ -731,7 +783,9 @@ const systemPresets = [
 
         // System Properties
         separation: 12.43,
-        eccentricity: 0
+        eccentricity: 0,
+
+        img: 'flux - cd tau'
     },
 
     // 36. FS Mon
@@ -752,7 +806,9 @@ const systemPresets = [
 
         // System Properties
         separation: 8.7,
-        eccentricity: 0
+        eccentricity: 0,
+
+        img: 'flux - fs mon'
     },
 
     // 37. BP Vul
@@ -773,7 +829,9 @@ const systemPresets = [
 
         // System Properties
         separation: 9.33,
-        eccentricity: 0.04
+        eccentricity: 0.04,
+
+        img: 'flux - bp vul'
     },
 
     // 38. V459 Cas
@@ -794,7 +852,9 @@ const systemPresets = [
 
         // System Properties
         separation: 27.89,
-        eccentricity: 0.02
+        eccentricity: 0.02,
+
+        img: 'mag - v459 cas'
     },
 
     // 39. V364 Lac
@@ -815,7 +875,9 @@ const systemPresets = [
 
         // System Properties
         separation: 24.33,
-        eccentricity: 0.29
+        eccentricity: 0.29,
+
+        img: 'mag - v364 lac'
     },
 
     // 40. V526 Sgr
@@ -836,7 +898,9 @@ const systemPresets = [
 
         // System Properties
         separation: 10.43,
-        eccentricity: 0.22
+        eccentricity: 0.22,
+
+        img: 'mag - v526 sgr'
     },
 
     // 41. GG Ori
@@ -857,7 +921,9 @@ const systemPresets = [
 
         // System Properties
         separation: 24.78,
-        eccentricity: 0.22
+        eccentricity: 0.22,
+
+        img: 'flux - gg ori'
     },
 
     // 42. SW CMa
@@ -878,10 +944,12 @@ const systemPresets = [
 
         // System Properties
         separation: 29.97,
-        eccentricity: 0.32
+        eccentricity: 0.32,
+
+        img: 'flux - sw cma'
     },
 
-    // 43. V541 Vyg
+    // 43. V541 Cyg
     {
         // System Orientation
         longitude: 262.8,
@@ -899,7 +967,9 @@ const systemPresets = [
 
         // System Properties
         separation: 43.23,
-        eccentricity: 0.48
+        eccentricity: 0.48,
+
+        img: 'mag - v541 cyg'
     },
 
     // 44. IQ Per
@@ -920,7 +990,9 @@ const systemPresets = [
 
         // System Properties
         separation: 10.17,
-        eccentricity: 0.08
+        eccentricity: 0.08,
+
+        img: 'flux - iq per'
     },
 
     // 45. IM Aur
@@ -941,7 +1013,9 @@ const systemPresets = [
 
         // System Properties
         separation: 7.28,
-        eccentricity: 0
+        eccentricity: 0,
+
+        img: 'flux - im aur'
     },
 
     // 46. TT Lyr
@@ -962,7 +1036,9 @@ const systemPresets = [
 
         // System Properties
         separation: 17.83,
-        eccentricity: 0
+        eccentricity: 0,
+
+        img: 'flux - tt lyr'
     },
 
     // 47. T LMi
@@ -983,7 +1059,9 @@ const systemPresets = [
 
         // System Properties
         separation: 11.97,
-        eccentricity: 0
+        eccentricity: 0,
+
+        img: 'flux - t lmi'
     },
 
     // 48. SW Cyg
@@ -1004,7 +1082,9 @@ const systemPresets = [
 
         // System Properties
         separation: 16.31,
-        eccentricity: 0
+        eccentricity: 0,
+
+        img: 'flux - sw cyg'
     },
 
     // 49. V380 Cyg
@@ -1025,7 +1105,9 @@ const systemPresets = [
 
         // System Properties
         separation: 49.76,
-        eccentricity: 0.23
+        eccentricity: 0.23,
+
+        img: 'mag - v380 cyg'
     },
 
     // 50. NN Cep
@@ -1046,7 +1128,9 @@ const systemPresets = [
 
         // System Properties
         separation: 11.03,
-        eccentricity: 0
+        eccentricity: 0,
+
+        img: 'flux - nn cep'
     },
 
     // 51. AE Phe
@@ -1067,7 +1151,9 @@ const systemPresets = [
 
         // System Properties
         separation: 3.31,
-        eccentricity: 0
+        eccentricity: 0,
+
+        img: 'flux - ae phe'
     },
 
     // 52. V885 Cyg
@@ -1088,7 +1174,8 @@ const systemPresets = [
 
         // System Properties
         separation: 7.15,
-        eccentricity: 0
+        eccentricity: 0,
+        img: 'mag - v885 cyg'
     },
 
     // 53. RS Ind
@@ -1109,7 +1196,9 @@ const systemPresets = [
 
         // System Properties
         separation: 3.81,
-        eccentricity: 0
+        eccentricity: 0,
+
+        img: 'flux - rs ind'
     },
 
     // 54. EF Dra
@@ -1130,7 +1219,9 @@ const systemPresets = [
 
         // System Properties
         separation: 2.54,
-        eccentricity: 0
+        eccentricity: 0,
+
+        img: 'flux - ef dra'
     }
 ];
 

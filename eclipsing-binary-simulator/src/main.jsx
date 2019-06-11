@@ -307,6 +307,7 @@ class EclipsingBinarySimulator extends React.Component {
                     <LightcurveView
                         ref={this.lightcurveViewRef}
                         showLightcurve={this.state.showLightcurve}
+                        lightcurveDataImg={this.state.lightcurveDataImg}
                         phase={this.state.phase}
                         onPhaseUpdate={this.onPhaseUpdate} />
 
@@ -853,6 +854,14 @@ class EclipsingBinarySimulator extends React.Component {
 
         if ((preset - 1) < systemPresets.length) {
             const values = systemPresets[preset - 1];
+
+            if (values.img) {
+                const filename = `./img/caleb/${values.img}.png`;
+                values['lightcurveDataImg'] = filename;
+            } else {
+                values['lightcurveDataImg'] = null;
+            }
+
             this.setState(values);
         }
     }
