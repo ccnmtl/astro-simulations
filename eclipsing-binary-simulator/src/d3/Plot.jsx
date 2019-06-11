@@ -21,7 +21,7 @@ const yScale = props => {
     return d3
         .scaleLinear()
         .domain([0, 1.1])
-        .range([props.height - (props.padding), props.padding]);
+        .range([props.height - props.padding, props.padding]);
 };
 
 class Line extends React.Component {
@@ -129,17 +129,31 @@ export default class Plot extends React.Component {
             yScale: yScale(props)
         };
 
+        let imageL = null;
+        let imageR = null;
+        if (props.lightcurveDataImg) {
+            const xImgPos = scales.xScale(
+                ((this.state.offset / props.width) + 0.5) % 1);
+            imageL = <image xlinkHref={props.lightcurveDataImg}
+                            x={xImgPos - (props.width - props.paddingLeft)} y={10}
+                            width={320} height={235} />;
+            imageR = <image xlinkHref={props.lightcurveDataImg}
+                            x={xImgPos} y={10}
+                            width={320} height={235} />;
+        }
+
         return (
-            <svg width={props.width} height={props.height}>
+            <svg width={props.width} height={props.height + props.padding}>
+                {imageL} {imageR}
                 <rect className="plot-pan" pointerEvents="all" fill="none"
-                      width={props.width} height={props.height}></rect>
+                    width={props.width} height={props.height}></rect>
+
                 <Line
                     offset={this.state.offset}
-                    data={this.props.lightcurveData}
-                    graphWidth={this.props.width - this.props.paddingLeft}
-                    graphHeight={this.props.height - this.props.padding}
-                    {...props}
-                    {...scales}
+                    data={props.lightcurveData}
+                    graphWidth={props.width - props.paddingLeft}
+                    graphHeight={props.height - props.padding}
+                    {...props} {...scales}
                 />
                 <Axes offset={this.state.offset}
                       {...props} {...scales} />
@@ -157,6 +171,7 @@ Plot.propTypes = {
     padding: PropTypes.number.isRequired,
     paddingLeft: PropTypes.number.isRequired,
     lightcurveData: PropTypes.array.isRequired,
+    lightcurveDataImg: PropTypes.string,
     showLightcurve: PropTypes.bool.isRequired,
     phase: PropTypes.number.isRequired,
     onPhaseUpdate: PropTypes.func.isRequired

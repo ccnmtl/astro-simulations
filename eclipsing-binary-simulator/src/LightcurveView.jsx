@@ -10,33 +10,18 @@ export default class LightcurveView extends React.Component {
             curveCoords: []
         };
 
-        this.plotWidth = 460;
-        this.plotHeight = 280;
+        this.plotWidth = 380;
+        this.plotHeight = 255;
 
         this.minMagDiff = 0.01;
 
         this.yTopMargin = 17;
-        this.yBottomMargin = 5;
+        this.yBottomMargin = 20;
         this.xMargin = 1;
 
         this.totalHeight = this.plotHeight + this.yTopMargin + this.yBottomMargin;
 
-        this.minMagTickSpacing = 20;
-        this.minMagMinorTickSpacing = 7;
-
         this.solarRadius = 6.96e8;
-
-        this.maxNumberOfMagTicks = Math.ceil(this.totalHeight/this.minMagTickSpacing);
-
-        /*for (i = 0; i<this.maxNumberOfMagTicks; i++) {
-            //this.magTicksMC.attachMovie("Mag Tick And Label", "tick"+i, i, {visible: false});
-        }*/
-
-        this.maxNumberOfMagMinorTicks = this.maxNumberOfMagTicks*11;
-
-        /*for (i = 0; i<this.maxNumberOfMagMinorTicks; i++) {
-            //this.magTicksMC.minorTicksMC.attachMovie("Mag Minor Tick", "minorTick"+i, i, {visible: false});
-        }*/
 
         this.onDragStart = this.onDragStart.bind(this);
         this.onDragEnd = this.onDragEnd.bind(this);
@@ -431,6 +416,7 @@ export default class LightcurveView extends React.Component {
                 lightcurveData={this.state.curveCoords}
                 phase={this.props.phase}
                 showLightcurve={this.props.showLightcurve}
+                lightcurveDataImg={this.props.lightcurveDataImg}
                 width={this.plotWidth}
                 height={this.plotHeight}
                 onPhaseUpdate={this.props.onPhaseUpdate}
@@ -455,6 +441,7 @@ export default class LightcurveView extends React.Component {
 
 LightcurveView.propTypes = {
     showLightcurve: PropTypes.bool.isRequired,
+    lightcurveDataImg: PropTypes.string,
     phase: PropTypes.number.isRequired,
     onPhaseUpdate: PropTypes.func.isRequired
 };
