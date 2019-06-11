@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import * as PIXI from 'pixi.js-legacy';
 import {
     degToRad, radToDeg, getSystemTheta, getSystemPhi,
-    roundToTwoPlaces
+    roundToTwoPlaces, getColorFromTemp
 } from './utils';
 
 const convertPhase = function(phase) {
@@ -685,6 +685,20 @@ export default class BinarySystemView extends React.Component {
         this.orbitalPlane.y += 200;
     }
     componentDidUpdate(prevProps) {
+        if (prevProps.star1Temp !== this.props.star1Temp) {
+            const star1 = this.stars.getChildByName('star1');
+            star1.clear();
+            star1.beginFill(getColorFromTemp(this.props.star1Temp));
+            star1.drawCircle(100, 200, 200);
+        }
+
+        if (prevProps.star2Temp !== this.props.star2Temp) {
+            const star2 = this.stars.getChildByName('star2');
+            star2.clear();
+            star2.beginFill(getColorFromTemp(this.props.star2Temp));
+            star2.drawCircle(300, 200, 200);
+        }
+
         if (prevProps.longitude !== this.props.longitude) {
             this._theta = degToRad(getSystemTheta(this.props.longitude));
         }
@@ -750,7 +764,7 @@ export default class BinarySystemView extends React.Component {
             fontWeight: 'normal',
             fill: 0xffffff,
             align: 'center'
-        })
+        });
 
         const text = new PIXI.Text('perspective from earth', textStyle);
         text.position.x = 14;
@@ -769,13 +783,13 @@ export default class BinarySystemView extends React.Component {
         const star1 = new PIXI.Graphics();
         star1.name = 'star1';
         star1.pivot = new PIXI.Point(100, 200);
-        star1.beginFill(0xffffff, 1);
+        star1.beginFill(getColorFromTemp(this.props.star1Temp), 1);
         star1.drawCircle(100, 200, 200);
 
         const star2 = new PIXI.Graphics();
         star2.name = 'star2';
         star1.pivot = new PIXI.Point(300, 200);
-        star2.beginFill(0xffa0a0, 1);
+        star2.beginFill(getColorFromTemp(this.props.star2Temp), 1);
         star2.drawCircle(300, 200, 200);
 
         container.addChild(star1);
@@ -792,6 +806,8 @@ BinarySystemView.propTypes = {
     star2Mass: PropTypes.number.isRequired,
     star1Radius: PropTypes.number.isRequired,
     star2Radius: PropTypes.number.isRequired,
+    star1Temp: PropTypes.number.isRequired,
+    star2Temp: PropTypes.number.isRequired,
     separation: PropTypes.number.isRequired,
     eccentricity: PropTypes.number.isRequired,
     inclination: PropTypes.number.isRequired,
