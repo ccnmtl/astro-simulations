@@ -302,7 +302,8 @@ export default class BinarySystemView extends React.Component {
     }
     resizeStar(arg) {
         // resize the icon of the given body (where arg = 1 or 2)
-        const body = this.stars.getChildByName('star' + arg);
+        const body = this.stars.getChildByName(`star${arg}`)
+                         .getChildByName('star');
         if (!body) {
             return;
         }
@@ -319,13 +320,20 @@ export default class BinarySystemView extends React.Component {
         body.scale = new PIXI.Point(scalingFactor, scalingFactor);
     }
 
-    updateMask() {
+    updateMask(arg) {
         // update the mask of the given body (arg = 1 or 2) that's located in the front half movieclip
         // (update the object equator at the same time)
 
-        //var mc = this.frontHalfMC["mask"+arg+"MC"];
-        //var aRad = this._scale*this["_radius"+arg];
-        var aRad = this._scale * 1;
+        const mask = this.stars.getChildByName(`star${arg}`)
+                         .getChildByName('mask');
+        mask.clear();
+
+        let aRad;
+        if (arg === 1) {
+            aRad = this._scale * this.props.star1Radius;
+        } else {
+            aRad = this._scale * this.props.star2Radius;
+        }
 
         var cos = Math.cos;
         var sin = Math.sin;
@@ -339,8 +347,8 @@ export default class BinarySystemView extends React.Component {
         var aAngle = 0;
         var cAngle = -step/2;
 
-        //mc.moveTo(aRad * cos(aAngle), -aRad * sin(aAngle));
-        //mc.beginFill(0xFF0000, 100);
+        mask.moveTo(aRad * cos(aAngle), -aRad * sin(aAngle));
+        mask.beginFill(0xFF0000, 1);
 
         let ak, ck;
         if (this._phi>0) {
@@ -352,31 +360,31 @@ export default class BinarySystemView extends React.Component {
             ck = cRad;
         }
 
-        const coords = [];
-
         let i;
         for (i = 0; i<hn; i++) {
             aAngle += step;
             cAngle += step;
-            coords.push([
+            mask.quadraticCurveTo(
                 cRad*cos(cAngle),
                 ck*sin(cAngle),
                 aRad*cos(aAngle),
                 ak*sin(aAngle)
-            ]);
+            );
         }
 
         ak = -aRad*sin(this._phi);
         ck = -cRad*sin(this._phi);
 
         // do the equator as we finish drawing the mask
-        //var equatorMC = this.frontHalfMC["body"+arg+"MC"].objectEquatorMC;
+        const equator = this.stars.getChildByName(`star${arg}`)
+                            .getChildByName('equator');
+        equator.clear();
 
-        /*equatorMC.lineStyle(
+        equator.lineStyle(
             this.objectEquatorStyle.thickness,
             this.objectEquatorStyle.color,
-            this.objectEquatorStyle.alpha);*/
-        coords.push([-aRad, 0]);
+            this.objectEquatorStyle.alpha);
+        equator.moveTo(-aRad, 0);
 
         for (i = hn; i < n; i++) {
             aAngle += step;
@@ -385,11 +393,11 @@ export default class BinarySystemView extends React.Component {
             var cy = ck*sin(cAngle);
             var ax = aRad*cos(aAngle);
             var ay = ak*sin(aAngle);
-            coords.push([cx, cy, ax, ay]);
-            //equatorMC.curveTo(cx, cy, ax, ay);
+            mask.quadraticCurveTo(cx, cy, ax, ay);
+            equator.quadraticCurveTo(cx, cy, ax, ay);
         }
 
-        //mc.endFill();
+        mask.endFill();
     }
 
     updateOrbitalPaths() {
@@ -689,14 +697,16 @@ export default class BinarySystemView extends React.Component {
     }
     componentDidUpdate(prevProps) {
         if (prevProps.star1Temp !== this.props.star1Temp) {
-            const star1 = this.stars.getChildByName('star1');
+            const star1 = this.stars.getChildByName('star1')
+                              .getChildByName('star');
             star1.clear();
             star1.beginFill(getColorFromTemp(this.props.star1Temp));
             star1.drawCircle(0, 0, 200);
         }
 
         if (prevProps.star2Temp !== this.props.star2Temp) {
-            const star2 = this.stars.getChildByName('star2');
+            const star2 = this.stars.getChildByName('star2')
+                              .getChildByName('star');
             star2.clear();
             star2.beginFill(getColorFromTemp(this.props.star2Temp));
             star2.drawCircle(0, 0, 200);
@@ -783,18 +793,40 @@ export default class BinarySystemView extends React.Component {
     drawStars(app) {
         const container = new PIXI.Container();
 
+        const star1Container = new PIXI.Container();
+        star1Container.name = 'star1';
         const star1 = new PIXI.Graphics();
-        star1.name = 'star1';
+        star1.name = 'star';
         star1.beginFill(getColorFromTemp(this.props.star1Temp), 1);
         star1.drawCircle(0, 0, 200);
 
+        const mask1 = new PIXI.Graphics();
+        mask1.name = 'mask';
+        const equator1 = new PIXI.Graphics();
+        equator1.name = 'equator';
+
+        star1Container.addChild(star1);
+        star1Container.addChild(mask1);
+        star1Container.addChild(equator1);
+
+        const star2Container = new PIXI.Container();
+        star2Container.name = 'star2';
         const star2 = new PIXI.Graphics();
-        star2.name = 'star2';
+        star2.name = 'star';
         star2.beginFill(getColorFromTemp(this.props.star2Temp), 1);
         star2.drawCircle(0, 0, 200);
 
-        container.addChild(star1);
-        container.addChild(star2);
+        const mask2 = new PIXI.Graphics();
+        mask2.name = 'mask';
+        const equator2 = new PIXI.Graphics();
+        equator2.name = 'equator';
+
+        star2Container.addChild(star2);
+        star2Container.addChild(mask2);
+        star2Container.addChild(equator2);
+
+        container.addChild(star1Container);
+        container.addChild(star2Container);
         app.stage.addChild(container);
 
         return container;
