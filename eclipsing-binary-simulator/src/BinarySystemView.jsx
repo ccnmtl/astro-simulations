@@ -15,6 +15,8 @@ export default class BinarySystemView extends React.Component {
         super(props);
         this.id = 'BinarySystemView';
 
+        this.size = 400;
+
         this._c = {};
 
         this.orbitalPlane = null;
@@ -30,7 +32,7 @@ export default class BinarySystemView extends React.Component {
             showOrbitalPlane: true,
             showOrbitalPaths: true,
             autoScale: true,
-            targetSize: 470,
+            targetSize: this.size,
             linePhi: 5,
             lineTheta: 135,
             showLine: true,
@@ -630,12 +632,13 @@ export default class BinarySystemView extends React.Component {
         star2.x = sx2;
         star2.y = sy2;
 
-        if (sz1>sz2) {
-            //this.frontHalfMC.body1MC.swapDepths(200);
-            //this.backHalfMC.body1MC.swapDepths(200);
-        } else {
-            //this.frontHalfMC.body2MC.swapDepths(200);
-            //this.backHalfMC.body2MC.swapDepths(200);
+        const star1z = this.stars.getChildIndex(star1);
+        const star2z = this.stars.getChildIndex(star2);
+
+        if (sz1 > sz2 && star2z > star1z) {
+            this.stars.swapChildren(star2, star1);
+        } else if (sz2 > sz1 && star1z > star2z) {
+            this.stars.swapChildren(star1, star2);
         }
     }
 
@@ -647,8 +650,8 @@ export default class BinarySystemView extends React.Component {
 
     componentDidMount() {
         this.app = new PIXI.Application({
-            width: 400,
-            height: 400,
+            width: this.size,
+            height: this.size,
 
             // The default is webgl - I'll switch to that if necessary
             // but for now canvas just displays my images better. I'm
@@ -679,24 +682,24 @@ export default class BinarySystemView extends React.Component {
         this.initialize(this.initObject);
 
         // This scene offset is necessary for some reason.
-        this.stars.x += 200;
-        this.stars.y += 200;
-        this.orbitalPlane.x += 200;
-        this.orbitalPlane.y += 200;
+        this.stars.x += this.size / 2;
+        this.stars.y += this.size / 2;
+        this.orbitalPlane.x += this.size / 2;
+        this.orbitalPlane.y += this.size / 2;
     }
     componentDidUpdate(prevProps) {
         if (prevProps.star1Temp !== this.props.star1Temp) {
             const star1 = this.stars.getChildByName('star1');
             star1.clear();
             star1.beginFill(getColorFromTemp(this.props.star1Temp));
-            star1.drawCircle(100, 200, 200);
+            star1.drawCircle(0, 0, 200);
         }
 
         if (prevProps.star2Temp !== this.props.star2Temp) {
             const star2 = this.stars.getChildByName('star2');
             star2.clear();
             star2.beginFill(getColorFromTemp(this.props.star2Temp));
-            star2.drawCircle(300, 200, 200);
+            star2.drawCircle(0, 0, 200);
         }
 
         if (prevProps.longitude !== this.props.longitude) {
@@ -782,15 +785,13 @@ export default class BinarySystemView extends React.Component {
 
         const star1 = new PIXI.Graphics();
         star1.name = 'star1';
-        star1.pivot = new PIXI.Point(100, 200);
         star1.beginFill(getColorFromTemp(this.props.star1Temp), 1);
-        star1.drawCircle(100, 200, 200);
+        star1.drawCircle(0, 0, 200);
 
         const star2 = new PIXI.Graphics();
         star2.name = 'star2';
-        star1.pivot = new PIXI.Point(300, 200);
         star2.beginFill(getColorFromTemp(this.props.star2Temp), 1);
-        star2.drawCircle(300, 200, 200);
+        star2.drawCircle(0, 0, 200);
 
         container.addChild(star1);
         container.addChild(star2);
