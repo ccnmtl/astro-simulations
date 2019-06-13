@@ -144,7 +144,12 @@ export default class Plot extends React.Component {
 
         return (
             <svg width={props.width} height={props.height + props.padding}>
+
                 {imageL} {imageR}
+                <rect fill="white"
+                      width={props.paddingLeft}
+                      height={props.height + props.padding} x="0" y="0" />
+
                 <rect className="plot-pan" pointerEvents="all" fill="none"
                     width={props.width} height={props.height}></rect>
 
@@ -153,8 +158,7 @@ export default class Plot extends React.Component {
                     data={props.lightcurveData}
                     graphWidth={props.width - props.paddingLeft}
                     graphHeight={props.height - props.padding}
-                    {...props} {...scales}
-                />
+                    {...props} {...scales} />
                 <Axes offset={this.state.offset}
                       {...props} {...scales} />
                 <PhaseControl
