@@ -41,7 +41,8 @@ export default class Axes extends Component {
         const xPos =
             this.props.xScale(
                 (
-                    (this.props.offset - this.props.paddingLeft) / this.props.width
+                    (this.props.offset - this.props.paddingLeft) / (
+                        this.props.width - this.props.paddingLeft)
                + 0.5) % 1);
 
         return <React.Fragment>
