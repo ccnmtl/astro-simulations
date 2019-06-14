@@ -17,9 +17,14 @@ const xScale = props => {
 // Returns a function that "scales" Y coordinates from the data to fit
 // the chart.
 const yScale = props => {
+    const yExtent = d3.extent(props.lightcurveData, d => d[1]);
+    const diff = yExtent[1] - yExtent[0];
+    // Add 10% space above and below the lightcurve.
+    const dataPad = diff / 10;
+
     return d3
         .scaleLinear()
-        .domain(d3.extent(props.lightcurveData, d => d[1]))
+        .domain([yExtent[0] - dataPad, yExtent[1] + dataPad])
         .range([props.height - props.padding, props.padding]);
 };
 
