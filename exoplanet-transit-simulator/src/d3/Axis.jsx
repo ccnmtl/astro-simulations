@@ -16,7 +16,8 @@ export default class Axis extends Component {
     }
 
     renderAxis() {
-        const axis = d3.axisLeft(this.props.yScale).ticks(4);
+        const axis = d3.axisLeft(this.props.yScale).ticks(4)
+                       .tickFormat(d3.format('.3f'));
 
         const node = this.axis.current;
         d3.select(node).call(axis);
