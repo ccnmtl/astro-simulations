@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import * as PIXI from 'pixi.js-legacy';
+import {RangeStepInput} from 'react-range-step-input';
 import {gases} from './gases';
 import {
     forceNumber, roundToOnePlace, closestByClass, toPaddedHexString
@@ -22,7 +23,11 @@ class GasRetentionSimulator extends React.Component {
             selectedActiveGas: null,
             draggingGas: null,
             activeGases: [],
-            gasProportions: [null, null, null]
+            gasProportions: [null, null, null],
+
+            temperature: 300,
+            allowEscape: false,
+            escapeSpeed: 1500
         };
         this.state = this.initialState;
 
@@ -38,6 +43,8 @@ class GasRetentionSimulator extends React.Component {
         this.onGasBarDragStart = this.onGasBarDragStart.bind(this);
         this.onGasBarDragEnd = this.onGasBarDragEnd.bind(this);
         this.onGasBarMove = this.onGasBarMove.bind(this);
+
+        this.handleInputChange = this.handleInputChange.bind(this);
     }
     render() {
         return <React.Fragment>
@@ -60,6 +67,89 @@ class GasRetentionSimulator extends React.Component {
 
             <div className="row mt-2">
                 <div className="col-6">
+                    <h6>Chamber</h6>
+                    <h6>Chamber Properties</h6>
+
+                    <div className="form-inline">
+                        <div className="form-group row">
+                            <label className="col-2 col-form-label col-form-label-sm">
+                                Temperature:
+                            </label>
+
+                            <div className="col-10">
+                                <input
+                                    type="number"
+                                    className="form-control form-control-sm"
+                                    name="temperature"
+                                    value={this.state.temperature}
+                                    onFocus={this.handleFocus}
+                                    onChange={this.handleInputChange}
+                                    min={100}
+                                    max={1000}
+                                    step={1} />
+
+                                <RangeStepInput
+                                    className="form-control"
+                                    name="temperature"
+                                    value={this.state.temperature}
+                                    onChange={this.handleInputChange}
+                                    min={100}
+                                    max={1000}
+                                    step={1} />
+                            </div>
+                        </div>
+                    </div>
+
+                <div className="custom-control custom-checkbox">
+                    <input type="checkbox" className="custom-control-input"
+                           name="allowEscape"
+                           onFocus={this.handleFocus}
+                           onChange={this.handleInputChange}
+                           checked={this.state.allowEscape}
+                           id="allowEscapeToggle" />
+                    <label className="custom-control-label"
+                           htmlFor="allowEscapeToggle">
+                        Allow escape from chamber
+                    </label>
+                </div>
+
+                    <div className="form-inline">
+                        <div className="form-group row">
+                            <label className="col-2 col-form-label col-form-label-sm">
+                                Escape speed:
+                            </label>
+
+                            <div className="col-10">
+                                <input
+                                    type="number"
+                                    className="form-control form-control-sm"
+                                    name="escapeSpeed"
+                                    value={this.state.escapeSpeed}
+                                    onFocus={this.handleFocus}
+                                    onChange={this.handleInputChange}
+                                    min={100}
+                                    max={1900}
+                                    step={1} />
+
+                                <RangeStepInput
+                                    className="form-control"
+                                    name="escapeSpeed"
+                                    value={this.state.escapeSpeed}
+                                    onChange={this.handleInputChange}
+                                    min={100}
+                                    max={1900}
+                                    step={1} />
+                            </div>
+                        </div>
+                    </div>
+
+                    <button className="mt-2">Start simulation</button>
+
+                </div>
+
+                <div className="col-6">
+                    <h6>Distribution Plot</h6>
+
                     <h6>Gases</h6>
 
                     <div className="d-flex">
@@ -353,6 +443,23 @@ class GasRetentionSimulator extends React.Component {
         newProportions[idx] = Math.min(
             100, Math.max(0, this.dragStartPos + diffPercent));
         this.setState({gasProportions: newProportions});
+    }
+
+    handleInputChange(event) {
+        const target = event.target;
+        const name = target.name;
+        let value = target.type === 'checkbox' ?
+                    target.checked : target.value;
+
+        if (target.type === 'radio') {
+            value = target.id === (target.name + 'Radio');
+        } else if (target.type === 'range' || target.type === 'number') {
+            value = forceNumber(value);
+        }
+
+        this.setState({
+            [name]: value
+        });
     }
 }
 
