@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import * as PIXI from 'pixi.js-legacy';
 import {RangeStepInput} from 'react-range-step-input';
+import DistributionPlot from './DistributionPlot';
 import {gases} from './gases';
 import {
     forceNumber, roundToOnePlace, closestByClass, toPaddedHexString
@@ -124,6 +125,7 @@ class GasRetentionSimulator extends React.Component {
                                     type="number"
                                     className="form-control form-control-sm"
                                     name="escapeSpeed"
+                                    disabled={!this.state.allowEscape}
                                     value={this.state.escapeSpeed}
                                     onFocus={this.handleFocus}
                                     onChange={this.handleInputChange}
@@ -134,6 +136,7 @@ class GasRetentionSimulator extends React.Component {
                                 <RangeStepInput
                                     className="form-control"
                                     name="escapeSpeed"
+                                    disabled={!this.state.allowEscape}
                                     value={this.state.escapeSpeed}
                                     onChange={this.handleInputChange}
                                     min={100}
@@ -149,6 +152,8 @@ class GasRetentionSimulator extends React.Component {
 
                 <div className="col-6">
                     <h6>Distribution Plot</h6>
+                    <DistributionPlot
+                        activeGases={this.state.activeGases} />
 
                     <h6>Gases</h6>
 
