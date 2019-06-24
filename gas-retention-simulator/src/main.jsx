@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import * as PIXI from 'pixi.js-legacy';
 import {RangeStepInput} from 'react-range-step-input';
-import DistributionPlot from './DistributionPlot';
+import MaxwellPlot from './MaxwellPlot';
 import {gases} from './gases';
 import {
     forceNumber, roundToOnePlace, closestByClass, toPaddedHexString
@@ -152,7 +152,7 @@ class GasRetentionSimulator extends React.Component {
 
                 <div className="col-6">
                     <h6>Distribution Plot</h6>
-                    <DistributionPlot
+                    <MaxwellPlot
                         activeGases={this.state.activeGases} />
 
                     <h6>Gases</h6>
