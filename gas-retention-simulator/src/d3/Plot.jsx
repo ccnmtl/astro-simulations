@@ -15,7 +15,7 @@ const xScale = props => {
 const yScale = props => {
     return d3
         .scaleLinear()
-        .domain([1, 0])
+        .domain([0, 1])
         .range([props.padding, props.height]);
 };
 
