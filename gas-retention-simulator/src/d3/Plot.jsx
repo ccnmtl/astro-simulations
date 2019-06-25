@@ -33,6 +33,9 @@ export default class Plot extends React.Component {
     }
     renderPlot() {
         const me = this;
+
+        d3.selectAll('path.gas').remove();
+
         this.props.activeGases.forEach(function(gas) {
             const path = d3.path();
             path.moveTo(me.props.paddingLeft, me.props.height - me.props.padding);
@@ -49,6 +52,7 @@ export default class Plot extends React.Component {
 
             d3.select(me.plot.current)
               .append('path')
+              .attr('class', 'gas')
               .attr('d', path)
               .attr('stroke-width', 1)
               .attr('stroke', color)
