@@ -13,6 +13,16 @@ export default class MaxwellPlot extends React.Component {
         this.onDragStart = this.onDragStart.bind(this);
         this.onDragEnd = this.onDragEnd.bind(this);
         this.onMove = this.onMove.bind(this);
+
+        this.width = 460;
+        this.height = 280;
+        this._xscale = this._yscale = 100;
+        this._xMin = 0;
+        this._xMax = 2000;
+
+        this.__yScale = -50000;
+
+        this.temperature = 300;
     }
 
     render() {
@@ -21,8 +31,9 @@ export default class MaxwellPlot extends React.Component {
         return (
             <Plot
                 activeGases={this.props.activeGases}
-                width={460}
-                height={280}
+                selectedActiveGas={this.props.selectedActiveGas}
+                width={this.width}
+                height={this.height}
                 paddingLeft={60}
                 padding={20} />
         );
@@ -228,5 +239,6 @@ export default class MaxwellPlot extends React.Component {
 }
 
 MaxwellPlot.propTypes = {
-    activeGases: PropTypes.array.isRequired
+    activeGases: PropTypes.array.isRequired,
+    selectedActiveGas: PropTypes.number
 };

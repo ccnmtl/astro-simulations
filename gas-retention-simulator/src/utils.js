@@ -49,4 +49,17 @@ const toPaddedHexString = function(num, len) {
     return '0'.repeat(len - str.length) + str;
 };
 
-export {forceNumber, roundToOnePlace, closestByClass, toPaddedHexString};
+// https://jsfiddle.net/subodhghulaxe/t568u/
+const hexToRgb = function(hex, opacity) {
+    hex = hex.replace('#', '');
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+
+    return 'rgba(' + r + ',' + g + ',' + b + ',' + opacity + ')';
+};
+
+export {
+    forceNumber, roundToOnePlace, closestByClass,
+    toPaddedHexString, hexToRgb
+};
