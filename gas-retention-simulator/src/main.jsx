@@ -153,7 +153,8 @@ class GasRetentionSimulator extends React.Component {
                 <div className="col-6">
                     <h6>Distribution Plot</h6>
                     <MaxwellPlot
-                        activeGases={this.state.activeGases} />
+                        activeGases={this.state.activeGases}
+                        selectedActiveGas={this.state.selectedActiveGas} />
 
                     <h6>Gases</h6>
 
