@@ -28,7 +28,10 @@ class GasRetentionSimulator extends React.Component {
 
             temperature: 300,
             allowEscape: false,
-            escapeSpeed: 1500
+            escapeSpeed: 1500,
+
+            showPlotCursor: false,
+            showDistInfo: true
         };
         this.state = this.initialState;
 
@@ -153,10 +156,35 @@ class GasRetentionSimulator extends React.Component {
                 <div className="col-6">
                     <h6>Distribution Plot</h6>
                     <MaxwellPlot
+                        showCursor={this.state.showPlotCursor}
+                        showDistInfo={this.state.showDistInfo}
                         activeGases={this.state.activeGases}
                         selectedActiveGas={this.state.selectedActiveGas} />
 
-                    <h6>Gases</h6>
+                    <div className="form-check form-check-inline">
+                        <input className="form-check-input"
+                               onChange={this.handleInputChange}
+                               name="showPlotCursor"
+                               type="checkbox" checked={this.state.showPlotCursor}
+                               id="showCursorToggle" />
+                            <label className="form-check-label" htmlFor="showCursorToggle">
+                                Show draggable cursor
+                            </label>
+                    </div>
+
+                    <div className="form-check form-check-inline">
+                        <input className="form-check-input"
+                               onChange={this.handleInputChange}
+                               name="showDistInfo"
+                               disabled={!this.state.showPlotCursor}
+                               type="checkbox" checked={this.state.showDistInfo}
+                               id="showDistInfoToggle" />
+                            <label className="form-check-label" htmlFor="showDistInfoToggle">
+                                Show distribution info for selected gas
+                            </label>
+                    </div>
+
+                    <h6 className="mt-2">Gases</h6>
 
                     <div className="d-flex">
                         <div className="p-2">

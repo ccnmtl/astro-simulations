@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 import Axis from './Axis';
+import Cursor from './Cursor';
 import {toPaddedHexString, hexToRgb} from '../utils';
 
 // Returns a function that "scales" X coordinates from the data to fit
@@ -92,6 +93,17 @@ export default class Plot extends React.Component {
             <svg ref={this.plot}
                  width={props.width} height={props.height}>
                 <Axis ax={'x'} {...props} {...scales} />
+                <Cursor
+                    selectedActiveGas={props.selectedActiveGas}
+                    showCursor={props.showCursor}
+                    showDistInfo={props.showDistInfo}
+                    xScale={scales.xScale}
+                    xMin={this._xMin}
+                    xMax={this._xMax}
+                    width={props.width}
+                    height={props.height}
+                    padding={props.padding}
+                    paddingLeft={props.paddingLeft} />
             </svg>
         )
     }
@@ -249,6 +261,8 @@ export default class Plot extends React.Component {
 
 Plot.propTypes = {
     activeGases: PropTypes.array.isRequired,
+    showCursor: PropTypes.bool.isRequired,
+    showDistInfo: PropTypes.bool.isRequired,
     selectedActiveGas: PropTypes.number,
     width: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,

@@ -31,6 +31,8 @@ export default class MaxwellPlot extends React.Component {
         // https://github.com/freddyrangel/playing-with-react-and-d3
         return (
             <Plot
+                showCursor={this.props.showCursor}
+                showDistInfo={this.props.showDistInfo}
                 activeGases={this.props.activeGases}
                 selectedActiveGas={this.props.selectedActiveGas}
                 width={this.width}
@@ -108,5 +110,7 @@ export default class MaxwellPlot extends React.Component {
 
 MaxwellPlot.propTypes = {
     activeGases: PropTypes.array.isRequired,
-    selectedActiveGas: PropTypes.number
+    selectedActiveGas: PropTypes.number,
+    showCursor: PropTypes.bool.isRequired,
+    showDistInfo: PropTypes.bool.isRequired
 };
