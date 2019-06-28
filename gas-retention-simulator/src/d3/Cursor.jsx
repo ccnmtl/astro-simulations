@@ -20,13 +20,14 @@ export default class Cursor extends React.Component {
         const xPos = this.props.xScale(this.state.xPos) - 20;
 
         return <React.Fragment>
+            {this.props.showDistInfo &&
             <text
                 width="45px"
                 x={xPos - 6}
                 y={this.props.padding}
                 dy=".8em"
                 fontSize=".9em"
-                textAnchor="end">98.9% of N<sub>2</sub> moves slower</text>
+                textAnchor="end">98.9% of N<sub>2</sub> moves slower</text> }
             <line
                 x1={xPos}
                 y1={this.props.padding}
@@ -43,13 +44,14 @@ export default class Cursor extends React.Component {
                 strokeWidth="1"
                 stroke="#ff0000"
                 fill="#ffffff" />
+            {this.props.showDistInfo &&
             <text
                 width="45px"
                 x={xPos + 164}
                 y={this.props.padding}
                 dy=".8em"
                 fontSize=".9em"
-                textAnchor="end">98.9% of N<sub>2</sub> moves faster</text>
+                textAnchor="end">98.9% of N<sub>2</sub> moves faster</text> }
         </React.Fragment>;
     }
     componentDidUpdate(prevProps) {
