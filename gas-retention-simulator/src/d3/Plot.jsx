@@ -105,7 +105,7 @@ export default class Plot extends React.Component {
                     padding={props.padding}
                     paddingLeft={props.paddingLeft} />
             </svg>
-        )
+        );
     }
     componentDidUpdate(prevProps) {
         if (prevProps.activeGases.length !== this.props.activeGases.length ||
@@ -257,7 +257,7 @@ export default class Plot extends React.Component {
         }
         return path;
     }
-}
+};
 
 Plot.propTypes = {
     activeGases: PropTypes.array.isRequired,
