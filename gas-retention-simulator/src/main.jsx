@@ -11,7 +11,7 @@ import {
 const clearStage = function(app) {
     let i;
     for (i = app.stage.children.length - 1; i >= 0; i--) {
-        app.stage.removeChild(app.stage.children[i]);
+        app.stage.removeChild(app.stage.children[parseInt(i)]);
     }
 }
 
@@ -261,7 +261,7 @@ class GasRetentionSimulator extends React.Component {
 
     drawGasBar(app, gas, idx) {
         const x = idx * 40;
-        const proportion = (this.state.gasProportions[idx]
+        const proportion = (this.state.gasProportions[parseInt(idx)]
             * this.state.activeGases.length) / 100;
 
         const g = new PIXI.Graphics();
@@ -313,7 +313,7 @@ class GasRetentionSimulator extends React.Component {
         let i = 0;
 
         for (myGas in this.state.activeGases) {
-            let gas = this.state.activeGases[myGas];
+            let gas = this.state.activeGases[new String(myGas)];
 
             this.drawGasBar(app, gas, i);
 
@@ -327,7 +327,7 @@ class GasRetentionSimulator extends React.Component {
         let i = 1;
 
         for (gas in gList) {
-            let g = gList[gas];
+            let g = gList[new String(gas)];
             options.push(
                 <option key={g.name} value={i}>{g.name}</option>
             );
@@ -342,7 +342,7 @@ class GasRetentionSimulator extends React.Component {
         let i = 0;
 
         for (gas in activeGases) {
-            let g = activeGases[gas];
+            let g = activeGases[new String(gas)];
             let cls = 'gas-row ';
 
             if (this.state.selectedActiveGas === g.id) {
@@ -360,7 +360,7 @@ class GasRetentionSimulator extends React.Component {
                     </td>
                     <td>{g.name} ({g.symbol})</td>
                     <td>{Math.round(g.mass)} u</td>
-                    <td>{roundToOnePlace(this.state.gasProportions[i])}%</td>
+                    <td>{roundToOnePlace(this.state.gasProportions[parseInt(i)])}%</td>
                 </tr>
             );
 
@@ -376,7 +376,7 @@ class GasRetentionSimulator extends React.Component {
     getGasIdxById(id) {
         let i;
         for (i = 0; i < this.state.activeGases.length; i++) {
-            if (this.state.activeGases[i].id === id) {
+            if (this.state.activeGases[parseInt(i)].id === id) {
                 return i;
             }
         }
@@ -396,7 +396,7 @@ class GasRetentionSimulator extends React.Component {
 
         // Don't let duplicate gases get added.
         for (let g in this.state.activeGases) {
-            let gas = this.state.activeGases[g];
+            let gas = this.state.activeGases[new String(g)];
             if (gas.name === newGas.name) {
                 this.setState({selectedGas: -1});
                 return;
@@ -474,7 +474,7 @@ class GasRetentionSimulator extends React.Component {
         const idx = this.getGasIdxById(this.state.draggingGas);
         const newProportions = this.state.gasProportions.slice();
 
-        newProportions[idx] = Math.min(
+        newProportions[parseInt(idx)] = Math.min(
             100, Math.max(0, this.dragStartPos + diffPercent));
         this.setState({gasProportions: newProportions});
     }

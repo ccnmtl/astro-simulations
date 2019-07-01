@@ -110,7 +110,7 @@ class ExoplanetTransitSimulator extends React.Component {
         let newState = state;
 
         inputs.forEach(function(name) {
-            newState[name + 'Field'] = state[name];
+            newState[new String(name) + 'Field'] = state[new String(name)];
         });
 
         return newState;
@@ -121,10 +121,10 @@ class ExoplanetTransitSimulator extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         const me = this;
         this.inputs.forEach(function(name) {
-            if (prevState[name] !== me.state[name]) {
+            if (prevState[new String(name)] !== me.state[new String(name)]) {
                 // Update the number field
                 me.setState({
-                    [name + 'Field']: me.state[name]
+                    [new String(name) + 'Field']: me.state[new String(name)]
                 });
             }
         });
@@ -615,7 +615,7 @@ class ExoplanetTransitSimulator extends React.Component {
         if (value < min || value > max) {
             // In fact, revert the input to its internal value.
             this.setState({
-                [name + 'Field']: this.state[name]
+                [new String(name) + 'Field']: this.state[new String(name)]
             });
             return;
         }
@@ -650,7 +650,7 @@ class ExoplanetTransitSimulator extends React.Component {
             return;
         }
 
-        const data = systemPresets[idx];
+        const data = systemPresets[parseInt(idx)];
         this.setState(data);
     }
 }

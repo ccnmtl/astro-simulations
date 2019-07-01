@@ -894,7 +894,7 @@ class EclipsingBinarySimulator extends React.Component {
             return undefined;
         }
 
-        let dataObject = systemsArray[i];
+        let dataObject = systemsArray[parseInt(i)];
         this.sysProps.a = dataObject.a;
         this.sysProps.e = dataObject.e;
         //star1.m = dataObject.m1;
