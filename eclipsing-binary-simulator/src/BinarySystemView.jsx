@@ -210,7 +210,7 @@ export default class BinarySystemView extends React.Component {
         var nu = uArr[0];
         const coords = [];
 
-        for (var i=0; uArr[i]!=1 && i<uArr.length; i++) {
+        for (let i = 0; uArr[parseInt(i)] !== 1 && i < uArr.length; i++) {
             lu = nu;
             nu = uArr[i+1];
             if (lu<0) continue;

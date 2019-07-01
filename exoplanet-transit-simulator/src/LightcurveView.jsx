@@ -37,7 +37,7 @@ export default class LightcurveView extends React.Component {
             }).left(lightcurveData, randX);
 
             // Generate noise based on the real y val.
-            const y = lightcurveData[idx][1];
+            const y = lightcurveData[parseInt(idx)][1];
 
             const newY = y + (
                 // Scale the randomization factor by the value

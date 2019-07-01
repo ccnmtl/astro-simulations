@@ -273,7 +273,7 @@ export default class TransitView extends React.Component {
         }
 
         for (let i = 1; i < path.length; i++) {
-            orbitPath.lineTo(path[i][0], path[i][1]);
+            orbitPath.lineTo(path[parseInt(i)][0], path[parseInt(i)][1]);
         }
 
         return orbitPath;

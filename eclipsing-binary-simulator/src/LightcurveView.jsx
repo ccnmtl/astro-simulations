@@ -37,8 +37,8 @@ export default class LightcurveView extends React.Component {
         this._numCurvePoints = 300;
 
         this._positionTable = [];
-        for (let i = 0; i<this._numCurvePoints; i++) {
-            this._positionTable[i] = {};
+        for (let i = 0; i < this._numCurvePoints; i++) {
+            this._positionTable[parseInt(i)] = {};
         }
 
         this._dataType = "visual flux";
@@ -152,7 +152,7 @@ export default class LightcurveView extends React.Component {
             let si = Math.floor(this._closestIndex);
             let xOffset = -(w / this._numCurvePoints) * (this._closestIndex - si);
 
-            let y0 = yOffset + yScale*dT[si];
+            let y0 = yOffset + yScale*dT[parseInt(si)];
             coords.push([0, y0]);
 
             let len = dT.length;
@@ -196,7 +196,7 @@ export default class LightcurveView extends React.Component {
         const k2 = this.solarRadius*(1-e*e);
 
         this._positionTable[0] = {x: k2/(1+e), y: 0};
-        this._positionTable[n] = {x: -k2/(1-e), y: 0};
+        this._positionTable[parseInt(n)] = {x: -k2 / (1-e), y: 0};
 
         for (let i=1; i<n; i++) {
             let ma = i*step;
@@ -210,8 +210,8 @@ export default class LightcurveView extends React.Component {
 
             let ta = 2*atan(k1*tan(ea1/2));
             let k3 = k2/(1+e*cos(ta));
-            let fpT = this._positionTable[i];
-            let spT = this._positionTable[np-i];
+            let fpT = this._positionTable[parseInt(i)];
+            let spT = this._positionTable[parseInt(np) - parseInt(i)];
 
             spT.x = fpT.x = k3*cos(ta);
             fpT.y = k3*sin(ta);
@@ -257,7 +257,7 @@ export default class LightcurveView extends React.Component {
 
         let i;
         for (i=0; i<np; i++) {
-            var p = this._positionTable[i];
+            var p = this._positionTable[parseInt(i)];
             var dx = k0*p.x + k1*p.y;
             var dy = k3*p.x + k4*p.y;
             var dz = k6*p.x + k7*p.y;
@@ -382,7 +382,7 @@ export default class LightcurveView extends React.Component {
         // if o<0 then star 2 is in front, otherwise star 1 is in front or there is no overlap
         let visFlux;
         for (var i=0; i<np; i++) {
-            var o = oT[i];
+            var o = oT[parseInt(i)];
             if (o<0) visFlux = fullVisFlux + j1*o;
             else visFlux = fullVisFlux + j2*o;
             if (visFlux<minVisFlux) minVisFlux = visFlux;

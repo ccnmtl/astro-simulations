@@ -582,7 +582,7 @@ export default class CelestialSphere extends React.Component {
                     const textGroup = new THREE.Group();
                     for (let i = 0; i < months.length; i++) {
                         let angle = -i * ((Math.PI * 2) / months.length);
-                        let geometry = new THREE.TextGeometry(months[i], {
+                        let geometry = new THREE.TextGeometry(months[parseInt(i)], {
                             font: font,
                             size: 4,
                             height: 0.1,
@@ -680,7 +680,7 @@ export default class CelestialSphere extends React.Component {
 
         AnalemmaCurve.prototype.getPoint = function(t) {
             const idx = Math.round(t * (n - 1));
-            const v = a[idx];
+            const v = a[parseInt(idx)];
 
             // The curve is invisible unless you use 't' somewhere in
             // the vector co-ordinates. I don't know why this is
@@ -724,20 +724,20 @@ export default class CelestialSphere extends React.Component {
             let dec = (Math.PI / 180) * pos.dec;
             let cd = Math.cos(dec);
 
-            points[i] = {
+            points[parseInt(i)] = {
                 x: cd * Math.cos(eot),
                 y: cd * Math.sin(eot),
                 z: Math.sin(dec)
             };
 
             if (pos.dec >= limA) {
-                points[i].interval = 1;
+                points[parseInt(i)].interval = 1;
             } else if (pos.dec <= limB) {
-                points[i].interval = 3;
+                points[parseInt(i)].interval = 3;
             } else if (day > 354.318929563686 || day < 170.941195869382) {
-                points[i].interval = 0;
+                points[parseInt(i)].interval = 0;
             } else {
-                points[i].interval = 2;
+                points[parseInt(i)].interval = 2;
             }
         }
 
