@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import * as PIXI from 'pixi.js-legacy';
+import * as PIXI from 'pixi.js';
 import {degToRad, radToDeg, roundToOnePlace} from './utils';
 
 /**
@@ -27,7 +27,7 @@ export default class MainView extends React.Component {
 
         this.resources = {};
 
-        this.orbitCenter = new PIXI.Point(370, 230);
+        this.orbitCenter = new PIXI.Point(370 * 2, 230 * 2);
 
         this.start = this.start.bind(this);
         this.stop = this.stop.bind(this);
@@ -42,19 +42,15 @@ export default class MainView extends React.Component {
     // https://www.protectator.ch/post/pixijs-v4-in-a-react-component
     render() {
         return (
-            <div ref={(thisDiv) => {this.el = thisDiv}} />
+            <div className="MainView"
+                ref={(thisDiv) => {this.el = thisDiv}} />
         );
     }
     componentDidMount() {
         this.app = new PIXI.Application({
-            width: 600,
-            height: 460,
+            width: 600 * 2,
+            height: 460 * 2,
 
-            // The default is webgl - I'll switch to that if necessary
-            // but for now canvas just displays my images better. I'm
-            // guessing there's just some filters or settings I can add
-            // to make it look good in webgl.
-            forceCanvas: true,
             antialias: true,
 
             // as far as I know the ticker isn't necessary at the
@@ -187,8 +183,8 @@ export default class MainView extends React.Component {
     }
     drawOrbit() {
         const graphics = new PIXI.Graphics();
-        graphics.lineStyle(1, 0xffffff);
-        graphics.drawCircle(this.orbitCenter.x, this.orbitCenter.y, 200);
+        graphics.lineStyle(2, 0xffffff);
+        graphics.drawCircle(this.orbitCenter.x, this.orbitCenter.y, 200 * 2);
         this.app.stage.addChild(graphics);
     }
     drawAngle() {
@@ -203,14 +199,14 @@ export default class MainView extends React.Component {
         const angle = getAngleDisplay(-moonAngle);
         const g = new PIXI.Text(angle, {
             fontFamily: 'Arial',
-            fontSize: 16,
+            fontSize: 16 * 2,
             fontWeight: 'bold',
             fill: 0xffe040,
             align: 'center'
         });
         g.visible = false;
-        g.position.x = this.orbitCenter.x - 180;
-        g.position.y = this.orbitCenter.y - 170;
+        g.position.x = this.orbitCenter.x - (180 * 2);
+        g.position.y = this.orbitCenter.y - (170 * 2);
 
         this.updateAngleText(g, this.props.moonAngle);
 
@@ -220,16 +216,16 @@ export default class MainView extends React.Component {
     updateAngle(g, moonAngle) {
         g.clear();
         g.moveTo(this.orbitCenter.x, this.orbitCenter.y);
-        g.lineStyle(3, 0xffe040);
+        g.lineStyle(6, 0xffe040);
         g.beginFill(0xffe200, 0.7);
         g.arc(this.orbitCenter.x, this.orbitCenter.y,
-              200,
+              200 * 2,
               Math.PI, -moonAngle,
               // counter-clockwise?
               moonAngle < 0 && moonAngle > -Math.PI);
 
         g.lineTo(this.orbitCenter.x, this.orbitCenter.y);
-        g.lineTo(170, 230);
+        g.lineTo(170 * 2, 230 * 2);
     }
     updateAngleText(g, moonAngle) {
         g.text = getAngleDisplay(-moonAngle);
@@ -237,8 +233,8 @@ export default class MainView extends React.Component {
     drawTimeCompass(timeCompassResource) {
         const timeCompass = new PIXI.Sprite(timeCompassResource.texture);
         timeCompass.name = 'timeCompass';
-        timeCompass.width = 410 * 0.8;
-        timeCompass.height = 260 * 0.8;
+        timeCompass.width = 410 * 0.8 * 2;
+        timeCompass.height = 260 * 0.8 * 2;
         timeCompass.position = this.orbitCenter;
         timeCompass.anchor.set(0.5);
         timeCompass.visible = false;
@@ -258,16 +254,16 @@ export default class MainView extends React.Component {
 
         const highlight = new PIXI.Sprite(highlightResource.texture);
         highlight.visible = false;
-        highlight.width = 30;
-        highlight.height = 30;
+        highlight.width = 30 * 2;
+        highlight.height = 30 * 2;
         highlight.anchor.set(0.5);
         this.moonHighlight = highlight;
         moonContainer.addChild(highlight);
 
         const moon = new PIXI.Sprite(moonResource.texture);
         moon.name = 'moonObj';
-        moon.width = 20;
-        moon.height = 20;
+        moon.width = 20 * 2;
+        moon.height = 20 * 2;
         moon.anchor.set(0.5);
         moonContainer.addChild(moon);
 
@@ -275,8 +271,8 @@ export default class MainView extends React.Component {
         landmark.name = 'landmark';
         landmark.visible = false;
         landmark.lineStyle(4, 0xff95ff);
-        landmark.moveTo(-10, 0);
-        landmark.lineTo(-20, 0);
+        landmark.moveTo(-10 * 2, 0);
+        landmark.lineTo(-20 * 2, 0);
         this.landmark = landmark;
         moonContainer.addChild(this.landmark);
 
@@ -287,7 +283,7 @@ export default class MainView extends React.Component {
         const shade = new PIXI.Graphics();
         shade.beginFill(0x000000);
         shade.alpha = 0.7;
-        shade.arc(0, 0, 10, degToRad(-90), degToRad(90));
+        shade.arc(0, 0, 10 * 2, degToRad(-90), degToRad(90));
         moonContainer.addChild(shade);
 
         this.app.stage.addChild(moonContainer);
@@ -307,26 +303,26 @@ export default class MainView extends React.Component {
 
         const highlight = new PIXI.Sprite(highlightResource.texture);
         highlight.visible = false;
-        highlight.width = 90;
-        highlight.height = 90;
+        highlight.width = 90 * 2;
+        highlight.height = 90 * 2;
         highlight.position = this.orbitCenter;
         highlight.anchor.set(0.5);
         this.earthHighlight = highlight;
         earthContainer.addChild(highlight);
 
         const earth = new PIXI.Sprite(earthResource.texture);
-        earth.width = 70;
-        earth.height = 70;
+        earth.width = 70 * 2;
+        earth.height = 70 * 2;
         earth.position = this.orbitCenter;
         earth.anchor.set(0.5);
         earth.rotation = -0.9;
         earthContainer.addChild(earth);
 
         const avatar = new PIXI.Sprite(avatarResource.texture);
-        avatar.width = 27 * 0.9;
-        avatar.height = 12.75 * 0.9;
+        avatar.width = 27 * 0.9 * 2;
+        avatar.height = 12.75 * 0.9 * 2;
         avatar.position = this.orbitCenter;
-        avatar.position.x -= 42;
+        avatar.position.x -= 42 * 2;
         avatar.anchor.set(0.5);
         earthContainer.addChild(avatar);
 
@@ -341,7 +337,7 @@ export default class MainView extends React.Component {
         shade.arc(
             this.orbitCenter.x,
             this.orbitCenter.y,
-            35,
+            35 * 2,
             -Math.PI / 2,
             Math.PI / 2);
         this.app.stage.addChild(shade);
@@ -351,31 +347,31 @@ export default class MainView extends React.Component {
     drawText() {
         const sunlightText = new PIXI.Text('Sunlight', {
             fontFamily: 'Arial',
-            fontSize: 28,
+            fontSize: 28 * 2,
             fontWeight: 'bold',
             fill: 0xffff80,
             align: 'center'
         });
         sunlightText.rotation = degToRad(-90);
-        sunlightText.position.x = 14;
-        sunlightText.position.y = 270;
+        sunlightText.position.x = 14 * 2;
+        sunlightText.position.y = 270 * 2;
         this.app.stage.addChild(sunlightText);
     }
     drawArrows() {
         for (let i = 1; i < 8; i++) {
             let line = new PIXI.Graphics();
-            line.lineStyle(2, 0xffff80);
+            line.lineStyle(4, 0xffff80);
 
-            line.moveTo(60, i * 50 + 30);
-            line.lineTo(120, i * 50 + 30);
+            line.moveTo(60 * 2, (i * 50 + 30) * 2);
+            line.lineTo(120 * 2, (i * 50 + 30) * 2);
 
             // Draw the arrowhead
             let arrowhead = new PIXI.Graphics()
                                     .beginFill(0xffff80)
                                     .drawPolygon([
-                                        110, i * 50 + 26,
-                                        110, i * 50 + 34,
-                                        123, i * 50 + 30
+                                        2 * 110, (i * 50 + 26) * 2,
+                                        2 * 110, (i * 50 + 34) * 2,
+                                        2 * 123, (i * 50 + 30) * 2
                                     ]);
 
             this.app.stage.addChild(line);
@@ -460,8 +456,8 @@ export default class MainView extends React.Component {
     }
     getMoonPos(phase) {
         return new PIXI.Point(
-            200 * Math.cos(-phase) + this.orbitCenter.x,
-            200 * Math.sin(-phase) + this.orbitCenter.y);
+            2 * 200 * Math.cos(-phase) + this.orbitCenter.x,
+            2 * 200 * Math.sin(-phase) + this.orbitCenter.y);
     }
 }
 
