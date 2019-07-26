@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import * as PIXI from 'pixi.js-legacy';
+import * as PIXI from 'pixi.js';
 import {
     forceNumber, degToRad, getPercentIlluminated,
     roundToOnePlace, getPhaseSlot, getTimeSinceNewMoon, formatInterval
@@ -64,8 +64,7 @@ export default class MoonPhaseView extends React.Component {
 
         this.app = new PIXI.Application({
             width: this.center.x * 2,
-            height: this.center.y * 2,
-            forceCanvas: true
+            height: this.center.y * 2
         });
         this.el.appendChild(this.app.view);
 
