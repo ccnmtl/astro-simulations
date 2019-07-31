@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import * as PIXI from 'pixi.js-legacy';
+import * as PIXI from 'pixi.js';
 
 export default class VisualDemo extends React.Component {
     constructor(props) {
@@ -30,9 +30,9 @@ export default class VisualDemo extends React.Component {
             backgroundColor: 0xffffff,
             width: 700 * 2,
             height: 200 * 2,
-            sharedTicker: true,
-            forceCanvas: true,
-            antialias: true
+            resolution: 2,
+            antialias: true,
+            sharedTicker: true
         });
 
         app.loader.add('person', 'img/person.png');
@@ -132,7 +132,7 @@ export default class VisualDemo extends React.Component {
     redrawLine1(line1) {
         const dist = this.unitToPixel(this.props.distance);
         line1.clear();
-        line1.lineStyle(1);
+        line1.lineStyle(1.5);
         line1.moveTo(this.eyePos.x, this.eyePos.y);
         line1.lineTo(
             dist,
@@ -141,7 +141,7 @@ export default class VisualDemo extends React.Component {
     redrawLine2(line2) {
         const dist = this.unitToPixel(this.props.distance);
         line2.clear();
-        line2.lineStyle(1);
+        line2.lineStyle(1.5);
         line2.moveTo(this.eyePos.x, this.eyePos.y);
         line2.lineTo(
             dist,
@@ -150,7 +150,7 @@ export default class VisualDemo extends React.Component {
     redrawArc(arc) {
         const ratio = this.props.diameter / this.props.distance;
         arc.clear();
-        arc.lineStyle(1);
+        arc.lineStyle(1.5);
         arc.arc(
             55 * 2, this.eyePos.y,
             100 * 2,
