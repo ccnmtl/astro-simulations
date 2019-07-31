@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import * as PIXI from 'pixi.js-legacy';
+import * as PIXI from 'pixi.js';
 import {forceNumber, roundToOnePlace} from './utils';
 
 export default class LatitudePicker extends React.Component {
@@ -56,8 +56,7 @@ export default class LatitudePicker extends React.Component {
             width: 271 * 2,
             height: 140 * 2,
             sharedLoader: true,
-            sharedTicker: true,
-            forceCanvas: true
+            sharedTicker: true
         });
 
         this.app.stage.interactive = true;

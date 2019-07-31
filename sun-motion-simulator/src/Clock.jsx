@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import * as PIXI from 'pixi.js-legacy';
+import * as PIXI from 'pixi.js';
 import {forceNumber, hourAngleToTime, minuteAngleToTime} from './utils';
 
 export default class Clock extends React.Component {
@@ -54,7 +54,6 @@ export default class Clock extends React.Component {
             height: 400,
             sharedLoader: true,
             sharedTicker: true,
-            forceCanvas: true,
             antialias: true
         });
         this.timePickerApp = timePickerApp;

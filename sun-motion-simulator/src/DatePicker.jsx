@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import * as PIXI from 'pixi.js-legacy';
+import * as PIXI from 'pixi.js';
 import {forceNumber, getDayOfYear} from './utils';
 
 export default class DatePicker extends React.Component {
@@ -58,8 +58,7 @@ export default class DatePicker extends React.Component {
             width: 500 * 2,
             height: 30 * 2,
             sharedLoader: true,
-            sharedTicker: true,
-            forceCanvas: true
+            sharedTicker: true
         });
         this.app = app;
 
