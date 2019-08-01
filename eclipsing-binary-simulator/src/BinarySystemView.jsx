@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import * as PIXI from 'pixi.js-legacy';
+import * as PIXI from 'pixi.js';
 import {
     degToRad, radToDeg, getSystemTheta, getSystemPhi,
     roundToTwoPlaces, getColorFromTemp
@@ -661,11 +661,6 @@ export default class BinarySystemView extends React.Component {
             width: this.size,
             height: this.size,
 
-            // The default is webgl - I'll switch to that if necessary
-            // but for now canvas just displays my images better. I'm
-            // guessing there's just some filters or settings I can add
-            // to make it look good in webgl.
-            forceCanvas: true,
             antialias: true,
 
             // as far as I know the ticker isn't necessary at the
