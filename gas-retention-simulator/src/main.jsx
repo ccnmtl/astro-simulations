@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import * as PIXI from 'pixi.js-legacy';
+import * as PIXI from 'pixi.js';
 import {RangeStepInput} from 'react-range-step-input';
 import MaxwellPlot from './MaxwellPlot';
 import {gases} from './gases';
@@ -234,8 +234,7 @@ class GasRetentionSimulator extends React.Component {
             width: 120,
             height: 170,
             sharedLoader: true,
-            sharedTicker: true,
-            forceCanvas: true
+            sharedTicker: true
         });
 
         this.app = app;

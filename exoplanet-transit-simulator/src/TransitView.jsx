@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import * as PIXI from 'pixi.js-legacy';
+import * as PIXI from 'pixi.js';
 import {
     rJupToKm, kmToPx
 } from './utils';
@@ -46,7 +46,7 @@ export default class TransitView extends React.Component {
         this._c = {};
 
         this._scale = 9.0e-8;
-        this._size = 350;
+        this._size = 350 * 2;
         this._initPlanetColor = 0x999999;
         this._orbitPathColor = 0x999999;
         this._orbitPathAlpha = 0.5;
@@ -168,11 +168,11 @@ export default class TransitView extends React.Component {
 
         const c = this._c;
 
-        const sx1 = (wx1*c.a0 + wy1*c.a1);
-        const sy1 = (wx1*c.a3 + wy1*c.a4);
+        const sx1 = (wx1*c.a0 + wy1*c.a1) * 2;
+        const sy1 = (wx1*c.a3 + wy1*c.a4) * 2;
 
-        const sx2 = (wx2*c.a0 + wy2*c.a1);
-        const sy2 = (wx2*c.a3 + wy2*c.a4);
+        const sx2 = (wx2*c.a0 + wy2*c.a1) * 2;
+        const sy2 = (wx2*c.a3 + wy2*c.a4) * 2;
 
         this.planet.x = (this._centerX + sx2 - sx1);
         this.planet.y = (this._centerY + sy2 - sy1);
@@ -215,7 +215,8 @@ export default class TransitView extends React.Component {
         };
     }
     render() {
-        return <div ref={(el) => {this.el = el}}></div>;
+        return <div className="TransitView"
+                    ref={(el) => {this.el = el}}></div>;
     }
     componentDidMount() {
         const app = new PIXI.Application({
@@ -223,8 +224,7 @@ export default class TransitView extends React.Component {
             width: this._size,
             height: this._size,
             sharedLoader: true,
-            sharedTicker: true,
-            forceCanvas: true
+            sharedTicker: true
         });
 
         this.app = app;
@@ -258,14 +258,14 @@ export default class TransitView extends React.Component {
             const starRadius = this.entityData.baseStarRadius;
             this.star.drawCircle(
                 this._centerX, this._centerY,
-                starRadius);
+                starRadius * 2);
             this.star.endFill();
         }
     }
 
     makeOrbitLine(path) {
         const orbitPath = new PIXI.Graphics();
-        orbitPath.lineStyle(1, this._orbitPathColor);
+        orbitPath.lineStyle(2, this._orbitPathColor);
         orbitPath.alpha = this._orbitPathAlpha;
 
         if (path.length >= 1) {
@@ -296,8 +296,8 @@ export default class TransitView extends React.Component {
         const cos = Math.cos;
         const abs = Math.abs;
 
-        const a1 = this._a1;
-        const a2 = this._a2;
+        const a1 = this._a1 * 2;
+        const a2 = this._a2 * 2;
         const e = eccentricity;
 
         const cx = this._centerX;
@@ -390,7 +390,7 @@ export default class TransitView extends React.Component {
         star.position = center;
         star.beginFill(getStarColor(this.props.starMass));
         star.drawCircle(
-            star.x, star.y, starRadius);
+            star.x, star.y, starRadius * 2);
         star.endFill();
 
         this.star = star;
@@ -410,7 +410,7 @@ export default class TransitView extends React.Component {
         planet.beginFill(this._initPlanetColor);
         planet.drawCircle(
             planet.x, planet.y,
-            kmToPx(rJupToKm(this.props.planetRadius)));
+            kmToPx(rJupToKm(this.props.planetRadius)) * 2);
         planet.endFill();
 
         this.planet = planet;
@@ -419,15 +419,15 @@ export default class TransitView extends React.Component {
         const arrow = new PIXI.Graphics();
         arrow.visible = false;
         arrow.beginFill(0xffffff);
-        arrow.lineStyle(1, 0x000000);
+        arrow.lineStyle(2, 0x000000);
         arrow.drawPolygon([
-            new PIXI.Point(0, -8),
-            new PIXI.Point(-3 - 6, 8),
-            new PIXI.Point(-3, 5),
-            new PIXI.Point(-3, 20),
-            new PIXI.Point(3, 20),
-            new PIXI.Point(3, 5),
-            new PIXI.Point(3 + 6, 8)
+            new PIXI.Point(0, -8 * 2),
+            new PIXI.Point((-3 - 6) * 2, 8 * 2),
+            new PIXI.Point(-3 * 2, 5 * 2),
+            new PIXI.Point(-3 * 2, 20 * 2),
+            new PIXI.Point(3 * 2, 20 * 2),
+            new PIXI.Point(3 * 2, 5 * 2),
+            new PIXI.Point((3 + 6) * 2, 8 * 2)
         ]);
 
         arrow.position.x = this.planet.x;
