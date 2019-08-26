@@ -394,8 +394,9 @@ class GasRetentionSimulator extends React.Component {
         });
 
         // Don't let duplicate gases get added.
-        for (let g in this.state.activeGases) {
-            let gas = this.state.activeGases[new String(g)];
+        let gId;
+        for (gId in this.state.activeGases) {
+            let gas = this.state.activeGases[new String(gId)];
             if (gas.name === newGas.name) {
                 this.setState({selectedGas: -1});
                 return;
