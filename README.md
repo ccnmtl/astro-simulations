@@ -1,7 +1,5 @@
 # astro-simulations [![Build Status](https://travis-ci.org/ccnmtl/astro-simulations.svg?branch=master)](https://travis-ci.org/ccnmtl/astro-simulations)
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/ccnmtl/astro-simulations.svg)](https://greenkeeper.io/)
-
 Astronomy Simulations and Animations
 
 JavaScript/HTML ports of the Flash originals, found here: [http://astro.unl.edu/animationsLinks.html](http://astro.unl.edu/animationsLinks.html) (source files here: [https://cse.unl.edu/~astrodev/flashdev2/](https://cse.unl.edu/~astrodev/flashdev2/))
