@@ -1,5 +1,9 @@
 version: 1
 update_configs:
+  automerged_updates:
+    - match:
+        dependency_type: "development"
+        update_type: "all"
   - package_manager: "javascript"
     directory: "/eclipsing-binary-simulator/"
     update_schedule: "live"
