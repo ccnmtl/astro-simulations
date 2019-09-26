@@ -4,23 +4,47 @@ update_configs:
     directory: "/eclipsing-binary-simulator/"
     update_schedule: "live"
     version_requirement_updates: "increase_versions_if_necessary"
+    automerged_updates:
+      - match:
+          dependency_type: "development"
+          update_type: "all"
   - package_manager: "javascript"
     directory: "/exoplanet-transit-simulator/"
     update_schedule: "live"
     version_requirement_updates: "increase_versions_if_necessary"
+    automerged_updates:
+      - match:
+          dependency_type: "development"
+          update_type: "all"
   - package_manager: "javascript"
     directory: "/gas-retention-simulator/"
     update_schedule: "live"
     version_requirement_updates: "increase_versions_if_necessary"
+    automerged_updates:
+      - match:
+          dependency_type: "development"
+          update_type: "all"
   - package_manager: "javascript"
     directory: "/lunar-phase-simulator/"
     update_schedule: "live"
     version_requirement_updates: "increase_versions_if_necessary"
+    automerged_updates:
+      - match:
+          dependency_type: "development"
+          update_type: "all"
   - package_manager: "javascript"
     directory: "/small-angle-demo/"
     update_schedule: "live"
     version_requirement_updates: "increase_versions_if_necessary"
+    automerged_updates:
+      - match:
+          dependency_type: "development"
+          update_type: "all"
   - package_manager: "javascript"
     directory: "/sun-motion-simulator/"
     update_schedule: "live"
     version_requirement_updates: "increase_versions_if_necessary"
+    automerged_updates:
+      - match:
+          dependency_type: "development"
+          update_type: "all"
