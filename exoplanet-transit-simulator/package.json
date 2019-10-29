@@ -30,7 +30,7 @@
     "d3-drag": "~1.2.3",
     "eslint-plugin-security": "^1.4.0",
     "pixi.js": "~5.1.1",
-    "react": "~16.10.1",
+    "react": "~16.11.0",
     "react-dom": "~16.11.0",
     "react-range-step-input": "^1.2.1"
   },
