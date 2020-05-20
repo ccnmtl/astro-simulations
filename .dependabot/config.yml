@@ -8,6 +8,9 @@ update_configs:
       - match:
           dependency_type: "development"
           update_type: "all"
+      - match:
+          dependency_type: "production"
+          update_type: "in_range"
   - package_manager: "javascript"
     directory: "/exoplanet-transit-simulator/"
     update_schedule: "live"
@@ -16,6 +19,9 @@ update_configs:
       - match:
           dependency_type: "development"
           update_type: "all"
+      - match:
+          dependency_type: "production"
+          update_type: "in_range"
   - package_manager: "javascript"
     directory: "/gas-retention-simulator/"
     update_schedule: "live"
@@ -24,6 +30,9 @@ update_configs:
       - match:
           dependency_type: "development"
           update_type: "all"
+      - match:
+          dependency_type: "production"
+          update_type: "in_range"
   - package_manager: "javascript"
     directory: "/lunar-phase-simulator/"
     update_schedule: "live"
@@ -32,6 +41,9 @@ update_configs:
       - match:
           dependency_type: "development"
           update_type: "all"
+      - match:
+          dependency_type: "production"
+          update_type: "in_range"
   - package_manager: "javascript"
     directory: "/small-angle-demo/"
     update_schedule: "live"
@@ -40,6 +52,9 @@ update_configs:
       - match:
           dependency_type: "development"
           update_type: "all"
+      - match:
+          dependency_type: "production"
+          update_type: "in_range"
   - package_manager: "javascript"
     directory: "/sun-motion-simulator/"
     update_schedule: "live"
@@ -48,3 +63,6 @@ update_configs:
       - match:
           dependency_type: "development"
           update_type: "all"
+      - match:
+          dependency_type: "production"
+          update_type: "in_range"
