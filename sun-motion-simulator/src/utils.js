@@ -124,7 +124,9 @@ const getHourAngle = function(siderealTime, rightAscension) {
     if (hourAngle > 12) {
         hourAngle -= 24;
     }
-
+    if (hourAngle < -12) {
+        hourAngle += 24;
+    }
     return hourAngle;
 }
 
