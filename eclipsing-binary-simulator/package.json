@@ -41,7 +41,7 @@
     "babel-eslint": "^10.0.0",
     "babel-loader": "^8.0.0",
     "eslint": "^7.0.0",
-    "eslint-plugin-react": "~7.20.0",
+    "eslint-plugin-react": "~7.21.0",
     "jest": "~26.4.0",
     "webpack": "^4.39.1",
     "webpack-cli": "^3.3.6",
