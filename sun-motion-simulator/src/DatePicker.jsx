@@ -8,7 +8,7 @@ export default class DatePicker extends React.Component {
         super(props);
         this.state = {
             isDragging: false,
-            dayField: props.dateTime.getUTCDate()
+            dayField: props.dateTime.getDate()
         };
 
         this.onDragStart = this.onDragStart.bind(this);
@@ -33,7 +33,7 @@ export default class DatePicker extends React.Component {
                 </label>
                 <select className="form-control form-control-sm ml-2"
                         onChange={this.props.onMonthUpdate}
-                        value={this.props.dateTime.getUTCMonth()}>
+                        value={this.props.dateTime.getMonth()}>
                     <option value={0}>January</option>
                     <option value={1}>February</option>
                     <option value={2}>March</option>
@@ -71,7 +71,7 @@ export default class DatePicker extends React.Component {
     }
     componentDidUpdate(prevProps) {
         if (prevProps.dateTime !== this.props.dateTime) {
-            const day = this.props.dateTime.getUTCDate();
+            const day = this.props.dateTime.getDate();
             if (day !== this.state.dayField) {
                 this.setState({dayField: day});
             }
@@ -184,7 +184,7 @@ export default class DatePicker extends React.Component {
      * This control only modifies the day, not the time.
      */
     localPosToDate(x, app) {
-        const year = this.props.dateTime.getUTCFullYear();
+        const year = this.props.dateTime.getFullYear();
         const d = new Date(`1/1/${year}`);
         const dayOfYear = (x / (app.view.width - 20)) * 365.25;
 

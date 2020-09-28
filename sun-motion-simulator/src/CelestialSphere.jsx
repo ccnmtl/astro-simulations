@@ -19,7 +19,7 @@ const hourAngleToRadians = function(hourAngle) {
     const radians = -(hourAngle / 24) * (Math.PI * 2)
                   - Math.PI;
     return radians;
-};
+}
 
 // three.js/react integration based on:
 // https://stackoverflow.com/a/46412546/173630
@@ -176,7 +176,7 @@ export default class CelestialSphere extends React.Component {
         this.orbitGroup.add(this.sunDeclination);
         this.orbitGroup.add(this.celestialEquator);
 
-        this.analemma = this.drawAnalemma(scene);
+        this.analemma = this.drawAnalemma(scene)
         this.analemma.position.z += 2;
         this.orbitGroup.add(this.analemma);
 
@@ -429,7 +429,7 @@ export default class CelestialSphere extends React.Component {
         plane.position.y = 0.1;
         plane.rotation.x = Math.PI / 2;
 
-        const domeGroup = new THREE.Group();
+        const domeGroup = new THREE.Group()
         domeGroup.add(solidBlackDome);
         domeGroup.add(plane);
 
@@ -673,7 +673,7 @@ export default class CelestialSphere extends React.Component {
         const AnalemmaCurve = function(scale) {
             THREE.Curve.call(this);
             this.scale = (scale === undefined) ? 1 : scale;
-        };
+        }
 
         AnalemmaCurve.prototype = Object.create(THREE.Curve.prototype);
         AnalemmaCurve.prototype.constructor = AnalemmaCurve;
@@ -770,7 +770,7 @@ export default class CelestialSphere extends React.Component {
     }
 
     stop() {
-        cancelAnimationFrame(this.frameId);
+        cancelAnimationFrame(this.frameId)
     }
 
     animate() {
@@ -868,7 +868,7 @@ export default class CelestialSphere extends React.Component {
 
         return (
             <div id={this.id}
-                 ref={(mount) => { this.mount = mount; }}>
+                 ref={(mount) => { this.mount = mount }}>
                 <canvas
                     onMouseMove={this.onMouseMove}
                     id={this.id + 'Canvas'} width={860} height={860} />
@@ -985,8 +985,8 @@ export default class CelestialSphere extends React.Component {
             const angle = Math.atan2(closestPoint.y, closestPoint.x);
             const time = this.getTime(angle);
             const d = new Date(this.props.dateTime);
-            d.setUTCHours(time.getHours());
-            d.setUTCMinutes(time.getMinutes());
+            d.setHours(time.getHours());
+            d.setMinutes(time.getMinutes());
             return this.props.onDateTimeUpdate(d);
         }
 
