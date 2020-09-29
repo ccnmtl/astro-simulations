@@ -136,7 +136,7 @@ const getHourAngle = function(siderealTime, rightAscension) {
  * Taken from: https://stackoverflow.com/a/8619946
  */
 const getDayOfYear = function(d) {
-    const start = new Date(d.getFullYear(), 0, 0);
+    const start = new Date(Date.UTC(d.getUTCFullYear(), 0, 0));
     const diff = (d - start) + (
         (start.getTimezoneOffset() - d.getTimezoneOffset()) * 60 * 1000);
     const oneDay = 1000 * 60 * 60 * 24;
@@ -144,9 +144,9 @@ const getDayOfYear = function(d) {
 
     // Add the time of day as a fraction of 1.
     let time = 0;
-    time += d.getHours() / 24;
-    time += d.getMinutes() / 60 / 24;
-    time += d.getSeconds() / 60 / 60 / 24;
+    time += d.getUTCHours() / 24;
+    time += d.getUTCMinutes() / 60 / 24;
+    time += d.getUTCSeconds() / 60 / 60 / 24;
 
     day += time;
     return day;

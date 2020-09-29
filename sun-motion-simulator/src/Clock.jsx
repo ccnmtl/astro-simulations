@@ -68,12 +68,12 @@ export default class Clock extends React.Component {
     componentDidUpdate(prevProps) {
         if (prevProps.dateTime !== this.props.dateTime) {
             // Update the clock.
-            const minutes = this.props.dateTime.getMinutes();
-            const seconds = this.props.dateTime.getSeconds();
+            const minutes = this.props.dateTime.getUTCMinutes();
+            const seconds = this.props.dateTime.getUTCSeconds();
             this.minuteHand.rotation = (minutes / 60) * (Math.PI * 2) - Math.PI
                                      + ((seconds / 60 / 60) * (Math.PI * 2));
 
-            const hours = this.props.dateTime.getHours();
+            const hours = this.props.dateTime.getUTCHours();
             this.hourHand.rotation = ((hours + (minutes / 60)) / 24) * (
                 Math.PI * 2) - Math.PI;
         }
@@ -189,15 +189,12 @@ export default class Clock extends React.Component {
      * Given a date object, display its time as a string.
      */
     displayTime(d) {
-        let hours = d.getHours();
-        if (hours < 10) {
-            hours = '0' + hours;
-        }
-        let minutes = d.getMinutes();
-        if (minutes < 10) {
-            minutes = '0' + minutes;
-        }
-        return `${hours}:${minutes}`;
+        return d.toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+            timeZone: 'UTC'
+        });
     }
 
     /**
@@ -217,8 +214,8 @@ export default class Clock extends React.Component {
         const hours = forceNumber(time[0]);
         const minutes = forceNumber(time[1]);
         const d = new Date(this.props.dateTime);
-        d.setHours(hours);
-        d.setMinutes(minutes);
+        d.setUTCHours(hours);
+        d.setUTCMinutes(minutes);
         return this.props.onDateTimeUpdate(d);
     }
     onMinuteDragStart(e) {

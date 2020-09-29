@@ -21,11 +21,12 @@ class SunMotionSim extends React.Component {
     constructor(props) {
         super(props);
         this.initialState = {
-            dateTime: new Date(
-                // Use current year
-                (new Date()).getFullYear(),
+            dateTime: new Date(Date.UTC(
+                // Set this to some random non-leap year, just to keep
+                // things simple.
+                2019,
                 // Initial state is always May 27th, at noon
-                4, 27, 12),
+                4, 27, 12)),
 
             // These three properties are calculated off of the
             // dateTime by onDateUpdate.
@@ -93,13 +94,15 @@ class SunMotionSim extends React.Component {
         const formattedDate = this.state.dateTime
                                   .toLocaleDateString([], {
                                       day: 'numeric',
-                                      month: 'long'
+                                      month: 'long',
+                                      timeZone: 'UTC'
                                   });
         const formattedTime = this.state.dateTime
                                   .toLocaleTimeString([], {
                                       hour: '2-digit',
                                       minute: '2-digit',
-                                      hour12: false
+                                      hour12: false,
+                                      timeZone: 'UTC'
                                   });
 
         const latUnit = this.state.latitude >= 0 ? 'N' : 'S';
@@ -307,16 +310,13 @@ class SunMotionSim extends React.Component {
             }
         }
 
-        let newDate = null;
-        if (milliseconds > 0) {
-            newDate = new Date(this.state.dateTime.getTime() + milliseconds);
-        }
+        const newDate = new Date(this.state.dateTime.getTime() + milliseconds);
 
         if (!this.state.stepByDay && this.state.loopDay) {
             // If loopDay is selected, then always keep newDate on
             // the current day while letting the time increment.
-            const dayOfMonth = this.state.dateTime.getDate();
-            newDate.setDate(dayOfMonth);
+            const dayOfMonth = this.state.dateTime.getUTCDate();
+            newDate.setUTCDate(dayOfMonth);
         }
 
         if (newDate && newDate !== this.state.dateTime) {
@@ -381,7 +381,7 @@ class SunMotionSim extends React.Component {
     onDayUpdate(e) {
         const newDay = forceNumber(e.target.value);
         const d = new Date(this.state.dateTime);
-        d.setDate(newDay);
+        d.setUTCDate(newDay);
         this.setState({dateTime: d});
     }
     /**
@@ -390,7 +390,7 @@ class SunMotionSim extends React.Component {
     onMonthUpdate(e) {
         const newMonth = forceNumber(e.target.value);
         const d = new Date(this.state.dateTime);
-        d.setMonth(newMonth);
+        d.setUTCMonth(newMonth);
         this.setState({dateTime: d});
     }
     /**
@@ -399,9 +399,9 @@ class SunMotionSim extends React.Component {
      * All the control-specific logic is handled in DatePicker.jsx.
      */
     onDateControlUpdate(newDate) {
-        newDate.setHours(this.state.dateTime.getHours());
-        newDate.setMinutes(this.state.dateTime.getMinutes());
-        newDate.setSeconds(this.state.dateTime.getSeconds());
+        newDate.setUTCHours(this.state.dateTime.getUTCHours());
+        newDate.setUTCMinutes(this.state.dateTime.getUTCMinutes());
+        newDate.setUTCSeconds(this.state.dateTime.getUTCSeconds());
         this.setState({dateTime: newDate});
     }
 }
