@@ -145,15 +145,15 @@ export default class LatitudePicker extends React.Component {
 
         picker
         // events for drag start
-            .on('mousedown', this.onLatDragStart)
+            .on('pointerdown', this.onLatDragStart)
             .on('touchstart', this.onLatDragStart)
         // events for drag end
-            .on('mouseup', this.onLatDragEnd)
-            .on('mouseupoutside', this.onLatDragEnd)
+            .on('pointerup', this.onLatDragEnd)
+            .on('pointerupoutside', this.onLatDragEnd)
             .on('touchend', this.onLatDragEnd)
             .on('touchendoutside', this.onLatDragEnd)
         // events for drag move
-            .on('mousemove', this.onLatMove)
+            .on('pointermove', this.onLatMove)
             .on('touchmove', this.onLatMove);
 
         const latPos = this.latitudeToLocalPos(

@@ -97,13 +97,13 @@ export default class CelestialSphere extends React.Component {
             canvas: canvas
         });
         renderer.domElement.addEventListener(
-            'mousemove', this.onMouseMove, false);
+            'pointermove', this.onMouseMove, false);
         renderer.domElement.addEventListener(
-            'mousedown', this.onMouseDown, false);
+            'pointerdown', this.onMouseDown, false);
         renderer.domElement.addEventListener(
-            'mouseup', this.onMouseUp, false);
+            'pointerup', this.onMouseUp, false);
         renderer.domElement.addEventListener(
-            'mouseout', this.onMouseUp, false);
+            'pointerout', this.onMouseUp, false);
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setClearColor(0x000000);
         renderer.shadowMap.enabled = true;
@@ -1004,6 +1004,7 @@ export default class CelestialSphere extends React.Component {
             }
         }
     }
+
     onMouseDown(e) {
         e.preventDefault();
 
@@ -1027,6 +1028,7 @@ export default class CelestialSphere extends React.Component {
             this.setState({isDragging: true});
         }
     }
+
     onMouseUp(e) {
         e.preventDefault();
         this.controls.enabled = true;
@@ -1036,6 +1038,7 @@ export default class CelestialSphere extends React.Component {
             isDraggingSun: false
         });
     }
+
     onResetClicked() {
         this.controls.reset();
     }

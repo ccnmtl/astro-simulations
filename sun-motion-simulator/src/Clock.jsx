@@ -161,28 +161,28 @@ export default class Clock extends React.Component {
         // Set up events
         minuteContainer
         // events for drag start
-            .on('mousedown', this.onMinuteDragStart)
+            .on('pointerdown', this.onMinuteDragStart)
             .on('touchstart', this.onMinuteDragStart)
         // events for drag end
-            .on('mouseup', this.onMinuteDragEnd)
-            .on('mouseupoutside', this.onMinuteDragEnd)
+            .on('pointerup', this.onMinuteDragEnd)
+            .on('pointerupoutside', this.onMinuteDragEnd)
             .on('touchend', this.onMinuteDragEnd)
             .on('touchendoutside', this.onMinuteDragEnd)
         // events for drag move
-            .on('mousemove', this.onMinuteMove)
+            .on('pointermove', this.onMinuteMove)
             .on('touchmove', this.onMinuteMove);
 
         hourContainer
         // events for drag start
-            .on('mousedown', this.onHourDragStart)
+            .on('pointerdown', this.onHourDragStart)
             .on('touchstart', this.onHourDragStart)
         // events for drag end
-            .on('mouseup', this.onHourDragEnd)
-            .on('mouseupoutside', this.onHourDragEnd)
+            .on('pointerup', this.onHourDragEnd)
+            .on('pointerupoutside', this.onHourDragEnd)
             .on('touchend', this.onHourDragEnd)
             .on('touchendoutside', this.onHourDragEnd)
         // events for drag move
-            .on('mousemove', this.onHourMove)
+            .on('pointermove', this.onHourMove)
             .on('touchmove', this.onHourMove);
     }
     /**

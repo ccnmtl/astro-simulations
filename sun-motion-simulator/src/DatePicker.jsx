@@ -152,18 +152,16 @@ export default class DatePicker extends React.Component {
         // Set up events
         control
         // events for drag start
-            .on('mousedown', this.onDragStart)
+            .on('pointerdown', this.onDragStart)
             .on('touchstart', this.onDragStart)
         // events for drag end
-            .on('mouseup', this.onDragEnd)
-            .on('mouseupoutside', this.onDragEnd)
+            .on('pointerup', this.onDragEnd)
+            .on('pointerupoutside', this.onDragEnd)
             .on('touchend', this.onDragEnd)
             .on('touchendoutside', this.onDragEnd)
         // events for drag move
-            .on('mousemove', this.onMove)
+            .on('pointermove', this.onMove)
             .on('touchmove', this.onMove);
-
-
     }
     /**
      * Given a Date object, return the active x position of this
