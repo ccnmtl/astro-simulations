@@ -242,8 +242,8 @@ class GasRetentionSimulator extends React.Component {
 
         this.drawGasBars(app);
 
-        document.addEventListener('mouseup', this.onGasBarDragEnd);
-        document.addEventListener('mouseupoutside', this.onGasBarDragEnd);
+        document.addEventListener('pointerup', this.onGasBarDragEnd);
+        document.addEventListener('pointerupoutside', this.onGasBarDragEnd);
         document.addEventListener('touchup', this.onGasBarDragEnd);
         document.addEventListener('touchupoutside', this.onGasBarDragEnd);
 
@@ -292,16 +292,16 @@ class GasRetentionSimulator extends React.Component {
 
         g.on('click', this.onGasBarClick)
 
-          .on('mousedown', this.onGasBarDragStart)
+          .on('pointerdown', this.onGasBarDragStart)
           .on('touchstart', this.onGasBarDragStart)
 
-          .on('mouseup', this.onGasBarDragEnd)
-          .on('mouseupoutside', this.onGasBarDragEnd)
+          .on('pointerup', this.onGasBarDragEnd)
+          .on('pointerupoutside', this.onGasBarDragEnd)
 
           .on('touchend', this.onGasBarDragEnd)
           .on('touchendoutside', this.onGasBarDragEnd)
 
-          .on('mousemove', this.onGasBarMove)
+          .on('pointermove', this.onGasBarMove)
           .on('touchmove', this.onGasBarMove);
     }
 

@@ -26,8 +26,8 @@ export default class Window extends React.Component {
         this.toggleMainSequence = this.toggleMainSequence.bind(this);
     }
     componentDidMount() {
-        document.addEventListener('mousemove', this.onDrag.bind(this));
-        document.addEventListener('mouseup', this.onDragStop.bind(this));
+        document.addEventListener('pointermove', this.onDrag.bind(this));
+        document.addEventListener('pointerup', this.onDragStop.bind(this));
     }
     render() {
         if (this.props.isHidden) {

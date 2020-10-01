@@ -59,8 +59,8 @@ export default class Cursor extends React.Component {
             if (this.props.showCursor) {
                 const el = d3.select('.cursor');
                 el.call(d3.drag().on('drag', this.dragmove.bind(this)));
-                el.on('mouseover', this.mouseover.bind(this));
-                el.on('mouseout', this.mouseout.bind(this));
+                el.on('pointerover', this.mouseover.bind(this));
+                el.on('pointerout', this.mouseout.bind(this));
             }
         }
     }

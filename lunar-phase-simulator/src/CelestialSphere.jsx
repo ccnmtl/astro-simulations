@@ -122,11 +122,11 @@ export default class CelestialSphere extends React.Component {
         this.camera = camera;
         this.renderer = renderer;
         this.renderer.domElement.addEventListener(
-            'mousemove', this.onMouseMove, false);
+            'pointermove', this.onMouseMove, false);
         this.renderer.domElement.addEventListener(
-            'mousedown', this.onMouseDown, false);
+            'pointerdown', this.onMouseDown, false);
         this.renderer.domElement.addEventListener(
-            'mouseup', this.onMouseUp, false);
+            'pointerup', this.onMouseUp, false);
 
         this.composer = composer;
 
@@ -584,7 +584,7 @@ export default class CelestialSphere extends React.Component {
         if (intersects.length > 0) {
             if (intersects[0].object) {
                 let obj = intersects[0].object;
-                let key = 'mouseover' + obj.name;
+                let key = 'pointerover' + obj.name;
 
                 this.setState({[key]: true});
             }

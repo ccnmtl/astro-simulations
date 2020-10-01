@@ -234,15 +234,15 @@ export default class TransitView extends React.Component {
 
         this.planet
         // events for drag start
-            .on('mousedown', this.onDragStart)
+            .on('pointerdown', this.onDragStart)
             .on('touchstart', this.onDragStart)
         // events for drag end
-            .on('mouseup', this.onDragEnd)
-            .on('mouseupoutside', this.onDragEnd)
+            .on('pointerup', this.onDragEnd)
+            .on('pointerupoutside', this.onDragEnd)
             .on('touchend', this.onDragEnd)
             .on('touchendoutside', this.onDragEnd)
         // events for drag move
-            .on('mousemove', this.onPlanetMove)
+            .on('pointermove', this.onPlanetMove)
             .on('touchmove', this.onPlanetMove);
 
         //this.setParameters({});
