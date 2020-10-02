@@ -80,15 +80,15 @@ export default class MainView extends React.Component {
                 resources.moon, resources.highlight);
             me.moonContainer
               // events for drag start
-              .on('mousedown', me.onDragStart)
+              .on('pointerdown', me.onDragStart)
               .on('touchstart', me.onDragStart)
               // events for drag end
-              .on('mouseup', me.onDragEnd)
-              .on('mouseupoutside', me.onDragEnd)
+              .on('pointerup', me.onDragEnd)
+              .on('pointerupoutside', me.onDragEnd)
               .on('touchend', me.onDragEnd)
               .on('touchendoutside', me.onDragEnd)
               // events for drag move
-              .on('mousemove', me.onMoonMove)
+              .on('pointermove', me.onMoonMove)
               .on('touchmove', me.onMoonMove);
 
             me.earth = me.drawEarth(
@@ -98,15 +98,15 @@ export default class MainView extends React.Component {
 
             me.earth
               // events for drag start
-              .on('mousedown', me.onDragStart)
+              .on('pointerdown', me.onDragStart)
               .on('touchstart', me.onDragStart)
               // events for drag end
-              .on('mouseup', me.onDragEnd)
-              .on('mouseupoutside', me.onDragEnd)
+              .on('pointerup', me.onDragEnd)
+              .on('pointerupoutside', me.onDragEnd)
               .on('touchend', me.onDragEnd)
               .on('touchendoutside', me.onDragEnd)
               // events for drag move
-              .on('mousemove', me.onEarthMove)
+              .on('pointermove', me.onEarthMove)
               .on('touchmove', me.onEarthMove);
 
             me.timeCompass = me.drawTimeCompass(resources.timeCompass);

@@ -122,15 +122,15 @@ export default class HRDiagram extends React.Component {
         this.app.stage.addChild(this.dot1);
         this.dot1
         // events for drag start
-            .on('mousedown', this.onDragStart)
+            .on('pointerdown', this.onDragStart)
             .on('touchstart', this.onDragStart)
         // events for drag end
-            .on('mouseup', this.onDragEnd)
-            .on('mouseupoutside', this.onDragEnd)
+            .on('pointerup', this.onDragEnd)
+            .on('pointerupoutside', this.onDragEnd)
             .on('touchend', this.onDragEnd)
             .on('touchendoutside', this.onDragEnd)
         // events for drag move
-            .on('mousemove', this.onDotMove)
+            .on('pointermove', this.onDotMove)
             .on('touchmove', this.onDotMove);
 
         this.dot2 = new PIXI.Container();
@@ -140,15 +140,15 @@ export default class HRDiagram extends React.Component {
         this.app.stage.addChild(this.dot2);
         this.dot2
         // events for drag start
-            .on('mousedown', this.onDragStart)
+            .on('pointerdown', this.onDragStart)
             .on('touchstart', this.onDragStart)
         // events for drag end
-            .on('mouseup', this.onDragEnd)
-            .on('mouseupoutside', this.onDragEnd)
+            .on('pointerup', this.onDragEnd)
+            .on('pointerupoutside', this.onDragEnd)
             .on('touchend', this.onDragEnd)
             .on('touchendoutside', this.onDragEnd)
         // events for drag move
-            .on('mousemove', this.onDotMove)
+            .on('pointermove', this.onDotMove)
             .on('touchmove', this.onDotMove);
     }
 
