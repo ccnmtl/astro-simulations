@@ -56,6 +56,11 @@ export default class CelestialSphere extends React.Component {
         // Gap between the inside of the sphere and the celestial
         // equator, sun declination, etc.
         this.visualLineGap = 0.5;
+
+        this.cursorTriangle = new THREE.Triangle();
+        this.pointOnPlane = new THREE.Vector3();
+        this.closestPoint = new THREE.Vector3();
+        this.target = new THREE.Vector3();
     }
 
     componentDidMount() {
@@ -204,9 +209,14 @@ export default class CelestialSphere extends React.Component {
             this.orbitPlane, this.orbitGroup, this.props.sunDeclination);
 
         // For visualizing the orbitPlane
-        /* const planeHelper = new THREE.PlaneHelper(
-         *     this.orbitPlane, 80, 0xff0000);
-         * scene.add(planeHelper); */
+        // const planeHelper = new THREE.PlaneHelper(
+        //     this.orbitPlane, 80, 0xff0000);
+        // scene.add(planeHelper);
+
+        // const markerGeometry = new THREE.SphereGeometry( 1 );
+        // const makerMaterial = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
+        // this.marker = new THREE.Mesh( markerGeometry, makerMaterial );
+        // scene.add(this.marker);
 
         this.eclipticOrbitGroup = new THREE.Group();
         this.eclipticOrbitGroup.add(this.primeHourCircle);
@@ -298,6 +308,7 @@ export default class CelestialSphere extends React.Component {
                 this.sunDeclination.verticesNeedUpdate = true;
                 this.sunDeclination.geometry = new THREE.TorusBufferGeometry(
                     declinationRad - this.visualLineGap, 0.3, 16, 64);
+                this.sunDeclination.geometry.rotateX(THREE.Math.degToRad(90));
             }
         }
 
@@ -333,6 +344,7 @@ export default class CelestialSphere extends React.Component {
                     this.getSunDeclinationLineRadius(this.props.sunDeclination),
                     0.3, 16, 64);
             }
+            this.sunDeclination.geometry.rotateX(THREE.Math.degToRad(90));
         }
 
         if (
@@ -484,11 +496,11 @@ export default class CelestialSphere extends React.Component {
         const declinationGeometry = new THREE.TorusBufferGeometry(
             this.getSunDeclinationLineRadius(this.props.sunDeclination),
             0.3, 16, 64);
+        declinationGeometry.rotateX(THREE.Math.degToRad(90));
         this.sunDeclination = new THREE.Mesh(declinationGeometry, yellowMaterial);
         this.sunDeclination.name = 'Declination';
         this.sunDeclination.position.y = THREE.Math.radToDeg(
             this.props.sunDeclination);
-        this.sunDeclination.rotation.x = THREE.Math.degToRad(90);
 
         const thickTorusGeometry = new THREE.TorusBufferGeometry(
             this.sphereRadius - this.visualLineGap, 0.3, 16, 64);
@@ -950,38 +962,51 @@ export default class CelestialSphere extends React.Component {
         // Based on:
         // https://discourse.threejs.org/t/finding-nearest-vertex-of-a-mesh-to-mouse-cursor/4167/4
         if (this.state.isDraggingSun) {
-            const pointOnPlane = new THREE.Vector3();
-            const closestPoint = new THREE.Vector3();
-            const target = new THREE.Vector3();
             this.raycaster.setFromCamera(this.mouse, this.camera);
+            this.raycaster.ray.intersectPlane(this.orbitPlane, this.pointOnPlane);
 
-            this.raycaster.ray.intersectPlane(this.orbitPlane, pointOnPlane);
-            const geometry = this.sunDeclination.geometry;
+            const geometry = this.sunDeclination.geometry.clone();
+            //geometry.rotateX(
+            //    THREE.Math.degToRad(this.props.latitude));
 
             const index = geometry.index;
             const position = geometry.attributes.position;
+
             let minDistance = Infinity;
-            const triangle = new THREE.Triangle();
+            const declinationWorldPos = new THREE.Vector3(
+                0,
+                THREE.Math.radToDeg(this.props.sunDeclination),
+                0);
 
             for (let i = 0, l = index.count; i < l; i += 3) {
-                let a = index.getX( i );
-                let b = index.getX( i + 1 );
-                let c = index.getX( i + 2 );
+                let a = index.getX(i);
+                let b = index.getX(i + 1);
+                let c = index.getX(i + 2);
 
-                triangle.a.fromBufferAttribute( position, a );
-                triangle.b.fromBufferAttribute( position, b );
-                triangle.c.fromBufferAttribute( position, c );
+                this.cursorTriangle.a.fromBufferAttribute(position, a);
+                this.cursorTriangle.b.fromBufferAttribute(position, b);
+                this.cursorTriangle.c.fromBufferAttribute(position, c);
 
-                triangle.closestPointToPoint( pointOnPlane, target );
-                const distanceSq = pointOnPlane.distanceToSquared( target );
+                // Apply transform that we applied to the sun
+                // declination's mesh, but not its geometry.
+                this.cursorTriangle.a.add(declinationWorldPos);
+                this.cursorTriangle.b.add(declinationWorldPos);
+                this.cursorTriangle.c.add(declinationWorldPos);
 
-                if ( distanceSq < minDistance ) {
-                    closestPoint.copy( target );
+                this.cursorTriangle.closestPointToPoint(
+                    this.pointOnPlane, this.target);
+                const distanceSq = this.pointOnPlane.distanceToSquared(
+                    this.target);
+
+                if (distanceSq < minDistance) {
+                    this.closestPoint.copy(this.target);
                     minDistance = distanceSq;
                 }
             }
 
-            const angle = Math.atan2(closestPoint.y, closestPoint.x);
+            // this.marker.position.copy(this.closestPoint);
+
+            const angle = Math.atan2(this.closestPoint.z, this.closestPoint.x);
             const time = this.getTime(angle);
             const d = new Date(this.props.dateTime);
             d.setUTCHours(time.getHours());
