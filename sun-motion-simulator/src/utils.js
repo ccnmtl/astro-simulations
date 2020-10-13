@@ -131,7 +131,8 @@ const getHourAngle = function(siderealTime, rightAscension) {
 }
 
 /**
- * Given a Date object, return the day of year.
+ * Given a Date object, return the day of year, and the date's time as
+ * a fraction.
  *
  * Taken from: https://stackoverflow.com/a/8619946
  */
