@@ -14,47 +14,48 @@ import {
 
 test('gets the sun\'s hour angle', () => {
     // Initial position
-    let doy = getDayOfYear(new Date('2019-5-27 12:00'));
+    let doy = getDayOfYear(new Date(Date.UTC(
+        2019, 4, 27, 12)));
     let siderealTime = getSiderealTime(doy);
     let hourAngle = getHourAngle(siderealTime, getPosition(doy).ra);
     expect(Math.round(hourAngle)).toBe(0);
 
-    doy = getDayOfYear(new Date('2019-5-27 18:00'));
+    doy = getDayOfYear(new Date(Date.UTC(2019, 4, 27, 18)));
     siderealTime = getSiderealTime(doy);
     hourAngle = getHourAngle(siderealTime, getPosition(doy).ra);
     expect(Math.round(hourAngle)).toBe(6);
 
-    doy = getDayOfYear(new Date('2019-5-27 23:00'));
+    doy = getDayOfYear(new Date(Date.UTC(2019, 4, 27, 23)));
     siderealTime = getSiderealTime(doy);
     hourAngle = getHourAngle(siderealTime, getPosition(doy).ra);
     expect(Math.round(hourAngle)).toBe(11);
 
-    doy = getDayOfYear(new Date('2019-5-28 11:00'));
+    doy = getDayOfYear(new Date(Date.UTC(2019, 4, 28, 11)));
     siderealTime = getSiderealTime(doy);
     hourAngle = getHourAngle(siderealTime, getPosition(doy).ra);
     expect(Math.round(hourAngle)).toBe(-1);
 
-    doy = getDayOfYear(new Date('2019-5-27 3:00'));
+    doy = getDayOfYear(new Date(Date.UTC(2019, 4, 27, 3)));
     siderealTime = getSiderealTime(doy);
     hourAngle = getHourAngle(siderealTime, getPosition(doy).ra);
     expect(Math.round(hourAngle)).toBe(-9);
 
-    doy = getDayOfYear(new Date('2019-5-28 3:00'));
+    doy = getDayOfYear(new Date(Date.UTC(2019, 4, 28, 3)));
     siderealTime = getSiderealTime(doy);
     hourAngle = getHourAngle(siderealTime, getPosition(doy).ra);
     expect(Math.round(hourAngle)).toBe(-9);
 
-    doy = getDayOfYear(new Date('2019-5-28 11:00'));
+    doy = getDayOfYear(new Date(Date.UTC(2019, 4, 28, 11)));
     siderealTime = getSiderealTime(doy);
     hourAngle = getHourAngle(siderealTime, getPosition(doy).ra);
     expect(Math.round(hourAngle)).toBe(-1);
 });
 
 test('gets day of year', () => {
-    expect(getDayOfYear(new Date('2000-1-1'))).toBe(1);
-    expect(getDayOfYear(new Date('2015-1-1'))).toBe(1);
-    expect(Math.round(getDayOfYear(new Date('2015-12-31')))).toBe(365);
-    expect(Math.round(getDayOfYear(new Date('2015-4-10')))).toBe(100);
+    expect(getDayOfYear(new Date(Date.UTC(2000, 0, 1)))).toBe(1);
+    expect(getDayOfYear(new Date(Date.UTC(2015, 0, 1)))).toBe(1);
+    expect(getDayOfYear(new Date(Date.UTC(2015, 11, 31)))).toBe(365);
+    expect(getDayOfYear(new Date(Date.UTC(2015, 3, 10)))).toBe(100);
 });
 
 test('formats minutes/seconds correctly', () => {
