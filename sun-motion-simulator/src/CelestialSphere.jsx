@@ -2,12 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import * as THREE from 'three';
 import WEBGL from './utils/WebGL';
-import 'three/OrbitControls';
-import 'three/CopyShader';
-import 'three/FXAAShader';
-import 'three/EffectComposer';
-import 'three/RenderPass';
-import 'three/ShaderPass';
+import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js';
+import {FXAAShader} from 'three/examples/jsm/shaders/FXAAShader.js';
+import {EffectComposer} from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import {RenderPass} from 'three/examples/jsm/postprocessing/RenderPass.js';
+import {ShaderPass} from 'three/examples/jsm/postprocessing/ShaderPass.js';
 import {getEqnOfTime, getPosition} from './utils';
 import MutedColorsShader from './shaders/MutedColorsShader';
 
@@ -79,7 +78,7 @@ export default class CelestialSphere extends React.Component {
         );
         camera.position.set(-60, 60, 80);
 
-        const controls = new THREE.OrbitControls(camera, this.mount);
+        const controls = new OrbitControls(camera, this.mount);
         // Configure the controls - we only need some basic
         // drag-rotation behavior.
         controls.enableKeys = false;
@@ -128,17 +127,17 @@ export default class CelestialSphere extends React.Component {
         scene.add(light);
 
         const dpr = window.devicePixelRatio;
-        const composer = new THREE.EffectComposer(renderer);
-        composer.addPass(new THREE.RenderPass(scene, camera));
+        const composer = new EffectComposer(renderer);
+        composer.addPass(new RenderPass(scene, camera));
 
         // Add anti-aliasing pass
-        const shaderPass = new THREE.ShaderPass(THREE.FXAAShader);
+        const shaderPass = new ShaderPass(FXAAShader);
         shaderPass.uniforms.resolution.value = new THREE.Vector2(
             1 / (width * 2 * dpr), 1 / (height * 2 * dpr));
         composer.setSize(width * 4 * dpr, height * 4 * dpr);
         composer.addPass(shaderPass);
 
-        const colorPass = new THREE.ShaderPass(MutedColorsShader);
+        const colorPass = new ShaderPass(MutedColorsShader);
 
         // The last pass always needs renderToScreen = true.
         colorPass.renderToScreen = true;
