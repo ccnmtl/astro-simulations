@@ -67,6 +67,10 @@ test('formats hours/minutes correctly', () => {
     expect(formatHours(1)).toBe('1h 0m');
     expect(formatHours(2.25)).toBe('2h 15m');
     expect(formatHours(-2.25)).toBe('-2h 15m');
+    expect(formatHours(0.999999)).toBe('0h 59m');
+    expect(formatHours(2.999999)).toBe('2h 59m');
+    expect(formatHours(-0.9999)).toBe('-0h 59m');
+    expect(formatHours(-5.99)).toBe('-5h 59m');
 });
 
 test('rounds numbers to one place', () => {

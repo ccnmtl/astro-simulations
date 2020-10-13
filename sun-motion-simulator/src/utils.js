@@ -177,7 +177,7 @@ const formatHours = function(n) {
     n = Math.abs(n);
     const hours = Math.floor(n);
     const r = n - hours;
-    const minutes = forceNumber(Math.round(r * 60));
+    const minutes = forceNumber(Math.floor(r * 60));
 
     const negDisplay = isNegative ? '-' : '';
     return `${negDisplay}${hours}h ${minutes}m`;
