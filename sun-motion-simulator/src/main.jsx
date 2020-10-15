@@ -258,7 +258,7 @@ class SunMotionSim extends React.Component {
             this.setState(this.onDateUpdate(this.state.dateTime));
         }
 
-        if (prevState.dateTime !== this.state.dateTime ||
+        if (prevState.hourAngle !== this.state.hourAngle ||
             prevState.latitude !== this.state.latitude
         ) {
             const zenith = getSolarZenith(
