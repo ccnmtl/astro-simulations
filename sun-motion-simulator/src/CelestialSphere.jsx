@@ -966,8 +966,6 @@ export default class CelestialSphere extends React.Component {
             this.raycaster.ray.intersectPlane(this.orbitPlane, this.pointOnPlane);
 
             const geometry = this.sunDeclination.geometry.clone();
-            //geometry.rotateX(
-            //    THREE.Math.degToRad(this.props.latitude));
 
             const index = geometry.index;
             const position = geometry.attributes.position;
@@ -977,6 +975,8 @@ export default class CelestialSphere extends React.Component {
                 0,
                 THREE.Math.radToDeg(this.props.sunDeclination),
                 0);
+
+            const rotation = this.orbitGroup.quaternion.clone();
 
             for (let i = 0, l = index.count; i < l; i += 3) {
                 let a = index.getX(i);
@@ -993,6 +993,13 @@ export default class CelestialSphere extends React.Component {
                 this.cursorTriangle.b.add(declinationWorldPos);
                 this.cursorTriangle.c.add(declinationWorldPos);
 
+                // Grab the orbitGroup's rotation, so this mousemove
+                // handler continues to be accurate when a change in
+                // latitude rotates the sunDeclination ring.
+                this.cursorTriangle.a.applyQuaternion(rotation);
+                this.cursorTriangle.b.applyQuaternion(rotation);
+                this.cursorTriangle.c.applyQuaternion(rotation);
+
                 this.cursorTriangle.closestPointToPoint(
                     this.pointOnPlane, this.target);
                 const distanceSq = this.pointOnPlane.distanceToSquared(
@@ -1006,6 +1013,12 @@ export default class CelestialSphere extends React.Component {
 
             // this.marker.position.copy(this.closestPoint);
 
+            this.closestPoint.applyAxisAngle(
+                new THREE.Vector3(-1, 0, 0),
+                THREE.Math.degToRad(this.props.latitude) - (Math.PI / 2));
+
+            // Find the angle that the closestPoint vector represents, and
+            // turn that into a time, to set the clock.
             const angle = Math.atan2(this.closestPoint.z, this.closestPoint.x);
             const time = this.getTime(angle);
             const d = new Date(this.props.dateTime);
