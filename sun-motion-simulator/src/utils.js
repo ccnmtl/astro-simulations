@@ -154,6 +154,18 @@ const getDayOfYear = function(d) {
 };
 
 /**
+ * Given a JS Date object, return its time of day as a number between
+ * 0 and 1.
+ */
+const getTime = function(d) {
+    let time = 0;
+    time += d.getUTCHours() / 24;
+    time += d.getUTCMinutes() / 60 / 24;
+    time += d.getUTCSeconds() / 60 / 60 / 24;
+    return time;
+};
+
+/**
  * Format a decimal of minutes as: minutes:seconds
  */
 const formatMinutes = function(n) {
@@ -231,6 +243,7 @@ export {
     degToRad, radToDeg,
     getSiderealTime,
     getHourAngle,
-    getDayOfYear, formatMinutes, formatHours,
+    getDayOfYear, getTime,
+    formatMinutes, formatHours,
     getEqnOfTime, getPosition
 };
