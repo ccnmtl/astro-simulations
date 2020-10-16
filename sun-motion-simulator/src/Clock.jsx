@@ -192,7 +192,7 @@ export default class Clock extends React.Component {
         return d.toLocaleTimeString([], {
             hour: '2-digit',
             minute: '2-digit',
-            hour12: false,
+            hourCycle: 'h23',
             timeZone: 'UTC'
         });
     }
