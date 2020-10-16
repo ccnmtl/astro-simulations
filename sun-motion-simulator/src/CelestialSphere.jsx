@@ -7,7 +7,7 @@ import {FXAAShader} from 'three/examples/jsm/shaders/FXAAShader.js';
 import {EffectComposer} from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import {RenderPass} from 'three/examples/jsm/postprocessing/RenderPass.js';
 import {ShaderPass} from 'three/examples/jsm/postprocessing/ShaderPass.js';
-import {getEqnOfTime, getPosition} from './utils';
+import {getEqnOfTime, getPosition, getTime} from './utils';
 import MutedColorsShader from './shaders/MutedColorsShader';
 
 /**
@@ -181,8 +181,11 @@ export default class CelestialSphere extends React.Component {
         this.orbitGroup.add(this.celestialEquator);
 
         this.analemma = this.drawAnalemma(scene);
-        this.analemma.position.z += 2;
-        this.orbitGroup.add(this.analemma);
+        this.analemma.rotation.x =
+            THREE.Math.degToRad(this.props.latitude) - (Math.PI / 2);
+        this.analemma.rotation.y = hourAngleToRadians(
+            this.props.hourAngle) + (Math.PI / 2);
+        scene.add(this.analemma);
 
         this.orbitGroup.rotation.x =
             THREE.Math.degToRad(this.props.latitude) - (Math.PI / 2);
@@ -246,6 +249,9 @@ export default class CelestialSphere extends React.Component {
             this.orbitGroup.rotation.x =
                 THREE.Math.degToRad(this.props.latitude) - (Math.PI / 2);
 
+            this.analemma.rotation.x =
+                THREE.Math.degToRad(this.props.latitude) - (Math.PI / 2);
+
             this.sunOrbitGroup.rotation.x =
                 THREE.Math.degToRad(this.props.latitude) - (Math.PI / 2);
 
@@ -278,6 +284,12 @@ export default class CelestialSphere extends React.Component {
             this.sunOrbitGroup.rotation.y = sunRotation;
             this.eclipticOrbitGroup.rotation.y =
                 sunRotation - THREE.Math.degToRad(10);
+        }
+
+        if (prevProps.dateTime !== this.props.dateTime) {
+            const time = getTime(this.props.dateTime);
+            this.analemma.rotation.y = (-time * 2 * Math.PI) +
+                (Math.PI / 2);
         }
 
         if (prevProps.sunDeclination !== this.props.sunDeclination ||
@@ -681,6 +693,7 @@ export default class CelestialSphere extends React.Component {
     drawAnalemma() {
         const n = 200;
         const a = this.initAnalemmaArray(n);
+
         const AnalemmaCurve = function(scale) {
             THREE.Curve.call(this);
             this.scale = (scale === undefined) ? 1 : scale;
@@ -703,13 +716,12 @@ export default class CelestialSphere extends React.Component {
                             .multiplyScalar(this.scale);
         };
 
-        const path = new AnalemmaCurve(51);
+        const path = new AnalemmaCurve(49);
         const geometry = new THREE.TubeBufferGeometry(
             path, 64, 0.35, 8, false);
         const material = new THREE.MeshBasicMaterial({color: 0xe80000});
         const analemma = new THREE.Mesh(geometry, material);
 
-        analemma.rotation.y = Math.PI / 2;
         analemma.visible = this.props.showAnalemma;
         return analemma;
     }
@@ -723,11 +735,6 @@ export default class CelestialSphere extends React.Component {
         const step = 365.24 / n;
         let points = [];
 
-        // these limits define the declinations where the sun should
-        // start to wrap around
-        const limA = 22;
-        const limB = -22;
-
         for (let i = 0; i < n; i++) {
             let day = i * step;
             let pos = getPosition(day);
@@ -740,16 +747,6 @@ export default class CelestialSphere extends React.Component {
                 y: cd * Math.sin(eot),
                 z: Math.sin(dec)
             };
-
-            if (pos.dec >= limA) {
-                points[parseInt(i)].interval = 1;
-            } else if (pos.dec <= limB) {
-                points[parseInt(i)].interval = 3;
-            } else if (day > 354.318929563686 || day < 170.941195869382) {
-                points[parseInt(i)].interval = 0;
-            } else {
-                points[parseInt(i)].interval = 2;
-            }
         }
 
         return points;
