@@ -28,13 +28,6 @@ const yScale = props => {
         .range([props.height - props.padding, props.padding]);
 };
 
-const yNoiseScale = props => {
-    return d3
-        .scaleLinear()
-        .domain(d3.extent(props.noiseData, d => d[1]))
-        .range([props.height - props.padding, props.padding]);
-};
-
 class Line extends React.Component {
     render() {
         const data = this.props.data;
@@ -86,7 +79,6 @@ export default class Plot extends React.Component {
         const scales = {
             xScale: xScale(props),
             yScale: yScale(props),
-            yNoiseScale: yNoiseScale(props)
         };
 
         return (
