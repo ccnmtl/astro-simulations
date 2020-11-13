@@ -14,7 +14,8 @@ JavaScript/HTML ports of the Flash originals, found here: [http://astro.unl.edu/
 ## Development guide
 
 The original simulations are written in ActionScript 2.0. To open the .fla files, you'll need an older version of Adobe Animate than the current version (19.1). You can download a trial version of Adobe Flash Professional CS4 [here](https://helpx.adobe.com/creative-suite/kb/cs4-product-downloads.html)
-and open the .fla files with this. Also, Flash Professional CS6 is [available in Creative Cloud](https://forums.adobe.com/message/10858830#10858830), which also can open these files.
+and open the .fla files with this. Also, Flash Professional CS6 can also open these files. Adobe doesn't distribute Flash Professional anymore. The only way I've found to read the source files is by opening the .swf files in [JPEXS Free Flash Decompiler
+](https://github.com/jindrapetrik/jpexs-decompiler).
 
 To get to the code, go to Window -> Actions. The bottom-left panel
 should have the code hierarchy. 
