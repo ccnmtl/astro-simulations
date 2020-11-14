@@ -15,11 +15,12 @@ export default class BinarySystemView extends React.Component {
         super(props);
         this.id = 'BinarySystemView';
 
-        this.size = 400;
+        this.size = 800;
 
         this._c = {};
 
         this.orbitalPlane = null;
+        this.rotatedOrbitalPlane = null;
 
         this.initObject = {
             phase: 0.4,
@@ -48,10 +49,13 @@ export default class BinarySystemView extends React.Component {
             color: 0x7b7b7b,
             alpha: 0.4
         };
+
         this.gridLineStyle = {
-            thickness: 1,
+            thickness: 0.5,
             color: 0x909090
         };
+
+        // The green cross through the centers of the grid
         this.axisGridLineStyle = {
             thickness: 1,
             color: 0x4DA94D,
@@ -405,10 +409,10 @@ export default class BinarySystemView extends React.Component {
         const sin = Math.sin;
 
         this.orbitalPlane.scale.y = sin(this._phi);
-        this.orbitalPlane.rotation = 90 + radToDeg(this._theta);
+        this.rotatedOrbitalPlane.rotation = 90 + radToDeg(this._theta);
 
-        const path1 = this.orbitalPlane.getChildByName('path1');
-        const path2 = this.orbitalPlane.getChildByName('path2');
+        const path1 = this.rotatedOrbitalPlane.getChildByName('path1');
+        const path2 = this.rotatedOrbitalPlane.getChildByName('path2');
 
         path1.clear();
         path2.clear();
@@ -478,7 +482,7 @@ export default class BinarySystemView extends React.Component {
     }
 
     updateOrbitalPlane() {
-        const grid = this.orbitalPlane.getChildByName('grid');
+        const grid = this.rotatedOrbitalPlane.getChildByName('grid');
 
         grid.clear();
 
@@ -652,7 +656,8 @@ export default class BinarySystemView extends React.Component {
 
     render() {
         return (
-            <div ref={(thisDiv) => {this.el = thisDiv}} />
+            <div id="BinarySystemView"
+                 ref={(thisDiv) => {this.el = thisDiv}} />
         );
     }
 
@@ -672,7 +677,9 @@ export default class BinarySystemView extends React.Component {
 
         this.drawText(this.app);
 
-        this.orbitalPlane = this.drawOrbitalPlane(this.app);
+        const containers = this.drawOrbitalPlane(this.app);
+        this.orbitalPlane = containers[0];
+        this.rotatedOrbitalPlane = containers[1];
         this.app.stage.addChild(this.orbitalPlane);
 
         this.stars = this.drawStars(this.app);
@@ -750,6 +757,7 @@ export default class BinarySystemView extends React.Component {
 
     drawOrbitalPlane(app) {
         const container = new PIXI.Container();
+        const rotatedContainer = new PIXI.Container();
 
         const grid = new PIXI.Graphics();
         grid.name = 'grid';
@@ -758,16 +766,19 @@ export default class BinarySystemView extends React.Component {
         const path2 = new PIXI.Graphics();
         path2.name = 'path2';
 
-        container.addChild(grid);
-        container.addChild(path1);
-        container.addChild(path2);
+        rotatedContainer.addChild(grid);
+        rotatedContainer.addChild(path1);
+        rotatedContainer.addChild(path2);
+
+        container.addChild(rotatedContainer);
+
         app.stage.addChild(container);
-        return container;
+        return [container, rotatedContainer];
     }
     drawText(app) {
         const textStyle = new PIXI.TextStyle({
             fontFamily: 'Arial',
-            fontSize: 14,
+            fontSize: 28,
             fontStyle: 'italic',
             fontWeight: 'normal',
             fill: 0xffffff,
@@ -775,14 +786,14 @@ export default class BinarySystemView extends React.Component {
         });
 
         const text = new PIXI.Text('perspective from earth', textStyle);
-        text.position.x = 14;
+        text.position.x = 24;
         text.position.y = 20;
         app.stage.addChild(text);
 
         const text2 = new PIXI.Text(`system period: ${this.period} days`, textStyle);
         text2.name = 'periodText';
-        text2.position.x = 230;
-        text2.position.y = 370;
+        text2.position.x = this.size / 2;
+        text2.position.y = this.size - 70;
         app.stage.addChild(text2);
     }
     drawStars(app) {
