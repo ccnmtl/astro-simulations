@@ -307,7 +307,11 @@ export default class BinarySystemView extends React.Component {
     resizeStar(arg) {
         // resize the icon of the given body (where arg = 1 or 2)
         const body = this.stars.getChildByName(`star${arg}`)
-                         .getChildByName('star');
+              .getChildByName('star');
+
+        const bodyBackHalf = this.app.stage
+              .getChildByName(`star${arg}BackHalf`);
+
         if (!body) {
             return;
         }
@@ -321,15 +325,21 @@ export default class BinarySystemView extends React.Component {
 
         const scalingFactor = (this._scale * rad) / 200;
 
-        body.scale = new PIXI.Point(scalingFactor, scalingFactor);
+        const scalePoint = new PIXI.Point(scalingFactor, scalingFactor);
+
+        body.scale = scalePoint;
+
+        if (bodyBackHalf) {
+            bodyBackHalf.scale = scalePoint;
+        }
     }
 
     updateMask(arg) {
         // update the mask of the given body (arg = 1 or 2) that's located in the front half movieclip
         // (update the object equator at the same time)
 
-        const mask = this.stars.getChildByName(`star${arg}`)
-                         .getChildByName('mask');
+        const mask = this.stars.getChildByName(`star${arg}`).mask;
+
         mask.clear();
 
         let aRad;
@@ -339,17 +349,17 @@ export default class BinarySystemView extends React.Component {
             aRad = this._scale * this.props.star2Radius;
         }
 
-        var cos = Math.cos;
-        var sin = Math.sin;
+        let cos = Math.cos;
+        let sin = Math.sin;
 
-        var n = 12;
-        var hn = n/2;
-        var step = (2*Math.PI)/n;
+        let n = 12;
+        let hn = n/2;
+        let step = (2*Math.PI)/n;
 
-        var cRad = aRad/cos(step/2);
+        let cRad = aRad/cos(step/2);
 
-        var aAngle = 0;
-        var cAngle = -step/2;
+        let aAngle = 0;
+        let cAngle = -step/2;
 
         mask.moveTo(aRad * cos(aAngle), -aRad * sin(aAngle));
         mask.beginFill(0xFF0000, 1);
@@ -381,7 +391,7 @@ export default class BinarySystemView extends React.Component {
 
         // do the equator as we finish drawing the mask
         const equator = this.stars.getChildByName(`star${arg}`)
-                            .getChildByName('equator');
+              .getChildByName('equator');
         equator.clear();
 
         equator.lineStyle(
@@ -393,10 +403,10 @@ export default class BinarySystemView extends React.Component {
         for (i = hn; i < n; i++) {
             aAngle += step;
             cAngle += step;
-            var cx = cRad*cos(cAngle);
-            var cy = ck*sin(cAngle);
-            var ax = aRad*cos(aAngle);
-            var ay = ak*sin(aAngle);
+            let cx = cRad*cos(cAngle);
+            let cy = ck*sin(cAngle);
+            let ax = aRad*cos(aAngle);
+            let ay = ak*sin(aAngle);
             mask.quadraticCurveTo(cx, cy, ax, ay);
             equator.quadraticCurveTo(cx, cy, ax, ay);
         }
@@ -636,21 +646,43 @@ export default class BinarySystemView extends React.Component {
         this._s2 = {x: sx2, y: sy2, z: sz2};
 
         const star1 = this.stars.getChildByName('star1');
+        const star1BackHalf = this.app.stage.getChildByName('star1BackHalf');
         const star2 = this.stars.getChildByName('star2');
+        const star2BackHalf = this.app.stage.getChildByName('star2BackHalf');
 
         star1.x = sx1;
         star1.y = sy1;
 
+        star1BackHalf.x = sx1;
+        star1BackHalf.y = sy1;
+
+        // This scene offset is necessary for some reason.
+        star1BackHalf.x += this.size / 2;
+        star1BackHalf.y += this.size / 2;
+
         star2.x = sx2;
         star2.y = sy2;
+
+        star2BackHalf.x = sx2;
+        star2BackHalf.y = sy2;
+
+        // This scene offset is necessary for some reason.
+        star2BackHalf.x += this.size / 2;
+        star2BackHalf.y += this.size / 2;
 
         const star1z = this.stars.getChildIndex(star1);
         const star2z = this.stars.getChildIndex(star2);
 
         if (sz1 > sz2 && star2z > star1z) {
+            // Bring star 1 to the front
             this.stars.swapChildren(star2, star1);
+            star1BackHalf.zIndex = -4;
+            star2BackHalf.zIndex = -5;
         } else if (sz2 > sz1 && star1z > star2z) {
+            // Bring star 2 to the front
             this.stars.swapChildren(star1, star2);
+            star1BackHalf.zIndex = -5;
+            star2BackHalf.zIndex = -4;
         }
     }
 
@@ -673,6 +705,8 @@ export default class BinarySystemView extends React.Component {
             sharedTicker: true
         });
 
+        this.app.stage.sortableChildren = true;
+
         this.el.appendChild(this.app.view);
 
         this.drawText(this.app);
@@ -694,6 +728,7 @@ export default class BinarySystemView extends React.Component {
         // This scene offset is necessary for some reason.
         this.stars.x += this.size / 2;
         this.stars.y += this.size / 2;
+
         this.orbitalPlane.x += this.size / 2;
         this.orbitalPlane.y += this.size / 2;
     }
@@ -806,14 +841,23 @@ export default class BinarySystemView extends React.Component {
         star1.beginFill(getColorFromTemp(this.props.star1Temp), 1);
         star1.drawCircle(0, 0, 200);
 
+        // The half of the star behind the plane. Just rendered as a
+        // full circle.
+        const star1BackHalf = star1.clone();
+        star1BackHalf.name = 'star1BackHalf';
+        star1BackHalf.zIndex = -5;
+        app.stage.addChild(star1BackHalf);
+
         const mask1 = new PIXI.Graphics();
-        mask1.name = 'mask';
+        mask1.name = 'mask1';
         const equator1 = new PIXI.Graphics();
         equator1.name = 'equator';
 
         star1Container.addChild(star1);
         star1Container.addChild(mask1);
         star1Container.addChild(equator1);
+
+        star1Container.mask = mask1;
 
         const star2Container = new PIXI.Container();
         star2Container.name = 'star2';
@@ -822,14 +866,23 @@ export default class BinarySystemView extends React.Component {
         star2.beginFill(getColorFromTemp(this.props.star2Temp), 1);
         star2.drawCircle(0, 0, 200);
 
+        // The half of the star behind the plane. Just rendered as a
+        // full circle.
+        const star2BackHalf = star2.clone();
+        star2BackHalf.name = 'star2BackHalf';
+        star2BackHalf.zIndex = -5;
+        app.stage.addChild(star2BackHalf);
+
         const mask2 = new PIXI.Graphics();
-        mask2.name = 'mask';
+        mask2.name = 'mask2';
         const equator2 = new PIXI.Graphics();
         equator2.name = 'equator';
 
         star2Container.addChild(star2);
         star2Container.addChild(mask2);
         star2Container.addChild(equator2);
+
+        star2Container.mask = mask2;
 
         container.addChild(star1Container);
         container.addChild(star2Container);
