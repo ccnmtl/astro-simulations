@@ -61,8 +61,11 @@ const getLuminosityFromTempAndClass = function(temp, klass) {
     //   for luminosity class V the approximation used is based on data from the "Grids of stellar models" articles
 
     // use class V by default if no class is specified
+
+    if (klass == undefined || klass == '') {
+        klass = "v";
+    }
     var klass = klass.toLowerCase();
-    if (klass==undefined || klass=="") klass = "v";
 
     // remove the subclass letters "a" and "b" if they are present
     var aIndex = klass.indexOf("a");
