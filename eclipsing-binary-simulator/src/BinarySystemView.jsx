@@ -41,23 +41,23 @@ export default class BinarySystemView extends React.Component {
         };
 
         this.orbitalPathStyle = {
-            thickness: 1,
+            thickness: 3,
             color: 0xffffff,
             alpha: 0.7
         };
         this.gridFillStyle = {
             color: 0x7b7b7b,
-            alpha: 0.4
+            alpha: 0.55
         };
 
         this.gridLineStyle = {
-            thickness: 0.5,
+            thickness: 1,
             color: 0x909090
         };
 
         // The green cross through the centers of the grid
         this.axisGridLineStyle = {
-            thickness: 1,
+            thickness: 3,
             color: 0x4DA94D,
             alpha: 0.65
         };

@@ -165,7 +165,7 @@ export default class Plot extends React.Component {
                     offset={this.state.offset}
                     {...props} {...scales} />
             </svg>
-        )
+        );
     }
 };
 
