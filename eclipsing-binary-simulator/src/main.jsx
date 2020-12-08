@@ -162,7 +162,10 @@ class EclipsingBinarySimulator extends React.Component {
                         separation={this.state.separation}
                         eccentricity={this.state.eccentricity}
                         inclination={this.state.inclination}
-                        longitude={this.state.longitude} />
+                        longitude={this.state.longitude}
+                        showOrbitalPaths={this.state.showOrbitalPaths}
+                        showOrbitalPlane={this.state.showOrbitalPlane}
+                    />
 
                     <h6>System Orientation</h6>
 
