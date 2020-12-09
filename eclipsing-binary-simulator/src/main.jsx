@@ -26,7 +26,6 @@ class EclipsingBinarySimulator extends React.Component {
             longitude: 150,
             inclination: 80,
 
-            lockOnPerspectiveFromEarth: true,
             showOrbitalPaths: true,
             showOrbitalPlane: true,
 
@@ -262,19 +261,6 @@ class EclipsingBinarySimulator extends React.Component {
                                 min={0} max={1} step={0.01} />
                         </div>
                     </div>
-                </div>
-
-                <div className="custom-control custom-checkbox">
-                    <input type="checkbox" className="custom-control-input"
-                           name="lockOnPerspectiveFromEarth"
-                           onFocus={this.handleFocus}
-                           onChange={this.handleInputChange}
-                           checked={this.state.lockOnPerspectiveFromEarth}
-                           id="lockOnPerspectiveFromEarthToggle" />
-                    <label className="custom-control-label"
-                           htmlFor="lockOnPerspectiveFromEarthToggle">
-                        Lock on perspective from earth
-                    </label>
                 </div>
 
                 <div className="custom-control custom-checkbox">
