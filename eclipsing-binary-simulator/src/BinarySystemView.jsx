@@ -254,8 +254,6 @@ export default class BinarySystemView extends React.Component {
 
         if (initObject.autoScale!=undefined) this._autoScale = Boolean(initObject.autoScale);
         if (initObject.targetSize!=undefined) this._targetSize = initObject.targetSize;
-        if (initObject.showOrbitalPaths!=undefined) this._showOrbitalPaths = Boolean(initObject.showOrbitalPaths);
-        if (initObject.showOrbitalPlane!=undefined) this._showOrbitalPlane = Boolean(initObject.showOrbitalPlane);
         if (initObject.phi!=undefined && !(initObject.phi<-90 || initObject.phi>90)) {
             this._phi = degToRad(initObject.phi);
         }
@@ -427,7 +425,9 @@ export default class BinarySystemView extends React.Component {
         path1.clear();
         path2.clear();
 
-        if (!this._showOrbitalPaths) return;
+        if (!this.props.showOrbitalPaths) {
+            return;
+        }
 
         path1.lineStyle(
             this.orbitalPathStyle.thickness,
@@ -496,7 +496,9 @@ export default class BinarySystemView extends React.Component {
 
         grid.clear();
 
-        if (!this._showOrbitalPlane) return;
+        if (!this.props.showOrbitalPlane) {
+            return;
+        }
 
         let ceil = Math.ceil;
 
@@ -777,14 +779,16 @@ export default class BinarySystemView extends React.Component {
 
         if (
             prevProps.phase !== this.props.phase ||
-            prevProps.star1Mass !== this.props.star1Mass ||
-            prevProps.star2Mass !== this.props.star2Mass ||
-            prevProps.star1Radius !== this.props.star1Radius ||
-            prevProps.star2Radius !== this.props.star2Radius ||
-            prevProps.separation !== this.props.separation ||
-            prevProps.eccentricity !== this.props.eccentricity ||
-            prevProps.longitude !== this.props.longitude ||
-            prevProps.inclination !== this.props.inclination
+                prevProps.star1Mass !== this.props.star1Mass ||
+                prevProps.star2Mass !== this.props.star2Mass ||
+                prevProps.star1Radius !== this.props.star1Radius ||
+                prevProps.star2Radius !== this.props.star2Radius ||
+                prevProps.separation !== this.props.separation ||
+                prevProps.eccentricity !== this.props.eccentricity ||
+                prevProps.longitude !== this.props.longitude ||
+                prevProps.inclination !== this.props.inclination ||
+                prevProps.showOrbitalPaths !== this.props.showOrbitalPaths ||
+                prevProps.showOrbitalPlane !== this.props.showOrbitalPlane
         ) {
             this.rescale();
         }
@@ -903,5 +907,7 @@ BinarySystemView.propTypes = {
     separation: PropTypes.number.isRequired,
     eccentricity: PropTypes.number.isRequired,
     inclination: PropTypes.number.isRequired,
-    longitude: PropTypes.number.isRequired
+    longitude: PropTypes.number.isRequired,
+    showOrbitalPaths: PropTypes.bool.isRequired,
+    showOrbitalPlane: PropTypes.bool.isRequired
 };
