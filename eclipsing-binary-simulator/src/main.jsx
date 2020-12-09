@@ -447,6 +447,15 @@ class EclipsingBinarySimulator extends React.Component {
                                     min={this.state.star1RadiusMin}
                                     max={this.state.star1RadiusMax}
                                     step={0.1} />
+
+                                <div className="small form-text text-muted mb-2">
+                                    <span>min: {
+                                        roundToTwoPlaces(this.state.star1RadiusMin)
+                                    }</span>
+                                    <span className="ml-2">max: {
+                                        roundToTwoPlaces(this.state.star1RadiusMax)
+                                    }</span>
+                                </div>
                             </div>
                         </div>
 
@@ -535,6 +544,15 @@ class EclipsingBinarySimulator extends React.Component {
                                     min={this.state.star2RadiusMin}
                                     max={this.state.star2RadiusMax}
                                     step={0.1} />
+
+                                <div className="small form-text text-muted mb-2">
+                                    <span>min: {
+                                        roundToTwoPlaces(this.state.star2RadiusMin)
+                                    }</span>
+                                    <span className="ml-2">max: {
+                                        roundToTwoPlaces(this.state.star2RadiusMax)
+                                    }</span>
+                                </div>
                             </div>
                         </div>
 
@@ -595,6 +613,15 @@ class EclipsingBinarySimulator extends React.Component {
                                     min={this.state.separationMin}
                                     max={this.state.separationMax}
                                     step={0.01} />
+
+                                <div className="small form-text text-muted mb-2">
+                                    <span>min: {
+                                        roundToTwoPlaces(this.state.separationMin)
+                                    }</span>
+                                    <span className="ml-2">max: {
+                                        roundToTwoPlaces(this.state.separationMax)
+                                    }</span>
+                                </div>
                             </div>
                         </div>
 
@@ -623,6 +650,15 @@ class EclipsingBinarySimulator extends React.Component {
                                     min={this.state.eccentricityMin}
                                     max={this.state.eccentricityMax}
                                     step={0.01} />
+
+                                <div className="small form-text text-muted mb-2">
+                                    <span>min: {
+                                        roundToTwoPlaces(this.state.eccentricityMin)
+                                    }</span>
+                                    <span className="ml-2">max: {
+                                        roundToTwoPlaces(this.state.eccentricityMax)
+                                    }</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -656,20 +692,22 @@ class EclipsingBinarySimulator extends React.Component {
         }
 
         if (
-            prevState.star1Radius !== this.state.star1Radius
-        ) {
-            this.setRestrictToMainSequence(2);
-        }
-
-        if (
-            prevState.star2Radius !== this.state.star2Radius
+            prevState.star1Radius !== this.state.star1Radius ||
+                prevState.star2Radius !== this.state.star2Radius ||
+                prevState.separation !== this.state.separation ||
+                prevState.eccentricity !== this.state.eccentricity
         ) {
             this.setRestrictToMainSequence(1);
+            this.setRestrictToMainSequence(2);
         }
     }
     setEccentricityRange() {
-        // the maximum eccentricity limit depends on the radii of both stars and the system separation
-        const EmaxVis = 1 - ((this.star1.r + this.star2.r) / this.sysProps.a);
+        // the maximum eccentricity limit depends on the radii of both
+        // stars and the system separation
+        const EmaxVis = 1 - (
+            (this.state.star1Radius + this.state.star2Radius) /
+                this.state.separation
+        );
         const Emin = this.EminSld;
         const Emax = Math.min(this.EmaxSld, EmaxVis);
         this.setState({
@@ -679,8 +717,11 @@ class EclipsingBinarySimulator extends React.Component {
     }
 
     setSeparationRange() {
-        // the minimum separation limit depends on the radii of both stars and the eccentricity
-        const AminVis = (this.star1.r + this.star2.r) / (1 - this.sysProps.e);
+        // the minimum separation limit depends on the radii of both
+        // stars and the eccentricity
+        const AminVis = (
+            this.state.star1Radius + this.state.star2Radius) / (
+                1 - this.state.eccentricity);
         const Amin = Math.max(this.AminSld, AminVis);
         const Amax = this.AmaxSld;
         this.setState({
@@ -723,32 +764,33 @@ class EclipsingBinarySimulator extends React.Component {
         //  when in main sequence restrict mode these are the only dependencies,
         //  but in unrestricted mode the radius limit also depends on:
         //   - the temperature of star A
-        let thisStar, otherStar, otherStarNumber;
+        let thisStar, otherStarNumber, thisStarNumber;
 
         if (star === 1) {
             thisStar = this.star1;
-            otherStar = this.star2;
+            thisStarNumber = 1;
             otherStarNumber = 2;
         } else if (star === 2) {
             thisStar = this.star2;
-            otherStar = this.star1;
+            thisStarNumber = 2;
             otherStarNumber = 1;
         } else {
             return;
         }
 
-        const starRadiusMin = this.state[`star${otherStarNumber}RadiusMin`];
-        const starRadiusMax = this.state[`star${otherStarNumber}RadiusMax`];
+        const starRadiusMin = 0.1;
+        const starRadiusMax = 50;
 
-        var RmaxVis = this.sysProps.a * (1 - this.sysProps.e) - otherStar.r;
+        var RmaxVis = this.sysProps.a * (1 - this.sysProps.e) -
+            this.state[`star${otherStarNumber}Radius`];
         var RminHR = getRadiusFromTempAndLuminosity(thisStar.t, this.Lmin);
         var RmaxHR = getRadiusFromTempAndLuminosity(thisStar.t, this.Lmax);
         const Rmin = Math.max(starRadiusMin, RminHR);
         const Rmax = Math.min(Math.min(starRadiusMax, RmaxHR), RmaxVis);
 
         this.setState({
-            [`star${otherStarNumber}RadiusMin`]: Rmin,
-            [`star${otherStarNumber}RadiusMax`]: Rmax
+            [`star${thisStarNumber}RadiusMin`]: Rmin,
+            [`star${thisStarNumber}RadiusMax`]: Rmax
         });
     }
     setMassRange(star) {
@@ -1031,12 +1073,12 @@ class EclipsingBinarySimulator extends React.Component {
 
             this.setState({
                 eccentricity: this.sysProps.e,
-                separationSlider: this.sysProps.a,
+                separation: this.sysProps.a,
             });
 
-            var initObj = {};
-            initObj["radius"+star] = thisStar.r;
-            initObj["mass"+star] = thisStar.m;
+            let initObj = {};
+            initObj["radius" + star] = thisStar.r;
+            initObj["mass" + star] = thisStar.m;
             initObj.eccentricity = this.sysProps.e;
             initObj.separation = this.sysProps.a;
             //visualizationMC.initialize(initObj);
@@ -1051,7 +1093,7 @@ class EclipsingBinarySimulator extends React.Component {
             thisStar.r = getRadiusFromTempAndLuminosity(temp, thisStar.l);
             thisStar.m = getMassFromLuminosity(thisStar.l);
 
-            initObj = {};
+            let initObj = {};
             initObj["radius"+star] = thisStar.r;
             initObj["mass"+star] = thisStar.m;
             //visualizationMC.initialize(initObj);
@@ -1079,15 +1121,8 @@ class EclipsingBinarySimulator extends React.Component {
 
         this.setSeparationRange();
         this.setEccentricityRange();
-        //this.setRestrictedStarRanges(star);
 
-        var otherRestricted = this["restrict"+otherStarNumber+"Check"];
-
-        if (otherRestricted) {
-            //this.setRestrictedStarRanges(otherStarNumber);
-        } else {
-            this.setRadiusRange(otherStarNumber);
-        }
+        this.setRadiusRange(otherStarNumber);
     }
 
     setTempAndLuminosity(star, temp, lum) {
