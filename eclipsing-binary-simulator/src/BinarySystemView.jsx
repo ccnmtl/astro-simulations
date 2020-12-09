@@ -2,13 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import * as PIXI from 'pixi.js';
 import {
-    degToRad, radToDeg, getSystemTheta, getSystemPhi,
+    degToRad, getSystemTheta, getSystemPhi,
     roundToTwoPlaces, getColorFromTemp
 } from './utils';
-
-const convertPhase = function(phase) {
-    return (phase % 1 + 1) % 1;
-};
 
 export default class BinarySystemView extends React.Component {
     constructor(props) {
@@ -23,11 +19,6 @@ export default class BinarySystemView extends React.Component {
         this.rotatedOrbitalPlane = null;
 
         this.initObject = {
-            phase: 0.4,
-            mass1: 2,
-            mass2: 1.9,
-            radius1: 1.5,
-            radius2: 1.4,
             phi: getSystemPhi(this.props.inclination),
             theta: getSystemTheta(this.props.longitude),
             showOrbitalPlane: true,
@@ -286,8 +277,8 @@ export default class BinarySystemView extends React.Component {
     rescale() {
         // rescale so that the maximum possible radius of the system is the targetSize
         const h = Math.max(
-            this._a1*(1+this.props.eccentricity) + this.props.star1Radius,
-            this._a2*(1+this.props.eccentricity) + this.props.star2Radius);
+            this._a1 * (1 + this.props.eccentricity) + this.props.star1Radius,
+            this._a2 * (1 + this.props.eccentricity) + this.props.star2Radius);
         this.setScale(this._targetSize / (2 * h));
     }
     setScale(arg) {
@@ -417,7 +408,7 @@ export default class BinarySystemView extends React.Component {
         const sin = Math.sin;
 
         this.orbitalPlane.scale.y = sin(this._phi);
-        this.rotatedOrbitalPlane.rotation = 90 + radToDeg(this._theta);
+        this.rotatedOrbitalPlane.rotation = degToRad(90) + this._theta;
 
         const path1 = this.rotatedOrbitalPlane.getChildByName('path1');
         const path2 = this.rotatedOrbitalPlane.getChildByName('path2');
@@ -601,7 +592,7 @@ export default class BinarySystemView extends React.Component {
         let abs = Math.abs;
 
         // ma - mean anomaly
-        let ma = convertPhase(this.props.phase) * (2 * Math.PI);
+        let ma = (this.props.phase - 0.1) * (2 * Math.PI);
 
         let e = this.props.eccentricity;
 
@@ -843,7 +834,7 @@ export default class BinarySystemView extends React.Component {
         const star1 = new PIXI.Graphics();
         star1.name = 'star';
         star1.beginFill(getColorFromTemp(this.props.star1Temp), 1);
-        star1.drawCircle(0, 0, 200);
+        star1.drawCircle(0, 0, 180);
 
         // The half of the star behind the plane. Just rendered as a
         // full circle.
@@ -868,7 +859,7 @@ export default class BinarySystemView extends React.Component {
         const star2 = new PIXI.Graphics();
         star2.name = 'star';
         star2.beginFill(getColorFromTemp(this.props.star2Temp), 1);
-        star2.drawCircle(0, 0, 200);
+        star2.drawCircle(0, 0, 180);
 
         // The half of the star behind the plane. Just rendered as a
         // full circle.
