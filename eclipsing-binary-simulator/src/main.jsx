@@ -108,7 +108,7 @@ class EclipsingBinarySimulator extends React.Component {
         this.Lmax = 1000000;
 
         this.AminSld = 0;
-        this.AmaxSld = 100;
+        this.AmaxSld = 60;
         this.EminSld = 0;
         this.EmaxSld = 100;
         this.RminMS = 0;
