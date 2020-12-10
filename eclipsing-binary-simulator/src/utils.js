@@ -26,12 +26,12 @@ const roundToTwoPlaces = function(n) {
 };
 
 const getRadiusFromTempAndLuminosity = function(temp, luminosity) {
-    // - this function returns a star's radius (in solar units) given its
-    //   temperature (in K) and luminosity (in solar units)
-    // - this function uses an effective solar temperature of about 5808.3 K in order to be
-    //   as consistent as possible with other functions such as getTempFromLuminosity
-
-    return 33736108.2311059*Math.sqrt(luminosity)/(temp*temp);
+    // - this function returns a star's radius (in solar units) given
+    //   its temperature (in K) and luminosity (in solar units)
+    // - this function uses an effective solar temperature of about
+    //   5808.3 K in order to be as consistent as possible with other
+    //   functions such as getTempFromLuminosity
+    return 33736108.2311059 * Math.sqrt(luminosity) / (temp * temp);
 };
 
 const getLuminosityFromRadiusAndTemp = function(radius, temp) {

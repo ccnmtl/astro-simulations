@@ -113,7 +113,6 @@ class EclipsingBinarySimulator extends React.Component {
         this.EmaxSld = 100;
         this.RminMS = 0;
         this.RmaxMS = 100;
-        this.TminSld = 0;
         this.MminMS = 0;
     }
     render() {
@@ -470,6 +469,15 @@ class EclipsingBinarySimulator extends React.Component {
                                     min={this.state.star1TempMin}
                                     max={this.state.star1TempMax}
                                     step={1} />
+
+                                <div className="small form-text text-muted mb-2">
+                                    <span>min: {
+                                        roundToTwoPlaces(this.state.star1TempMin)
+                                    }</span>
+                                    <span className="ml-2">max: {
+                                        roundToTwoPlaces(this.state.star1TempMax)
+                                    }</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -567,6 +575,15 @@ class EclipsingBinarySimulator extends React.Component {
                                     min={this.state.star2TempMin}
                                     max={this.state.star2TempMax}
                                     step={1} />
+
+                                <div className="small form-text text-muted mb-2">
+                                    <span>min: {
+                                        roundToTwoPlaces(this.state.star2TempMin)
+                                    }</span>
+                                    <span className="ml-2">max: {
+                                        roundToTwoPlaces(this.state.star2TempMax)
+                                    }</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -722,21 +739,16 @@ class EclipsingBinarySimulator extends React.Component {
         //   - the radius of the other star (star B)
         //  in unrestricted mode the temperature limit depends on:
         //   - the radius of star A
-
-        let thisStar;
-
-        if (star==1) {
-            thisStar = this.star1;
-        } else if (star==2) {
-            thisStar = this.star2;
-        } else {
-            return;
-        }
-
-        const TminHR = getTempFromLuminosityAndRadius(this.Lmin, thisStar.r);
-        const TmaxHR = getTempFromLuminosityAndRadius(this.Lmax, thisStar.r);
-        const Tmin = Math.max(this.TminSld, TminHR);
-        const Tmax = Math.min(this.TmaxSld, TmaxHR);
+        const TminHR = getTempFromLuminosityAndRadius(
+            this.Lmin, this.state[`star${star}Radius`]);
+        const TmaxHR = getTempFromLuminosityAndRadius(
+            this.Lmax, this.state[`star${star}Radius`]);
+        const Tmin = Math.max(
+            this.state[`star${star}TempMin`],
+            TminHR);
+        const Tmax = Math.min(
+            this.state[`star${star}TempMax`],
+            TmaxHR);
 
         this.setState({
             [`star${star}TempMin`]: Tmin,
@@ -750,15 +762,13 @@ class EclipsingBinarySimulator extends React.Component {
         //  when in main sequence restrict mode these are the only dependencies,
         //  but in unrestricted mode the radius limit also depends on:
         //   - the temperature of star A
-        let thisStar, otherStarNumber, thisStarNumber;
+        let thisStar, otherStarNumber;
 
         if (star === 1) {
             thisStar = this.star1;
-            thisStarNumber = 1;
             otherStarNumber = 2;
         } else if (star === 2) {
             thisStar = this.star2;
-            thisStarNumber = 2;
             otherStarNumber = 1;
         } else {
             return;
@@ -775,8 +785,8 @@ class EclipsingBinarySimulator extends React.Component {
         const Rmax = Math.min(Math.min(starRadiusMax, RmaxHR), RmaxVis);
 
         this.setState({
-            [`star${thisStarNumber}RadiusMin`]: Rmin,
-            [`star${thisStarNumber}RadiusMax`]: Rmax
+            [`star${star}RadiusMin`]: Rmin,
+            [`star${star}RadiusMax`]: Rmax
         });
     }
     setMassRange(star) {
@@ -813,7 +823,7 @@ class EclipsingBinarySimulator extends React.Component {
 
         //getLuminosityFromTempAndClass();
         //getRadiusFromTempAndLuminosity(this.state.star1TempMax, );
-        const TminSld = this.state.star1TempMin;
+        const TminSld = this.state[`star${star}TempMin`];
         const LminMS = getLuminosityFromTempAndClass(TminSld);
         const RminMS = getRadiusFromTempAndLuminosity(TminSld, LminMS);
 
@@ -826,8 +836,10 @@ class EclipsingBinarySimulator extends React.Component {
         const Rmax = Math.min(RmaxMS, RmaxVis);
 
         const TmaxVis = getTempFromRadius(RmaxVis);
-        const Tmin = this.TminSld;
-        const Tmax = Math.min(this.TmaxSld, TmaxVis);
+        const Tmin = TminSld;
+        const Tmax = Math.min(
+            this.state[`star${star}TempMax`],
+            TmaxVis);
 
         const LmaxVis = getLuminosityFromRadiusAndTemp(RmaxVis, TmaxVis);
         const MmaxVis = getMassFromLuminosity(LmaxVis);
@@ -1027,8 +1039,10 @@ class EclipsingBinarySimulator extends React.Component {
         var RmaxVis = this.sysProps.a * (1 - this.sysProps.e) - otherStar.r;
         var TmaxVis = getTempFromRadius(RmaxVis);
 
-        var Tmin = this.TminSld;
-        var Tmax = Math.min(this.state.star1TempMax, TmaxVis);
+        var Tmin = this.state[`star${star}TempMin`];
+        var Tmax = Math.min(
+            this.state[`star${star}TempMax`],
+            TmaxVis);
 
         if (Tmin > Tmax) {
             console.error("case where T is too big");
@@ -1112,96 +1126,76 @@ class EclipsingBinarySimulator extends React.Component {
     }
 
     setTempAndLuminosity(star, temp, lum) {
-        let otherStarNumber, thisStar, otherStar;
+        let otherStarNumber, thisStar;
 
         if (star === 1) {
             otherStarNumber = 2;
             thisStar = this.star1;
-            otherStar = this.star2;
         } else if (star === 2) {
             otherStarNumber = 1;
             thisStar = this.star2;
-            otherStar = this.star1;
         } else {
             return undefined;
         }
 
-        if (this["restrict" + star + "Check"]) {
-            var RmaxVis = this.sysProps.a * (1 - this.sysProps.e) - otherStar.r;
-            var TmaxVis = getTempFromRadius(RmaxVis);
-            const TminSld = 0, TmaxSld = 100; // TODO
-            var Tmin = TminSld;
-            var Tmax = Math.min(TmaxSld,TmaxVis);
-            if (temp < Tmin) {
-                temp = Tmin;
-            } else if (temp > Tmax) {
-                temp = Tmax;
-            }
-            thisStar.t = temp;
-            thisStar.l = getLuminosityFromTempAndClass(temp);
-            thisStar.r = getRadiusFromTempAndLuminosity(temp,thisStar.l);
-            thisStar.m = getMassFromLuminosity(thisStar.l);
-            this["mass" + star + "Slider"] = thisStar.m;
-            this["radius" + star + "Slider"] = thisStar.r;
-            this["temp" + star + "Slider"] = thisStar.t;
-            var initObj = {};
-            initObj["radius" + star] = thisStar.r;
-            initObj["mass" + star] = thisStar.m;
-            //visualizationMC.initialize(initObj);
-            /*var period = 0.115496 * Math.sqrt(Math.pow(this.sysProps.a,3) / (
-                this.state.star1Mass + this.state.star2Mass));*/
-            //systemPeriodField.text = "system period: " + Math.toSigDigits(period,3) + " days";
-        } else {
-            const TminSld = 0, TmaxSld = 0; // TODO
-            if (temp < TminSld) {
-                temp = TminSld;
-            } else if (temp > TmaxSld) {
-                temp = TmaxSld;
-            }
-            const Lmin = 0, Lmax = 100; // TODO
-            var rad = getRadiusFromTempAndLuminosity(temp, lum);
-            var RminHR = getRadiusFromTempAndLuminosity(temp, Lmin);
-            var RmaxHR = getRadiusFromTempAndLuminosity(temp, Lmax);
-            RmaxVis = this.sysProps.a * (
-                1 - this.sysProps.e) - otherStar.r;
-            const RminSld = 0, RmaxSld = 100; // TODO
-            var Rmin = Math.max(RminSld,RminHR);
-            var Rmax = Math.min(Math.min(RmaxSld,RmaxHR),RmaxVis);
-            if (Rmin > Rmax + 1.0e-8) {
-                rad = RmaxVis;
-                temp = getTempFromLuminosityAndRadius(Lmin, rad);
-            } else if (rad < Rmin) {
-                rad = Rmin;
-            } else if (rad > Rmax) {
-                rad = Rmax;
-            }
-            thisStar.r = rad;
-            thisStar.t = temp;
-            thisStar.l = getLuminosityFromRadiusAndTemp(rad, temp);
-            this["radius" + star + "Slider"] = rad;
-            this["temp" + star + "Slider"] = temp;
-            //visualizationMC["radius" + star] = rad;
+        const TminSld = this.state[`star${star}TempMin`];
+        const TmaxSld = this.state[`star${star}TempMax`];
+
+        if (temp < TminSld) {
+            temp = TminSld;
+        } else if (temp > TmaxSld) {
+            temp = TmaxSld;
         }
+
+        let rad = getRadiusFromTempAndLuminosity(temp, lum);
+        let RminHR = getRadiusFromTempAndLuminosity(temp, this.Lmin);
+        let RmaxHR = getRadiusFromTempAndLuminosity(temp, this.Lmax);
+        const RmaxVis = this.state.separation * (
+            1 - this.state.eccentricity
+        ) - this.state[`star${otherStarNumber}Radius`];
+
+        //otherStar.r;
+        let Rmin = Math.max(
+            this.state[`star${star}RadiusMin`],
+            RminHR);
+        let Rmax = Math.min(Math.min(
+            this.state[`star${star}RadiusMax`],
+            RmaxHR), RmaxVis);
+
+        if (Rmin > Rmax + 1.0e-8) {
+            rad = RmaxVis;
+            temp = getTempFromLuminosityAndRadius(this.Lmin, rad);
+        } else if (rad < Rmin) {
+            rad = Rmin;
+        } else if (rad > Rmax) {
+            rad = Rmax;
+        }
+        thisStar.r = rad;
+        thisStar.t = temp;
+        thisStar.l = getLuminosityFromRadiusAndTemp(rad, temp);
+        //this["radius" + star + "Slider"] = rad;
+        //this["temp" + star + "Slider"] = temp;
+
+        this.setState({
+            [`star${star}Radius`]: rad,
+            [`star${star}Temp`]: temp,
+            [`star${star}Lum`]: thisStar.l
+        });
+
+        //visualizationMC["radius" + star] = rad;
         //hrDiagramWindowMC.hrDiagramMC.setPointPosition(star,thisStar.t,thisStar.l);
         //visualizationMC.passObjectToIcon(star,{temp:thisStar.t});
         //this.drawLightCurve();
         /*if (systemsList.getValue() != " ") {
             setParametersToMatchButton.setEnabled(true);
-        }*/
-        var otherRestricted = this["restrict" + otherStarNumber + "Check"];
-        var thisRestricted = this["restrict" + star + "Check"];
+            }*/
+
         this.setSeparationRange();
         this.setEccentricityRange();
-        if (otherRestricted) {
-            this.setRestrictedStarRanges(otherStarNumber);
-        } else {
-            this.setRadiusRange(otherStarNumber);
-        }
+        this.setRadiusRange(otherStarNumber);
 
-        if (!thisRestricted) {
-            this.setRadiusRange(star);
-            this.setTempRange(star);
-        }
+        this.setRadiusRange(star);
+        this.setTempRange(star);
     }
 
     onDotMove(id, temp, lum) {

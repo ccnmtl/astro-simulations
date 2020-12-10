@@ -87,7 +87,7 @@ export default class HRDiagram extends React.Component {
         }
 
         if (prevState.isHoveringDot1 !== this.state.isHoveringDot1) {
-            this.dot1.children[0].destroy();
+            this.dot1.getChildByName('dot').destroy();
 
             if (this.state.isHoveringDot1) {
                 this.dot1.addChild(this.makeDot(0, 0, this.dotRadius * 2));
@@ -97,7 +97,7 @@ export default class HRDiagram extends React.Component {
         }
 
         if (prevState.isHoveringDot2 !== this.state.isHoveringDot2) {
-            this.dot2.children[0].destroy();
+            this.dot2.getChildByName('dot').destroy();
 
             if (this.state.isHoveringDot2) {
                 this.dot2.addChild(this.makeDot(0, 0, this.dotRadius * 2));
@@ -109,6 +109,7 @@ export default class HRDiagram extends React.Component {
 
     makeDot(x, y, r) {
         const dot = new PIXI.Graphics();
+        dot.name = 'dot';
         dot.beginFill(0xFF0000);
         dot.drawCircle(x, y, r);
         return dot;
@@ -119,6 +120,17 @@ export default class HRDiagram extends React.Component {
         this.dot1.name = 'dot1';
         this.dot1.interactive = true;
         this.dot1.addChild(this.makeDot(0, 0, this.dotRadius));
+
+        const label1 = new PIXI.Text('1', {
+            fontFamily : 'Arial',
+            fontSize: 15,
+            fill: 0x000000,
+            align: 'center'
+        });
+        label1.x = -14;
+        label1.y = -20;
+        this.dot1.addChild(label1);
+
         this.app.stage.addChild(this.dot1);
         this.dot1
         // events for drag start
@@ -137,6 +149,17 @@ export default class HRDiagram extends React.Component {
         this.dot2.name = 'dot2';
         this.dot2.interactive = true;
         this.dot2.addChild(this.makeDot(0, 0, this.dotRadius));
+
+        const label2 = new PIXI.Text('2', {
+            fontFamily : 'Arial',
+            fontSize: 15,
+            fill: 0x000000,
+            align: 'center'
+        });
+        label2.x = -14;
+        label2.y = -20;
+        this.dot2.addChild(label2);
+
         this.app.stage.addChild(this.dot2);
         this.dot2
         // events for drag start
