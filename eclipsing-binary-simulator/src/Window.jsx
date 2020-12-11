@@ -13,7 +13,7 @@ export default class Window extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            showMainSequence: true,
+            showMainSequence: false,
             isDragging: false,
             xDiff: 0,
             yDiff: 0,
@@ -74,7 +74,7 @@ export default class Window extends React.Component {
                     <div className="main-seq-checkbox">
                         <input type="checkbox" name="showMainSequence"
                                id="showMainSequenceCheckbox"
-                               defaultChecked={true}
+                               defaultChecked={false}
                                onChange={this.toggleMainSequence} />
                         <label className="ml-1 small" htmlFor="showMainSequenceCheckbox">
                             Show main sequence track
