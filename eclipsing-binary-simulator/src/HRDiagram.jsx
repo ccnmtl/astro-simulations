@@ -23,14 +23,16 @@ export default class HRDiagram extends React.Component {
         this.lMax = 1e6;
         this.graphW = 300;
         this.graphH = 200;
-        this.xScale = this.graphW/Math.log(this.tMax/this.tMin);
-        this.yScale = this.graphH/Math.log(this.lMax/this.lMin);
+        this.leftMargin = 62;
+        this.topMargin = 4;
+        this.xScale = this.graphW / Math.log(this.tMax / this.tMin);
+        this.yScale = this.graphH / Math.log(this.lMax / this.lMin);
 
         this.onDotMove = this.onDotMove.bind(this);
         this.onDragStart = this.onDragStart.bind(this);
         this.onDragEnd = this.onDragEnd.bind(this);
 
-        this.dotRadius = 3;
+        this.dotRadius = 3.5;
     }
 
     componentDidMount() {
@@ -72,12 +74,12 @@ export default class HRDiagram extends React.Component {
             me.setPointPosition(
                 1, me.props.star1Temp,
                 getLuminosityFromRadiusAndTemp(
-                    me.props.star1Temp, me.props.star1Radius));
+                    me.props.star1Radius, me.props.star1Temp));
 
             me.setPointPosition(
                 2, me.props.star2Temp,
                 getLuminosityFromRadiusAndTemp(
-                    me.props.star2Temp, me.props.star2Radius));
+                    me.props.star2Radius, me.props.star2Temp));
         });
     }
 
@@ -90,7 +92,7 @@ export default class HRDiagram extends React.Component {
             this.dot1.getChildByName('dot').destroy();
 
             if (this.state.isHoveringDot1) {
-                this.dot1.addChild(this.makeDot(0, 0, this.dotRadius * 2));
+                this.dot1.addChild(this.makeDot(0, 0, this.dotRadius * 1.5));
             } else {
                 this.dot1.addChild(this.makeDot(0, 0, this.dotRadius));
             }
@@ -100,10 +102,30 @@ export default class HRDiagram extends React.Component {
             this.dot2.getChildByName('dot').destroy();
 
             if (this.state.isHoveringDot2) {
-                this.dot2.addChild(this.makeDot(0, 0, this.dotRadius * 2));
+                this.dot2.addChild(this.makeDot(0, 0, this.dotRadius * 1.5));
             } else {
                 this.dot2.addChild(this.makeDot(0, 0, this.dotRadius));
             }
+        }
+
+        if (
+            prevProps.star1Temp !== this.props.star1Temp ||
+            prevProps.star1Radius !== this.props.star1Radius
+        ) {
+            this.setPointPosition(
+                1, this.props.star1Temp,
+                getLuminosityFromRadiusAndTemp(
+                    this.props.star1Radius, this.props.star1Temp));
+        }
+
+        if (
+            prevProps.star2Temp !== this.props.star2Temp ||
+            prevProps.star2Radius !== this.props.star2Radius
+        ) {
+            this.setPointPosition(
+                2, this.props.star2Temp,
+                getLuminosityFromRadiusAndTemp(
+                    this.props.star2Radius, this.props.star2Temp));
         }
     }
 
@@ -237,17 +259,6 @@ export default class HRDiagram extends React.Component {
         var ny = this.findY(l);
         thisPoint.position.x = nx;
         thisPoint.position.y = ny;
-
-        /*var dx = otherPoint.position.x - nx;
-        var dy = otherPoint.position.y - ny;
-
-        var s = 14/Math.sqrt(dx*dx + dy*dy);*/
-
-        /*thisPoint.labelMC.position.x = -s*dx;
-        thisPoint.labelMC.position.y = -s*dy;
-
-        otherPoint.labelMC.position.x = -thisPoint.labelMC.position.x;
-        otherPoint.labelMC.position.y = -thisPoint.labelMC.position.y;*/
     }
 
     showRanges(star) {
@@ -307,23 +318,31 @@ export default class HRDiagram extends React.Component {
     }
 
     findX(t) {
-        return this.graphW - this.xScale * Math.log(t/this.tMin);
+        return (this.graphW - this.xScale * Math.log(t / this.tMin))
+            + this.leftMargin;
     }
 
     findY(l) {
-        return -this.yScale * Math.log(l/this.lMin);
+        return (this.graphH - this.yScale * Math.log(l / this.lMin))
+            + this.topMargin;
     }
 
     findT(x) {
-        return this.tMin * Math.exp((this.graphW-x)/this.xScale);
+        return this.tMin * Math.exp((
+            this.graphW - x + this.leftMargin
+        ) / this.xScale);
     }
 
     findL(y) {
-        return this.lMin * Math.exp(-y/this.yScale);
+        return this.lMin * Math.exp((
+            this.graphH - y + this.topMargin
+        ) / this.yScale);
     }
 
     render() {
-        return <div ref={(thisDiv) => {this.el = thisDiv}} />;
+        return <div ref={(thisDiv) => {
+            this.el = thisDiv;
+        }} />;
     }
 }
 

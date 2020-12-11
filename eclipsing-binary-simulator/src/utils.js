@@ -39,8 +39,7 @@ const getLuminosityFromRadiusAndTemp = function(radius, temp) {
     //   radius in solar units and temperature in Kelvin
     // - this function uses an effective solar temperature of about 5808.3 K in order to be
     //   as consistent as possible with other functions such as getTempFromLuminosity
-
-    return radius*radius*Math.pow(temp/5808.27928315314, 4);
+    return radius * radius * Math.pow(temp / 5808.27928315314, 4);
 };
 
 const getTempFromLuminosityAndRadius = function(luminosity, radius) {
