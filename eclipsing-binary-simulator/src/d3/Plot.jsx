@@ -94,14 +94,14 @@ export default class Plot extends React.Component {
     }
     dragstart(e) {
         this.setState({isDragging: true});
-        this.dragStartOffset = (d3.event.x - this.state.offset) % this.props.width;
+        this.dragStartOffset = (e.x - this.state.offset) % this.props.width;
     }
     dragend(e) {
         this.setState({isDragging: false});
     }
     dragmove(e) {
         if (this.state.isDragging) {
-            let newOffset = (d3.event.x - this.dragStartOffset) % this.props.width;
+            let newOffset = (e.x - this.dragStartOffset) % this.props.width;
             if (newOffset < 0) {
                 newOffset += this.props.width;
             }

@@ -25,7 +25,7 @@ export default class PhaseControl extends React.Component {
         const w = this.props.width - this.props.paddingLeft;
 
         let newPhase = (
-            (d3.event.x - this.props.paddingLeft)
+            (e.x - this.props.paddingLeft)
         ) / w;
 
         const offset = this.props.offset / this.props.width;

@@ -67,6 +67,10 @@ export default class BinarySystemView extends React.Component {
             Math.pow(this.props.separation, 3) / (
                 this.props.star1Mass + this.props.star2Mass)));
     }
+    onLongitudeChange() {
+        //this._theta = degToRad(this.props.longitude * 0.017453292519943295);
+        this._theta = degToRad(getSystemTheta(this.props.longitude));
+    }
     doA() {
         // a0 through a8 are constants used to transform a world
         // coordinate to a screen coordinate
@@ -84,158 +88,6 @@ export default class BinarySystemView extends React.Component {
         c.a6 = s * ct * cp;
         c.a7 = s * st * cp;
         c.a8 = s * sp;
-    }
-    updateLine() {
-        if (!this._showLine) return;
-
-        var lineTheta = degToRad(this._lineTheta);
-        var linePhi = degToRad(this._linePhi);
-        var lineLength = (this._lineExtra + this._targetSize/2)/(this._scale);
-
-        /*let mcA, mcB, mcC;
-
-        if (linePhi==0 || (linePhi>0 && this._phi>0) || (linePhi<0 && this._phi<=0)) {
-            mcA = 0;
-            mcB = 0;
-            mcC = 0;
-        } else {
-            mcA = 0;
-            mcB = 0;
-            mcC = 0;
-        }*/
-
-        var k1 = -Math.sin(lineTheta);
-        var k4 = Math.cos(lineTheta);
-        var k6 = Math.sin(linePhi);
-        var k0 = k4*Math.cos(linePhi);
-        var k3 = -k1*Math.cos(linePhi);
-
-        var x = lineLength*k0;
-        var y = lineLength*k3;
-        var z = lineLength*k6;
-
-        var c = this._c;
-
-        var xe = x*c.a0 + y*c.a1;
-        var ye = x*c.a3 + y*c.a4 + z*c.a5;
-        var ze = x*c.a6 + y*c.a7 + z*c.a8;
-
-        var r1 = this.props.star1Radius*this._scale;
-        var r2 = this.props.star2Radius*this._scale;
-
-        var x1 = this._s1.x;
-        var y1 = this._s1.y;
-        var z1 = this._s1.z;
-
-        var x2 = this._s2.x;
-        var y2 = this._s2.y;
-        var z2 = this._s2.z;
-
-        let xf, yf, zf, xb, yb, zb, rf2, rb2;
-
-        if (z1 > z2) {
-            xf = x1;
-            yf = y1;
-            zf = z1;
-            xb = x2;
-            yb = y2;
-            zb = z2;
-            rf2 = r1 * r1;
-            rb2 = r2 * r2;
-        } else {
-            xf = x2;
-            yf = y2;
-            zf = z2;
-            xb = x1;
-            yb = y1;
-            zb = z1;
-            rf2 = r2 * r2;
-            rb2 = r1 * r1;
-        }
-
-        var sqrt = Math.sqrt;
-        //var pow = Math.pow;
-
-        /*function getRegion(u) {
-            var mx = u*xe;
-            var my = u*ye;
-            var mz = u*ze;
-            if ((pow(mx-xf,2) + pow(my-yf,2) + pow(mz-zf,2)) < rf2) return null;
-            else if ((pow(mx-xb,2) + pow(my-yb,2) + pow(mz-zb,2)) < rb2) return null;
-            else if (mz>=zf) return mcA;
-            else if (mz>=zb) return mcB;
-            else return mcC;
-        }*/
-
-        var uArr = [0, 1];
-
-        var a = xe*xe + ye*ye + ze*ze;
-        var bf = -2*(xe*xf + ye*yf + ze*zf);
-        var cf = xf*xf + yf*yf + zf*zf - rf2;
-        var bb = -2*(xe*xb + ye*yb + ze*zb);
-        var cb = xb*xb + yb*yb + zb*zb - rb2;
-
-        var df = bf*bf - 4*a*cf;
-        var db = bb*bb - 4*a*cb;
-
-        if (df>0) {
-            uArr.push((-bf + sqrt(df))/(2*a));
-            uArr.push((-bf - sqrt(df))/(2*a));
-        }
-        if (db>0) {
-            uArr.push((-bb + sqrt(db))/(2*a));
-            uArr.push((-bb - sqrt(db))/(2*a));
-        }
-        if (ze!=0) {
-            uArr.push(zf/ze);
-            uArr.push(zb/ze);
-        }
-
-        function sortArr(a, b) {
-            if (a<b) return -1;
-            else if (a>b) return 1;
-            else return 0;
-        }
-
-        uArr.sort(sortArr);
-
-        var ux = 0;
-        var uy = 0;
-        var lu = 0;
-        var nu = uArr[0];
-        const coords = [];
-
-        for (let i = 0; uArr[parseInt(i)] !== 1 && i < uArr.length; i++) {
-            lu = nu;
-            nu = uArr[i+1];
-            if (lu<0) continue;
-            //var mc = getRegion(lu + ((nu-lu)/2));
-            coords.push([ux, uy]);
-            ux = nu*xe;
-            uy = nu*ye;
-            coords.push([ux, uy]);
-        }
-
-        // draw arrow head
-        var arrowX = ((this._lineExtra + this._targetSize/2) - (2/3)*this._lineExtra)/(this._scale);
-        var arrowY1 = (1/4)*this._lineExtra/this._scale;
-        var arrowY2 = -arrowY1;
-        var a1x = k0*arrowX + k1*arrowY1;
-        var a1y = k3*arrowX + k4*arrowY1;
-        var a2x = k0*arrowX + k1*arrowY2;
-        var a2y = k3*arrowX + k4*arrowY2;
-        var az = k6*arrowX;
-        x1 = a1x*c.a0 + a1y*c.a1;
-        y1 = a1x*c.a3 + a1y*c.a4 + az*c.a5;
-        z1 = a1x*c.a6 + a1y*c.a7 + az*c.a8;
-        x2 = a2x*c.a0 + a2y*c.a1;
-        y2 = a2x*c.a3 + a2y*c.a4 + az*c.a5;
-        z2 = a2x*c.a6 + a2y*c.a7 + az*c.a8;
-        //var mc = getRegion(1);
-        coords.push([x1, y1]);
-        coords.push([xe, ye]);
-        coords.push([x2, y2]);
-        return coords;
     }
     initialize(initObject) {
         // - this function offers a way to set the value of many properties at once without redundant
@@ -260,6 +112,8 @@ export default class BinarySystemView extends React.Component {
         this._a1 = this.props.separation * this.props.star2Mass / this._massTotal;
         this._a2 = this.props.separation * this.props.star1Mass / this._massTotal;
 
+        this.onLongitudeChange();
+
         if (this._autoScale) {
             this.rescale();
         } else {
@@ -271,7 +125,6 @@ export default class BinarySystemView extends React.Component {
             this.updateOrbitalPaths();
             this.updateOrbitalPlane();
             this.updatePositions();
-            this.updateLine();
         }
     }
     rescale() {
@@ -291,7 +144,6 @@ export default class BinarySystemView extends React.Component {
         this.updateOrbitalPaths();
         this.updateOrbitalPlane();
         this.updatePositions();
-        this.updateLine();
     }
     resizeStar(arg) {
         // resize the icon of the given body (where arg = 1 or 2)
@@ -592,7 +444,7 @@ export default class BinarySystemView extends React.Component {
         let abs = Math.abs;
 
         // ma - mean anomaly
-        let ma = (this.props.phase - 0.1) * (2 * Math.PI);
+        let ma = (this.props.phase) * (2 * Math.PI);
 
         let e = this.props.eccentricity;
 
@@ -743,7 +595,9 @@ export default class BinarySystemView extends React.Component {
         }
 
         if (prevProps.longitude !== this.props.longitude) {
-            this._theta = degToRad(getSystemTheta(this.props.longitude));
+            this.onLongitudeChange();
+            this.doA();
+            this.updateOrbitalPaths();
         }
 
         if (prevProps.inclination !== this.props.inclination) {
@@ -769,19 +623,24 @@ export default class BinarySystemView extends React.Component {
         }
 
         if (
-            prevProps.phase !== this.props.phase ||
                 prevProps.star1Mass !== this.props.star1Mass ||
                 prevProps.star2Mass !== this.props.star2Mass ||
                 prevProps.star1Radius !== this.props.star1Radius ||
                 prevProps.star2Radius !== this.props.star2Radius ||
                 prevProps.separation !== this.props.separation ||
                 prevProps.eccentricity !== this.props.eccentricity ||
-                prevProps.longitude !== this.props.longitude ||
                 prevProps.inclination !== this.props.inclination ||
                 prevProps.showOrbitalPaths !== this.props.showOrbitalPaths ||
                 prevProps.showOrbitalPlane !== this.props.showOrbitalPlane
         ) {
             this.rescale();
+        }
+
+        // from setPhase() in original flash code
+        if (
+            prevProps.phase !== this.props.phase
+        ) {
+            this.updatePositions();
         }
     }
 
