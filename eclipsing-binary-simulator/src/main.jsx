@@ -31,6 +31,7 @@ class EclipsingBinarySimulator extends React.Component {
 
             animationSpeed: 1,
             phase: 0.7,
+            visualPhase: 0.7,
 
             showLightcurve: true,
 
@@ -46,7 +47,7 @@ class EclipsingBinarySimulator extends React.Component {
             star1RadiusMin: 0.1,
             star1RadiusMax: 50,
             star1TempMin: 3000,
-            star1TempMax: 40000,
+            star1TempMax: 45000,
 
             // Star 2 Properties
             star2Mass: 1,
@@ -60,7 +61,7 @@ class EclipsingBinarySimulator extends React.Component {
             star2RadiusMin: 0.1,
             star2RadiusMax: 50,
             star2TempMin: 3000,
-            star2TempMax: 40000,
+            star2TempMax: 45000,
 
             // System Properties
             separation: 10,
@@ -150,7 +151,7 @@ class EclipsingBinarySimulator extends React.Component {
             <div className="row mt-2">
                 <div className="col-6">
                     <BinarySystemView
-                        phase={this.state.phase}
+                        phase={this.state.visualPhase}
                         star1Mass={this.state.star1Mass}
                         star2Mass={this.state.star2Mass}
                         star1Radius={this.state.star1Radius}
@@ -673,6 +674,9 @@ class EclipsingBinarySimulator extends React.Component {
     }
     componentDidMount() {
         this.drawLightcurve();
+        this.setState({
+            visualPhase: this.getVisualPhase(this.state.phase)
+        });
     }
     componentDidUpdate(prevProps, prevState) {
         if (
@@ -879,6 +883,12 @@ class EclipsingBinarySimulator extends React.Component {
         }
     }
 
+    getVisualPhase(phase) {
+        return phase + (
+            this.lightcurveViewRef.current._closestIndex /
+                this.lightcurveViewRef.current._numCurvePoints);
+    }
+
     animate() {
         this.frameId = requestAnimationFrame(this.animate);
 
@@ -888,7 +898,11 @@ class EclipsingBinarySimulator extends React.Component {
         if (elapsed > 50) {
             const newPhase = (this.state.phase + (
                 0.005 * this.state.animationSpeed)) % 1;
-            this.setState({phase: newPhase});
+
+            this.setState({
+                phase: newPhase,
+                visualPhase: this.getVisualPhase(newPhase)
+            });
 
             this.then = now;
         }
@@ -913,12 +927,27 @@ class EclipsingBinarySimulator extends React.Component {
         this.setState({
             [name]: value
         });
+
+        if (name === 'phase') {
+            this.setState({
+                visualPhase: this.getVisualPhase(value)
+            });
+        }
+
+        if (name === 'longitude') {
+            this.setState({
+                visualPhase: this.getVisualPhase(this.state.phase)
+            });
+        }
     }
     handleFocus(e) {
         e.target.select();
     }
     onPhaseUpdate(newPhase) {
-        this.setState({phase: newPhase});
+        this.setState({
+            phase: newPhase,
+            visualPhase: this.getVisualPhase(newPhase)
+        });
     }
     onPresetSelect(e) {
         if (!e.target || typeof e.target.value === 'undefined') {
@@ -940,7 +969,11 @@ class EclipsingBinarySimulator extends React.Component {
                 values['lightcurveDataImg'] = null;
             }
 
-            this.setState(values);
+            const me = this;
+            this.setState(values, function() {
+                const visualPhase = me.getVisualPhase(me.state.phase);
+                me.setState({visualPhase: visualPhase});
+            });
         }
     }
     onStartClick() {
