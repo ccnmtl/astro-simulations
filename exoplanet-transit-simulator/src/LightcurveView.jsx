@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import * as PIXI from 'pixi.js';
 import Plot from './d3/Plot';
 import * as d3 from 'd3';
+import {degToRad} from './utils';
 
 
 export default class LightcurveView extends React.Component {
@@ -15,6 +17,8 @@ export default class LightcurveView extends React.Component {
         this.onDragStart = this.onDragStart.bind(this);
         this.onDragEnd = this.onDragEnd.bind(this);
         this.onMove = this.onMove.bind(this);
+
+        this.yAxisTopMargin = 5;
     }
     /**
      * Generate noise around the lightcurve data.
@@ -42,7 +46,7 @@ export default class LightcurveView extends React.Component {
             const newY = y + (
                 // Scale the randomization factor by the value
                 // of the "noise" slider
-                (Math.random() - 0.5) * this.props.noise);
+                ((Math.random() - 0.5) * 8000) * this.props.noise);
 
             randomizedData.push([randX, newY]);
         }
@@ -53,20 +57,50 @@ export default class LightcurveView extends React.Component {
         // d3 integration based on:
         // https://github.com/freddyrangel/playing-with-react-and-d3
         return (
-            <Plot
-                noiseData={this.state.noiseData}
-                lightcurveData={this.props.curveCoords}
-                phase={this.props.phase}
-                showTheoreticalCurve={this.props.showTheoreticalCurve}
-                showSimulatedMeasurements={this.props.showSimulatedMeasurements}
-                planetRadius={this.props.planetRadius}
-                width={460}
-                height={280}
-                onPhaseUpdate={this.props.onPhaseUpdate}
-                paddingLeft={60}
-                padding={20} />
+            <div className="LightcurveView">
+                <div className="LightcurveYAxis"
+                     ref={(el) => {this.yAxisEl = el;}}></div>
+                <Plot
+                    noiseData={this.state.noiseData}
+                    lightcurveData={this.props.curveCoords}
+                    phase={this.props.phase}
+                    showTheoreticalCurve={this.props.showTheoreticalCurve}
+                    showSimulatedMeasurements={this.props.showSimulatedMeasurements}
+                    planetRadius={this.props.planetRadius}
+                    width={400}
+                    height={221}
+                    onPhaseUpdate={this.props.onPhaseUpdate}
+                    paddingLeft={0}
+                    padding={20} />
+                <div className="clearfix"></div>
+            </div>
         );
+    }
+    componentDidMount() {
+        const axis = new PIXI.Application({
+            backgroundColor: 0xffffff,
+            width: 70,
+            height: 221,
+            sharedLoader: true,
+            sharedTicker: true
+        });
 
+        this.axis = axis;
+        this.yAxisEl.appendChild(axis.view);
+
+        const title = new PIXI.Text('Normalized Flux', {
+            fontFamily: 'Arial',
+            fontSize: 14,
+            fontWeight: 'bold',
+            fill: 0x000000,
+            align: 'center'
+        });
+        title.position.x = 0;
+        title.position.y = 180;
+        title.rotation = degToRad(-90);
+        this.axis.stage.addChild(title);
+
+        this.drawYAxisLabels(axis, this.props.labelCoords);
     }
     componentDidUpdate(prevProps) {
         if (this.props.showSimulatedMeasurements) {
@@ -103,6 +137,40 @@ export default class LightcurveView extends React.Component {
                 });
             }
         }
+
+        if (
+            prevProps.labelCoords !== this.props.labelCoords
+        ) {
+            this.refreshAxisView(this.axis);
+        }
+    }
+
+    refreshAxisView(app) {
+        app.stage.removeChildren();
+        this.drawYAxisLabels(app, this.props.labelCoords);
+    }
+
+    drawYAxisLabels(app, labelCoords) {
+        const me = this;
+        labelCoords.forEach(function(label) {
+            const g = new PIXI.Text(label.value, {
+                fontFamily: 'Arial',
+                fontSize: 12,
+                fill: 0x000000,
+                align: 'center'
+            });
+
+            g.position.x = 30;
+            g.position.y = label._y + me.yAxisTopMargin - 8;
+
+            app.stage.addChild(g);
+
+            const tickMark = new PIXI.Graphics();
+            tickMark.lineStyle(1, 0x000000);
+            tickMark.moveTo(65, label._y + me.yAxisTopMargin);
+            tickMark.lineTo(70, label._y + me.yAxisTopMargin);
+            app.stage.addChild(tickMark);
+        });
     }
 
     onDragStart(e) {
@@ -132,6 +200,7 @@ LightcurveView.propTypes = {
     inclination: PropTypes.number.isRequired,
     longitude: PropTypes.number.isRequired,
     curveCoords: PropTypes.array.isRequired,
+    labelCoords: PropTypes.array.isRequired,
     phase: PropTypes.number.isRequired,
     onPhaseUpdate: PropTypes.func.isRequired
 };

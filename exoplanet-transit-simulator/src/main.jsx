@@ -98,6 +98,7 @@ class ExoplanetTransitSimulator extends React.Component {
         this.lightcurve = new Lightcurve();
         this.lightcurve.setCPhase(this.state.phase);
         this.lightcurveCoords = [];
+        this.lightcurveLabelCoords = [];
 
         this.transitViewRef = React.createRef();
 
@@ -221,6 +222,7 @@ class ExoplanetTransitSimulator extends React.Component {
                 <div className="col-6">
                     <LightcurveView
                         curveCoords={this.lightcurveCoords}
+                        labelCoords={this.lightcurveLabelCoords}
                         showTheoreticalCurve={this.state.showTheoreticalCurve}
                         showSimulatedMeasurements={this.state.showSimulatedMeasurements}
                         noise={this.state.noise}
@@ -571,6 +573,7 @@ class ExoplanetTransitSimulator extends React.Component {
 
         this.lightcurve.setParameters(params);
         this.lightcurveCoords = this.lightcurve.update();
+        this.lightcurveLabelCoords = this.lightcurve.labelCoords;
 
         params.minPhase = this.lightcurve._minPhase;
         params.maxPhase = this.lightcurve._maxPhase;
