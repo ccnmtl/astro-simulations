@@ -8,11 +8,12 @@ import {normalize} from './utils';
 export default class Lightcurve {
     constructor() {
 
-        if (typeof this.width === 'undefined' ||
-            typeof this.height === 'undefined'
-           ) {
+        if (
+            typeof this.width === 'undefined' ||
+                typeof this.height === 'undefined'
+        ) {
             this.width = 400;
-            this.height = 240;
+            this.height = 221;
         }
 
         if (typeof this.initRegionShown === 'undefined') {
@@ -36,7 +37,7 @@ export default class Lightcurve {
         if (this.minMagnitudeMarginPx==undefined) this.minMagnitudeMarginPx = 30;
 
         if (this.magNoise==undefined) this.magNoise = 0.1;
-        if (this.fluxNoise==undefined) this.fluxNoise = 0.1;
+        if (this.fluxNoise==undefined) this.fluxNoise = 0.00001;
 
         if (this.initShowMeasurements==undefined) this.initShowMeasurements = true;
         if (this.numberOfMeasurements==undefined) this.numberOfMeasurements = 150;
@@ -64,16 +65,18 @@ export default class Lightcurve {
         if (this.xAxisTickmarksList==undefined) {
             var a = 7;
             var b = 4;
-            this.xAxisTickmarksList = [{value: 0.0, extent: a, labelText: "0.0"},
-                                       {value: 0.1, extent: b},
-                                       {value: 0.2, extent: a, labelText: "0.2"},
-                                       {value: 0.3, extent: b},
-                                       {value: 0.4, extent: a, labelText: "0.4"},
-                                       {value: 0.5, extent: b},
-                                       {value: 0.6, extent: a, labelText: "0.6"},
-                                       {value: 0.7, extent: b},
-                                       {value: 0.8, extent: a, labelText: "0.8"},
-                                       {value: 0.9, extent: b}];
+            this.xAxisTickmarksList = [
+                {value: 0.0, extent: a, labelText: "0.0"},
+                {value: 0.1, extent: b},
+                {value: 0.2, extent: a, labelText: "0.2"},
+                {value: 0.3, extent: b},
+                {value: 0.4, extent: a, labelText: "0.4"},
+                {value: 0.5, extent: b},
+                {value: 0.6, extent: a, labelText: "0.6"},
+                {value: 0.7, extent: b},
+                {value: 0.8, extent: a, labelText: "0.8"},
+                {value: 0.9, extent: b}
+            ];
         }
         if (this.minScreenYSpacing==undefined) this.minScreenYSpacing = 25;
         if (this.minorTickmarkExtent==undefined) this.minorTickmarkExtent = 4;
@@ -158,9 +161,10 @@ export default class Lightcurve {
         if (params.temperature1!=undefined) this._curveParams.temperature1 = params.temperature1;
         if (params.temperature2!=undefined) this._curveParams.temperature2 = params.temperature2;
 
-        this.systemIsDefined = (this._curveParams.temperature1!=null && this._curveParams.temperature2!=null && this._curveParams.radius1!=null &&
-                                this._curveParams.radius2!=null && this._curveParams.separation!=null && this._curveParams.eccentricity!=null &&
-                                this._curveParams.argument!=null && this._curveParams.inclination!=null);
+        this.systemIsDefined = (
+            this._curveParams.temperature1!=null && this._curveParams.temperature2!=null && this._curveParams.radius1!=null &&
+                this._curveParams.radius2!=null && this._curveParams.separation!=null && this._curveParams.eccentricity!=null &&
+                this._curveParams.argument!=null && this._curveParams.inclination!=null);
 
         this.systemPeriod = null;
         this.eclipseOfBody1Duration = null;
@@ -173,11 +177,22 @@ export default class Lightcurve {
 
             if (this._curveParams.mass1!=null && this._curveParams.mass2!=null) {
                 var a = this._curveParams.separation;
-                this.systemPeriod = Math.sqrt(4*Math.PI*Math.PI*a*a*a/(6.67300e-11*(this._curveParams.mass1 + this._curveParams.mass2)));
-                if (this._curveEvents.eclipseOfBody1.occurs) this.eclipseOfBody1Duration = this.systemPeriod*this._curveEvents.eclipseOfBody1.duration.phase;
-                else this.eclipseOfBody1Duration = 0;
-                if (this._curveEvents.eclipseOfBody2.occurs) this.eclipseOfBody2Duration = this.systemPeriod*this._curveEvents.eclipseOfBody2.duration.phase;
-                else this.eclipseOfBody2Duration = 0;
+                this.systemPeriod = Math.sqrt(
+                    4*Math.PI*Math.PI*a*a*a / (6.67300e-11 * (
+                        this._curveParams.mass1 + this._curveParams.mass2))
+                );
+
+                if (this._curveEvents.eclipseOfBody1.occurs) {
+                    this.eclipseOfBody1Duration = this.systemPeriod*this._curveEvents.eclipseOfBody1.duration.phase;
+                } else {
+                    this.eclipseOfBody1Duration = 0;
+                }
+
+                if (this._curveEvents.eclipseOfBody2.occurs) {
+                    this.eclipseOfBody2Duration = this.systemPeriod*this._curveEvents.eclipseOfBody2.duration.phase;
+                } else {
+                    this.eclipseOfBody2Duration = 0;
+                }
             }
         }
     }
@@ -189,7 +204,9 @@ export default class Lightcurve {
         if (this._regionShown === 0) {
             //this.plotAreaMC._x = this._phaseOffset*this._plotWidth;
             this.setCursorPhase(cP, false);
-            if (callChangeHandler) this._parent[this.phaseOffsetChangeHandler](this._phaseOffset);
+            if (callChangeHandler) {
+                this._parent[this.phaseOffsetChangeHandler](this._phaseOffset);
+            }
         }
         //this.updateCursorPosition();
     };
@@ -212,12 +229,12 @@ export default class Lightcurve {
 
     setCursorPhase(arg, callChangeHandler) {
         arg = (arg % 1 + 1) % 1;
-        if (this._minPhase==null) this.setCPhase(arg, callChangeHandler);
-        else if (this._regionShown==0) {
+        if (this._minPhase==null) {
+            this.setCPhase(arg, callChangeHandler);
+        } else if (this._regionShown==0) {
             var newCPhase =	arg + this._phaseOffset;
             this.setCPhase(newCPhase, callChangeHandler);
-        }
-        else {
+        } else {
             var range = this._maxPhase - this._minPhase;
             if (range<0) {
                 range += 1;
@@ -311,35 +328,38 @@ export default class Lightcurve {
         let negLast = derLast<0;
 
         for (var j=0; j<n; j++) {
-                let v = j * vStep;
-                let der = L1*Math.sin(2*(v+w)) - Math.sin(v)*(L2*Math.cos(v)+L3);
-                let neg = der<0;
-                if (neg!=negLast) {
-                        let a = vLast;
-                        let b = v;
-                        let c = a;
-                        var counter = 0;
-                        do {
-                                var fa = L1*Math.sin(2*(a+w)) - Math.sin(a)*(L2*Math.cos(a)+L3);
-                                var fb = L1*Math.sin(2*(b+w)) - Math.sin(b)*(L2*Math.cos(b)+L3);
-                                var fc = L1*Math.sin(2*(c+w)) - Math.sin(c)*(L2*Math.cos(c)+L3);
-                                if ((fa!=fc) && (fb!=fc)) var d = ((a*fb*fc)/((fa-fb)*(fa-fc))) + ((b*fa*fc)/((fb-fa)*(fb-fc))) + ((c*fa*fb)/((fc-fa)*(fc-fb)));
-                                else var d = b - fb*((b-a)/(fb-fa));
-                                var m = (a+b)/2;
-                                if ((m<b && (d>b || d<m)) || (m>b && (d<b || d>m))) d = m;
-                                var fd = L1*Math.sin(2*(d+w)) - Math.sin(d)*(L2*Math.cos(d)+L3);
-                                if ((fb*fd)<0) a = b;
-                                c = b;
-                                b = d;
-                                counter++;
-                        } while ((fd<-5e-15 || fd>5e-15) && counter<200);
-                        if (counter>=200) console.log("*** warning, iteration limit reached at point A ***");
-                        var f = K1*Math.cos(d+w)*Math.cos(d+w) + K2*Math.cos(d)*Math.cos(d) + K3*Math.cos(d) + K4;
-                        if (f<0) tempList.push({min: ((d+w)%(2*Math.PI) + (2*Math.PI))%(2*Math.PI) - w});
-                }
-                negLast = neg;
-                derLast = der;
-                vLast = v;
+            let v = j * vStep;
+            let der = L1*Math.sin(2*(v+w)) - Math.sin(v)*(L2*Math.cos(v)+L3);
+            let neg = der<0;
+
+            if (neg!=negLast) {
+                let a = vLast;
+                let b = v;
+                let c = a;
+                var counter = 0;
+                do {
+                    var fa = L1*Math.sin(2*(a+w)) - Math.sin(a)*(L2*Math.cos(a)+L3);
+                    var fb = L1*Math.sin(2*(b+w)) - Math.sin(b)*(L2*Math.cos(b)+L3);
+                    var fc = L1*Math.sin(2*(c+w)) - Math.sin(c)*(L2*Math.cos(c)+L3);
+                    if ((fa!=fc) && (fb!=fc)) var d = ((a*fb*fc)/((fa-fb)*(fa-fc))) + ((b*fa*fc)/((fb-fa)*(fb-fc))) + ((c*fa*fb)/((fc-fa)*(fc-fb)));
+                    else var d = b - fb*((b-a)/(fb-fa));
+                    var m = (a+b)/2;
+                    if ((m<b && (d>b || d<m)) || (m>b && (d<b || d>m))) d = m;
+                    var fd = L1*Math.sin(2*(d+w)) - Math.sin(d)*(L2*Math.cos(d)+L3);
+                    if ((fb*fd)<0) a = b;
+                    c = b;
+                    b = d;
+                    counter++;
+                } while ((fd<-5e-15 || fd>5e-15) && counter<200);
+
+                if (counter>=200) console.log("*** warning, iteration limit reached at point A ***");
+                var f = K1*Math.cos(d+w)*Math.cos(d+w) + K2*Math.cos(d)*Math.cos(d) + K3*Math.cos(d) + K4;
+                if (f<0) tempList.push({min: ((d+w)%(2*Math.PI) + (2*Math.PI))%(2*Math.PI) - w});
+            }
+
+            negLast = neg;
+            derLast = der;
+            vLast = v;
         }
 
         if (tempList.length > 2) {
@@ -551,11 +571,13 @@ export default class Lightcurve {
         const BC1 = this.getBolometricCorrection(t1);
         const BC2 = this.getBolometricCorrection(t2);
 
-        const H1 = 1.89553328524593e-43*Math.pow(t1, 4)*Math.pow(10, BC1/2.5);
-        const H2 = 1.89553328524593e-43*Math.pow(t2, 4)*Math.pow(10, BC2/2.5);
+        const H1 = 1.89553328524593e-43 * Math.pow(t1, 4) *
+              Math.pow(10, BC1 / 2.5);
+        const H2 = 1.89553328524593e-43 * Math.pow(t2, 4) *
+              Math.pow(10, BC2 / 2.5);
 
         const maxVisFlux = (R12*H1 + R22*H2)*Math.PI;
-        const minVisMag = -18.9669559998301 - (2.5/Math.LN10)*log(maxVisFlux);
+        const minVisMag = -18.9669559998301 - (2.5 / Math.LN10) * log(maxVisFlux);
 
         // the function getRegion will return 0 if the given phase does not occur during an eclipse,
         // 1 if it occurs during the eclipse of body 1, and 2 if it occurs during the eclipse of body 2
@@ -579,8 +601,7 @@ export default class Lightcurve {
                 if (end2<start2) getRegion = function(phase) {if ((phase>start1) && (phase<end1)) return 1; else if ((phase<end2) || (phase>start2)) return 2; else return 0;};
                 else getRegion = function(phase) {if ((phase>start1) && (phase<end1)) return 1; else if ((phase>start2) && (phase<end2)) return 2; else return 0;};
             }
-        }
-        else if (eclipse1.occurs) {
+        } else if (eclipse1.occurs) {
             let end = eclipse1.end.phase;
             let start = eclipse1.start.phase;
             if (end<start) {
@@ -726,11 +747,100 @@ export default class Lightcurve {
         }
 
         const curve = this.getCurve();
-        //this.updateMeasurements();
-        //this.updateVerticalScale();
+        this.updateVerticalScale();
 
         return curve;
-    };
+    }
+
+    /**
+     * Returns an array of labels and their positions.
+     */
+    updateVerticalScale() {
+        //let startTimer = getTimer();
+        let min, max, yScale, yStep;
+        if (this._dataType == 0) {
+            min = this._minVisFluxNormed;
+            max = this._maxVisFluxNormed;
+            yScale = this.__yScaleNormed;
+            yStep = -1;
+        } else {
+            min = this._minVisMag;
+            max = this._maxVisMag;
+            yScale = this.__yScale;
+            yStep = 1;
+        }
+
+        //let mc = this.yTickmarksMC;
+        //mc._visible = true;
+        //mc.clear();
+        //mc.lineStyle(1,0);
+        let pow = Math.pow;
+        let log = Math.log;
+        let majorExtent = this.majorTickmarkExtent;
+        let minorExtent = this.minorTickmarkExtent;
+        let labelIndex = 0;
+        let minimumSpacing = this.minScreenYSpacing / yScale;
+        let majorSpacing = pow(10, Math.ceil(log(minimumSpacing) / Math.LN10));
+        let multiple;
+        if (majorSpacing / 2 > minimumSpacing) {
+            majorSpacing = majorSpacing / 2;
+            multiple = 5;
+        } else {
+            multiple = 2;
+        }
+        let minorSpacing = majorSpacing / multiple;
+        yStep = yStep * (minorSpacing * yScale);
+        let startTickNum = Math.ceil(min / minorSpacing);
+        let tickNumLimit = 1 + Math.floor(max / minorSpacing);
+        let y;
+        if (this._dataType === 0) {
+            y = this._plotHeight - yScale * ((minorSpacing * startTickNum) - min);
+        } else {
+            y = yScale * ((minorSpacing * startTickNum) - min);
+        }
+        let f = -Math.floor(log(majorSpacing) / Math.LN10);
+        let i = startTickNum;
+
+        const a = [];
+
+        for (let i = startTickNum; i < tickNumLimit; i++) {
+            if (i % multiple == 0) {
+                //mc.moveTo(- majorExtent,y);
+                //mc.lineTo(0,y);
+                let value = minorSpacing * i;
+                //console.log('value', value);
+                if (labelIndex < this._yLabelCount) {
+                    /*let labelMC = mc["_" + labelIndex];
+                    labelMC.setValue(this.toFixed(value,f));
+                    labelMC._visible = true;
+                    labelMC._x = - majorExtent;
+                    labelMC._y = y;*/
+                } else {
+                    a.push({
+                        _x: -majorExtent,
+                        _y: y,
+                        value: value
+                    });
+                    this._yLabelCount = this._yLabelCount + 1;
+                }
+                labelIndex++;
+            } else {
+                //mc.moveTo(- minorExtent,y);
+                //mc.lineTo(0,y);
+            }
+            y = y + yStep;
+        }
+
+        this.labelCoords = a;
+
+        return a;
+        /*let i = labelIndex;
+        while(i < this._yLabelCount)
+        {
+            mc["_" + i]._visible = false;
+            i++;
+        }*/
+    }
 
     getBolometricCorrection(T) {
         const logTeff = Math.log(T) / Math.LN10;
@@ -746,7 +856,7 @@ export default class Lightcurve {
                 e: -1445.868048,
                 f: 66.84924471
             };
-        } else if (logTeff<3.7) {
+        } else if (logTeff < 3.7) {
             k = {
                 a: -13884.14899,
                 b: 8595.127427,
@@ -768,7 +878,7 @@ export default class Lightcurve {
 
         const BC = k.a + logTeff * (
             k.b + logTeff * (
-                k.c + logTeff*(k.d + logTeff*(k.e + k.f*logTeff))));
+                k.c + logTeff * (k.d + logTeff * (k.e + k.f * logTeff))));
         return BC;
     };
 
@@ -796,12 +906,13 @@ export default class Lightcurve {
         const xScale = this.__xScale;
 
         // Alter this scale value as necessary
-        const scale = 20;
+        const scale = 1;
         const res = (xScale / this.resolution) * scale;
 
         const addPhases = function(pL, eclipse) {
-            // this mini-function adds phases that sample the given eclipse with an appropriate
-            // resolution; it ensures that the deepest point of the eclipse is sampled
+            // this mini-function adds phases that sample the given
+            // eclipse with an appropriate resolution; it ensures that
+            // the deepest point of the eclipse is sampled
 
             if (!eclipse.occurs) {
                 return;
@@ -863,7 +974,7 @@ export default class Lightcurve {
         let maxVisMag = Number.NEGATIVE_INFINITY;
         for (let i=0; i<pL.length; i++) {
             let p = pL[i];
-            if (p.visFlux<minVisFlux) {
+            if (p.visFlux < minVisFlux) {
                 minVisFlux = p.visFlux;
                 maxVisMag = p.visMag;
             }
@@ -888,85 +999,46 @@ export default class Lightcurve {
             let yScale = null;
 
             if (halfVisFluxDiff==0 && noiseMargin==0) {
-                yScale = -this._plotHeight/(maxVisFlux*this.minFluxDifference);
+                yScale = (-this._plotHeight) / (maxVisFlux * this.minFluxDifference);
             } else {
-                yScale = -(this._plotHeight/2)/(halfVisFluxDiff + noiseMargin);
+                yScale = (-this._plotHeight / 2) / (halfVisFluxDiff + noiseMargin);
             }
 
             if ((-yScale*noiseMargin)<this.minFluxMarginPx) {
-                yScale = -((this._plotHeight/2) - this.minFluxMarginPx)/halfVisFluxDiff;
+                yScale = -((this._plotHeight / 2) - this.minFluxMarginPx) /
+                    halfVisFluxDiff;
             }
 
             if ((-this._plotHeight/yScale)<(maxVisFlux*this.minFluxDifference)) {
-                yScale = -this._plotHeight/(maxVisFlux*this.minFluxDifference);
+                yScale = (-this._plotHeight)/(maxVisFlux*this.minFluxDifference);
             }
 
-            let topFlux = centerFlux - 0.5*this._plotHeight/yScale;
-            let botFlux = centerFlux + 0.5*this._plotHeight/yScale;
-            let yOffset = -yScale*topFlux;
+            let topFlux = centerFlux - 0.5 * this._plotHeight / yScale;
+            let botFlux = centerFlux + 0.5 * this._plotHeight / yScale;
+            let yOffset = (-yScale) * topFlux;
             this.__yScale = yScale;
             this._yOffset = yOffset;
             this._maxVisFluxNormed = topFlux/maxVisFlux;
             this._minVisFluxNormed = botFlux/maxVisFlux;
-            this.__yScaleNormed = this._plotHeight*maxVisFlux/(topFlux-botFlux);
+            this.__yScaleNormed = this._plotHeight * maxVisFlux/(topFlux-botFlux);
 
             let x = xScale*(pL[0].phase - minPhase);
-            let y = yOffset + yScale*pL[0].visFlux;
+            let y = yOffset + yScale * pL[0].visFlux;
 
-            coords.push([x, y]);
-            for (let i=1; i<pL.length; i++) {
-                let x = xScale*(pL[i].phase - minPhase);
-                let y = yOffset + yScale*pL[i].visFlux;
-                coords.push([x, y]);
+            coords.push([x, -y]);
+            for (let i = 1; i < pL.length; i++) {
+                let x = xScale * (pL[i].phase - minPhase);
+                let y = yOffset + yScale * pL[i].visFlux;
+                coords.push([x, -y]);
             }
         } else {
-            // visual magnitude
-            let noiseMargin = this.magNoise*this.magnitudeMargin;
-            let halfVisMagDiff = (maxVisMag - minVisMag)/2;
-            let centerMag = minVisMag + halfVisMagDiff;
-
-            if (halfVisMagDiff==0 && noiseMargin==0) {
-                let yScale = this._plotHeight/this.minMagnitudeDifference;
-            } else {
-                let yScale = (this._plotHeight/2)/(halfVisMagDiff + noiseMargin);
-            }
-
-            if ((yScale*noiseMargin)<this.minMagnitudeMarginPx) {
-                let yScale = ((this._plotHeight/2) - this.minMagnitudeMarginPx)/(centerMag - minVisMag);
-            }
-
-            if ((this._plotHeight/yScale)<this.minMagnitudeDifference) {
-                let yScale = this._plotHeight/this.minMagnitudeDifference;
-            }
-
-            let topMag = centerMag - 0.5*this._plotHeight/yScale;
-            let botMag = centerMag + 0.5*this._plotHeight/yScale;
-            let yOffset = -yScale*topMag;
-            this._minVisMag = topMag;
-            this._maxVisMag = botMag;
-            this.__yScale = yScale;
-            this._yOffset = yOffset;
-
-            let x = xScale*(pL[0].phase - minPhase);
-            let y = yOffset + yScale*pL[0].visMag;
-
-            coords.push([x, y]);
-            for (let i=1; i<pL.length; i++) {
-                let x = xScale*(pL[i].phase - minPhase);
-                let y = yOffset + yScale*pL[i].visMag;
-                coords.push([x, y]);
-            }
+            console.error('unimplemented');
         }
 
         //this.plotAreaMC.curveMC.mc1._x = -2*this._plotWidth;
         //this.plotAreaMC.curveMC.mc2._x = -this._plotWidth;
         //this.plotAreaMC.curveMC.mc3._x = 0;
 
-        const normalized = normalize(coords.map(e => -e[1]));
-        const a = [];
-        coords.forEach(function(x, idx) {
-            a.push([x[0], -normalized[idx] + 2]);
-        });
-        return a;
+        return coords;
     };
 }

@@ -139,6 +139,7 @@ const normalize = function(array) {
 
 export {
     forceNumber,
+    degToRad,
     roundToOnePlace,
     rJupToKm, rSunToKm,
     kmToPx,

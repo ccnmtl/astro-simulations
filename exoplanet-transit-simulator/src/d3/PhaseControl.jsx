@@ -19,10 +19,10 @@ class PhaseControl extends React.Component {
         const el = d3.select('.phase-control');
         el.call(d3.drag().on('drag', this.dragmove.bind(this)));
     }
-    dragmove() {
+    dragmove(e) {
         const w = this.props.width - this.props.paddingLeft;
 
-        let newPhase = (d3.event.x - this.props.paddingLeft) / w;
+        let newPhase = (e.x - this.props.paddingLeft) / w;
 
         newPhase = Math.min(Math.max(0, newPhase), 1);
 

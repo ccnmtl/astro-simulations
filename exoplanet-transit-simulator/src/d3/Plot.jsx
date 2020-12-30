@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 import DataCircles from './DataCircles';
 import PhaseControl from './PhaseControl';
-import Axis from './Axis';
 
 // Returns a function that "scales" X coordinates from the data to fit
 // the chart.
@@ -92,10 +91,9 @@ export default class Plot extends React.Component {
                     data={this.props.lightcurveData}
                     {...scales}
                 />
-                <Axis ax={'y'} {...props} {...scales} />
                 <PhaseControl {...props} {...scales} />
             </svg>
-        )
+        );
     }
 }
 
