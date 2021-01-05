@@ -922,6 +922,16 @@ class EclipsingBinarySimulator extends React.Component {
             value = target.id === (target.name + 'Radio');
         } else if (target.type === 'range' || target.type === 'number') {
             value = forceNumber(value);
+
+            // Constrain the new value if this input has a min and
+            // max.
+            if (
+                target.min || typeof target.min === 'number' &&
+                    target.max || typeof target.max === 'number'
+            ) {
+                value = Math.max(value, target.min);
+                value = Math.min(value, target.max);
+            }
         }
 
         this.setState({
@@ -932,9 +942,7 @@ class EclipsingBinarySimulator extends React.Component {
             this.setState({
                 visualPhase: this.getVisualPhase(value)
             });
-        }
-
-        if (name === 'longitude') {
+        } else if (name === 'longitude') {
             this.setState({
                 visualPhase: this.getVisualPhase(this.state.phase)
             });
