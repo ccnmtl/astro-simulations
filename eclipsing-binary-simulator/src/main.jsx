@@ -235,6 +235,10 @@ class EclipsingBinarySimulator extends React.Component {
                                 min={0.01} max={2} step={0.01}
                                 value={this.state.animationSpeed}
                                 onChange={this.handleInputChange} />
+                            <div className="small form-text text-muted mb-2">
+                                <span>Slow</span>
+                                <span className="float-right">Fast</span>
+                            </div>
                         </div>
                     </div>
 
