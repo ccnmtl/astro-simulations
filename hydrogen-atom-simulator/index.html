@@ -1,0 +1,122 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="utf-8" />-->
+<!--    <title>-->
+<!--        Hydrogen Atom Simulator-->
+<!--    </title>-->
+<!--    <link rel="stylesheet" type="text/css" href="./css/main.css" />-->
+<!--    <link rel="stylesheet" type="text/css" href="./css/navbar.css" />-->
+<!--    <link rel="stylesheet" type="text/css" href="./css/buttons.css" />-->
+<!--    <link rel="stylesheet" type="text/css" href="./css/slider.css" />-->
+<!--    <link rel="stylesheet" type="text/css" href="./css/pause-switch.css" />-->
+<!--</head>-->
+
+<!--<body>-->
+<!--<div id="sim-root"></div>-->
+<!--<script src="dist/bundle.js"></script>-->
+<!--</body>-->
+<!--</html>-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>
+        Foothill AstroSims Hydrogen Atom Simulator
+    </title>
+
+    <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="./css/main.css" />
+    <link rel="stylesheet" type="text/css" href="./css/navbar.css" />
+    <link rel="stylesheet" type="text/css" href="./css/buttons.css" />
+    <link rel="stylesheet" type="text/css" href="./css/slider.css" />
+    <link rel="stylesheet" type="text/css" href="./css/pause-switch.css" />
+</head>
+
+<body>
+<!-- main sim window -->
+<div id="sim-root"></div>
+
+<!-- help modal -->
+<div aria-hidden="true" aria-labelledby="helpModalLabel" class="modal" id="helpModal" role="dialog" tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="helpModalLabel">
+                    Help
+                </h5>
+                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                            <span aria-hidden="true">
+                                ×
+                            </span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    This simulator models the interactions of light with a hydrogen atom.  An atom will absorb light whose energy matches the difference between the electron's current energy and the energy of a higher level.  An electron that is in a higher energy level will de-excite, dropping down to a lower level and releasing a photon whose energy matches the difference.
+                    <br><br>
+                    Photons of energies corresponding to transitions can be fired using the labeled buttons along the bottom.  Alternatively, the slider at the bottom of the screen can be used to select an arbitrary energy for a photon to then shoot at an atom (using the Fire photon button).
+                    <br><br>
+                    Automatic de-excitation can be deactivated using the toggle at the right edge of the control panel, and de-excitation transitions can be selected using the "Drop" button.  The electron may also be dragged to an energy level without absorbing or emitting a photon.
+                    <br><br>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- about modal -->
+<div aria-hidden="true" aria-labelledby="aboutModalLabel" class="modal" id="aboutModal" role="dialog" tabindex="-1">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="aboutModalLabel">
+                    About
+                </h5>
+                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                            <span aria-hidden="true">
+                                ×
+                            </span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    <strong> This simulator is an HTML5/Javascript reimplementation of the Hydrogen Atom simulator that was originally developed as part of the Nebraska Astronomy Applet Project. </strong>
+                    <br><br>
+                    <p>The original simulation, along with related teaching materials, may be found at: <a href="https://astro.unl.edu" target="_blank">https://astro.unl.edu</a></p>
+                    <br>
+                    <p>This simulator is part of the <a href="https://foothill.edu/astronomy/astrosims.html" target="_blank">Foothill AstroSims project</a>, which is aiming to reimplement, in HTML5, Flash-based simulations that are used in Foothill Astronomy courses.</p>
+                    <br>
+                    <p>Similar projects include work done by Nik Nyby at Columbia University (<a href="https://github.com/ccnmtl/astro-simulations" target="_blank">https://github.com/ccnmtl/astro-simulations</a>) and Kevin Ditts at the University of New Mexico (<a href="https://physics.unm.edu/Courses/Rand/applets/" target="_blank">https://physics.unm.edu/Courses/Rand/applets/</a>).</p>
+                    <br><br>
+                    <em> Funding for Foothill AstroSims provided by an Equity & Innovation Grant from Foothill College. </em>
+                    <br><br>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JS, Popper.js, and jQuery for bootstrap modal -->
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+<script src="dist/bundle.js"></script>
+</body>
+
+<!--<body>-->
+<!--<div id="sim-root"></div>-->
+<!--<script crossorigin="anonymous" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>-->
+<!--<script crossorigin="anonymous" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>-->
+<!--<script src="dist/bundle.js"></script>-->
+<!--</body>-->
+</html>

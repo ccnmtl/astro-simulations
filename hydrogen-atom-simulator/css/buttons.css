@@ -1,0 +1,106 @@
+button, input[type="button"], input[type="submit"] {
+    /*color:#050;*/
+    /*font: bold 84% 'trebuchet ms',helvetica,sans-serif;*/
+    /*background-color:#fed;*/
+    /*border:1px solid;*/
+    /*border-color: #696 #363 #363 #696;*/
+    font-size: 11px;
+    padding: 1px 5px;
+}
+
+.fireButton {
+    width: 100px;
+    position: relative;
+    /*top: 12px;*/
+}
+
+.sliderButtons {
+    /*background-color: royalblue;*/
+    position: relative;
+    /*top: 5px;*/
+    /*margin-left: 5px;*/
+}
+
+#Pa {
+    top: 5px;
+    left: 85px;
+    background-color: #630000;
+    color: white;
+}
+#Py {
+    top: 5px;
+    left: 69px;
+    background-color: #630000;
+    color: white;
+}
+
+#Pb {
+    top: 35px;
+    left: 75px;
+    background-color: #630000;
+    color: white;
+}
+
+#Ha {
+    top: 35px;
+    left: 65px;
+    background-color: #ff0000;
+    color: white;
+}
+
+#Hy {
+    top: 35px;
+    left: 90px;
+    background-color: #4900ff;
+    color: white;
+}
+
+#Hb {
+    top: 5px;
+    left: 43px;
+    /*background-color: #00ffc0;*/
+    background-color: #00efff;
+    color: black;
+}
+
+#Hd {
+    top: 5px;
+    left: 58px;
+    background-color: #7900e7;
+    color: white;
+}
+
+#La {
+    top: 5px;
+    left: 380px;
+    background-color: #630063;
+    color: white;
+}
+
+#Lb {
+    top: 5px;
+    left: 450px;
+    background-color: #630063;
+    color: white;
+}
+
+#Ly {
+    top: 5px;
+    left: 455px;
+    background-color: #630063;
+    color: white;
+}
+
+#Le {
+    top: 5px;
+    left: 470px;
+    background-color: #630063;
+    color: white;
+}
+
+#Ld {
+    top: 35px;
+    left: 420px;
+    background-color: #630063;
+    color: white;
+}

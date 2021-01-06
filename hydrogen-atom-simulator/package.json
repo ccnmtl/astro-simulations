@@ -1,0 +1,49 @@
+{
+    "name": "hydrogen-atom-simulator",
+    "version": "0.1.0",
+    "description": "Hydrogen Atom Simulator",
+    "private": true,
+    "main": "main.js",
+    "scripts": {
+        "serve": "webpack-dev-server --mode development",
+        "dev": "webpack --mode development --watch",
+        "build": "webpack --mode production",
+        "eslint": "eslint src/*.jsx"
+    },
+    "keywords": [
+        "astronomy"
+    ],
+    "dependencies": {
+        "bootstrap": "^4.4.1",
+        "d3": "^5.15.1",
+        "d3-selection": "latest",
+        "eslint-plugin-security": "^1.4.0",
+        "jquery": "^3.5.1",
+        "pixi.js": "^5.2.3",
+        "popper.js": "^1.16.0",
+        "react": "^16.13.1",
+        "react-bootstrap": "^1.0.1",
+        "react-dom": "^16.13.1",
+        "react-range-step-input": "^1.2.4"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.9.6",
+        "@babel/preset-env": "^7.9.6",
+        "@babel/preset-react": "^7.9.4",
+        "babel-cli": "^6.26.0",
+        "babel-eslint": "^10.1.0",
+        "babel-loader": "^8.1.0",
+        "braces": "^2.3.1",
+        "eslint": "^6.1.0",
+        "eslint-plugin-react": "~7.19.0",
+        "webpack": "^4.43.0",
+        "webpack-cli": "^3.3.11",
+        "webpack-dev-server": "^3.11.0"
+    },
+    "babel": {
+        "presets": [
+            "@babel/env",
+            "@babel/react"
+        ]
+    }
+}

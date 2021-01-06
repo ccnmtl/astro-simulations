@@ -1,0 +1,83 @@
+.NavigationBar {
+    border: 1px solid rgb(60, 61, 64);
+    padding: 0.5em;
+    position: relative;
+}
+
+.navbar::after {
+    content: '';
+    display: table;
+    clear: both;
+}
+
+#title {
+    float: left;
+    font-size: 28px;
+    margin-left: -10px;
+}
+
+#settings {
+    display: inline-block;
+    margin: 15px 2px 5px;
+}
+
+nav {
+    float: right;
+}
+
+nav ul {
+    list-style: none;
+    margin-left: 550px;
+    /*float: right;*/
+}
+
+nav li {
+    display: inline-block;
+    margin: 10px 0px 0px 50px;
+}
+
+nav a {
+    color: whitesmoke;
+    text-decoration: none;
+}
+
+nav a:hover {
+    color: rgb(96,125,138);
+    text-decoration: none;
+}
+
+/*#title {*/
+/*    float: left;*/
+/*    padding-left: 10px;*/
+/*    font-size: 28px;*/
+/*}*/
+
+/*.navbar::after {*/
+/*    content: '';*/
+/*    display: table;*/
+/*    clear: both;*/
+/*}*/
+
+/*nav {*/
+/*    !*float: right;*!*/
+/*    !*position: relative;*!*/
+/*    !*left: 275px;*!*/
+/*}*/
+
+/*nav ul {*/
+/*    list-style: none;*/
+/*}*/
+
+/*nav li {*/
+/*    display: inline-block;*/
+/*    margin: 10px 20px;*/
+/*}*/
+
+/*nav a {*/
+/*    color: whitesmoke;*/
+/*    text-decoration: none;*/
+/*}*/
+
+/*nav a:hover {*/
+/*    color: salmon;*/
+/*}*/
