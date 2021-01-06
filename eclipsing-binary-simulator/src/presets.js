@@ -417,7 +417,7 @@ const systemPresets = [
         separation: 24.29,
         eccentricity: 0.03,
 
-        img: 'mag - v478 cyg'
+        img: 'flux - v478 cyg'
     },
 
     // 20. V477 Cyg
@@ -440,7 +440,7 @@ const systemPresets = [
         separation: 60,
         eccentricity: 0.33,
 
-        img: 'mag - v477 cyg'
+        img: 'flux - v477 cyg'
     },
 
     // 21. DI Her
@@ -647,7 +647,7 @@ const systemPresets = [
         separation: 10.27,
         eccentricity: 0,
 
-        img: 'mag - v442 cyg'
+        img: 'flux - v442 cyg'
     },
 
     // 30. AD Boo
@@ -854,7 +854,7 @@ const systemPresets = [
         separation: 27.89,
         eccentricity: 0.02,
 
-        img: 'mag - v459 cas'
+        img: 'flux - v459 cas'
     },
 
     // 39. V364 Lac
@@ -877,7 +877,7 @@ const systemPresets = [
         separation: 24.33,
         eccentricity: 0.29,
 
-        img: 'mag - v364 lac'
+        img: 'flux - v364 lac'
     },
 
     // 40. V526 Sgr
@@ -900,7 +900,7 @@ const systemPresets = [
         separation: 10.43,
         eccentricity: 0.22,
 
-        img: 'mag - v526 sgr'
+        img: 'flux - v526 sgr'
     },
 
     // 41. GG Ori
@@ -969,7 +969,7 @@ const systemPresets = [
         separation: 43.23,
         eccentricity: 0.48,
 
-        img: 'mag - v541 cyg'
+        img: 'flux - v541 cyg'
     },
 
     // 44. IQ Per
@@ -1107,7 +1107,7 @@ const systemPresets = [
         separation: 49.76,
         eccentricity: 0.23,
 
-        img: 'mag - v380 cyg'
+        img: 'flux - v380 cyg'
     },
 
     // 50. NN Cep
@@ -1175,7 +1175,7 @@ const systemPresets = [
         // System Properties
         separation: 7.15,
         eccentricity: 0,
-        img: 'mag - v885 cyg'
+        img: 'flux - v885 cyg'
     },
 
     // 53. RS Ind
