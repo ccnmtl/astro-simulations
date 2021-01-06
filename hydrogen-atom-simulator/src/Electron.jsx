@@ -51,7 +51,6 @@ export default class Electron extends React.Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         // If the photon wasn't fired, simply return
-        // console.log(`emit?? ${this.props.emitted}`);
         if (!(this.props.moveElectron || this.props.emitted) || this.props.electronIsBeingDragged) return;
 
         if (this.props.moveElectron) this.moveElectron();
@@ -75,7 +74,6 @@ export default class Electron extends React.Component {
             let randomPosition = this.ionizeElectron();
             x = randomPosition.xPos;
             y = randomPosition.yPos;
-            console.log(`random positions; ${x} and ${y}`);
         } else {
             x = this.orbitalDistances[this.props.currentEnergyLevel - 1];
             y = 0;
@@ -88,13 +86,11 @@ export default class Electron extends React.Component {
     }
 
     sendToRandomLoc() {
-        console.log(`'hello its meee:: `);
         if (this.props.currentEnergyLevel === 7) {
             let node = this.ref.current;
             let randomPosition = this.ionizeElectron();
             let x = randomPosition.xPos;
             let y = randomPosition.yPos;
-            console.log(` the other x: ${x} and y ${y}`);
             select(node).attr('transform', `translate(${x}, ${y})`);
         }
 

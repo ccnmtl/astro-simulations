@@ -29,7 +29,6 @@ export default class Slider extends React.Component {
         }
 
         let newEnergyValue = getSnappedOnEnergyValues(Number.parseFloat(e.target.value));
-        console.log(`sliderzz: ${newEnergyValue}`);
         let photonFrequency = (newEnergyValue / PLANCK_CONSTANT) * COULOMB_CHARGE;
         let photonWavelength = ((PLANCK_CONSTANT * LIGHT_SPEED) / newEnergyValue) / COULOMB_CHARGE;
         let photonColorHex = getWavelengthHex(photonWavelength * 1e9);

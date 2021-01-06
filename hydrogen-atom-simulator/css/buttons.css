@@ -4,12 +4,11 @@ button, input[type="button"], input[type="submit"] {
     /*background-color:#fed;*/
     /*border:1px solid;*/
     /*border-color: #696 #363 #363 #696;*/
-    font-size: 11px;
+    font-size: 14px;
     padding: 1px 5px;
 }
 
 .fireButton {
-    width: 100px;
     position: relative;
     /*top: 12px;*/
 }
