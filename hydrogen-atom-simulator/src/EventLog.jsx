@@ -117,14 +117,12 @@ export default class EventLog extends React.Component {
 
     scrollToMyRef() {
         // window.scrollTo(0, this.myRef.current.offsetTop);
-        // console.log(`scolling now`);
         // const el = document.getElementById("dearScotty");
         // el.scrollTop = 50;
         // this.myRef.scrollTo(0, 100);
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        // console.log(`scrolling`);
         // this.scrollToMyRef();
     }
 

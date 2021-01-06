@@ -15,11 +15,11 @@ const renderOrbitalRadii = () => {
             stroke: data.stroke,
             fill: "none",
             key: index
-        }
+        };
 
         return <circle {...circleProperties} />;
-    }
-}
+    };
+};
 
 export default class MainView extends React.Component {
     constructor(props) {

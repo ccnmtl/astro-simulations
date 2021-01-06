@@ -49,17 +49,16 @@ export default class HydrogenAtomSimulator extends React.Component {
         };
 
         this.deExcitation = this.deExcitation.bind(this);
-        this.handleReset = this.handleReset.bind(this)
+        this.onResetClick = this.onResetClick.bind(this);
     }
 
     render() {
         return (
             <React.Fragment>
-                <div className="NavigationBar">
-                    <NavigationBar
-                        onReset={this.handleReset.bind(this)}
-                    />
-                </div>
+                <NavigationBar
+                    onResetClick={this.onResetClick.bind(this)}
+                />
+                <div className="clearfix"></div>
 
                 <div className={"TopHalf"}>
                     <div className={"MainView"}>
@@ -145,8 +144,8 @@ export default class HydrogenAtomSimulator extends React.Component {
                             />
 
                         <div className={"FirePhotonButton"}>
-                            <button type="box"
-                                    className="fireButton"
+                            <button type="button"
+                                    className="fireButton btn btn-secondary"
                                     style={{backgroundColor: this.state.photon.color}}
                                     onClick={this.firePhoton.bind(this)}>
                                 {"Fire Photon "}
@@ -158,9 +157,10 @@ export default class HydrogenAtomSimulator extends React.Component {
                         <p id={"energyLabel"}><i>Energy</i></p>
 
 
+                        <div className="clearfix"></div>
                     </div>
 
-                    <div className={"EventLog"}>
+                    <div className="EventLog">
                         <p className={"TitleText"}>Event Log</p>
                         <div className={"LogContainer"}>
                             <EventLog
@@ -170,16 +170,19 @@ export default class HydrogenAtomSimulator extends React.Component {
                             {/*<button> Click to scroll </button>*/}
                         </div>
 
-                        <button type="box"
-                                className="clearLogButton"
-                                onClick={this.clearLog.bind(this)}
-                        >
-                            {"Clear Log"}
-                        </button>
+
+                        <form>
+                            <button
+                                type="button"
+                                className="clearLogButton btn btn-secondary btn-sm mt-2 d-block mx-auto"
+                                onClick={this.clearLog.bind(this)}>
+                                Clear Log
+                            </button>
+                        </form>
                     </div>
                 </div>
 
-                <div className={"ManualExcitations"}>
+                <div className="ManualExcitations">
                     <p id={"pauseSwitchText"}>automatic de-excitation</p>
                     <div className={"pauseSwitch"}>
                         <label className="switch">
@@ -198,12 +201,6 @@ export default class HydrogenAtomSimulator extends React.Component {
                         manuallyEmit={this.manuallyEmit.bind(this)}
                     />
 
-                </div>
-
-                <div id="survey">
-                    <a href="https://tinyurl.com/y9vf4uep" target="_blank" rel="noopener noreferrer">
-                        <button type="button" className="btn btn=warning" id="feedback">Give us feedback!</button>
-                    </a>
                 </div>
             </React.Fragment>
         );
@@ -351,7 +348,6 @@ export default class HydrogenAtomSimulator extends React.Component {
         let photonEnergy = this.state.photon.energyValue;
         let electronEnergy = this.energyLevelValues[this.state.currentEnergyLevel - 1];
         let totalEnergy = Number.parseFloat((photonEnergy + electronEnergy).toFixed(3));
-        console.log(`photon energy +++ electronEnergy ; ${photonEnergy}, ${electronEnergy}, ${totalEnergy}`);
 
         let newEnergyLevel = totalEnergy >= 0 ? 7 : this.state.currentEnergyLevel;
         let delta = 0.005; // used to be 0.01 but caused errors sometimes
@@ -389,7 +385,8 @@ export default class HydrogenAtomSimulator extends React.Component {
         });
     }
 
-    handleReset() {
+    onResetClick(e) {
+        e.preventDefault();
         this.setState(this.initialState);
     }
 }
