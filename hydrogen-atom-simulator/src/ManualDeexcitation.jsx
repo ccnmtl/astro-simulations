@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types'
 
 export default class ManualDeexcitation extends React.Component {
     constructor(props) {
@@ -10,7 +11,7 @@ export default class ManualDeexcitation extends React.Component {
         this.updateOptions();
     }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
+    componentDidUpdate() {
         // if (prevProps !== this.props) this.updateOptions();
         this.updateOptions();
     }
@@ -62,3 +63,9 @@ export default class ManualDeexcitation extends React.Component {
 }
 
 // https://electrictoolbox.com/javascript-add-options-html-select/
+
+ManualDeexcitation.propTypes = {
+    currentEnergyLevel: PropTypes.number.isRequired,
+    automaticDeExcitation: PropTypes.bool.isRequired,
+    manuallyEmit: PropTypes.func.isRequired
+};

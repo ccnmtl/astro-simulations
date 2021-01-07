@@ -1,6 +1,7 @@
 import React from 'react';
 import { getWavelengthHex, getWavelengthRGB } from "./utils/WavelengthToHex";
 import Button from "./utils/Button";
+import PropTypes from 'prop-types';
 
 const PLANCK_CONSTANT = 6.62607004e-34;
 const COULOMB_CHARGE = 1.602176634e-19;
@@ -21,7 +22,7 @@ export default class Slider extends React.Component {
         const getSnappedOnEnergyValues = (energy) => {
             let epsilon = 0.04;
             let energyValue = energy;
-            this.criticalPhotonEVs.forEach((element, index) => {
+            this.criticalPhotonEVs.forEach((element) => {
                 if (energy < (element + epsilon) && energy > (element - epsilon)) energyValue = element;
             });
 
@@ -161,3 +162,7 @@ export default class Slider extends React.Component {
     }
 }
 
+Slider.propTypes = {
+    changePhoton: PropTypes.func.isRequired,
+    photon: PropTypes.object.isRequired
+}

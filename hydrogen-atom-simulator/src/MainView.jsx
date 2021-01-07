@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Electron from './Electron';
-import PhotonBeams from "./PhotonBeams";
 
 const WIDTH = 950;
 const HEIGHT = 300;
@@ -37,7 +36,7 @@ export default class MainView extends React.Component {
 
     }
 
-    componentDidUpdate(prevProps, prevState, snapShot) {
+    componentDidUpdate() {
         this.updateCurrentCurve();
         this.updateVisibilityOfTexts();
     }
@@ -86,3 +85,12 @@ export default class MainView extends React.Component {
     }
 }
 
+MainView.propTypes = {
+    currentEnergyLevel: PropTypes.number.isRequired,
+    startDeExcitation: PropTypes.func.isRequired,
+    emitted: PropTypes.bool.isRequired,
+    electronIsBeingDragged: PropTypes.bool.isRequired,
+    moveElectron: PropTypes.bool.isRequired,
+    changeElectronState: PropTypes.func.isRequired,
+    updateEnergyLevel: PropTypes.func.isRequired
+};
