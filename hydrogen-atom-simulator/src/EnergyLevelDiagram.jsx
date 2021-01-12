@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 const WIDTH = 230;
 const HEIGHT = 230;
@@ -17,7 +18,7 @@ export default class EnergyLevelDiagram extends React.Component {
         super(props);
     }
 
-    componentDidUpdate(prevProps, prevState, snapShot) {
+    componentDidUpdate() {
 
     }
 
@@ -97,3 +98,7 @@ export default class EnergyLevelDiagram extends React.Component {
         );
     }
 }
+
+EnergyLevelDiagram.propTypes = {
+    currentEnergyLevel: PropTypes.number.isRequired
+};

@@ -22,3 +22,7 @@ export default class NavigationBar extends React.Component {
         );
     }
 }
+
+NavigationBar.propTypes = {
+    onResetClick: PropTypes.func.isRequired
+}

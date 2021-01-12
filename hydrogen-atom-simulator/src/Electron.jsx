@@ -30,6 +30,7 @@ export default class Electron extends React.Component {
     makeDraggable(node) {
         const findClosestOrbital = this.findClosestOrbital.bind(this);
         const startDeExcitation = this.props.startDeExcitation.bind(this);
+
         const handleDrag = drag()
             .on('end', function() {
                 const me = select(this);
@@ -49,12 +50,13 @@ export default class Electron extends React.Component {
         select(node).call(handleDrag);
     }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
+    componentDidUpdate() {
         // If the photon wasn't fired, simply return
         if (!(this.props.moveElectron || this.props.emitted) || this.props.electronIsBeingDragged) return;
 
         if (this.props.moveElectron) this.moveElectron();
         if (this.props.emitted) this.photonEmission();
+
     }
 
     photonEmission() {
@@ -83,6 +85,7 @@ export default class Electron extends React.Component {
         select(node).transition().attr('transform', `translate(${x}, ${y})`).duration(500);
 
         this.props.changeElectronState(false);
+
     }
 
     sendToRandomLoc() {
@@ -99,9 +102,6 @@ export default class Electron extends React.Component {
     ionizeElectron() {
         const width = 950;
         const height = 300;
-
-        let xOffset = 500;
-        let yOffset = 500;
 
         let x = Math.random() * width;
         let y = Math.random() * height;
@@ -131,6 +131,7 @@ export default class Electron extends React.Component {
         let indexOfClosestOrbital = distanceFromEndXToOrbital.indexOf(Math.min(...distanceFromEndXToOrbital));
         this.props.updateEnergyLevel(indexOfClosestOrbital + 1, beingDragged);
         return this.orbitalDistances[indexOfClosestOrbital];
+
     }
 
     render() {
@@ -139,3 +140,13 @@ export default class Electron extends React.Component {
         )
     }
 }
+
+Electron.propTypes = {
+    currentEnergyLevel: PropTypes.number.isRequired,
+    startDeExcitation: PropTypes.func.isRequired,
+    emitted: PropTypes.bool.isRequired,
+    electronIsBeingDragged: PropTypes.bool.isRequired,
+    moveElectron: PropTypes.bool.isRequired,
+    changeElectronState: PropTypes.func.isRequired,
+    updateEnergyLevel: PropTypes.func.isRequired
+};

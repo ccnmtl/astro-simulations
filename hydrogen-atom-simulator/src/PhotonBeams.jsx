@@ -1,6 +1,7 @@
 import React from 'react';
 import { getWavelengthRGB} from "./utils/WavelengthToHex";
 import { scaleLog } from 'd3/dist/d3';
+import PropTypes from 'prop-types';
 
 const WIDTH = 950;
 const HEIGHT = 300;
@@ -59,13 +60,13 @@ export default class PhotonBeams extends React.Component {
         this.ctx = this.canvas.getContext("2d");
     }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
+    componentDidUpdate(prevProps) {
         this.energyLevel = prevProps.currentEnergyLevel;
 
         if (this.props.photon.fired && !this.isPlaying) {
             this.startAnimation();
             this.isPlaying = true;
-        } else if (prevProps.deExcitation !== this.props.deexcitation && this.props.deexcitation) {
+        } else if (prevProps.deexcitation !== this.props.deexcitation && this.props.deexcitation) {
             this.startAnimation(prevProps);
         } else {
             this.isPlaying = false;
@@ -195,4 +196,14 @@ export default class PhotonBeams extends React.Component {
             </div>
         )
     }
+}
+
+PhotonBeams.propTypes = {
+    currentEnergyLevel: PropTypes.number.isRequired,
+    startDeExcitation: PropTypes.func.isRequired,
+    changeElectronState: PropTypes.func.isRequired,
+    changeDeExcitationState: PropTypes.func.isRequired,
+    stopPhotonAnimation: PropTypes.func.isRequired,
+    deexcitation: PropTypes.bool.isRequired,
+    photon: PropTypes.object.isRequired
 }

@@ -65,3 +65,10 @@ export default class Spectrum extends React.Component {
         );
     }
 }
+
+Spectrum.propTypes = {
+    energyValue: PropTypes.number.isRequired,
+    tickMarksData: PropTypes.array.isRequired,
+    id: PropTypes.number.isRequired,
+    value: PropTypes.string.isRequired
+}

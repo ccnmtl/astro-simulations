@@ -1,5 +1,5 @@
 import React from 'react';
-import { useRef, useEffect } from 'react';
+import PropTypes from 'prop-types';
 
 const WIDTH = 250;
 const HEIGHT = 300;
@@ -66,11 +66,11 @@ const renderEventEntries = () => {
             id: "rightTextEventLog",
         }
 
-        const numEventText = {
-            x: leftTextMargin + 5,
-            y: pixelHeight - 30.0,
-            id: "leftTextEventLog",
-        }
+        // const numEventText = {
+        //     x: leftTextMargin + 5,
+        //     y: pixelHeight - 30.0,
+        //     id: "leftTextEventLog",
+        // }
 
         let leftEnergyLevel = Math.min(data.previousEnergyLevel, data.newEnergyLevel);
         let rightEnergyLevel = Math.max(data.previousEnergyLevel, data.newEnergyLevel);
@@ -103,6 +103,7 @@ const renderEventEntries = () => {
     }
 }
 
+
 // const scrollToRef = (ref) => window.scrollTo(0, ref.current.offsetTop)
 // const useMountEffect = (fun) => useEffect(fun, [])
 
@@ -122,12 +123,13 @@ export default class EventLog extends React.Component {
         // this.myRef.scrollTo(0, 100);
     }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
+    componentDidUpdate() {
         // this.scrollToMyRef();
     }
 
     render() {
         let adjustedHeight = HEIGHT;
+
         if (this.props.eventLog.length > 5) adjustedHeight += (this.props.eventLog.length - 5) * 50;
 
         return (
@@ -142,3 +144,7 @@ export default class EventLog extends React.Component {
         );
     }
 }
+
+EventLog.propTypes = {
+    eventLog: PropTypes.array.isRequired
+};

@@ -206,7 +206,7 @@ export default class HydrogenAtomSimulator extends React.Component {
         );
     }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
+    componentDidUpdate() {
         // Uncomment if Geoff wants to clear event log on drag
 
         // if (prevState !== this.state && this.state.electronIsBeingDragged) {
