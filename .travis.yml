@@ -1,8 +1,0 @@
-language: node_js
-node_js:
-  - '12'
-  - '14'
-install: npm install
-script:
-  - make eslint-all
-  - make test-all
