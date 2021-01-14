@@ -1,4 +1,4 @@
-# astro-simulations [![Build Status](https://travis-ci.org/ccnmtl/astro-simulations.svg?branch=master)](https://travis-ci.org/ccnmtl/astro-simulations)
+[![Actions Status](https://github.com/ccnmtl/astro-simulations/workflows/build-and-test/badge.svg)](https://github.com/ccnmtl/astro-simulations/actions)
 
 Astronomy Simulations and Animations
 
