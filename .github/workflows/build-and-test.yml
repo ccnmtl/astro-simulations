@@ -16,3 +16,12 @@ jobs:
       - run: npm install
       - run: make eslint-all
       - run: make test-all
+on: 
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'     
+        required: true
+        default: 'warning'
+      tags:
+        description: 'Test scenario tags'
