@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import * as PIXI from 'pixi.js';
 import Plot from './d3/Plot';
 import * as d3 from 'd3';
-import {degToRad} from './utils';
+import {degToRad, roundToFivePlaces} from './utils';
 
 
 export default class LightcurveView extends React.Component {
@@ -88,18 +88,7 @@ export default class LightcurveView extends React.Component {
         this.axis = axis;
         this.yAxisEl.appendChild(axis.view);
 
-        const title = new PIXI.Text('Normalized Flux', {
-            fontFamily: 'Arial',
-            fontSize: 14,
-            fontWeight: 'bold',
-            fill: 0x000000,
-            align: 'center'
-        });
-        title.position.x = 0;
-        title.position.y = 180;
-        title.rotation = degToRad(-90);
-        this.axis.stage.addChild(title);
-
+        this.drawTitleText(axis);
         this.drawYAxisLabels(axis, this.props.labelCoords);
     }
     componentDidUpdate(prevProps) {
@@ -147,20 +136,38 @@ export default class LightcurveView extends React.Component {
 
     refreshAxisView(app) {
         app.stage.removeChildren();
+
+        this.drawTitleText(app);
         this.drawYAxisLabels(app, this.props.labelCoords);
+    }
+
+    drawTitleText(app) {
+        const title = new PIXI.Text('Normalized Flux', {
+            fontFamily: 'Arial',
+            fontSize: 14,
+            fontWeight: 'bold',
+            fill: 0x000000,
+            align: 'center'
+        });
+        title.name = 'title';
+        title.position.x = 0;
+        title.position.y = 180;
+        title.rotation = degToRad(-90);
+        app.stage.addChild(title);
     }
 
     drawYAxisLabels(app, labelCoords) {
         const me = this;
         labelCoords.forEach(function(label) {
-            const g = new PIXI.Text(label.value, {
+            const labelText = roundToFivePlaces(label.value);
+            const g = new PIXI.Text(labelText, {
                 fontFamily: 'Arial',
                 fontSize: 12,
                 fill: 0x000000,
                 align: 'center'
             });
 
-            g.position.x = 30;
+            g.position.x = 20;
             g.position.y = label._y + me.yAxisTopMargin - 8;
 
             app.stage.addChild(g);

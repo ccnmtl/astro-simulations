@@ -17,6 +17,10 @@ const roundToOnePlace = function(n) {
     return Math.round(n * 10) / 10;
 }
 
+const roundToFivePlaces = function(n) {
+    return Math.round(n * 100000) / 100000;
+}
+
 /**
  * Convert unit from rJupiter to kilometers.
  *
@@ -90,7 +94,7 @@ const formatNumber = function(num, digits) {
     const L = Math.floor(Math.log(num)/Math.LN10) - (digits - 1);
     if (L >= 0) {
         const M = Math.pow(10, L);
-        return String(M*Math.round(num/M));
+        return String(M * Math.round(num/M));
     } else {
         return num.toFixed(Math.min(-L, 100));
     }
@@ -141,6 +145,7 @@ export {
     forceNumber,
     degToRad,
     roundToOnePlace,
+    roundToFivePlaces,
     rJupToKm, rSunToKm,
     kmToPx,
     getDist,

@@ -81,7 +81,9 @@ export default class Plot extends React.Component {
         };
 
         return (
-            <svg width={props.width} height={props.height}>
+            <svg
+                className="lightcurve-plot"
+                width={props.width} height={props.height}>
                 <DataCircles
                     data={this.props.noiseData}
                     {...scales} />
