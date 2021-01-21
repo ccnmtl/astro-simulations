@@ -18,6 +18,7 @@ export default class Electron extends React.Component {
         this.circle = select(this.ref.current)
             .attr("transform", `translate(40, 0)`)
             .append("circle")
+            .attr('class', 'electron')
             .attr("cx", 0)
             .attr("cy", 150)
             .attr("r", 7)
