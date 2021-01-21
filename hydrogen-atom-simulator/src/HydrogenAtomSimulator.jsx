@@ -282,17 +282,18 @@ export default class HydrogenAtomSimulator extends React.Component {
             absorbed: false,
         };
 
+        let newEventLog = this.state.eventLog;
         if (!(newEnergyLevel === this.state.currentEnergyLevel)) {
-            this.state.eventLog.push(newEvent);
+            newEventLog = this.state.eventLog.slice();
+            newEventLog.push(newEvent);
         }
 
         this.setState({
             photon: photonS,
             currentEnergyLevel: newEnergyLevel,
-            eventLog: this.state.eventLog,
+            eventLog: newEventLog,
             deexcitationEvent: this.state.currentEnergyLevel !== 7,
-        },
-            this.stopPhotonEmission.bind(this));
+        }, this.stopPhotonEmission.bind(this));
 
         this.timer.started = false;
         clearInterval(this.timer.id);
@@ -376,12 +377,13 @@ export default class HydrogenAtomSimulator extends React.Component {
             absorbed: !photonState.passThrough,
         };
 
-        this.state.eventLog.push(newEvent);
+        const newEventLog = this.state.eventLog.slice();
+        newEventLog.push(newEvent);
 
         this.setState({
             photon: photonState,
             currentEnergyLevel: newEnergyLevel,
-            eventLog: this.state.eventLog
+            eventLog: newEventLog
         });
     }
 
