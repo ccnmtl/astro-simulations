@@ -35,6 +35,14 @@ export default class HRDiagram extends React.Component {
         this.dotRadius = 3.5;
     }
 
+    constrainXValue(x) {
+        return Math.min(360, Math.max(62, x));
+    }
+
+    constrainYValue(y) {
+        return Math.min(202, Math.max(5, y));
+    }
+
     componentDidMount() {
         this.app = new PIXI.Application({
             width: 383,
@@ -232,13 +240,13 @@ export default class HRDiagram extends React.Component {
 
         const pos = e.data.getLocalPosition(this.app.stage);
         if (this.state.isDraggingDot1) {
-            this.dot1.position.x = pos.x;
-            this.dot1.position.y = pos.y;
+            this.dot1.position.x = this.constrainXValue(pos.x);
+            this.dot1.position.y = this.constrainYValue(pos.y);
             this.props.onDotMove(1, this.findT(pos.x), this.findL(pos.y));
         }
         if (this.state.isDraggingDot2) {
-            this.dot2.position.x = pos.x;
-            this.dot2.position.y = pos.y;
+            this.dot2.position.x = this.constrainXValue(pos.x);
+            this.dot2.position.y = this.constrainYValue(pos.y);
             this.props.onDotMove(2, this.findT(pos.x), this.findL(pos.y));
         }
     }
