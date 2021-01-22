@@ -18,10 +18,10 @@ const renderTickMarks = () => {
             y2: data.bottom,
             stroke: "white",
             key: index
-        }
+        };
 
         return <line {...lineProperties} />;
-    }
+    };
 }
 
 const renderTickTexts = () => {
