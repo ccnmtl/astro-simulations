@@ -92,4 +92,4 @@ const getWavelengthHex = (wv) => {
     return "#" + decimalToHex(R) + decimalToHex(G) + decimalToHex(B);
 };
 
-export { getWavelengthHex, getWavelengthRGB };
+export { wavelengthToColor, getWavelengthHex, getWavelengthRGB };
