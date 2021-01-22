@@ -2,13 +2,12 @@ import React from "react";
 
 export default (props) => {
     return (
-        <button type="box"
-                className="sliderButtons"
+        <button type="button"
+                className="sliderButtons btn btn-sm"
                 id={props.id}
-                onClick={props.changeSliderValue}
-        >
+                onClick={props.changeSliderValue}>
             {props.symbol}
         </button>
-    )
+    );
 }
 

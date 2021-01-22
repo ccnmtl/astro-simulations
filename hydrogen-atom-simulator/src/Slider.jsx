@@ -87,7 +87,9 @@ export default class Slider extends React.Component {
                 <Button
                     symbol={"Pα"}
                     id={"Pa"}
-                    changeSliderValue={() => { this.changeSlider(0.66)}}
+                    changeSliderValue={() => {
+                        this.changeSlider(0.66);
+                    }}
                 />
 
 

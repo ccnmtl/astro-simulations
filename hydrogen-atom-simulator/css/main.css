@@ -107,10 +107,8 @@
 
 .Controls {
     width: 900px;
-    height: 400px;
     border: 1px solid black;
     position: relative;
-    /*fill: darkslategray;*/
 }
 
 .EventLog {
@@ -141,9 +139,7 @@
 }
 
 .FirePhotonButton {
-    margin-left: 410px;
-    /*margin-left: 45%;*/
-    position: relative;
+    margin: 0 auto;
 }
 
 .PhotonSpectrum {
@@ -234,7 +230,8 @@
 }
 
 #ionizedText {
-    font: 10px serif;
+    font-size: 14px;
+    font-weight: bold;
     fill: lime;
 }
 

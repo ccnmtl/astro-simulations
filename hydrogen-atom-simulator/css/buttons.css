@@ -16,18 +16,18 @@ button, input[type="button"], input[type="submit"] {
 .sliderButtons {
     /*background-color: royalblue;*/
     position: relative;
-    /*top: 5px;*/
+    /*top: 0;*/
     /*margin-left: 5px;*/
 }
 
 #Pa {
-    top: 5px;
+    top: 0;
     left: 85px;
     background-color: #630000;
     color: white;
 }
 #Py {
-    top: 5px;
+    top: 0;
     left: 69px;
     background-color: #630000;
     color: white;
@@ -55,7 +55,7 @@ button, input[type="button"], input[type="submit"] {
 }
 
 #Hb {
-    top: 5px;
+    top: 0;
     left: 43px;
     /*background-color: #00ffc0;*/
     background-color: #00efff;
@@ -63,35 +63,35 @@ button, input[type="button"], input[type="submit"] {
 }
 
 #Hd {
-    top: 5px;
+    top: 0;
     left: 58px;
     background-color: #7900e7;
     color: white;
 }
 
 #La {
-    top: 5px;
+    top: 0;
     left: 380px;
     background-color: #630063;
     color: white;
 }
 
 #Lb {
-    top: 5px;
+    top: 0;
     left: 450px;
     background-color: #630063;
     color: white;
 }
 
 #Ly {
-    top: 5px;
+    top: 0;
     left: 455px;
     background-color: #630063;
     color: white;
 }
 
 #Le {
-    top: 5px;
+    top: 0;
     left: 470px;
     background-color: #630063;
     color: white;

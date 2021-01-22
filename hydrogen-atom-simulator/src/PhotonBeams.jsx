@@ -117,8 +117,9 @@ export default class PhotonBeams extends React.Component {
 
             y = HEIGHT/2 + amplitude * Math.sin((x)/frequency);
             this.ctx.beginPath();
-            this.ctx.lineWidth = 2;
-            this.ctx.strokeStyle = rgb.substring(0, rgb.length - 1) + `,${transparency})`;
+            this.ctx.lineWidth = 4;
+            this.ctx.strokeStyle = rgb.substring(0, rgb.length - 1) +
+                `,${transparency})`;
             this.ctx.moveTo(prevX, prevY);
             this.ctx.lineTo(x, y);
 

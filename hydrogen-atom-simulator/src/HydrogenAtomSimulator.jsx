@@ -8,8 +8,9 @@ import {tickMarkEnergyValues, tickMarkFrequencyValues, tickMarkWavelengthValues}
 import Slider from "./Slider";
 import EnergyLevelDiagram from "./EnergyLevelDiagram";
 import EventLog from "./EventLog";
-import { getWavelengthRGB } from "./utils/WavelengthToHex";
+import { wavelengthToColor } from "./utils/WavelengthToHex";
 import ManualDeexcitation from "./ManualDeexcitation";
+import Color from 'color';
 
 const WIDTH = 950;
 const HEIGHT = 300;
@@ -36,7 +37,7 @@ export default class HydrogenAtomSimulator extends React.Component {
                 wavelength: 495E-9,
                 energyValue: 2.5,
                 passThrough: true,
-                color: "rgb(0,255,192)"
+                color: 'rgb(0, 255, 192)'
             }
         };
 
@@ -53,6 +54,13 @@ export default class HydrogenAtomSimulator extends React.Component {
     }
 
     render() {
+        let photonButtonTextColor = 'black';
+
+        const photonColor = Color(this.state.photon.color);
+        if (photonColor.isDark()) {
+            photonButtonTextColor = 'white';
+        }
+
         return (
             <React.Fragment>
                 <NavigationBar
@@ -143,19 +151,22 @@ export default class HydrogenAtomSimulator extends React.Component {
                                 firePhoton={this.firePhoton.bind(this)}
                             />
 
-                        <div className={"FirePhotonButton"}>
-                            <button type="button"
-                                    className="fireButton btn btn-secondary"
-                                    style={{backgroundColor: this.state.photon.color}}
-                                    onClick={this.firePhoton.bind(this)}>
-                                {"Fire Photon "}
-                            </button>
-                        </div>
-
                         <p id={"frequencyLabel"}><i>Frequency</i></p>
                         <p id={"wavelengthLabel"}><i>Wavelength</i></p>
                         <p id={"energyLabel"}><i>Energy</i></p>
 
+
+                        <div className="FirePhotonButton text-center mb-1">
+                            <button type="button"
+                                    className="fireButton btn btn-secondary"
+                                    style={{
+                                        backgroundColor: this.state.photon.color,
+                                        color: photonButtonTextColor
+                                    }}
+                                    onClick={this.firePhoton.bind(this)}>
+                                {"Fire Photon "}
+                            </button>
+                        </div>
 
                         <div className="clearfix"></div>
                     </div>
@@ -266,7 +277,9 @@ export default class HydrogenAtomSimulator extends React.Component {
             - this.energyLevelValues[newEnergyLevel - 1];
 
         let photonWavelength = ((PLANCK_CONSTANT * LIGHT_SPEED) / photonEnergy) / COULOMB_CHARGE;
-        let photonColorRGB = getWavelengthRGB(photonWavelength * 1e9);
+        let photonColorRGB = Color(
+            wavelengthToColor(photonWavelength * 1e9)
+        ).rgb().string();
 
         let photonEvent = this.state.currentEnergyLevel === 7 ? "" : "emitted";
         let electronEvent = this.state.currentEnergyLevel === 7 ? "recombination" : "deexcitation";
