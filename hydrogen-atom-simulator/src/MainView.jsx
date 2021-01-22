@@ -77,9 +77,9 @@ export default class MainView extends React.Component {
                     electronIsBeingDragged={this.props.electronIsBeingDragged}
                 />
 
-                <text x={WIDTH - 52.5} y={30} id={"largePlusSign"}>{this.plusSign}</text>
-                <text x={WIDTH - 60} y={50} id={"ionizedText"}>{this.topText}</text>
-                <text x={WIDTH - 60} y={65} id={"ionizedText"}>{this.bottomText}</text>
+                <text x={WIDTH - 65} y={30} id={"largePlusSign"}>{this.plusSign}</text>
+                <text x={WIDTH - 80} y={50} id={"ionizedText"}>{this.topText}</text>
+                <text x={WIDTH - 80} y={65} id={"ionizedText"}>{this.bottomText}</text>
             </g>
         );
     }
