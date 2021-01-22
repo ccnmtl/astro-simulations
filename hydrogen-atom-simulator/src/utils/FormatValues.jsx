@@ -1,9 +1,14 @@
 const formatFrequency = (freq) => {
     let frequency = Number.parseFloat(freq).toExponential();
     let value = frequency.toString();
+
     value = Number.parseFloat(value.substr(value.length - 2, 2));
-    frequency = Math.round(frequency / Math.pow(10, value - 1)) * Math.pow(10, value - 1);
-    return frequency.toString().substr(0,1) + "." + frequency.toString().substr(1,1) + " x 1e" + value + " Hz";
+
+    frequency = Math.round(frequency / Math.pow(10, value - 1)) *
+        Math.pow(10, value - 1);
+
+    return frequency.toString().substr(0, 1) + "." +
+        frequency.toString().substr(1, 1) + "e" + value + " Hz";
 }
 
 const formatWavelength = (wavelength) => {

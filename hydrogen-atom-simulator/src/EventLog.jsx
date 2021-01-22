@@ -58,7 +58,7 @@ export default class EventLog extends React.Component {
                 : "M0 0 L 40 0 M 0 0 L 7.5 3.5 M 0 0 L 7.5 -3.5";
 
             arrowPath = {
-                stroke: "white",
+                stroke: "black",
                 d: d
             };
         }

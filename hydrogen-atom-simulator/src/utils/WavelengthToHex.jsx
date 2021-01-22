@@ -59,7 +59,12 @@ const wavelengthToColor = function(wavelength) {
     let B = (blue  > 0 ? 255*Math.pow(blue  * factor, gamma) : 0);
 
     let color = Color([R, G, B]);
+
     color = color.lighten(0.8);
+    if (color.isLight()) {
+        color = color.darken(0.4);
+    }
+
     return color.rgb().array();
 };
 
@@ -92,4 +97,4 @@ const getWavelengthHex = (wv) => {
     return "#" + decimalToHex(R) + decimalToHex(G) + decimalToHex(B);
 };
 
-export { getWavelengthHex, getWavelengthRGB };
+export { wavelengthToColor, getWavelengthHex, getWavelengthRGB };
