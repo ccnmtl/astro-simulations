@@ -12,6 +12,7 @@ const renderOrbitalRadii = () => {
             cy: HEIGHT / 2,
             r: data.r,
             stroke: data.stroke,
+            strokeWidth: 1.5,
             fill: "none",
             key: index
         };
