@@ -66,7 +66,7 @@ export default class PhotonBeams extends React.Component {
         if (this.props.photon.fired && !this.isPlaying) {
             this.startAnimation();
             this.isPlaying = true;
-        } else if (prevProps.deexcitation !== this.props.deexcitation && this.props.deexcitation) {
+        } else if (this.props.deexcitation) {
             this.startAnimation(prevProps);
         } else {
             this.isPlaying = false;
@@ -75,18 +75,23 @@ export default class PhotonBeams extends React.Component {
     }
 
     startAnimation(prevProps) {
-
         if (this.props.photon.fired) {
             this.initX = WIDTH;
             this.ctx.setTransform(1,0,0,1,0,0);
             this.raf = requestAnimationFrame(this.animatePhotonFire.bind(this));
         } else if (this.props.deexcitation) {
-            if (prevProps.currentEnergyLevel !== this.props.currentEnergyLevel && prevProps.currentEnergyLevel !== 7) {
+            if (
+                prevProps.currentEnergyLevel !== this.props.currentEnergyLevel
+                    && prevProps.currentEnergyLevel !== 7
+            ) {
                 this.initX = 150;
-                let translation = getTranslationMatrix(prevProps.currentEnergyLevel, this.props.currentEnergyLevel);
+                let translation = getTranslationMatrix(
+                    prevProps.currentEnergyLevel,
+                    this.props.currentEnergyLevel);
 
-                this.emissionEnergy = energyLevelValues[prevProps.currentEnergyLevel - 1]
-                    - energyLevelValues[this.props.currentEnergyLevel - 1];
+                this.emissionEnergy = energyLevelValues[
+                    prevProps.currentEnergyLevel - 1] - energyLevelValues[
+                        this.props.currentEnergyLevel - 1];
 
                 this.translateX = MIN_X_TRANSLATION + translation;
                 this.translateY = MIN_Y_TRANSLATION + translation;
