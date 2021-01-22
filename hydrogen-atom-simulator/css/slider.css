@@ -72,5 +72,5 @@ input::-moz-focus-outer {
     display:inline;
     word-wrap: break-word;
     position: relative;
-    bottom: 15px;
+    bottom: 6px;
 }

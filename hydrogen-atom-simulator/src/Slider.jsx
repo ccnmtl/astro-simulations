@@ -77,7 +77,7 @@ export default class Slider extends React.Component {
                         max={15.00}
                         step={0.01}
                         style={{background: this.bg}}
-                        className={"range-slider__range"}
+                        className="range-slider__range form-control-range mb-3"
                         id={"slider"}
                         value={this.props.photon.energyValue}
                         onChange={this.onPhotonValueChange.bind(this)}
