@@ -143,11 +143,9 @@
 }
 
 .PhotonSpectrum {
-    /*position: relative;*/
-    /*bottom: 20px;*/
     margin-right: 20px;
     margin-left: 20px;
-    margin-bottom: 20px;
+    margin-bottom: 18px;
     width: 860px;
     height: 60px;
     border: 1px solid #ccc;
@@ -156,22 +154,17 @@
 
 .spectrumLabels {
     position: relative;
-    /*bottom: 100px;*/
 }
 
 #frequencyLabel {
     position: absolute;
     bottom: 84.0%;
     left: 89.5%;
-    /*position: relative;*/
-    /*float: right;*/
-    /*bottom: 357px;*/
-    /*left: 10px;*/
 }
 
 #wavelengthLabel {
     position: absolute;
-    bottom: 63.5%;
+    bottom: 64.5%;
     left: 88.5%;
     /*position: relative;*/
     /*float: right;*/
@@ -181,7 +174,7 @@
 
 #energyLabel {
     position: absolute;
-    bottom: 43.75%;
+    bottom: 44.75%;
     left: 92%;
     /*position: relative;*/
     /*float: right;*/
