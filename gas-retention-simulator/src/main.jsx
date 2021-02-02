@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import * as PIXI from 'pixi.js';
 import {RangeStepInput} from 'react-range-step-input';
+import Chamber from './Chamber';
 import MaxwellPlot from './MaxwellPlot';
 import {gases} from './gases';
 import {
@@ -72,6 +73,8 @@ class GasRetentionSimulator extends React.Component {
             <div className="row mt-2">
                 <div className="col-6">
                     <h6>Chamber</h6>
+                    <Chamber activeGases={this.state.activeGases} />
+
                     <h6>Chamber Properties</h6>
 
                     <div className="form-inline">
