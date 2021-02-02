@@ -73,9 +73,28 @@ class EclipsingBinarySimulator extends React.Component {
             eccentricityMin: 0,
             eccentricityMax: 0.6
         };
+
+        this.inputs = [
+            'longitude',
+            'inclination',
+            'phase',
+            'star1Mass',
+            'star1Radius',
+            'star1Temp',
+            'star2Mass',
+            'star2Radius',
+            'star2Temp',
+            'separation',
+            'eccentricity'
+        ];
+
+        this.initialState = this.initializeNumberInputs(
+            this.initialState, this.inputs);
+
         this.state = this.initialState;
 
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleInputBlur = this.handleInputBlur.bind(this);
         this.onWindowOpen = this.onWindowOpen.bind(this);
         this.onWindowClose = this.onWindowClose.bind(this);
         this.onPhaseUpdate = this.onPhaseUpdate.bind(this);
@@ -115,6 +134,18 @@ class EclipsingBinarySimulator extends React.Component {
         this.RminMS = 0;
         this.RmaxMS = 100;
         this.MminMS = 0;
+    }
+    /**
+     * Set up initial input field state.
+     */
+    initializeNumberInputs(state, inputs) {
+        let newState = state;
+
+        inputs.forEach(function(name) {
+            newState[new String(name) + 'Field'] = state[new String(name)];
+        });
+
+        return newState;
     }
     render() {
         let startBtnText = 'Start Animation';
@@ -179,9 +210,10 @@ class EclipsingBinarySimulator extends React.Component {
                                     type="number"
                                     className="form-control form-control-sm"
                                     name="longitude"
-                                    value={this.state.longitude}
+                                    value={this.state.longitudeField}
                                     onFocus={this.handleFocus}
                                     onChange={this.handleInputChange}
+                                    onBlur={this.handleInputBlur}
                                     min={0} max={360}
                                     step={0.1} />&deg;
 
@@ -204,9 +236,10 @@ class EclipsingBinarySimulator extends React.Component {
                                     type="number"
                                     className="form-control form-control-sm"
                                     name="inclination"
-                                    value={this.state.inclination}
+                                    value={this.state.inclinationField}
                                     onFocus={this.handleFocus}
                                     onChange={this.handleInputChange}
+                                    onBlur={this.handleInputBlur}
                                     min={0} max={90} step={0.01} />&deg;
 
                                 <RangeStepInput
@@ -394,9 +427,10 @@ class EclipsingBinarySimulator extends React.Component {
                                     type="number"
                                     className="form-control form-control-sm"
                                     name="star1Mass"
-                                    value={this.state.star1Mass}
+                                    value={this.state.star1MassField}
                                     onFocus={this.handleFocus}
                                     onChange={this.handleInputChange}
+                                    onBlur={this.handleInputBlur}
                                     min={this.state.star1MassMin}
                                     max={this.state.star1MassMax}
                                     step={0.1} />
@@ -422,9 +456,10 @@ class EclipsingBinarySimulator extends React.Component {
                                     type="number"
                                     className="form-control form-control-sm"
                                     name="star1Radius"
-                                    value={this.state.star1Radius}
+                                    value={this.state.star1RadiusField}
                                     onFocus={this.handleFocus}
                                     onChange={this.handleInputChange}
+                                    onBlur={this.handleInputBlur}
                                     min={this.state.star1RadiusMin}
                                     max={this.state.star1RadiusMax}
                                     step={0.1} />
@@ -459,9 +494,10 @@ class EclipsingBinarySimulator extends React.Component {
                                     type="number"
                                     className="form-control form-control-sm"
                                     name="star1Temp"
-                                    value={this.state.star1Temp}
+                                    value={this.state.star1TempField}
                                     onFocus={this.handleFocus}
                                     onChange={this.handleInputChange}
+                                    onBlur={this.handleInputBlur}
                                     min={this.state.star1TempMin}
                                     max={this.state.star1TempMax}
                                     step={1} />
@@ -500,9 +536,10 @@ class EclipsingBinarySimulator extends React.Component {
                                     type="number"
                                     className="form-control form-control-sm"
                                     name="star2Mass"
-                                    value={this.state.star2Mass}
+                                    value={this.state.star2MassField}
                                     onFocus={this.handleFocus}
                                     onChange={this.handleInputChange}
+                                    onBlur={this.handleInputBlur}
                                     min={this.state.star2MassMin}
                                     max={this.state.star2MassMax}
                                     step={0.1} />
@@ -528,9 +565,10 @@ class EclipsingBinarySimulator extends React.Component {
                                     type="number"
                                     className="form-control form-control-sm"
                                     name="star2Radius"
-                                    value={this.state.star2Radius}
+                                    value={this.state.star2RadiusField}
                                     onFocus={this.handleFocus}
                                     onChange={this.handleInputChange}
+                                    onBlur={this.handleInputBlur}
                                     min={this.state.star2RadiusMin}
                                     max={this.state.star2RadiusMax}
                                     step={0.1} />
@@ -565,9 +603,10 @@ class EclipsingBinarySimulator extends React.Component {
                                     type="number"
                                     className="form-control form-control-sm"
                                     name="star2Temp"
-                                    value={this.state.star2Temp}
+                                    value={this.state.star2TempField}
                                     onFocus={this.handleFocus}
                                     onChange={this.handleInputChange}
+                                    onBlur={this.handleInputBlur}
                                     min={this.state.star2TempMin}
                                     max={this.state.star2TempMax}
                                     step={1} />
@@ -606,9 +645,10 @@ class EclipsingBinarySimulator extends React.Component {
                                     type="number"
                                     className="form-control form-control-sm"
                                     name="separation"
-                                    value={this.state.separation}
+                                    value={this.state.separationField}
                                     onFocus={this.handleFocus}
                                     onChange={this.handleInputChange}
+                                    onBlur={this.handleInputBlur}
                                     min={this.state.separationMin}
                                     max={this.state.separationMax}
                                     step={0.01} />
@@ -643,9 +683,10 @@ class EclipsingBinarySimulator extends React.Component {
                                     type="number"
                                     className="form-control form-control-sm"
                                     name="eccentricity"
-                                    value={this.state.eccentricity}
+                                    value={this.state.eccentricityField}
                                     onFocus={this.handleFocus}
                                     onChange={this.handleInputChange}
+                                    onBlur={this.handleInputBlur}
                                     min={this.state.eccentricityMin}
                                     max={this.state.eccentricityMax}
                                     step={0.01} />
@@ -683,6 +724,16 @@ class EclipsingBinarySimulator extends React.Component {
         });
     }
     componentDidUpdate(prevProps, prevState) {
+        const me = this;
+        this.inputs.forEach(function(name) {
+            if (prevState[new String(name)] !== me.state[new String(name)]) {
+                // Update the number field
+                me.setState({
+                    [new String(name) + 'Field']: me.state[new String(name)]
+                });
+            }
+        });
+
         if (
             prevState.inclination !== this.state.inclination ||
             prevState.longitude !== this.state.longitude ||
@@ -927,20 +978,23 @@ class EclipsingBinarySimulator extends React.Component {
         } else if (target.type === 'range' || target.type === 'number') {
             value = forceNumber(value);
 
-            // Constrain the new value if this input has a min and
-            // max.
-            if (
-                target.min || typeof target.min === 'number' &&
-                    target.max || typeof target.max === 'number'
-            ) {
+            if (name === 'phase') {
                 value = Math.max(value, target.min);
                 value = Math.min(value, target.max);
             }
         }
 
-        this.setState({
-            [name]: value
-        });
+        // Free-form text fields (i.e. number fields) set state on blur,
+        // not on change.
+        if (target.type === 'number' && name !== 'phase') {
+            this.setState({
+                [name + 'Field']: value
+            });
+        } else {
+            this.setState({
+                [name]: value
+            });
+        }
 
         if (name === 'phase') {
             this.setState({
@@ -951,6 +1005,26 @@ class EclipsingBinarySimulator extends React.Component {
                 visualPhase: this.getVisualPhase(this.state.phase)
             });
         }
+    }
+    handleInputBlur(event) {
+        const target = event.target;
+        const name = target.name;
+        const value = forceNumber(target.value);
+        const min = forceNumber(target.min);
+        const max = forceNumber(target.max);
+
+        // Don't update the state if the user is out of bounds.
+        if (value < min || value > max) {
+            // In fact, revert the input to its internal value.
+            this.setState({
+                [new String(name) + 'Field']: this.state[new String(name)]
+            });
+            return;
+        }
+
+        this.setState({
+            [name]: value
+        });
     }
     handleFocus(e) {
         e.target.select();
