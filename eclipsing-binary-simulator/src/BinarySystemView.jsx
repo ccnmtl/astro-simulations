@@ -66,6 +66,8 @@ export default class BinarySystemView extends React.Component {
         this.period = roundToTwoPlaces(0.115496 * Math.sqrt(
             Math.pow(this.props.separation, 3) / (
                 this.props.star1Mass + this.props.star2Mass)));
+
+        this.el = React.createRef();
     }
     onLongitudeChange() {
         //this._theta = degToRad(this.props.longitude * 0.017453292519943295);
@@ -534,7 +536,7 @@ export default class BinarySystemView extends React.Component {
     render() {
         return (
             <div id="BinarySystemView"
-                 ref={(thisDiv) => {this.el = thisDiv}} />
+                 ref={this.el} />
         );
     }
 
@@ -552,7 +554,9 @@ export default class BinarySystemView extends React.Component {
 
         this.app.stage.sortableChildren = true;
 
-        this.el.appendChild(this.app.view);
+        if (this.el && this.el.current) {
+            this.el.appendChild(this.app.view);
+        }
 
         this.drawText(this.app);
 
