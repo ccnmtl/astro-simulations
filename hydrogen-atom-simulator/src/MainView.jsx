@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Electron from './Electron';
 
 const WIDTH = 950;
-const HEIGHT = 300;
+const HEIGHT = 280;
 
 const renderOrbitalRadii = () => {
     return (data, index) => {

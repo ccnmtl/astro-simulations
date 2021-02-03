@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const WIDTH = 250;
-const HEIGHT = 300;
+const HEIGHT = 280;
 
 export default class EventLog extends React.Component {
     constructor(props) {

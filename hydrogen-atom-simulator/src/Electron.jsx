@@ -2,6 +2,8 @@ import React from 'react';
 import { select, drag, event} from 'd3/dist/d3';
 import PropTypes from 'prop-types';
 
+const HEIGHT = 280;
+
 export default class Electron extends React.Component {
     constructor(props) {
         super(props);
@@ -20,7 +22,7 @@ export default class Electron extends React.Component {
             .append("circle")
             .attr('class', 'electron')
             .attr("cx", 0)
-            .attr("cy", 150)
+            .attr("cy", HEIGHT / 2)
             .attr("r", 7)
             .attr("fill", "green");
 
@@ -102,7 +104,7 @@ export default class Electron extends React.Component {
 
     ionizeElectron() {
         const width = 950;
-        const height = 300;
+        const height = 280;
 
         let x = Math.random() * width;
         let y = Math.random() * height;
