@@ -10,7 +10,7 @@
 .MainView {
     position: relative;
     width: 950px;
-    height: 300px;
+    height: 280px;
     /*border: 1px solid sienna;*/
 }
 
@@ -27,7 +27,7 @@
     top: 0;
     left: 0;
     /*border: 1px solid white;*/
-    background-color: black;    
+    background-color: black;
     z-index: 0;
 }
 
@@ -145,9 +145,9 @@
 .PhotonSpectrum {
     margin-right: 20px;
     margin-left: 20px;
-    margin-bottom: 18px;
+    margin-bottom: 14px;
     width: 860px;
-    height: 60px;
+    height: 54px;
     border: 1px solid #ccc;
     position: relative;
 }
@@ -156,30 +156,11 @@
     position: relative;
 }
 
-#frequencyLabel {
+#frequencyLabel, #wavelengthLabel, #energyLabel {
     position: absolute;
-    bottom: 84.0%;
-    left: 89.5%;
-}
-
-#wavelengthLabel {
-    position: absolute;
-    bottom: 64.5%;
-    left: 88.5%;
-    /*position: relative;*/
-    /*float: right;*/
-    /*bottom: 274px;*/
-    /*left: 85px;*/
-}
-
-#energyLabel {
-    position: absolute;
-    bottom: 44.75%;
-    left: 92%;
-    /*position: relative;*/
-    /*float: right;*/
-    /*bottom: 192px;*/
-    /*left: 170px;*/
+    right: 0;
+    font-size: 12px;
+    bottom: 68%;
 }
 
 #pauseSwitchText {
@@ -207,7 +188,7 @@
 
 .TitleText {
     text-align: center;
-    font-size: 20px;
+    font-size: 16px;
     position: relative;
     top: 5px;
 }

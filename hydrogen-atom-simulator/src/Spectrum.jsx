@@ -3,7 +3,7 @@ import { scaleLinear } from 'd3/dist/d3';
 import PropTypes from 'prop-types';
 
 const WIDTH = 860;
-const HEIGHT = 60;
+const HEIGHT = 54;
 
 const scale = scaleLinear()
         .domain([0, 15])
@@ -29,14 +29,14 @@ const renderTickTexts = () => {
         const textProperties = {
             className: "tickMarkTexts",
             x: data.x - data.shift,
-            y: data.top + 15,
+            y: data.top + 10,
             fontSize: `12px`,
             key: index
-        }
+        };
 
         return <text {...textProperties}>{data.text}</text>;
-    }
-}
+    };
+};
 
 export default class Spectrum extends React.Component {
     constructor(props) {

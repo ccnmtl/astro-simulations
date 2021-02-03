@@ -13,7 +13,7 @@ import ManualDeexcitation from "./ManualDeexcitation";
 import Color from 'color';
 
 const WIDTH = 950;
-const HEIGHT = 300;
+const HEIGHT = 280;
 
 const PLANCK_CONSTANT = 6.62607004e-34;
 const COULOMB_CHARGE = 1.602176634e-19;
@@ -113,6 +113,9 @@ export default class HydrogenAtomSimulator extends React.Component {
                         <p className={"TitleText"}>Photon Selection</p>
 
                         <div className={"PhotonSpectrum"}>
+                            <p id="frequencyLabel">
+                                <em>Frequency</em>
+                            </p>
                             <Spectrum
                                 energyValue={this.state.photon.energyValue}
                                 value={formatFrequency(this.state.photon.frequency)}
@@ -122,6 +125,9 @@ export default class HydrogenAtomSimulator extends React.Component {
                         </div>
 
                         <div className={"PhotonSpectrum"}>
+                            <p id="wavelengthLabel">
+                                <em>Wavelength</em>
+                            </p>
                             <Spectrum
                                 energyValue={this.state.photon.energyValue}
                                 value={formatWavelength(this.state.photon.wavelength)}
@@ -131,6 +137,9 @@ export default class HydrogenAtomSimulator extends React.Component {
                         </div>
 
                         <div className={"PhotonSpectrum"}>
+                            <p id="energyLabel">
+                                <em>Energy</em>
+                            </p>
                             <Spectrum
                                 energyValue={this.state.photon.energyValue}
                                 value={formatEnergy(this.state.photon.energyValue)}
@@ -150,11 +159,6 @@ export default class HydrogenAtomSimulator extends React.Component {
                                 changePhoton={this.changePhoton.bind(this)}
                                 firePhoton={this.firePhoton.bind(this)}
                             />
-
-                        <p id={"frequencyLabel"}><i>Frequency</i></p>
-                        <p id={"wavelengthLabel"}><i>Wavelength</i></p>
-                        <p id={"energyLabel"}><i>Energy</i></p>
-
 
                         <div className="FirePhotonButton text-center mb-1">
                             <button type="button"

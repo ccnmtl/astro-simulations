@@ -4,7 +4,7 @@ import { scaleLog } from 'd3/dist/d3';
 import PropTypes from 'prop-types';
 
 const WIDTH = 950;
-const HEIGHT = 300;
+const HEIGHT = 280;
 
 const MIN_X_TRANSLATION = -200;
 const MIN_Y_TRANSLATION = -310;
@@ -84,7 +84,7 @@ export default class PhotonBeams extends React.Component {
                 prevProps.currentEnergyLevel !== this.props.currentEnergyLevel
                     && prevProps.currentEnergyLevel !== 7
             ) {
-                this.initX = 150;
+                this.initX = HEIGHT / 2;
                 let translation = getTranslationMatrix(
                     prevProps.currentEnergyLevel,
                     this.props.currentEnergyLevel);
