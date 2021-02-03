@@ -42,22 +42,27 @@ export default class ManualDeexcitation extends React.Component {
 
     render() {
         return (
-            <div style={{visibility: !this.props.automaticDeExcitation ? "" : "hidden",
-                marginLeft: this.props.currentEnergyLevel > 1 ? "8px" : "50px"}}>
-                <button type="box"
-                        className="dropButton"
-                    onClick={this.dropToNewLevel.bind(this)}
-                >
-                    {"Drop to: "}
-                </button>
+            <form className="ml-2 mr-2 mb-2">
+                <div className="input-group">
+                    <div className="input-group-prepend">
+                        <button
+                            type="button"
+                            className="dropButton btn btn-sm btn-secondary"
+                            disabled={this.props.automaticDeExcitation}
+                            onClick={this.dropToNewLevel.bind(this)}>
+                            {"Drop to: "}
+                        </button>
+                    </div>
 
-                <select
-                    id="level-select"
-                    onChange={this.changeCurrentSelection.bind(this)}
-                >
+                    <select
+                        id="level-select"
+                        disabled={this.props.automaticDeExcitation}
+                        className="custom-select custom-select-sm"
+                        onChange={this.changeCurrentSelection.bind(this)}>
 
-                </select>
-            </div>
+                    </select>
+                </div>
+            </form>
         );
     }
 }
