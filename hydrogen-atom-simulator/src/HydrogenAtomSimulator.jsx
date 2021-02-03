@@ -154,11 +154,11 @@ export default class HydrogenAtomSimulator extends React.Component {
                             <p id={"ultravioletLabel"}>Ultraviolet</p>
                         </div>
 
-                            <Slider
-                                photon={this.state.photon}
-                                changePhoton={this.changePhoton.bind(this)}
-                                firePhoton={this.firePhoton.bind(this)}
-                            />
+                        <Slider
+                            photon={this.state.photon}
+                            changePhoton={this.changePhoton.bind(this)}
+                            firePhoton={this.firePhoton.bind(this)}
+                        />
 
                         <div className="FirePhotonButton text-center mb-1">
                             <button type="button"
@@ -175,48 +175,57 @@ export default class HydrogenAtomSimulator extends React.Component {
                         <div className="clearfix"></div>
                     </div>
 
-                    <div className="EventLog">
-                        <p className={"TitleText"}>Event Log</p>
-                        <div className={"LogContainer"}>
-                            <EventLog
-                                eventLog={this.state.eventLog}
-                            />
+                    <div className="RightColumn">
 
-                            {/*<button> Click to scroll </button>*/}
+                        <div className="EventLog">
+                            <p className={"TitleText"}>Event Log</p>
+                            <div className={"LogContainer"}>
+                                <EventLog
+                                    eventLog={this.state.eventLog}
+                                />
+
+                                {/*<button> Click to scroll </button>*/}
+                            </div>
+
+
+                            <form>
+                                <button
+                                    type="button"
+                                    className="clearLogButton btn btn-secondary btn-sm mt-2 d-block mx-auto"
+                                    onClick={this.clearLog.bind(this)}>
+                                    Clear Log
+                                </button>
+                            </form>
                         </div>
 
+                        <div className="ManualExcitations">
+                            <div id="pauseSwitchText">
+                                Manual De-excitation
 
-                        <form>
-                            <button
-                                type="button"
-                                className="clearLogButton btn btn-secondary btn-sm mt-2 d-block mx-auto"
-                                onClick={this.clearLog.bind(this)}>
-                                Clear Log
-                            </button>
-                        </form>
-                    </div>
-                </div>
+                                <span className="pauseSwitch">
+                                    <label className="switch">
+                                        <input
+                                            type="checkbox"
+                                            onChange={this.changePauseDeExcitation.bind(this)}
+                                            checked={!this.state.automaticDeExcitation}
+                                        />
+                                        <span className="slider round"/>
+                                    </label>
+                                </span>
+                            </div>
 
-                <div className="ManualExcitations">
-                    <p id={"pauseSwitchText"}>automatic de-excitation</p>
-                    <div className={"pauseSwitch"}>
-                        <label className="switch">
-                            <input
-                                type="checkbox"
-                                onChange={this.changePauseDeExcitation.bind(this)}
-                                checked={this.state.automaticDeExcitation}
+                            <ManualDeexcitation
+                                currentEnergyLevel={this.state.currentEnergyLevel}
+                                automaticDeExcitation={this.state.automaticDeExcitation}
+                                manuallyEmit={this.manuallyEmit.bind(this)}
                             />
-                            <span className="slider round"/>
-                        </label>
+                        </div>
+
                     </div>
 
-                    <ManualDeexcitation
-                        currentEnergyLevel={this.state.currentEnergyLevel}
-                        automaticDeExcitation={this.state.automaticDeExcitation}
-                        manuallyEmit={this.manuallyEmit.bind(this)}
-                    />
-
                 </div>
+
+
             </React.Fragment>
         );
     }

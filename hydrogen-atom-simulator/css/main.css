@@ -54,29 +54,13 @@
     display: flex;
     margin-top: 10px;
     position: relative;
-    /*height: 400px;*/
 }
 
 .ManualExcitations {
     position: relative;
     bottom: 5px;
     border: 1px solid black;
-    margin-left: 370px;
     margin-top: 10px;
-    width: 180px;
-    height: 90px;
-}
-
-.dropButton {
-    background-color: lavender;
-    border-radius: 10px;
-}
-
-#level-select {
-    font-size: 12px;
-    border-radius: 10px;
-    padding: 1px 5px;
-    background-color: aliceblue;
 }
 
 .dropBox {
@@ -111,20 +95,23 @@
     position: relative;
 }
 
-.EventLog {
+.RightColumn {
     flex-grow: 1;
-    height: 400px;
     margin-left: 10px;
+    height: 370px;
+    width: 288px;
+}
+
+.EventLog {
+    height: 310px;
     border: 1px solid black;
-    /*fill: ;*/
 }
 
 .LogContainer {
-    /*height: 400px;*/
     margin-right: 16px;
     margin-left: 16px;
     width: 250px;
-    height: 300px;
+    height: 220px;
     border: 1px solid #ccc;
     overflow-y: auto;
     overflow-x: hidden;
@@ -166,8 +153,8 @@
 #pauseSwitchText {
     position: relative;
     margin-top: 5px;
-    margin-left: 18px;
-    font-size: 14px;
+    margin-left: 8px;
+    font-size: 12px;
 }
 
 .SliderContainer {
@@ -179,11 +166,7 @@
 
 .pauseSwitch {
     position: relative;
-    margin-top: -12.5px;
-    margin-left: 75px;
-    /*float: right;*/
-    /*bottom: 5px;*/
-    /*right: 30px;*/
+    margin-left: 4px;
 }
 
 .TitleText {
