@@ -21,14 +21,15 @@ export default class Chamber extends React.Component {
     drawParticles(activeGases=[]) {
         const container = new PIXI.Container();
 
+        const me = this;
         activeGases.forEach(function(gas) {
             for (let i = 0; i < 50; i++) {
                 let p = new PIXI.Graphics();
                 p.lineStyle(0);
                 p.beginFill(gas.color, 1);
                 p.drawCircle(
-                    Math.random() * this.size,
-                    Math.random() * this.size,
+                    Math.random() * me.size,
+                    Math.random() * me.size,
                     gas.particleSize);
                 p.endFill();
                 container.addChild(p);
