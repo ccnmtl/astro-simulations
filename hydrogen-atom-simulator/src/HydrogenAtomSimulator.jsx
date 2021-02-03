@@ -74,6 +74,7 @@ export default class HydrogenAtomSimulator extends React.Component {
                             <svg width={WIDTH} height={HEIGHT}>
                                 <MainView
                                     fired={this.state.photon.fired}
+                                    photonEnergyValue={this.state.photon.energyValue}
                                     emitted={this.state.photon.emitted}
                                     currentEnergyLevel={this.state.currentEnergyLevel}
                                     moveElectron={this.state.moveElectron}
