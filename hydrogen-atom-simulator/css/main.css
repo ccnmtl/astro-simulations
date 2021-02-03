@@ -150,13 +150,6 @@
     bottom: 68%;
 }
 
-#pauseSwitchText {
-    position: relative;
-    margin-top: 5px;
-    margin-left: 8px;
-    font-size: 12px;
-}
-
 .SliderContainer {
     margin-left: 20px;
     width: 860px;

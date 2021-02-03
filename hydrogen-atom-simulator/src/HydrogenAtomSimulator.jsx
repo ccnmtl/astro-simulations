@@ -199,20 +199,20 @@ export default class HydrogenAtomSimulator extends React.Component {
                         </div>
 
                         <div className="ManualExcitations">
-                            <div id="pauseSwitchText">
+                            <label className="ml-1 mt-1">
                                 Manual De-excitation
 
-                                <span className="pauseSwitch">
-                                    <label className="switch">
+                                <span className="pauseSwitch ml-2">
+                                    <span className="switch">
                                         <input
                                             type="checkbox"
                                             onChange={this.changePauseDeExcitation.bind(this)}
                                             checked={!this.state.automaticDeExcitation}
                                         />
                                         <span className="slider round"/>
-                                    </label>
+                                    </span>
                                 </span>
-                            </div>
+                            </label>
 
                             <ManualDeexcitation
                                 currentEnergyLevel={this.state.currentEnergyLevel}
