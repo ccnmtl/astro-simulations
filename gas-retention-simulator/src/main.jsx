@@ -32,7 +32,9 @@ class GasRetentionSimulator extends React.Component {
             escapeSpeed: 1500,
 
             showPlotCursor: false,
-            showDistInfo: true
+            showDistInfo: true,
+
+            isPlaying: false
         };
         this.state = this.initialState;
 
@@ -50,8 +52,15 @@ class GasRetentionSimulator extends React.Component {
         this.onGasBarMove = this.onGasBarMove.bind(this);
 
         this.handleInputChange = this.handleInputChange.bind(this);
+
+        this.onStartClick = this.onStartClick.bind(this);
     }
     render() {
+        let startBtnText = 'Start Simulation';
+        if (this.state.isPlaying) {
+            startBtnText = 'Pause Simulation';
+        }
+
         return <React.Fragment>
             <nav className="navbar navbar-expand-md navbar-light bg-light d-flex justify-content-between">
                 <span className="navbar-brand mb-0 h1">Gas Retention Simulator</span>
@@ -73,7 +82,8 @@ class GasRetentionSimulator extends React.Component {
             <div className="row mt-2">
                 <div className="col-6">
                     <h6>Chamber</h6>
-                    <Chamber activeGases={this.state.activeGases} />
+                    <Chamber activeGases={this.state.activeGases}
+                             isPlaying={this.state.isPlaying} />
 
                     <h6>Chamber Properties</h6>
 
@@ -152,7 +162,11 @@ class GasRetentionSimulator extends React.Component {
                         </div>
                     </div>
 
-                    <button className="mt-2">Start simulation</button>
+                    <button
+                        className="mt-1 btn btn-sm btn-secondary"
+                        onClick={this.onStartClick}>
+                        {startBtnText}
+                    </button>
 
                 </div>
 
@@ -211,7 +225,7 @@ class GasRetentionSimulator extends React.Component {
                                          <option value={-1}>(limit reached)</option>
                                      </select>}
 
-                                    <button className="ml-3" onClick={this.onRemoveGas}>
+                                    <button className="ml-3 btn btn-sm btn-secondary" onClick={this.onRemoveGas}>
                                         Remove selected gas
                                     </button>
                                 </div>
@@ -223,7 +237,9 @@ class GasRetentionSimulator extends React.Component {
                                 </tbody>
                             </table>
 
-                            <button>Reset proportions</button>
+                            <button className="btn btn-sm btn-secondary">
+                                Reset proportions
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -480,6 +496,14 @@ class GasRetentionSimulator extends React.Component {
         newProportions[parseInt(idx)] = Math.min(
             100, Math.max(0, this.dragStartPos + diffPercent));
         this.setState({gasProportions: newProportions});
+    }
+
+    onStartClick() {
+        if (!this.state.isPlaying) {
+            this.setState({isPlaying: true});
+        } else {
+            this.setState({isPlaying: false});
+        }
     }
 
     handleInputChange(event) {

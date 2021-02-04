@@ -7,9 +7,13 @@ export default class Chamber extends React.Component {
     constructor(props) {
         super(props);
 
-        this.size = 400;
+        this.size = 800;
 
         this.el = React.createRef();
+
+        this.particles = null;
+
+        this.animate = this.animate.bind(this);
     }
 
     render() {
@@ -32,11 +36,20 @@ export default class Chamber extends React.Component {
                     Math.random() * me.size,
                     gas.particleSize);
                 p.endFill();
+
+                p.direction = Math.random() * Math.PI * 2;
+
                 container.addChild(p);
             }
         });
 
         return container;
+    }
+
+    refreshScene() {
+        this.app.stage.removeChild(this.particles);
+        this.particles = this.drawParticles(this.props.activeGases);
+        this.app.stage.addChild(this.particles);
     }
 
     componentDidMount() {
@@ -47,11 +60,7 @@ export default class Chamber extends React.Component {
             backgroundColor: 0xffffff,
             backgroundAlpha: 0,
 
-            antialias: true,
-
-            // as far as I know the ticker isn't necessary at the
-            // moment.
-            sharedTicker: true
+            antialias: true
         });
 
         if (this.el && this.el.current) {
@@ -59,14 +68,45 @@ export default class Chamber extends React.Component {
         }
     }
 
+    /**
+     * Pass this function to the pixi ticker to animate the particles.
+     */
+    animate(delta) {
+        const me = this;
+        this.particles.children.forEach(function(p) {
+            // Collision with wall
+            // TODO
+            if (p.x < 0 || p.x > me.size) {
+                p.direction += Math.PI;
+                p.direction %= (2 * Math.PI);
+            }
+
+            if (p.y < 0 || p.y < me.size) {
+                p.direction += Math.PI;
+                p.direction %= (2 * Math.PI);
+            }
+
+            p.position.x += Math.sin(p.direction) * delta;
+            p.position.y += Math.cos(p.direction) * delta;
+        });
+    }
+
     componentDidUpdate(prevProps) {
         if (prevProps.activeGases !== this.props.activeGases) {
-            const particles = this.drawParticles(this.props.activeGases);
-            this.app.stage.addChild(particles);
+            this.refreshScene();
+        }
+
+        if (prevProps.isPlaying !== this.props.isPlaying) {
+            if (this.props.isPlaying) {
+                this.app.ticker.add(this.animate);
+            } else {
+                this.app.ticker.remove(this.animate);
+            }
         }
     }
 }
 
 Chamber.propTypes = {
-    activeGases: PropTypes.array.isRequired
+    activeGases: PropTypes.array.isRequired,
+    isPlaying: PropTypes.bool.isRequired
 };
