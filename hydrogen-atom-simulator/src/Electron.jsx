@@ -4,6 +4,11 @@ import PropTypes from 'prop-types';
 
 const HEIGHT = 280;
 
+const MIN_DURATION = 500;
+const MAX_DURATION = 2000;
+const SLOW_ENERGY_VAL = 13.6;
+const FAST_ENERGY_VAL = 15;
+
 export default class Electron extends React.Component {
     constructor(props) {
         super(props);
@@ -73,8 +78,9 @@ export default class Electron extends React.Component {
         let x;
         let y;
 
-        // If the energy level is 7, that means that the electron is ionized and needs to
-        // be moved to a random location off screen. Or else, simply move it to its correct energy level
+        // If the energy level is 7, that means that the electron is
+        // ionized and needs to be moved to a random location off
+        // screen. Or else, simply move it to its correct energy level
         if (this.props.currentEnergyLevel === 7) {
             let randomPosition = this.ionizeElectron();
             x = randomPosition.xPos;
@@ -85,7 +91,23 @@ export default class Electron extends React.Component {
         }
 
         // select(node).transition().attr('transform', `translate(${x}, ${y})`).duration(500).on("end", this.sendToRandomLoc.bind(this));
-        select(node).transition().attr('transform', `translate(${x}, ${y})`).duration(500);
+
+        let duration = MIN_DURATION;
+        if (
+            this.props.photonEnergyValue >= SLOW_ENERGY_VAL
+                && this.props.photonEnergyValue <= FAST_ENERGY_VAL
+        ) {
+            const percent = (
+                this.props.photonEnergyValue -
+                    SLOW_ENERGY_VAL
+            ) / (FAST_ENERGY_VAL - SLOW_ENERGY_VAL);
+
+            duration = percent * (MIN_DURATION - MAX_DURATION) +
+                MAX_DURATION;
+        }
+
+        select(node).transition().attr('transform', `translate(${x}, ${y})`)
+            .duration(duration);
 
         this.props.changeElectronState(false);
 
@@ -99,7 +121,6 @@ export default class Electron extends React.Component {
             let y = randomPosition.yPos;
             select(node).attr('transform', `translate(${x}, ${y})`);
         }
-
     }
 
     ionizeElectron() {
@@ -140,13 +161,14 @@ export default class Electron extends React.Component {
     render() {
         return (
             <g ref={this.ref} />
-        )
+        );
     }
 }
 
 Electron.propTypes = {
     currentEnergyLevel: PropTypes.number.isRequired,
     startDeExcitation: PropTypes.func.isRequired,
+    photonEnergyValue: PropTypes.number.isRequired,
     emitted: PropTypes.bool.isRequired,
     electronIsBeingDragged: PropTypes.bool.isRequired,
     moveElectron: PropTypes.bool.isRequired,

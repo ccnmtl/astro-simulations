@@ -71,6 +71,7 @@ export default class MainView extends React.Component {
                 <Electron
                     moveElectron={this.props.moveElectron}
                     emitted={this.props.emitted}
+                    photonEnergyValue={this.props.photonEnergyValue}
                     currentEnergyLevel={this.props.currentEnergyLevel}
                     updateEnergyLevel={this.props.updateEnergyLevel}
                     startDeExcitation={this.props.startDeExcitation}
@@ -87,9 +88,11 @@ export default class MainView extends React.Component {
 }
 
 MainView.propTypes = {
+    fired: PropTypes.bool,
+    emitted: PropTypes.bool.isRequired,
+    photonEnergyValue: PropTypes.number.isRequired,
     currentEnergyLevel: PropTypes.number.isRequired,
     startDeExcitation: PropTypes.func.isRequired,
-    emitted: PropTypes.bool.isRequired,
     electronIsBeingDragged: PropTypes.bool.isRequired,
     moveElectron: PropTypes.bool.isRequired,
     changeElectronState: PropTypes.func.isRequired,
