@@ -1,6 +1,7 @@
 import React from 'react';
 import { getWavelengthHex, getWavelengthRGB } from "./utils/WavelengthToHex";
 import Button from "./utils/Button";
+import {RangeStepInput} from 'react-range-step-input';
 import PropTypes from 'prop-types';
 
 const PLANCK_CONSTANT = 6.62607004e-34;
@@ -27,7 +28,7 @@ export default class Slider extends React.Component {
             });
 
             return energyValue;
-        }
+        };
 
         let newEnergyValue = getSnappedOnEnergyValues(Number.parseFloat(e.target.value));
         let photonFrequency = (newEnergyValue / PLANCK_CONSTANT) * COULOMB_CHARGE;
@@ -47,10 +48,10 @@ export default class Slider extends React.Component {
     }
 
     styling(energy, color) {
-        const settings={
+        const settings = {
             fill: color,
             background: '#d7dcdf'
-        }
+        };
 
         const percentage = 100 * (energy - 0.03) / (15 - 0.03);
         this.bg = `linear-gradient(90deg, ${settings.fill} ${percentage}%, ${settings.background} ${percentage+0.1}%)`;
@@ -61,7 +62,7 @@ export default class Slider extends React.Component {
             target: {
                 value: 0
             }
-        }
+        };
 
         value.target.value = e;
         this.onPhotonValueChange(value, true);
@@ -71,7 +72,7 @@ export default class Slider extends React.Component {
         return (
             <React.Fragment>
                 <div className={"range-slider"}>
-                    <input
+                    <RangeStepInput
                         type="range"
                         min={0.03}
                         max={15.00}
@@ -160,7 +161,7 @@ export default class Slider extends React.Component {
                 />
             </React.Fragment>
 
-        )
+        );
     }
 }
 
