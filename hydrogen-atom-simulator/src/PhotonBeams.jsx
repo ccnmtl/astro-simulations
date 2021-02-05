@@ -9,14 +9,19 @@ const HEIGHT = 280;
 const MIN_X_TRANSLATION = -200;
 const MIN_Y_TRANSLATION = -310;
 
-const energyLevelValues = [-13.598, -3.400, -1.511, -0.850, -0.544, -0.378];
+const energyLevelValues = [
+    -13.598, -3.400, -1.511, -0.850,
+    -0.544, -0.378, -0.378
+];
 
 const PLANCK_CONSTANT = 6.62607004e-34;
 const COULOMB_CHARGE = 1.602176634e-19;
 const LIGHT_SPEED = 299792458;
 
 const getTranslationMatrix = (prev, curr) => {
-    const energyToPixelMappings = [40, -10, -100, -220, -360, -550];
+    const energyToPixelMappings = [
+        40, -10, -100, -220, -360, -550, -550
+    ];
     let prevEnergyPixel = energyToPixelMappings[prev - 1];
     let currEnergyPixel = energyToPixelMappings[curr - 1];
     return (prevEnergyPixel + currEnergyPixel) / 2;
@@ -51,7 +56,10 @@ export default class PhotonBeams extends React.Component {
 
         this.animatePhotonFire = this.animatePhotonFire.bind(this);
         this.animatePhotonEmission = this.animatePhotonEmission.bind(this);
-        this.startAnimation = this.startAnimation.bind(this);
+        this.startFirePhotonAnimation =
+            this.startFirePhotonAnimation.bind(this);
+        this.startPhotonEmissionAnimation =
+            this.startPhotonEmissionAnimation.bind(this);
         this.stopAnimation = this.stopAnimation.bind(this);
     }
 
@@ -64,43 +72,43 @@ export default class PhotonBeams extends React.Component {
         this.energyLevel = prevProps.currentEnergyLevel;
 
         if (this.props.photon.fired && !this.isPlaying) {
-            this.startAnimation();
+            this.startFirePhotonAnimation();
             this.isPlaying = true;
         } else if (this.props.deexcitation) {
-            this.startAnimation(prevProps);
+            this.startPhotonEmissionAnimation(prevProps);
         } else {
             this.isPlaying = false;
             this.stopAnimation();
         }
     }
 
-    startAnimation(prevProps) {
-        if (this.props.photon.fired) {
-            this.initX = WIDTH;
+    startFirePhotonAnimation() {
+        this.initX = WIDTH;
+        this.ctx.setTransform(1,0,0,1,0,0);
+        this.raf = requestAnimationFrame(this.animatePhotonFire.bind(this));
+    }
+
+    startPhotonEmissionAnimation(prevProps) {
+        if (
+            prevProps.currentEnergyLevel !== this.props.currentEnergyLevel &&
+                this.props.currentEnergyLevel !== 7
+        ) {
+            this.initX = HEIGHT / 2;
+            let translation = getTranslationMatrix(
+                prevProps.currentEnergyLevel,
+                this.props.currentEnergyLevel);
+
+            this.emissionEnergy = energyLevelValues[
+                prevProps.currentEnergyLevel - 1] - energyLevelValues[
+                    this.props.currentEnergyLevel - 1];
+
+            this.translateX = MIN_X_TRANSLATION + translation;
+            this.translateY = MIN_Y_TRANSLATION + translation;
+
             this.ctx.setTransform(1,0,0,1,0,0);
-            this.raf = requestAnimationFrame(this.animatePhotonFire.bind(this));
-        } else if (this.props.deexcitation) {
-            if (
-                prevProps.currentEnergyLevel !== this.props.currentEnergyLevel
-                    && prevProps.currentEnergyLevel !== 7
-            ) {
-                this.initX = HEIGHT / 2;
-                let translation = getTranslationMatrix(
-                    prevProps.currentEnergyLevel,
-                    this.props.currentEnergyLevel);
-
-                this.emissionEnergy = energyLevelValues[
-                    prevProps.currentEnergyLevel - 1] - energyLevelValues[
-                        this.props.currentEnergyLevel - 1];
-
-                this.translateX = MIN_X_TRANSLATION + translation;
-                this.translateY = MIN_Y_TRANSLATION + translation;
-
-                this.ctx.setTransform(1,0,0,1,0,0);
-                this.ctx.rotate(3 * Math.PI / 4);
-                this.ctx.translate(this.translateX, this.translateY);
-                this.raf = requestAnimationFrame(this.animatePhotonEmission.bind(this));
-            }
+            this.ctx.rotate(3 * Math.PI / 4);
+            this.ctx.translate(this.translateX, this.translateY);
+            this.raf = requestAnimationFrame(this.animatePhotonEmission.bind(this));
         }
     }
 
@@ -198,9 +206,10 @@ export default class PhotonBeams extends React.Component {
     render() {
         return(
             <div>
-                <canvas ref={this.canvasRef} width={WIDTH} height={HEIGHT} />
+                <canvas ref={this.canvasRef}
+                        width={WIDTH} height={HEIGHT} />
             </div>
-        )
+        );
     }
 }
 
