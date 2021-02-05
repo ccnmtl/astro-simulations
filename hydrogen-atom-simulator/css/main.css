@@ -208,19 +208,11 @@
     box-shadow: 0 5px 15px rgba(255, 193, 8, .4);
 }
 
-#previousEnergyText {
-    font: 14px serif;
-}
-
-#newEnergyText {
-    font: 14px serif;
-}
-
-#leftTextEventLog {
-    font: 14px serif;
-}
-
-#rightTextEventLog {
+#previousEnergyText,
+#newEnergyText,
+#leftTextEventLog,
+#rightTextEventLog,
+#rightBottomTextEventLog {
     font: 14px serif;
 }
 

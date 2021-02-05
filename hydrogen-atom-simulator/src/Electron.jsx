@@ -90,8 +90,6 @@ export default class Electron extends React.Component {
             y = 0;
         }
 
-        // select(node).transition().attr('transform', `translate(${x}, ${y})`).duration(500).on("end", this.sendToRandomLoc.bind(this));
-
         let duration = MIN_DURATION;
         if (
             this.props.photonEnergyValue >= SLOW_ENERGY_VAL

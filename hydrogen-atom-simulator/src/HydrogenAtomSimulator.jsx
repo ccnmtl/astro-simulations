@@ -42,7 +42,12 @@ export default class HydrogenAtomSimulator extends React.Component {
         };
 
         this.state = this.initialState;
-        this.energyLevelValues = [-13.598, -3.400, -1.511, -0.850, -0.544, -0.378];
+        this.energyLevelValues = [
+            -13.598, -3.400, -1.511, -0.850, -0.544, -0.378
+        ];
+        this.displayEnergyLevelValues = [
+            13.6, 3.4, 1.5, 0.9, 0.5, 0.4, 0.35
+        ];
 
         this.timer = {
             id: null,
@@ -287,15 +292,22 @@ export default class HydrogenAtomSimulator extends React.Component {
         photonS.emitted = true;
         let newEnergyLevel = Math.floor(Math.random() * (this.state.currentEnergyLevel - 1)) + 1;
         if (desiredEnergyLevel) newEnergyLevel = desiredEnergyLevel;
-        let photonEnergy = this.energyLevelValues[this.state.currentEnergyLevel - 1]
-            - this.energyLevelValues[newEnergyLevel - 1];
+        let photonEnergy = this.energyLevelValues[
+            this.state.currentEnergyLevel - 1
+        ] - this.energyLevelValues[newEnergyLevel - 1];
+
+        if (this.state.currentEnergyLevel === 7) {
+            photonEnergy = this.displayEnergyLevelValues[
+                newEnergyLevel - 1
+            ];
+        }
 
         let photonWavelength = ((PLANCK_CONSTANT * LIGHT_SPEED) / photonEnergy) / COULOMB_CHARGE;
         let photonColorRGB = Color(
             wavelengthToColor(photonWavelength * 1e9)
         ).rgb().string();
 
-        let photonEvent = this.state.currentEnergyLevel === 7 ? "" : "emitted";
+        let photonEvent = "emitted";
         let electronEvent = this.state.currentEnergyLevel === 7 ? "recombination" : "deexcitation";
 
         let newEvent = {
@@ -319,7 +331,7 @@ export default class HydrogenAtomSimulator extends React.Component {
             photon: photonS,
             currentEnergyLevel: newEnergyLevel,
             eventLog: newEventLog,
-            deexcitationEvent: this.state.currentEnergyLevel !== 7,
+            deexcitationEvent: true,
         }, this.stopPhotonEmission.bind(this));
 
         this.timer.started = false;

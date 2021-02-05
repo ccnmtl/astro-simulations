@@ -64,7 +64,12 @@ export default class EventLog extends React.Component {
         }
 
         let rightHandText = "";
-        if (!Number.isNaN(data.photonEnergy)) rightHandText = `${data.photonEnergy.toFixed(2)} eV photon`;
+        if (!Number.isNaN(data.photonEnergy)) {
+            rightHandText = `${data.photonEnergy.toFixed(2)} eV photon`;
+            if (data.electronEvent === 'recombination') {
+                rightHandText = '>' + rightHandText;
+            }
+        }
 
         const leftTextProps = {
             x: leftTextMargin,
@@ -81,7 +86,7 @@ export default class EventLog extends React.Component {
         const rightBottomTextProps = {
             x: rightTextMargin + 20,
             y: pixelHeight + 12.5,
-            id: "rightTextEventLog",
+            id: "rightBottomTextEventLog",
         };
 
         // const numEventText = {
