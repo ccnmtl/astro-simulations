@@ -555,7 +555,7 @@ export default class BinarySystemView extends React.Component {
         this.app.stage.sortableChildren = true;
 
         if (this.el && this.el.current) {
-            this.el.appendChild(this.app.view);
+            this.el.current.appendChild(this.app.view);
         }
 
         this.drawText(this.app);
