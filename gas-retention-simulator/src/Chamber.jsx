@@ -1,19 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import * as PIXI from 'pixi.js';
+import Matter from 'matter-js';
 
 
 export default class Chamber extends React.Component {
     constructor(props) {
         super(props);
 
-        this.size = 800;
+        this.width = 1000;
+        this.height = 800;
+        this.margin = 200;
 
         this.el = React.createRef();
 
         this.particles = null;
 
-        this.animate = this.animate.bind(this);
+        //this.animate = this.animate.bind(this);
     }
 
     render() {
@@ -23,73 +25,181 @@ export default class Chamber extends React.Component {
     }
 
     drawParticles(activeGases=[]) {
-        const container = new PIXI.Container();
-
         const me = this;
+        const particles = [];
+
         activeGases.forEach(function(gas) {
             for (let i = 0; i < 50; i++) {
-                let p = new PIXI.Graphics();
-                p.lineStyle(0);
-                p.beginFill(gas.color, 1);
-                p.drawCircle(
-                    Math.random() * me.size,
-                    Math.random() * me.size,
-                    gas.particleSize);
-                p.endFill();
+                const p = Matter.Bodies.circle(
+                    Math.random() * (me.width - (me.margin * 2)) + me.margin,
+                    Math.random() * (me.height - (me.margin * 2)) + me.margin,
+                    gas.particleSize, {
+                        render: {
+                            fillStyle: '#' + gas.color.toString(16),
+                            lineWidth: 3
+                        }
+                    }
+                );
+
+                p.restitution = 1;
+                p.friction = 0;
+                p.frictionAir = 0;
+                p.frictionStatic = 1;
+                p.inertia = Infinity;
 
                 p.direction = Math.random() * Math.PI * 2;
-
-                container.addChild(p);
+                particles.push(p);
             }
         });
 
-        return container;
+        return particles;
     }
 
     refreshScene() {
-        this.app.stage.removeChild(this.particles);
+        if (this.particles) {
+            Matter.World.remove(this.engine.world, this.particles);
+        }
+
         this.particles = this.drawParticles(this.props.activeGases);
-        this.app.stage.addChild(this.particles);
+        Matter.World.add(this.engine.world, this.particles);
+    }
+
+    drawBox() {
+        const Bodies = Matter.Bodies;
+        const margin = this.margin;
+        const wallOptions = {
+            isStatic: true,
+            render: {
+                fillStyle: 'white',
+                strokeStyle: 'black',
+                lineWidth: 4
+            }
+        };
+
+        return [
+            // Bottom wall
+            Bodies.rectangle(
+                // x, y
+                0, this.height - margin,
+                // width, height
+                this.width * 2, margin,
+                wallOptions
+            ),
+            // right wall
+            Bodies.rectangle(
+                // x, y
+                this.width - margin, 0,
+                // width, height
+                margin, this.height * 2,
+                wallOptions
+            ),
+            // top wall
+            Bodies.rectangle(
+                // x, y
+                0, 0,
+                // width, height
+                this.width * 2, margin,
+                wallOptions
+            ),
+            // left wall
+            Bodies.rectangle(
+                // x, y
+                0, 0,
+                // width, height
+                margin, this.height * 2,
+                wallOptions
+            ),
+        ];
     }
 
     componentDidMount() {
-        this.app = new PIXI.Application({
-            width: this.size,
-            height: this.size,
+        const Engine = Matter.Engine,
+              Render = Matter.Render,
+              World = Matter.World;
 
-            backgroundColor: 0xffffff,
-            backgroundAlpha: 0,
+        // create an engine
+        const engine = Engine.create();
+        this.engine = engine;
+        engine.world.gravity.y = 0;
 
-            antialias: true
+        // create a renderer
+        const render = Render.create({
+            element: this.el.current,
+            engine: engine,
+            width: this.width,
+            height: this.height,
+            wireframes: false,
+            wireframeBackground: 0xff0000,
+            background: 0xff0000,
+            options: {
+                wireframes: false,
+                background: 'white',
+            }
         });
 
-        if (this.el && this.el.current) {
-            this.el.current.appendChild(this.app.view);
-        }
-    }
+        const box = this.drawBox();
 
-    /**
-     * Pass this function to the pixi ticker to animate the particles.
-     */
-    animate(delta) {
+        //const particles = this.drawParticles(this.props.activeGases);
+        //this.particles = particles;
+
+        World.add(engine.world, box);
+        //World.add(engine.world, particles);
+
         const me = this;
-        this.particles.children.forEach(function(p) {
-            // Collision with wall
-            // TODO
-            if (p.x < 0 || p.x > me.size) {
-                p.direction += Math.PI;
-                p.direction %= (2 * Math.PI);
-            }
+        Matter.Events.on(engine, 'beforeUpdate', function() {
+            // Apply force
+            //const time = engine.timing.timestamp;
 
-            if (p.y < 0 || p.y < me.size) {
-                p.direction += Math.PI;
-                p.direction %= (2 * Math.PI);
-            }
-
-            p.position.x += Math.sin(p.direction) * delta;
-            p.position.y += Math.cos(p.direction) * delta;
+            me.particles.forEach(function(p) {
+                Matter.Body.applyForce(p, {
+                    x: p.position.x,
+                    y: p.position.y
+                }, {
+                    x: Math.sin(p.direction) * 0.00015,
+                    y: Math.cos(p.direction) * -0.00015
+                });
+            });
         });
+
+        Matter.Events.on(engine, 'collisionActive', function(event) {
+            var pairs = event.pairs;
+
+            for (var i = 0; i < pairs.length; i++) {
+                var pair = pairs[i];
+                if (
+                    pair.bodyA.label === 'Rectangle Body' ||
+                        pair.bodyB.label === 'Rectangle Body'
+                ) {
+                    let particle = pair.bodyB;
+                    if (pair.bodyA.label === 'Circle Body') {
+                        particle = pair.bodyA;
+                    }
+
+                    // Change particle direction when it hits a wall
+                    // TODO: calculate correct bounce angle here, instead
+                    // of just a random angle.
+                    // https://stackoverflow.com/a/573206/173630
+                    particle.direction = Math.random() * Math.PI * 2;
+                }
+            }
+        });
+
+        // run the engine
+        Engine.run(engine);
+
+        /*Render.lookAt(render, {
+            min: { x: 0, y: 0 },
+            max: { x: this.width, y: this.height }
+        });*/
+
+        // run the renderer
+        Render.run(render);
+
+        this.refreshScene();
     }
+
+    /*animate(delta) {
+    }*/
 
     componentDidUpdate(prevProps) {
         if (prevProps.activeGases !== this.props.activeGases) {
@@ -98,9 +208,9 @@ export default class Chamber extends React.Component {
 
         if (prevProps.isPlaying !== this.props.isPlaying) {
             if (this.props.isPlaying) {
-                this.app.ticker.add(this.animate);
+                //this.app.ticker.add(this.animate);
             } else {
-                this.app.ticker.remove(this.animate);
+                //this.app.ticker.remove(this.animate);
             }
         }
     }
