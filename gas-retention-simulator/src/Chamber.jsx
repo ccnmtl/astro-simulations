@@ -24,12 +24,14 @@ export default class Chamber extends React.Component {
         );
     }
 
-    drawParticles(activeGases=[]) {
+    drawParticles(activeGases=[], gasProportions=[]) {
         const me = this;
         const particles = [];
 
-        activeGases.forEach(function(gas) {
-            for (let i = 0; i < 50; i++) {
+        activeGases.forEach(function(gas, idx) {
+            const proportion = gasProportions[idx];
+
+            for (let i = 0; i < Math.round(proportion); i++) {
                 const p = Matter.Bodies.circle(
                     Math.random() * (me.width - (me.margin * 2)) + me.margin,
                     Math.random() * (me.height - (me.margin * 2)) + me.margin,
@@ -60,7 +62,8 @@ export default class Chamber extends React.Component {
             Matter.World.remove(this.engine.world, this.particles);
         }
 
-        this.particles = this.drawParticles(this.props.activeGases);
+        this.particles = this.drawParticles(
+            this.props.activeGases, this.props.gasProportions);
         Matter.World.add(this.engine.world, this.particles);
     }
 
@@ -200,7 +203,10 @@ export default class Chamber extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.activeGases !== this.props.activeGases) {
+        if (
+            prevProps.activeGases !== this.props.activeGases ||
+                prevProps.gasProportions !== this.props.gasProportions
+           ) {
             this.refreshScene();
         }
 
@@ -223,5 +229,6 @@ export default class Chamber extends React.Component {
 
 Chamber.propTypes = {
     activeGases: PropTypes.array.isRequired,
+    gasProportions: PropTypes.array.isRequired,
     isPlaying: PropTypes.bool.isRequired
 };
