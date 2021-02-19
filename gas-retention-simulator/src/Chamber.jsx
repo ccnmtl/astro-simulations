@@ -80,7 +80,7 @@ export default class Chamber extends React.Component {
             // Bottom wall
             Bodies.rectangle(
                 // x, y
-                0, this.height - margin,
+                0, this.height,
                 // width, height
                 this.width * 2, margin,
                 wallOptions
@@ -88,7 +88,7 @@ export default class Chamber extends React.Component {
             // right wall
             Bodies.rectangle(
                 // x, y
-                this.width - margin, 0,
+                this.width, 0,
                 // width, height
                 margin, this.height * 2,
                 wallOptions
@@ -115,6 +115,7 @@ export default class Chamber extends React.Component {
     componentDidMount() {
         const Engine = Matter.Engine,
               Render = Matter.Render,
+              Runner = Matter.Runner,
               World = Matter.World;
 
         // create an engine
@@ -139,11 +140,7 @@ export default class Chamber extends React.Component {
 
         const box = this.drawBox();
 
-        //const particles = this.drawParticles(this.props.activeGases);
-        //this.particles = particles;
-
         World.add(engine.world, box);
-        //World.add(engine.world, particles);
 
         const me = this;
         Matter.Events.on(engine, 'beforeUpdate', function() {
@@ -184,22 +181,23 @@ export default class Chamber extends React.Component {
             }
         });
 
-        // run the engine
-        Engine.run(engine);
-
-        /*Render.lookAt(render, {
+        Render.lookAt(render, {
             min: { x: 0, y: 0 },
             max: { x: this.width, y: this.height }
-        });*/
+        });
 
         // run the renderer
         Render.run(render);
 
+        const runner = Runner.create();
+        this.runner = runner;
+        Runner.run(runner, engine);
+        if (!this.props.isPlaying) {
+            Runner.stop(runner);
+        }
+
         this.refreshScene();
     }
-
-    /*animate(delta) {
-    }*/
 
     componentDidUpdate(prevProps) {
         if (prevProps.activeGases !== this.props.activeGases) {
@@ -207,11 +205,18 @@ export default class Chamber extends React.Component {
         }
 
         if (prevProps.isPlaying !== this.props.isPlaying) {
-            if (this.props.isPlaying) {
-                //this.app.ticker.add(this.animate);
-            } else {
-                //this.app.ticker.remove(this.animate);
-            }
+            this.refreshRunner(
+                this.runner, this.engine, this.props.isPlaying);
+        }
+    }
+
+    refreshRunner(runner, engine, isPlaying) {
+        if (isPlaying) {
+            engine.timing.timeScale = 1;
+            Matter.Runner.start(runner, engine);
+        } else {
+            engine.timing.timeScale = 0;
+            Matter.Runner.stop(runner);
         }
     }
 }
