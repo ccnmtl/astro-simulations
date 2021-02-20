@@ -83,6 +83,7 @@ class GasRetentionSimulator extends React.Component {
                 <div className="col-6">
                     <h6>Chamber</h6>
                     <Chamber activeGases={this.state.activeGases}
+                             gasProportions={this.state.gasProportions}
                              isPlaying={this.state.isPlaying} />
 
                     <h6>Chamber Properties</h6>
