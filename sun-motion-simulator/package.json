@@ -32,7 +32,7 @@
     "react-dom": "~16.14.0",
     "react-range-step-input": "^1.2.1",
     "solar-calculator": "^0.3.0",
-    "three": "~0.125.1"
+    "three": "~0.126.0"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",
