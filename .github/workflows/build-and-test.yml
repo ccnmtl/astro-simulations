@@ -2,10 +2,10 @@ name: build-and-test
 on: [push, workflow_dispatch]
 jobs:
   build:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
-        node-version: [12.x, 14.x]
+        node-version: [14.x, 15.x]
     name: Node ${{ matrix.node }} run
     steps:
       - uses: actions/checkout@v2
