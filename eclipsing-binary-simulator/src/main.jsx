@@ -739,11 +739,9 @@ class EclipsingBinarySimulator extends React.Component {
             prevState.longitude !== this.state.longitude ||
             prevState.showLightcurve !== this.state.showLightcurve ||
 
-            prevState.star1Mass !== this.state.star1Mass ||
             prevState.star1Radius !== this.state.star1Radius ||
             prevState.star1Temp !== this.state.star1Temp ||
 
-            prevState.star2Mass !== this.state.star2Mass ||
             prevState.star2Radius !== this.state.star2Radius ||
             prevState.star2Temp !== this.state.star2Temp ||
 

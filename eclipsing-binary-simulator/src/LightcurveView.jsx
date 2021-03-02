@@ -2,6 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Plot from './d3/Plot';
 
+const PLOT_WIDTH = 380;
+const PLOT_HEIGHT = 255;
+
 export default class LightcurveView extends React.Component {
     constructor(props) {
         super(props);
@@ -10,16 +13,13 @@ export default class LightcurveView extends React.Component {
             curveCoords: []
         };
 
-        this.plotWidth = 380;
-        this.plotHeight = 255;
-
         this.minMagDiff = 0.01;
 
         this.yTopMargin = 17;
         this.yBottomMargin = 20;
         this.xMargin = 1;
 
-        this.totalHeight = this.plotHeight + this.yTopMargin + this.yBottomMargin;
+        this.totalHeight = PLOT_HEIGHT + this.yTopMargin + this.yBottomMargin;
 
         this.solarRadius = 6.96e8;
 
@@ -115,7 +115,7 @@ export default class LightcurveView extends React.Component {
                 this.data.mag.visible = false;
                 if (!noEclipse) {
                     dT = this._visualFluxTable;
-                    yScale = -this.plotHeight / this._maxVisFlux;
+                    yScale = -PLOT_HEIGHT / this._maxVisFlux;
                     yOffset = 0;
                 }
                 break;
@@ -124,8 +124,8 @@ export default class LightcurveView extends React.Component {
                 this.data.mag.visible = true;
                 if (!noEclipse) {
                     dT = this._visualMagnitudeTable;
-                    yScale = this.plotHeight / (this._maxVisMag - this._minVisMag);
-                    yOffset = -this.plotHeight - yScale*this._minVisMag;
+                    yScale = PLOT_HEIGHT / (this._maxVisMag - this._minVisMag);
+                    yOffset = -PLOT_HEIGHT - yScale*this._minVisMag;
                 }
                 this.positionMagTicks();
                 break;
@@ -144,10 +144,10 @@ export default class LightcurveView extends React.Component {
         const coords = [];
 
         if (noEclipse) {
-            coords.push([0, -this.plotHeight]);
-            coords.push([this.plotWidth, -this.plotHeight]);
+            coords.push([0, -PLOT_HEIGHT]);
+            coords.push([PLOT_WIDTH, -PLOT_HEIGHT]);
         } else {
-            let w = this.plotWidth;
+            let w = PLOT_WIDTH;
 
             let si = Math.floor(this._closestIndex);
             let xOffset = -(w / this._numCurvePoints) * (this._closestIndex - si);
@@ -173,7 +173,7 @@ export default class LightcurveView extends React.Component {
         return coords;
     }
     positionClips() {
-        //const x = this._phaseOffset * this.plotWidth;
+        //const x = this._phaseOffset * PLOT_WIDTH;
     }
     generatePositionTable() {
         const cos = Math.cos;
@@ -417,8 +417,8 @@ export default class LightcurveView extends React.Component {
                 phase={this.props.phase}
                 showLightcurve={this.props.showLightcurve}
                 lightcurveDataImg={this.props.lightcurveDataImg}
-                width={this.plotWidth}
-                height={this.plotHeight}
+                width={PLOT_WIDTH}
+                height={PLOT_HEIGHT}
                 onPhaseUpdate={this.props.onPhaseUpdate}
                 paddingLeft={60}
                 padding={20} />
