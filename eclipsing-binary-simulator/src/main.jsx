@@ -974,7 +974,7 @@ class EclipsingBinarySimulator extends React.Component {
         if (target.type === 'radio') {
             value = target.id === (target.name + 'Radio');
         } else if (target.type === 'range' || target.type === 'number') {
-            value = forceNumber(value);
+            value = roundToTwoPlaces(forceNumber(value));
 
             if (name === 'phase') {
                 value = Math.max(value, target.min);
