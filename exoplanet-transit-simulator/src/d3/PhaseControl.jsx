@@ -9,8 +9,8 @@ class PhaseControl extends React.Component {
             this.props.width - (this.props.paddingLeft + 2)
         ) + this.props.paddingLeft + 2;
 
-        return <line x1={xPos} y1={this.props.padding}
-                     x2={xPos} y2={this.props.height - this.props.padding}
+        return <line x1={xPos} y1={0}
+                     x2={xPos} y2={this.props.height}
                      cursor="pointer"
                      className="phase-control"
                      stroke="#ff7070" strokeWidth={3} />;
@@ -34,7 +34,6 @@ PhaseControl.propTypes = {
     xScale: PropTypes.func.isRequired,
     phase: PropTypes.number.isRequired,
     width: PropTypes.number.isRequired,
-    padding: PropTypes.number.isRequired,
     paddingLeft: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,
     onPhaseUpdate: PropTypes.func.isRequired
