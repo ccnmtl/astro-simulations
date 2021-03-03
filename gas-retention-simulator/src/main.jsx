@@ -6,7 +6,8 @@ import Chamber from './Chamber';
 import MaxwellPlot from './MaxwellPlot';
 import {gases} from './gases';
 import {
-    forceNumber, roundToOnePlace, closestByClass, toPaddedHexString
+    forceNumber, roundToOnePlace, closestByClass, toPaddedHexString,
+    getGasPercentage
 } from './utils';
 
 const clearStage = function(app) {
@@ -14,7 +15,9 @@ const clearStage = function(app) {
     for (i = app.stage.children.length - 1; i >= 0; i--) {
         app.stage.removeChild(app.stage.children[parseInt(i)]);
     }
-}
+};
+
+const GAS_BAR_SCENE_HEIGHT = 170;
 
 class GasRetentionSimulator extends React.Component {
     constructor(props) {
@@ -25,7 +28,7 @@ class GasRetentionSimulator extends React.Component {
             selectedActiveGas: null,
             draggingGas: null,
             activeGases: [],
-            gasProportions: [null, null, null],
+            gasProportions: [],
 
             temperature: 300,
             allowEscape: false,
@@ -52,6 +55,8 @@ class GasRetentionSimulator extends React.Component {
         this.onGasBarMove = this.onGasBarMove.bind(this);
 
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleGasProportionChange =
+            this.handleGasProportionChange.bind(this);
 
         this.onStartClick = this.onStartClick.bind(this);
     }
@@ -206,15 +211,93 @@ class GasRetentionSimulator extends React.Component {
 
                     <div className="d-flex">
                         <div className="p-2">
-                            <div className="gas-graph" ref={(el) => {this.el = el}}></div>
+                            <div className="gas-graph" ref={
+                                (el) => {this.el = el;}
+                            }></div>
+
+                            <div className="form-inline">
+
+                                {this.state.gasProportions.length >= 1 && (
+                                    <div className="form-group row">
+                                        <input
+                                            type="number"
+                                            className="form-control form-control-sm"
+                                            name="gasProportion0"
+                                            value={Math.round(this.state.gasProportions[0])}
+                                            onFocus={this.handleFocus}
+                                            onChange={e => this.handleGasProportionChange(e, 0)}
+                                            min={0}
+                                            max={100}
+                                            step={1} />
+
+                                        <RangeStepInput
+                                            className="form-control"
+                                            name="gasProportion0"
+                                            data-gasIndex="0"
+                                            value={this.state.gasProportions[0]}
+                                            onChange={e => this.handleGasProportionChange(e, 0)}
+                                            min={0}
+                                            max={100}
+                                            step={1} />
+                                    </div>
+                                )}
+
+                                {this.state.gasProportions.length >= 2 && (
+                                    <div className="form-group row">
+                                        <input
+                                            type="number"
+                                            className="form-control form-control-sm"
+                                            name="gasProportion0"
+                                            value={Math.round(this.state.gasProportions[1])}
+                                            onFocus={this.handleFocus}
+                                            onChange={e => this.handleGasProportionChange(e, 1)}
+                                            min={0}
+                                            max={100}
+                                            step={1} />
+
+                                        <RangeStepInput
+                                            className="form-control"
+                                            name="gasProportion1"
+                                            value={this.state.gasProportions[1]}
+                                            onChange={e => this.handleGasProportionChange(e, 1)}
+                                            min={0}
+                                            max={100}
+                                            step={1} />
+                                    </div>
+                                )}
+
+                                {this.state.gasProportions.length >= 3 && (
+                                    <div className="form-group row">
+                                        <input
+                                            type="number"
+                                            className="form-control form-control-sm"
+                                            name="gasProportion2"
+                                            value={Math.round(this.state.gasProportions[2])}
+                                            onFocus={this.handleFocus}
+                                            onChange={e => this.handleGasProportionChange(e, 2)}
+                                            min={0}
+                                            max={100}
+                                            step={1} />
+
+                                        <RangeStepInput
+                                            className="form-control"
+                                            name="gasProportion2"
+                                            value={this.state.gasProportions[2]}
+                                            onChange={e => this.handleGasProportionChange(e, 2)}
+                                            min={0}
+                                            max={100}
+                                            step={1} />
+                                    </div>
+                                )}
+                            </div>
                         </div>
 
                         <div className="p-2">
-                            <form className="ml-3 form-inline">
-                                <div className="form-group">
-                                    {this.state.activeGases.length < 3 &&
-                                     <select className="form-control form-control-sm"
-                                             value={this.state.selectedGas}
+                        <form className="ml-3 form-inline">
+                            <div className="form-group">
+                                {this.state.activeGases.length < 3 &&
+                                 <select className="form-control form-control-sm"
+                                         value={this.state.selectedGas}
                                              onChange={this.onAddGas}>
                                          <option value={-1}>Select gas to add</option>
                                          {this.makeGasOptions(gases)}
@@ -252,7 +335,7 @@ class GasRetentionSimulator extends React.Component {
         const app = new PIXI.Application({
             backgroundColor: 0xffffff,
             width: 120,
-            height: 170,
+            height: GAS_BAR_SCENE_HEIGHT,
             sharedLoader: true,
             sharedTicker: true
         });
@@ -280,8 +363,7 @@ class GasRetentionSimulator extends React.Component {
 
     drawGasBar(app, gas, idx) {
         const x = idx * 40;
-        const proportion = (this.state.gasProportions[parseInt(idx)]
-            * this.state.activeGases.length) / 100;
+        const proportion = this.state.gasProportions[parseInt(idx)] / 100;
 
         const g = new PIXI.Graphics();
         g.interactive = true;
@@ -296,8 +378,13 @@ class GasRetentionSimulator extends React.Component {
 
         g.beginFill(gas.color, gasBarOpacity);
 
-        g.drawRect(x, 15 + this.gasBarHeight - (this.gasBarHeight * proportion),
-                   20, this.gasBarHeight);
+        const topMargin = GAS_BAR_SCENE_HEIGHT - this.gasBarHeight;
+
+        g.drawRect(
+            x, topMargin +
+                (this.gasBarHeight - (
+                    this.gasBarHeight * proportion)),
+            20, this.gasBarHeight);
         g.endFill();
 
         if (this.state.activeGases.length === 1) {
@@ -328,16 +415,10 @@ class GasRetentionSimulator extends React.Component {
     drawGasBars(app) {
         clearStage(app);
 
-        let myGas;
-        let i = 0;
-
-        for (myGas in this.state.activeGases) {
-            let gas = this.state.activeGases[new String(myGas)];
-
-            this.drawGasBar(app, gas, i);
-
-            i++;
-        }
+        const me = this;
+        this.state.activeGases.forEach(function(gas, i) {
+            me.drawGasBar(app, gas, i);
+        });
     }
 
     makeGasOptions(gList) {
@@ -356,21 +437,30 @@ class GasRetentionSimulator extends React.Component {
         return options;
     }
     makeGasTable(activeGases) {
-        let gas;
         let table = [];
-        let i = 0;
 
-        for (gas in activeGases) {
-            let g = activeGases[new String(gas)];
+        const me = this;
+        activeGases.forEach(function(g, i) {
+            //let g = activeGases[new String(gas)];
             let cls = 'gas-row ';
 
-            if (this.state.selectedActiveGas === g.id) {
+            if (me.state.selectedActiveGas === g.id) {
                 cls += 'table-active';
+            }
+
+            const gasPercentage = getGasPercentage(
+                me.state.gasProportions, i);
+
+            let gasPercentageDisplay;
+            if (isNaN(gasPercentage) || typeof gasPercentage !== 'number') {
+                gasPercentageDisplay = '--';
+            } else {
+                gasPercentageDisplay = roundToOnePlace(gasPercentage) + '%';
             }
 
             table.push(
                 <tr className={cls} key={i} data-id={g.id}
-                    onClick={this.onGasClick}>
+                    onClick={me.onGasClick}>
                     <td>
                         <svg height="12" width="8">
                             <circle cx="5" cy="5" r="3"
@@ -379,12 +469,10 @@ class GasRetentionSimulator extends React.Component {
                     </td>
                     <td>{g.name} ({g.symbol})</td>
                     <td>{Math.round(g.mass)} u</td>
-                    <td>{roundToOnePlace(this.state.gasProportions[parseInt(i)])}%</td>
+                    <td>{gasPercentageDisplay}</td>
                 </tr>
             );
-
-            i++;
-        }
+        });
         return table;
     }
 
@@ -426,12 +514,13 @@ class GasRetentionSimulator extends React.Component {
         const gases = this.state.activeGases.slice(0);
         gases.push(newGas);
 
-        const proportion = (1 / gases.length) * 100;
+        const gasProportions = this.state.gasProportions.slice(0);
+        gasProportions.push(100);
 
         this.setState({
             selectedGas: -1,
             activeGases: gases,
-            gasProportions: [proportion, proportion, proportion]
+            gasProportions: gasProportions
         });
     }
     onRemoveGas(e) {
@@ -442,16 +531,21 @@ class GasRetentionSimulator extends React.Component {
         }
 
         const me = this;
+
+        const idx = this.state.activeGases.findIndex(function(el) {
+            return el.id !== me.state.selectedActiveGas;
+        });
         const gases = this.state.activeGases.filter(function(el) {
             return el.id !== me.state.selectedActiveGas;
         });
 
-        const proportion = (1 / gases.length) * 100;
+        const gasProportions = this.state.gasProportions.slice(0);
+        gasProportions.splice(idx, 1);
 
         this.setState({
             selectedActiveGas: null,
             activeGases: gases,
-            gasProportions: [proportion, proportion, proportion]
+            gasProportions: gasProportions
         });
     }
     onGasClick(e) {
@@ -474,13 +568,11 @@ class GasRetentionSimulator extends React.Component {
     }
     onGasBarDragStart(e) {
         const activeGasId = forceNumber(e.target.name);
-
-        this.dragStartPos = e.data.getLocalPosition(this.app.stage).y;
-
+        //this.dragStartPos = e.data.getLocalPosition(this.app.stage).y;
         this.setState({draggingGas: activeGasId});
     }
     onGasBarDragEnd() {
-        this.dragStartPos = null;
+        //this.dragStartPos = null;
         this.setState({draggingGas: null});
     }
     onGasBarMove(e) {
@@ -489,13 +581,19 @@ class GasRetentionSimulator extends React.Component {
         }
 
         const pos = e.data.getLocalPosition(this.app.stage);
-        const diffPercent = ((this.dragStartPos - pos.y) / this.gasBarHeight) * 100;
+
+        const topMargin = GAS_BAR_SCENE_HEIGHT - this.gasBarHeight;
+
+        const diffPercent = (
+            (this.gasBarHeight - pos.y + topMargin)
+                / this.gasBarHeight) * 100;
 
         const idx = this.getGasIdxById(this.state.draggingGas);
         const newProportions = this.state.gasProportions.slice();
 
         newProportions[parseInt(idx)] = Math.min(
-            100, Math.max(0, this.dragStartPos + diffPercent));
+            100, Math.max(0, diffPercent));
+
         this.setState({gasProportions: newProportions});
     }
 
@@ -521,6 +619,17 @@ class GasRetentionSimulator extends React.Component {
 
         this.setState({
             [name]: value
+        });
+    }
+
+    handleGasProportionChange(e, idx) {
+        const value = forceNumber(e.target.value);
+        let gasProportions = this.state.gasProportions.splice(0);
+
+        gasProportions[idx] = value;
+
+        this.setState({
+            gasProportions: gasProportions
         });
     }
 }

@@ -59,7 +59,17 @@ const hexToRgb = function(hex, opacity) {
     return 'rgba(' + r + ',' + g + ',' + b + ',' + opacity + ')';
 };
 
+/**
+ * Given an array of gas proportions, return the percentage belonging
+ * to the gas number idx in this array.
+ */
+const getGasPercentage = function(gasProportions, idx) {
+    const sum = gasProportions.reduce((a, b) => a + b, 0);
+    const proportion = gasProportions[idx];
+    return (proportion / sum) * 100;
+};
+
 export {
     forceNumber, roundToOnePlace, closestByClass,
-    toPaddedHexString, hexToRgb
+    toPaddedHexString, hexToRgb, getGasPercentage
 };
