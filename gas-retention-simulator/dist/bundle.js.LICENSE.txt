@@ -5,104 +5,104 @@ object-assign
 */
 
 /*!
- * @pixi/core - v5.3.7
- * Compiled Tue, 29 Dec 2020 19:30:11 UTC
+ * @pixi/core - v5.3.8
+ * Compiled Sat, 20 Feb 2021 22:28:33 UTC
  *
  * @pixi/core is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
  */
 
 /*!
- * @pixi/display - v5.3.7
- * Compiled Tue, 29 Dec 2020 19:30:11 UTC
+ * @pixi/display - v5.3.8
+ * Compiled Sat, 20 Feb 2021 22:28:33 UTC
  *
  * @pixi/display is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
  */
 
 /*!
- * @pixi/extract - v5.3.7
- * Compiled Tue, 29 Dec 2020 19:30:11 UTC
+ * @pixi/extract - v5.3.8
+ * Compiled Sat, 20 Feb 2021 22:28:33 UTC
  *
  * @pixi/extract is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
  */
 
 /*!
- * @pixi/filter-displacement - v5.3.7
- * Compiled Tue, 29 Dec 2020 19:30:11 UTC
+ * @pixi/filter-displacement - v5.3.8
+ * Compiled Sat, 20 Feb 2021 22:28:33 UTC
  *
  * @pixi/filter-displacement is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
  */
 
 /*!
- * @pixi/loaders - v5.3.7
- * Compiled Tue, 29 Dec 2020 19:30:11 UTC
+ * @pixi/loaders - v5.3.8
+ * Compiled Sat, 20 Feb 2021 22:28:33 UTC
  *
  * @pixi/loaders is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
  */
 
 /*!
- * @pixi/math - v5.3.7
- * Compiled Tue, 29 Dec 2020 19:30:11 UTC
+ * @pixi/math - v5.3.8
+ * Compiled Sat, 20 Feb 2021 22:28:33 UTC
  *
  * @pixi/math is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
  */
 
 /*!
- * @pixi/mesh-extras - v5.3.7
- * Compiled Tue, 29 Dec 2020 19:30:11 UTC
+ * @pixi/mesh-extras - v5.3.8
+ * Compiled Sat, 20 Feb 2021 22:28:33 UTC
  *
  * @pixi/mesh-extras is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
  */
 
 /*!
- * @pixi/mixin-get-child-by-name - v5.3.7
- * Compiled Tue, 29 Dec 2020 19:30:11 UTC
+ * @pixi/mixin-get-child-by-name - v5.3.8
+ * Compiled Sat, 20 Feb 2021 22:28:33 UTC
  *
  * @pixi/mixin-get-child-by-name is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
  */
 
 /*!
- * @pixi/mixin-get-global-position - v5.3.7
- * Compiled Tue, 29 Dec 2020 19:30:11 UTC
+ * @pixi/mixin-get-global-position - v5.3.8
+ * Compiled Sat, 20 Feb 2021 22:28:33 UTC
  *
  * @pixi/mixin-get-global-position is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
  */
 
 /*!
- * @pixi/polyfill - v5.3.7
- * Compiled Tue, 29 Dec 2020 19:30:11 UTC
+ * @pixi/polyfill - v5.3.8
+ * Compiled Sat, 20 Feb 2021 22:28:33 UTC
  *
  * @pixi/polyfill is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
  */
 
 /*!
- * @pixi/prepare - v5.3.7
- * Compiled Tue, 29 Dec 2020 19:30:11 UTC
+ * @pixi/prepare - v5.3.8
+ * Compiled Sat, 20 Feb 2021 22:28:33 UTC
  *
  * @pixi/prepare is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
  */
 
 /*!
- * @pixi/ticker - v5.3.7
- * Compiled Tue, 29 Dec 2020 19:30:11 UTC
+ * @pixi/ticker - v5.3.8
+ * Compiled Sat, 20 Feb 2021 22:28:33 UTC
  *
  * @pixi/ticker is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
  */
 
 /*!
- * @pixi/utils - v5.3.7
- * Compiled Tue, 29 Dec 2020 19:30:11 UTC
+ * @pixi/utils - v5.3.8
+ * Compiled Sat, 20 Feb 2021 22:28:33 UTC
  *
  * @pixi/utils is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
@@ -160,9 +160,11 @@ See the Apache Version 2.0 License for specific language governing permissions
 and limitations under the License.
 ***************************************************************************** */
 
+/*! For license information please see index.js.LICENSE.txt */
+
 /*! https://mths.be/punycode v1.3.2 by @mathias */
 
-/** @license React v0.19.1
+/** @license React v0.20.1
  * scheduler.production.min.js
  *
  * Copyright (c) Facebook, Inc. and its affiliates.
@@ -171,7 +173,7 @@ and limitations under the License.
  * LICENSE file in the root directory of this source tree.
  */
 
-/** @license React v16.14.0
+/** @license React v17.0.1
  * react-dom.production.min.js
  *
  * Copyright (c) Facebook, Inc. and its affiliates.
@@ -180,16 +182,7 @@ and limitations under the License.
  * LICENSE file in the root directory of this source tree.
  */
 
-/** @license React v16.14.0
- * react.production.min.js
- *
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-/** @license React v16.6.1
+/** @license React v17.0.1
  * react.production.min.js
  *
  * Copyright (c) Facebook, Inc. and its affiliates.
