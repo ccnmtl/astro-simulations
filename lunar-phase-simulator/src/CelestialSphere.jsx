@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import * as THREE from 'three';
-import 'three/OrbitControls';
+import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js';
 import 'three/CopyShader';  // For FXAAShader
-import 'three/FXAAShader';
-import 'three/EffectComposer';
-import 'three/RenderPass';
-import 'three/ShaderPass';
+import {FXAAShader} from 'three/examples/jsm/shaders/FXAAShader.js';
+import {EffectComposer} from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import {RenderPass} from 'three/examples/jsm/postprocessing/RenderPass.js';
+import {ShaderPass} from 'three/examples/jsm/postprocessing/ShaderPass.js';
 
 // three.js/react integration based on:
 // https://stackoverflow.com/a/46412546/173630
@@ -55,7 +55,7 @@ export default class CelestialSphere extends React.Component {
         );
         camera.position.set(-60, 20, 0);
 
-        const controls = new THREE.OrbitControls(camera, this.mount);
+        const controls = new OrbitControls(camera, this.mount);
         // Configure the controls - we only need some basic
         // drag-rotation behavior.
         controls.enableKeys = false;
@@ -75,9 +75,9 @@ export default class CelestialSphere extends React.Component {
         renderer.setClearColor(0xffffff);
 
         const dpr = window.devicePixelRatio;
-        const composer = new THREE.EffectComposer(renderer);
-        composer.addPass(new THREE.RenderPass(scene, camera));
-        const shaderPass = new THREE.ShaderPass(THREE.FXAAShader);
+        const composer = new EffectComposer(renderer);
+        composer.addPass(new RenderPass(scene, camera));
+        const shaderPass = new ShaderPass(FXAAShader);
         shaderPass.uniforms.resolution.value = new THREE.Vector2(
             1 / (width * 2 * dpr), 1 / (height * 2 * dpr));
         shaderPass.renderToScreen = true;
