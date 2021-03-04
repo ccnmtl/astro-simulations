@@ -35,6 +35,8 @@ export default class MaxwellPlot extends React.Component {
                 showDistInfo={this.props.showDistInfo}
                 activeGases={this.props.activeGases}
                 selectedActiveGas={this.props.selectedActiveGas}
+                allowEscape={this.props.allowEscape}
+                escapeSpeed={this.props.escapeSpeed}
                 width={this.width}
                 height={this.height}
                 paddingLeft={60}
@@ -111,6 +113,8 @@ export default class MaxwellPlot extends React.Component {
 MaxwellPlot.propTypes = {
     activeGases: PropTypes.array.isRequired,
     selectedActiveGas: PropTypes.number,
+    allowEscape: PropTypes.bool.isRequired,
+    escapeSpeed: PropTypes.number.isRequired,
     showCursor: PropTypes.bool.isRequired,
     showDistInfo: PropTypes.bool.isRequired
 };
