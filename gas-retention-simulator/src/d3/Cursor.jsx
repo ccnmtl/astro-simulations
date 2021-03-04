@@ -68,7 +68,7 @@ export default class Cursor extends React.Component {
         const w = this.props.width - this.props.paddingLeft;
 
         let newPos = ((
-            d3.event.x + 20 - this.props.paddingLeft) / w) * this.props.xMax;
+            e.x + 20 - this.props.paddingLeft) / w) * this.props.xMax;
 
         newPos = Math.max(
             this.props.xMin, Math.min(this.props.xMax, newPos));
@@ -76,10 +76,10 @@ export default class Cursor extends React.Component {
         this.setState({xPos: newPos});
     }
     mouseover() {
-        this.setState({isHovering: true})
+        this.setState({isHovering: true});
     }
     mouseout() {
-        this.setState({isHovering: false})
+        this.setState({isHovering: false});
     }
 };
 

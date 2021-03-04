@@ -104,6 +104,31 @@ export default class Plot extends React.Component {
                     height={props.height}
                     padding={props.padding}
                     paddingLeft={props.paddingLeft} />
+
+                {this.props.allowEscape && (
+                    <>
+                        <text
+                            width="45px"
+                            x={scales.xScale(this.props.escapeSpeed)}
+                            y={0}
+                            dy=".8em"
+                            fontSize=".9em"
+                            textAnchor="middle">
+                            escape speed
+                        </text>
+                        <line
+                            x1={scales.xScale(this.props.escapeSpeed)}
+                            y1={this.props.padding}
+
+                            x2={scales.xScale(this.props.escapeSpeed)}
+                            y2={this.props.height - (
+                                this.props.padding * 2)}
+
+                            strokeDasharray="6,6"
+                            stroke="#000000"
+                            strokeWidth={1} />
+                    </>
+                )}
             </svg>
         );
     }
@@ -263,6 +288,8 @@ Plot.propTypes = {
     activeGases: PropTypes.array.isRequired,
     showCursor: PropTypes.bool.isRequired,
     showDistInfo: PropTypes.bool.isRequired,
+    allowEscape: PropTypes.bool.isRequired,
+    escapeSpeed: PropTypes.number.isRequired,
     selectedActiveGas: PropTypes.number,
     width: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,

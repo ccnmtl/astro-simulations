@@ -181,6 +181,8 @@ class GasRetentionSimulator extends React.Component {
                     <MaxwellPlot
                         showCursor={this.state.showPlotCursor}
                         showDistInfo={this.state.showDistInfo}
+                        allowEscape={this.state.allowEscape}
+                        escapeSpeed={this.state.escapeSpeed}
                         activeGases={this.state.activeGases}
                         selectedActiveGas={this.state.selectedActiveGas} />
 
