@@ -12,7 +12,9 @@ export default class Axis extends Component {
     }
 
     renderAxis() {
-        const axis = d3.axisBottom(this.props.xScale).ticks(4);
+        const axis = d3.axisBottom(this.props.xScale)
+              .ticks(20)
+              .tickFormat(x => x % 500 === 0 ? x : '');
 
         const node = this.axis.current;
         d3.select(node).call(axis);
