@@ -183,7 +183,9 @@ class GasRetentionSimulator extends React.Component {
                         showDistInfo={this.state.showDistInfo}
                         allowEscape={this.state.allowEscape}
                         escapeSpeed={this.state.escapeSpeed}
+                        temperature={this.state.temperature}
                         activeGases={this.state.activeGases}
+                        gasProportions={this.state.gasProportions}
                         selectedActiveGas={this.state.selectedActiveGas} />
 
                     <div className="form-check form-check-inline">
