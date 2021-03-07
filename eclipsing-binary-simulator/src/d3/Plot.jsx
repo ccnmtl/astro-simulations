@@ -32,29 +32,51 @@ class Line extends React.Component {
         const y = this.props.yScale;
 
         const me = this;
-        const line = d3
-            .line()
+
+        let line;
+        if (data.length === 2) {
+            // If there are only two data points, draw a straight,
+            // flat line, at flux position 1.
+            line = d3
+                .line()
+                .x(function(d) {
+                    const xPos = x(
+                        (d[0] + me.props.offset) / me.props.width
+                    );
+                    return xPos;
+                })
+                .y(function(d) {
+                    const yPos = y(-d[1] / me.props.height);
+                    return yPos;
+                });
+        } else {
+            line = d3
+                .line()
             // Cut off the graph edge so the line doesn't wrap around to
             // the beginning.
-            .defined(function(d) {
-                const xPos = (
-                    ((d[0] + me.props.offset) / me.props.width)
-                    + 0.5) % 1;
-                if (xPos > 0.995) {
-                    return false;
-                }
+                .defined(function(d) {
+                    const xPos = (
+                        ((d[0] + me.props.offset) / me.props.width)
+                            + 0.5) % 1;
+                    if (xPos > 0.995) {
+                        return false;
+                    }
 
-                return true;
-            })
-            .x(function(d) {
-                return x((
-                    ((d[0] + me.props.offset) / me.props.width)
-                    + 0.5) % 1);
-            })
-            .y(function(d) {
-                const yPos = -d[1] / me.props.height;
-                return y(-d[1] / me.props.height);
-            });
+                    return true;
+                })
+                .x(function(d) {
+                    const xPos = x(
+                        ((
+                            (d[0] + me.props.offset) / me.props.width
+                        ) + 0.5) % 1
+                    );
+                    return xPos;
+                })
+                .y(function(d) {
+                    const yPos = y(-d[1] / me.props.height);
+                    return yPos;
+                });
+        }
 
         const newline = line(data);
         const visibility = this.props.showLightcurve ?
