@@ -28,8 +28,8 @@
     "@babel/cli": "^7.5.5",
     "eslint-plugin-security": "^1.4.0",
     "pixi.js": "~5.3.0",
-    "react": "~16.14.0",
-    "react-dom": "~16.14.0",
+    "react": "~17.0.1",
+    "react-dom": "~17.0.1",
     "react-range-step-input": "^1.2.1",
     "three": "~0.126.0"
   },
