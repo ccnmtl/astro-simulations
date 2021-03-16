@@ -69,7 +69,25 @@ const getGasPercentage = function(gasProportions, idx) {
     return (proportion / sum) * 100;
 };
 
+/**
+ * Based on maxwell_gen's pdf function from scipy.
+ * https://github.com/scipy/scipy/blob/4833a293e7790dd244b2530b74d1a6718cf385d0/scipy/stats/_continuous_distns.py#L5305
+ */
+const maxwellPDF = function(x, mass, temp) {
+    const m = mass / 1000;
+    const k = 8.61733262145 * (10 ** (-5));
+    const T = temp;
+    const a = Math.sqrt(k * T / m);
+
+    return Math.sqrt(2 / Math.PI) * (
+        (
+            (x ** 2) * Math.exp(-(x ** 2) / (2 * (a ** 2)))
+        ) / (a ** 3)
+    );
+};
+
 export {
     forceNumber, roundToOnePlace, closestByClass,
-    toPaddedHexString, hexToRgb, getGasPercentage
+    toPaddedHexString, hexToRgb, getGasPercentage,
+    maxwellPDF
 };
