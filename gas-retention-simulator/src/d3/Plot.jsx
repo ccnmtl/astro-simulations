@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 import Axis from './Axis';
 import Cursor from './Cursor';
-import {toPaddedHexString, hexToRgb} from '../utils';
+import {toPaddedHexString, hexToRgb, maxwellPDF} from '../utils';
 
 // Returns a function that "scales" X coordinates from the data to fit
 // the chart.
@@ -50,20 +50,7 @@ export default class Plot extends React.Component {
         this.fillColor = 0xff0000;
         this.fillAlpha = 0.2;
     }
-    // Based on maxwell_gen's pdf function from scipy.
-    // https://github.com/scipy/scipy/blob/4833a293e7790dd244b2530b74d1a6718cf385d0/scipy/stats/_continuous_distns.py#L5305
-    MaxwellPDF(x, mass, temp) {
-        const m = mass / 1000;
-        const k = 8.61733262145 * (10 ** (-5));
-        const T = temp;
-        const a = Math.sqrt(k * T / m);
 
-        return Math.sqrt(2 / Math.PI) * (
-            (
-                (x ** 2) * Math.exp(-(x ** 2) / (2 * (a ** 2)))
-            ) / (a ** 3)
-        );
-    }
     renderPlot() {
         const me = this;
 
@@ -77,7 +64,7 @@ export default class Plot extends React.Component {
 
             const points = [];
             for (let i=0; i < 2000; i += 5) {
-                let y = me.MaxwellPDF(
+                let y = maxwellPDF(
                     (i + 100) / (me.width / 2),
                     gas.mass,
                     me.props.temperature
