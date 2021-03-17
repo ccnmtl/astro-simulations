@@ -33,7 +33,7 @@ export default class MaxwellPlot extends React.Component {
                 escapeSpeed={this.props.escapeSpeed}
                 width={this.width}
                 height={this.height}
-                paddingLeft={60}
+                paddingLeft={35}
                 padding={20} />
         );
 

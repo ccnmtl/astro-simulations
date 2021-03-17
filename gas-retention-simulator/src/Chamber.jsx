@@ -41,23 +41,27 @@ export default class Chamber extends React.Component {
         Matter.Body.setInertia(p, Infinity);
 
         p.collisionFilter.category = 1;
+
+        // Used for the escape speed feature, not by matter.js.
+        p.molecularSpeed = speed;
+        if (this.props.allowEscape &&
+            p.molecularSpeed >= this.props.escapeSpeed
+           ) {
+            p.collisionFilter.category = 0;
+        }
+
         p.direction = Math.random() * Math.PI * 2;
 
         const speedConstant = 0.05;
-        p.speed = speed * speedConstant;
-
         Matter.Body.setAngle(p, p.direction);
         Matter.Body.setVelocity(p, {
-            x: Math.sin(p.direction) * p.speed,
-            y: Math.cos(p.direction) * -p.speed
+            x: Math.sin(p.direction) * (speedConstant * speed),
+            y: Math.cos(p.direction) * (speedConstant * -speed)
         });
 
         return p;
     }
 
-    /**
-     *
-     */
     drawParticles(activeGases=[], gasProportions=[], distributionBuckets) {
         const me = this;
         const particles = [];
@@ -94,16 +98,17 @@ export default class Chamber extends React.Component {
         const distributionBuckets = [];
 
         for (let i = 0; i < 2100; i += 20) {
-            let bucket = maxwellPDF(
+            let particleCount = maxwellPDF(
                 i / (460 / 2),
                 gas.mass,
                 this.props.temperature);
 
-            bucket *= 10;
-            bucket = Math.round(bucket);
+            particleCount *= 10;
+            particleCount = Math.round(particleCount);
+
             distributionBuckets.push({
                 speed: i,
-                particleCount: bucket
+                particleCount: particleCount
             });
         }
 
@@ -242,12 +247,24 @@ export default class Chamber extends React.Component {
                 this.runner, this.engine, this.props.isPlaying);
         }
 
+        const me = this;
         if (prevProps.allowEscape !== this.props.allowEscape) {
             // Update all the particles' category to make them ignore
             // the walls.
-            const me = this;
             this.particles.forEach(function(p) {
-                p.collisionFilter.category = me.props.allowEscape ? 0 : 1;
+                if (!me.props.allowEscape) {
+                    p.collisionFilter.category = 1;
+                } else if (p.molecularSpeed >= me.props.escapeSpeed) {
+                    p.collisionFilter.category = 0;
+                }
+            });
+        }
+
+        if (prevProps.escapeSpeed !== this.props.escapeSpeed) {
+            this.particles.forEach(function(p) {
+                if (p.molecularSpeed >= me.props.escapeSpeed) {
+                    p.collisionFilter.category = 0;
+                }
             });
         }
     }

@@ -12,7 +12,8 @@ export default class Axis extends Component {
     }
 
     renderAxis() {
-        const axis = d3.axisBottom(this.props.xScale)
+        const axis = d3
+              .axisBottom(this.props.xScale)
               .ticks(20)
               .tickFormat(x => x % 500 === 0 ? x : '');
 
@@ -39,7 +40,7 @@ export default class Axis extends Component {
                 textAnchor="end">Molecular Speed (m/s)</text>
 
             <g className="xAxis" ref={this.axis}
-               transform={`translate(-20, ${this.props.height - 40})`} />
+               transform={`translate(0, ${this.props.height - 40})`} />
         </React.Fragment>;
     }
 }
