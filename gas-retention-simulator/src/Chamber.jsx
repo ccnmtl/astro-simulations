@@ -24,9 +24,12 @@ export default class Chamber extends React.Component {
     }
 
     makeParticle(gas, speed) {
+        const particleMargin = this.margin + 10;
         const p = Matter.Bodies.circle(
-            Math.random() * (this.width - (this.margin * 2)) + this.margin,
-            Math.random() * (this.height - (this.margin * 2)) + this.margin,
+            (Math.random() * (this.width - particleMargin)) +
+                (particleMargin / 2),
+            (Math.random() * (this.height - particleMargin)) +
+                (particleMargin / 2),
             gas.particleSize, {
                 render: {
                     fillStyle: '#' + gas.color.toString(16),
