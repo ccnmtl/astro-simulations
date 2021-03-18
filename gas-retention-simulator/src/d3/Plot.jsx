@@ -5,16 +5,20 @@ import Axis from './Axis';
 import Cursor from './Cursor';
 import {toPaddedHexString, hexToRgb, maxwellPDF} from '../utils';
 
+const RIGHT_PADDING = 15;
+
 // Returns a function that "scales" X coordinates from the data to fit
 // the chart.
-const xScale = props => {
-    return d3
-        .scaleLinear()
-        .domain([0, 2000])
-        .range([props.paddingLeft, props.width]);
+const xScale = function(props) {
+    const scaleFunc = d3
+          .scaleLinear()
+          .domain([0, 2000])
+          .range([props.paddingLeft, props.width - RIGHT_PADDING]);
+
+    return scaleFunc;
 };
 
-const yScale = props => {
+const yScale = function(props) {
     return d3
         .scaleLinear()
         .domain([0, 200])
@@ -65,7 +69,7 @@ export default class Plot extends React.Component {
             const points = [];
             for (let i=0; i < 2000; i += 5) {
                 let y = maxwellPDF(
-                    (i + 100) / (me.width / 2),
+                    i / (me.width / 2),
                     gas.mass,
                     me.props.temperature
                 ) * 75;
