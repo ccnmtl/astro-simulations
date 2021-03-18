@@ -86,7 +86,7 @@ export default class Plot extends React.Component {
             const line = d3.line();
             const color = '#' + toPaddedHexString(gas.color, 6);
 
-            const active = me.props.selectedActiveGas === gas.id;
+            const active = me.props.selectedGas === gas.id;
             const fillColor = active ? hexToRgb(color, 0.25) :
                   'rgba(255, 255, 255, 0)';
 
@@ -112,7 +112,7 @@ export default class Plot extends React.Component {
                  width={props.width} height={props.height}>
                 <Axis ax={'x'} {...props} {...scales} />
                 <Cursor
-                    selectedActiveGas={props.selectedActiveGas}
+                    selectedGas={props.selectedGas}
                     showCursor={props.showCursor}
                     showDistInfo={props.showDistInfo}
                     xScale={scales.xScale}
@@ -153,7 +153,7 @@ export default class Plot extends React.Component {
     componentDidUpdate(prevProps) {
         if (prevProps.activeGases.length !== this.props.activeGases.length ||
             prevProps.gasProportions !== this.props.gasProportions ||
-            prevProps.selectedActiveGas !== this.props.selectedActiveGas ||
+            prevProps.selectedGas !== this.props.selectedGas ||
             prevProps.temperature !== this.props.temperature
         ) {
             this.renderPlot();
@@ -174,7 +174,7 @@ Plot.propTypes = {
     showDistInfo: PropTypes.bool.isRequired,
     allowEscape: PropTypes.bool.isRequired,
     escapeSpeed: PropTypes.number.isRequired,
-    selectedActiveGas: PropTypes.number,
+    selectedGas: PropTypes.number,
     width: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,
     padding: PropTypes.number.isRequired,

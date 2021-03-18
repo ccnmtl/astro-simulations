@@ -24,8 +24,9 @@ class GasRetentionSimulator extends React.Component {
         super(props);
 
         this.initialState = {
+            // The selected gas's ID.
             selectedGas: -1,
-            selectedActiveGas: null,
+
             draggingGas: null,
             activeGases: [],
             gasProportions: [],
@@ -190,7 +191,7 @@ class GasRetentionSimulator extends React.Component {
                         temperature={this.state.temperature}
                         activeGases={this.state.activeGases}
                         gasProportions={this.state.gasProportions}
-                        selectedActiveGas={this.state.selectedActiveGas} />
+                        selectedGas={this.state.selectedGas} />
 
                     <div className="form-check form-check-inline">
                         <input className="form-check-input"
@@ -305,22 +306,23 @@ class GasRetentionSimulator extends React.Component {
                             <div className="form-group">
                                 {this.state.activeGases.length < 3 &&
                                  <select className="form-control form-control-sm"
-                                         value={this.state.selectedGas}
-                                             onChange={this.onAddGas}>
-                                         <option value={-1}>Select gas to add</option>
-                                         {this.makeGasOptions(gases)}
-                                     </select>}
-                                    {this.state.activeGases.length === 3 &&
-                                     <select className="form-control form-control-sm"
-                                             disabled="disabled"
-                                             value={this.state.selectedGas}>
-                                         <option value={-1}>(limit reached)</option>
-                                     </select>}
+                                         value={-1}
+                                         onChange={this.onAddGas}>
+                                     <option value={-1}>Select gas to add</option>
+                                     {this.makeGasOptions(gases)}
+                                 </select>
+                                }
+                                {this.state.activeGases.length === 3 &&
+                                 <select className="form-control form-control-sm"
+                                         disabled="disabled">
+                                     <option value={-1}>(limit reached)</option>
+                                 </select>
+                                }
 
-                                    <button className="ml-3 btn btn-sm btn-secondary" onClick={this.onRemoveGas}>
-                                        Remove selected gas
-                                    </button>
-                                </div>
+                                <button className="ml-3 btn btn-sm btn-secondary" onClick={this.onRemoveGas}>
+                                    Remove selected gas
+                                </button>
+                            </div>
                             </form>
 
                             <table className="gas-table table table-sm">
@@ -362,7 +364,7 @@ class GasRetentionSimulator extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         if (
             prevState.activeGases.length !== this.state.activeGases.length ||
-            prevState.selectedActiveGas !== this.state.selectedActiveGas ||
+            prevState.selectedGas !== this.state.selectedGas ||
             prevState.gasProportions !== this.state.gasProportions
         ) {
             this.drawGasBars(this.app);
@@ -380,7 +382,7 @@ class GasRetentionSimulator extends React.Component {
         g.lineStyle(1, '0x' + toPaddedHexString(gas.color, 6));
 
         let gasBarOpacity = 0.5;
-        if (this.state.selectedActiveGas === gas.id) {
+        if (this.state.selectedGas === gas.id) {
             gasBarOpacity = 1;
         }
 
@@ -452,7 +454,7 @@ class GasRetentionSimulator extends React.Component {
             //let g = activeGases[new String(gas)];
             let cls = 'gas-row ';
 
-            if (me.state.selectedActiveGas === g.id) {
+            if (me.state.selectedGas === g.id) {
                 cls += 'table-active';
             }
 
@@ -514,7 +516,6 @@ class GasRetentionSimulator extends React.Component {
         for (gId in this.state.activeGases) {
             let gas = this.state.activeGases[new String(gId)];
             if (gas.name === newGas.name) {
-                this.setState({selectedGas: -1});
                 return;
             }
         }
@@ -526,7 +527,7 @@ class GasRetentionSimulator extends React.Component {
         gasProportions.push(100);
 
         this.setState({
-            selectedGas: -1,
+            selectedGas: gasId,
             activeGases: gases,
             gasProportions: gasProportions
         });
@@ -534,24 +535,24 @@ class GasRetentionSimulator extends React.Component {
     onRemoveGas(e) {
         e.preventDefault();
 
-        if (this.state.selectedActiveGas === null) {
+        if (this.state.selectedGas === null) {
             return;
         }
 
         const me = this;
 
         const idx = this.state.activeGases.findIndex(function(el) {
-            return el.id !== me.state.selectedActiveGas;
+            return el.id !== me.state.selectedGas;
         });
         const gases = this.state.activeGases.filter(function(el) {
-            return el.id !== me.state.selectedActiveGas;
+            return el.id !== me.state.selectedGas;
         });
 
         const gasProportions = this.state.gasProportions.slice(0);
         gasProportions.splice(idx, 1);
 
         this.setState({
-            selectedActiveGas: null,
+            selectedGas: null,
             activeGases: gases,
             gasProportions: gasProportions
         });
@@ -559,7 +560,7 @@ class GasRetentionSimulator extends React.Component {
     onGasClick(e) {
         const el = closestByClass(e.target, 'gas-row');
         const gid = forceNumber(el.dataset.id);
-        this.setState({selectedActiveGas: gid});
+        this.setState({selectedGas: gid});
     }
     onResetClick(e) {
         e.preventDefault();
@@ -572,7 +573,7 @@ class GasRetentionSimulator extends React.Component {
         // a number, but just in case, use forceNumber().
         const activeGasId = forceNumber(e.target.name);
 
-        this.setState({selectedActiveGas: activeGasId});
+        this.setState({selectedGas: activeGasId});
     }
     onGasBarDragStart(e) {
         const activeGasId = forceNumber(e.target.name);
