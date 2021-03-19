@@ -9,7 +9,7 @@ export default class LatitudePicker extends React.Component {
         this.state = {
             isDraggingLatitude: false,
             latitudeField: roundToOnePlace(Math.abs(this.props.latitude))
-        }
+        };
 
         this.onLatDragStart = this.onLatDragStart.bind(this);
         this.onLatDragEnd = this.onLatDragEnd.bind(this);
@@ -21,6 +21,8 @@ export default class LatitudePicker extends React.Component {
 
         this.loader = new PIXI.Loader();
         this.loader.add('earthmap', 'img/earthmap.svg');
+
+        this.latitudePicker = React.createRef();
     }
     render() {
         const latHemisphere = this.props.latitude >= 0 ? 'N' : 'S';
@@ -42,7 +44,7 @@ export default class LatitudePicker extends React.Component {
                     </label>
                 </div>
                 <div className="pixi-scene astro-earthmap"
-                     ref={(el) => {this.latitudePicker = el}}></div>
+                     ref={this.latitudePicker}></div>
             </div>
         );
     }
@@ -63,7 +65,9 @@ export default class LatitudePicker extends React.Component {
         this.app.stage.buttonMode = true;
         this.app.stage.on('click', this.onClick);
 
-        this.latitudePicker.appendChild(this.app.view);
+        if (this.latitudePicker && this.latitudePicker.current) {
+            this.latitudePicker.current.appendChild(this.app.view);
+        }
 
         this.loader.load((loader, resources) => {
             me.resources = resources;
@@ -76,7 +80,7 @@ export default class LatitudePicker extends React.Component {
         if (prevProps.latitude !== this.props.latitude) {
             // Update the latitude picker.
             const latPos = this.latitudeToLocalPos(
-                this.props.latitude, 126 * 2)
+                this.props.latitude, 126 * 2);
             this.lPicker.position.y = latPos;
 
             if (this.props.latitude !== this.state.latitudeField) {

@@ -61,6 +61,8 @@ export default class CelestialSphere extends React.Component {
         this.pointOnPlane = new THREE.Vector3();
         this.closestPoint = new THREE.Vector3();
         this.target = new THREE.Vector3();
+
+        this.mount = React.createRef();
     }
 
     componentDidMount() {
@@ -68,8 +70,8 @@ export default class CelestialSphere extends React.Component {
             document.body.appendChild(WEBGL.getWebGLErrorMessage());
         }
 
-        const width = this.mount.clientWidth;
-        const height = this.mount.clientHeight;
+        const width = this.mount.current.clientWidth;
+        const height = this.mount.current.clientHeight;
 
         // well, since it's a square for now the aspect will be 1.
         const aspect = width / height;
@@ -83,7 +85,7 @@ export default class CelestialSphere extends React.Component {
         );
         camera.position.set(-60, 60, 80);
 
-        const controls = new OrbitControls(camera, this.mount);
+        const controls = new OrbitControls(camera, this.mount.current);
         // Configure the controls - we only need some basic
         // drag-rotation behavior.
         controls.enableKeys = false;
@@ -237,7 +239,9 @@ export default class CelestialSphere extends React.Component {
         this.composer = composer;
         this.controls = controls;
 
-        this.mount.appendChild(this.renderer.domElement);
+        if (this.mount && this.mount.current) {
+            this.mount.current.appendChild(this.renderer.domElement);
+        }
         this.start();
     }
     // Update the scene based on what props have changed. Doing this here
@@ -768,7 +772,9 @@ export default class CelestialSphere extends React.Component {
     }
     componentWillUnmount() {
         this.stop();
-        this.mount.removeChild(this.renderer.domElement);
+        if (this.mount && this.mount.current) {
+            this.mount.current.removeChild(this.renderer.domElement);
+        }
     }
 
     start() {
@@ -876,7 +882,7 @@ export default class CelestialSphere extends React.Component {
 
         return (
             <div id={this.id}
-                 ref={(mount) => { this.mount = mount; }}>
+                 ref={this.mount}>
                 <canvas
                     onMouseMove={this.onMouseMove}
                     id={this.id + 'Canvas'} width={860} height={860} />
