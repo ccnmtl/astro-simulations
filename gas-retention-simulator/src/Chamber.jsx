@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Matter from 'matter-js';
+import Color from 'color';
 import {maxwellPDF} from './utils';
 
 
@@ -25,6 +26,7 @@ export default class Chamber extends React.Component {
 
     makeParticle(gas, speed) {
         const particleMargin = this.margin + 10;
+        const particleColor = Color(gas.color);
         const p = Matter.Bodies.circle(
             (Math.random() * (this.width - particleMargin)) +
                 (particleMargin / 2),
@@ -32,7 +34,7 @@ export default class Chamber extends React.Component {
                 (particleMargin / 2),
             gas.particleSize, {
                 render: {
-                    fillStyle: '#' + gas.color.toString(16),
+                    fillStyle: particleColor.hex(),
                     lineWidth: 3
                 },
                 restitution: 1,
