@@ -16,6 +16,8 @@ export default class DatePicker extends React.Component {
         this.onMove = this.onMove.bind(this);
         this.onClick = this.onClick.bind(this);
         this.onDayFieldUpdate = this.onDayFieldUpdate.bind(this);
+
+        this.calendarPicker = React.createRef();
     }
     render() {
         return <React.Fragment>
@@ -49,7 +51,7 @@ export default class DatePicker extends React.Component {
                 </select>
             </div>
             <div className="mt-2 pixi-scene astro-datepicker"
-                 ref={(el) => {this.calendarPicker = el}}></div>
+                 ref={this.calendarPicker}></div>
         </React.Fragment>;
     }
     componentDidMount() {
@@ -66,7 +68,10 @@ export default class DatePicker extends React.Component {
         app.stage.buttonMode = true;
         app.stage.on('click', this.onClick);
 
-        this.calendarPicker.appendChild(app.view);
+        if (this.calendarPicker && this.calendarPicker.current) {
+            this.calendarPicker.current.appendChild(app.view);
+        }
+
         this.drawCalendarScene(app);
     }
     componentDidUpdate(prevProps) {

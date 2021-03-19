@@ -29,6 +29,8 @@ export default class Clock extends React.Component {
         this.minuteLastPos = {x: 0, y: 0};
         this.hourLastPos = {x: 0, y: 0};
         this.lastTime = null;
+
+        this.timePicker = React.createRef();
     }
     render() {
         return <React.Fragment>
@@ -41,7 +43,7 @@ export default class Clock extends React.Component {
                        required />
             </label>
             <div className="pixi-scene astro-clock"
-                 ref={(el) => {this.timePicker = el}}></div>
+                 ref={this.timePicker}></div>
         </React.Fragment>;
     }
     componentDidMount() {
@@ -57,7 +59,9 @@ export default class Clock extends React.Component {
             antialias: true
         });
         this.timePickerApp = timePickerApp;
-        this.timePicker.appendChild(timePickerApp.view);
+        if (this.timePicker && this.timePicker.current) {
+            this.timePicker.current.appendChild(timePickerApp.view);
+        }
 
         this.loader.load((loader, resources) => {
             me.resources = resources;
