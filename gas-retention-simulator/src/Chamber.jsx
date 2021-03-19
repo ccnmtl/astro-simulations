@@ -144,8 +144,8 @@ export default class Chamber extends React.Component {
             isStatic: true,
             render: {
                 fillStyle: 'white',
-                strokeStyle: 'black',
-                lineWidth: 4
+                strokeStyle: 'white',
+                lineWidth: 0
             },
             collisionFilter: {
                 mask: 1
@@ -205,9 +205,6 @@ export default class Chamber extends React.Component {
             engine: engine,
             width: this.width,
             height: this.height,
-            wireframes: false,
-            wireframeBackground: 0xff0000,
-            background: 0xff0000,
             options: {
                 wireframes: false,
                 background: 'white',
@@ -232,6 +229,24 @@ export default class Chamber extends React.Component {
         if (!this.props.isPlaying) {
             Runner.stop(runner);
         }
+
+        const me = this;
+        Matter.Events.on(render, 'afterRender', function() {
+            // Draw box where the walls are, since the physical walls are
+            // invisible.
+            const ctx = render.context;
+
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.rect(
+                me.margin / 2,
+                (me.margin - 50) / 2,
+                me.width - (me.margin * 2),
+                me.height - ((me.margin - 25) * 2)
+            );
+            ctx.stroke();
+        });
 
         this.refreshScene();
     }
