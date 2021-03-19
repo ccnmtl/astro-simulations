@@ -17,41 +17,60 @@ export default class Cursor extends React.Component {
             return null;
         }
 
-        const xPos = this.props.xScale(this.state.xPos) - 20;
+        const xPos = this.props.xScale(this.state.xPos);
+
+        const showDistInfo = this.props.showDistInfo && (
+            this.props.selectedGas !== null);
 
         return <React.Fragment>
-            {this.props.showDistInfo &&
-            <text
-                width="45px"
-                x={xPos - 6}
-                y={this.props.padding}
-                dy=".8em"
-                fontSize=".9em"
-                textAnchor="end">98.9% of N<sub>2</sub> moves slower</text> }
-            <line
-                x1={xPos}
-                y1={this.props.padding}
+                   {showDistInfo &&
+                    <text
+                        width="45px"
+                        x={xPos - 6}
+                        y={this.props.padding}
+                        dy=".8em"
+                        fontSize=".9em"
+                        textAnchor="end">
+                            98.9% of N<sub>2</sub> moves slower
+                    </text>
+                   }
 
-                x2={xPos}
-                y2={this.props.height - (this.props.padding * 2) + 10}
+                   <line
+                       x1={xPos}
+                       y1={this.props.padding}
 
-                className="cursor"
-                stroke="#ff7070"
-                strokeWidth={this.state.isHovering ? 5 : 3} />
-            <rect
-                x={xPos - 25} y={this.props.height - (this.props.padding * 2) + 10}
-                width="50" height="20"
-                strokeWidth="1"
-                stroke="#ff0000"
-                fill="#ffffff" />
-            {this.props.showDistInfo &&
-            <text
-                width="45px"
-                x={xPos + 164}
-                y={this.props.padding}
-                dy=".8em"
-                fontSize=".9em"
-                textAnchor="end">98.9% of N<sub>2</sub> moves faster</text> }
+                       x2={xPos}
+                       y2={this.props.height - (this.props.padding * 2) + 5}
+
+                       className="cursor"
+                       stroke="#ff7070"
+                       strokeWidth={this.state.isHovering ? 5 : 3} />
+                   <rect
+                       x={xPos - 25}
+                       y={this.props.height - (this.props.padding * 2) + 5}
+                       width="50" height="20"
+                       strokeWidth="1"
+                       stroke="#ff0000"
+                       fill="#ffffff" />
+                    <text
+                        width="45px"
+                        x={xPos}
+                        y={this.props.height - (this.props.padding * 2) + 8}
+                        dy=".8em"
+                        fontSize=".9em"
+                        textAnchor="middle">
+                        {Math.round(this.state.xPos)}
+                    </text>
+
+                   {showDistInfo &&
+                    <text
+                        width="45px"
+                        x={xPos + 164}
+                        y={this.props.padding}
+                        dy=".8em"
+                        fontSize=".9em"
+                        textAnchor="end">98.9% of N<sub>2</sub> moves faster</text>
+                   }
         </React.Fragment>;
     }
     componentDidUpdate(prevProps) {
@@ -84,7 +103,7 @@ export default class Cursor extends React.Component {
 };
 
 Cursor.propTypes = {
-    selectedActiveGas: PropTypes.number,
+    selectedGas: PropTypes.number,
     showCursor: PropTypes.bool.isRequired,
     showDistInfo: PropTypes.bool.isRequired,
     xScale: PropTypes.func.isRequired,
