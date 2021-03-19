@@ -69,7 +69,7 @@ export default class Plot extends React.Component {
             const points = [];
             for (let i=0; i < 2000; i += 5) {
                 let y = maxwellPDF(
-                    i / (me.width / 2),
+                    i / (me.width / 1.5),
                     gas.mass,
                     me.props.temperature
                 ) * 75;
