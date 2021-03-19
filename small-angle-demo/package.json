@@ -28,7 +28,7 @@
     "babel-cli": "^6.26.0",
     "eslint-plugin-security": "^1.4.0",
     "mathjax-full": "^3.1.2",
-    "mathjax-react": "nikolas/mathjax-react#patch-1",
+    "mathjax-react": "CharlieMcVicker/mathjax-react",
     "pixi.js": "~5.3.0",
     "react": "~17.0.1",
     "react-dom": "~17.0.1",
