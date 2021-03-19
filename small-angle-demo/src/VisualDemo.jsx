@@ -20,10 +20,12 @@ export default class VisualDemo extends React.Component {
         this.onDragStart = this.onDragStart.bind(this);
         this.onDragEnd = this.onDragEnd.bind(this);
         this.onMove = this.onMove.bind(this);
+
+        this.el = React.createRef();
     }
     render() {
         return <div className="pixi-scene"
-                    ref={(el) => {this.el = el}}></div>;
+                    ref={this.el}></div>;
     }
     componentDidMount() {
         const app = new PIXI.Application({
@@ -49,7 +51,9 @@ export default class VisualDemo extends React.Component {
             me.draw();
         });
 
-        this.el.appendChild(app.view);
+        if (this.el && this.el.current) {
+            this.el.current.appendChild(app.view);
+        }
 
         this.app = app;
     }
@@ -132,7 +136,7 @@ export default class VisualDemo extends React.Component {
     redrawLine1(line1) {
         const dist = this.unitToPixel(this.props.distance);
         line1.clear();
-        line1.lineStyle(1.5);
+        line1.lineStyle(2);
         line1.moveTo(this.eyePos.x, this.eyePos.y);
         line1.lineTo(
             dist,
@@ -141,7 +145,7 @@ export default class VisualDemo extends React.Component {
     redrawLine2(line2) {
         const dist = this.unitToPixel(this.props.distance);
         line2.clear();
-        line2.lineStyle(1.5);
+        line2.lineStyle(2);
         line2.moveTo(this.eyePos.x, this.eyePos.y);
         line2.lineTo(
             dist,
@@ -150,7 +154,7 @@ export default class VisualDemo extends React.Component {
     redrawArc(arc) {
         const ratio = this.props.diameter / this.props.distance;
         arc.clear();
-        arc.lineStyle(1.5);
+        arc.lineStyle(2);
         arc.arc(
             55 * 2, this.eyePos.y,
             100 * 2,

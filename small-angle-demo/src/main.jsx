@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import MathJax from 'react-mathjax2';
+import {MathComponent} from 'mathjax-react';
 import VisualDemo from './VisualDemo';
 import {RangeStepInput} from 'react-range-step-input';
 import {forceNumber} from './utils';
@@ -42,18 +42,8 @@ class SmallAngleDemo extends React.Component {
                     </li>
                 </ul>
             </nav>
-            <MathJax.Context
-                script="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"
-                input="tex"
-                options={{
-                    displayAlign: 'left',
-                    showProcessingMessages: false,
-                    messageStyle: 'none'
-                }}>
-                <div>
-                    <MathJax.Node>{tex}</MathJax.Node>
-                </div>
-            </MathJax.Context>
+
+            <MathComponent tex={tex} />
 
             <div>
                 <VisualDemo
