@@ -102,7 +102,7 @@ export default class Chamber extends React.Component {
 
         for (let i = 0; i < 2100; i += 20) {
             let particleCount = maxwellPDF(
-                i / (460 / 2),
+                i / (460 / 1.5),
                 gas.mass,
                 this.props.temperature);
 
