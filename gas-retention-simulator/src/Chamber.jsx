@@ -45,14 +45,14 @@ export default class Chamber extends React.Component {
 
         Matter.Body.setInertia(p, Infinity);
 
-        p.collisionFilter.category = 1;
-
         // Used for the escape speed feature, not by matter.js.
         p.molecularSpeed = speed;
         if (this.props.allowEscape &&
             p.molecularSpeed >= this.props.escapeSpeed
            ) {
             p.collisionFilter.category = 0;
+        } else {
+            p.collisionFilter.category = 1;
         }
 
         p.direction = Math.random() * Math.PI * 2;
@@ -284,6 +284,8 @@ export default class Chamber extends React.Component {
             this.particles.forEach(function(p) {
                 if (p.molecularSpeed >= me.props.escapeSpeed) {
                     p.collisionFilter.category = 0;
+                } else {
+                    p.collisionFilter.category = 1;
                 }
             });
         }
