@@ -24,7 +24,7 @@ export default class Chamber extends React.Component {
         );
     }
 
-    makeParticle(gas, speed) {
+    makeParticle(gas, molecularSpeed) {
         const particleMargin = this.margin + 10;
         const particleColor = Color(gas.color);
         const p = Matter.Bodies.circle(
@@ -39,14 +39,13 @@ export default class Chamber extends React.Component {
                 },
                 restitution: 1,
                 friction: 0,
-                frictionAir: 0,
-                frictionStatic: 1
+                frictionAir: 0
             });
 
         Matter.Body.setInertia(p, Infinity);
 
         // Used for the escape speed feature, not by matter.js.
-        p.molecularSpeed = speed;
+        p.molecularSpeed = molecularSpeed;
         if (this.props.allowEscape &&
             p.molecularSpeed >= this.props.escapeSpeed
            ) {
@@ -56,12 +55,10 @@ export default class Chamber extends React.Component {
         }
 
         p.direction = Math.random() * Math.PI * 2;
-
         const speedConstant = 0.05;
-        Matter.Body.setAngle(p, p.direction);
         Matter.Body.setVelocity(p, {
-            x: Math.sin(p.direction) * (speedConstant * speed),
-            y: Math.cos(p.direction) * (speedConstant * -speed)
+            x: Math.sin(p.direction) * (speedConstant * molecularSpeed),
+            y: Math.cos(p.direction) * (speedConstant * -molecularSpeed)
         });
 
         return p;
