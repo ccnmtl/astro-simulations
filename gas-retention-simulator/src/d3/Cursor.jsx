@@ -20,21 +20,25 @@ export default class Cursor extends React.Component {
         const xPos = this.props.xScale(this.state.xPos);
 
         const showDistInfo = this.props.showDistInfo && (
-            this.props.selectedGas !== null);
+            this.props.selectedGas >= 0);
+
+        let selectedGas = null;
+        let selectedGasSymbol = null;
+
+        if (this.props.activeGases) {
+            const me = this;
+            selectedGas = this.props.activeGases.find(function(el) {
+                return el.id === me.props.selectedGas;
+            });
+
+            if (selectedGas) {
+                selectedGasSymbol = selectedGas.svgSymbol || selectedGas.symbol;
+            }
+        }
+
+        let percentageFasterThanCursor = 0;
 
         return <React.Fragment>
-                   {showDistInfo &&
-                    <text
-                        width="45px"
-                        x={xPos - 6}
-                        y={this.props.padding}
-                        dy=".8em"
-                        fontSize=".9em"
-                        textAnchor="end">
-                            98.9% of N<sub>2</sub> moves slower
-                    </text>
-                   }
-
                    <line
                        x1={xPos}
                        y1={this.props.padding}
@@ -65,11 +69,14 @@ export default class Cursor extends React.Component {
                    {showDistInfo &&
                     <text
                         width="45px"
-                        x={xPos + 164}
+                        x={xPos + 6}
                         y={this.props.padding}
                         dy=".8em"
                         fontSize=".9em"
-                        textAnchor="end">98.9% of N<sub>2</sub> moves faster</text>
+                        textAnchor="start">
+                        {percentageFasterThanCursor}%
+                        of {selectedGasSymbol} moves faster
+                    </text>
                    }
         </React.Fragment>;
     }
@@ -87,7 +94,8 @@ export default class Cursor extends React.Component {
         const w = this.props.width - this.props.paddingLeft;
 
         let newPos = ((
-            e.x + 20 - this.props.paddingLeft) / w) * this.props.xMax;
+            e.x - this.props.paddingLeft
+        ) / w) * this.props.xMax;
 
         newPos = Math.max(
             this.props.xMin, Math.min(this.props.xMax, newPos));
@@ -103,6 +111,7 @@ export default class Cursor extends React.Component {
 };
 
 Cursor.propTypes = {
+    activeGases: PropTypes.array,
     selectedGas: PropTypes.number,
     showCursor: PropTypes.bool.isRequired,
     showDistInfo: PropTypes.bool.isRequired,
