@@ -112,6 +112,7 @@ export default class Plot extends React.Component {
                  width={props.width} height={props.height}>
                 <Axis ax={'x'} {...props} {...scales} />
                 <Cursor
+                    activeGases={props.activeGases}
                     selectedGas={props.selectedGas}
                     showCursor={props.showCursor}
                     showDistInfo={props.showDistInfo}

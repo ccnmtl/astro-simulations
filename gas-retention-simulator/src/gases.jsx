@@ -14,7 +14,8 @@ const gases = [
         particleSize: 4.5,
         color: 0xb0b000,
         name: 'Carbon dioxide',
-        symbol: <span>CO<sub>2</sub></span>,
+        symbol: <>CO<sub>2</sub></>,
+        svgSymbol: <>CO<tspan baselineShift="sub">2</tspan></>,
         mass: 44.009500
     },
     {
@@ -22,7 +23,8 @@ const gases = [
         particleSize: 4,
         color: 0x00d0f0,
         name: 'Oxygen',
-        symbol: <span>O<sub>2</sub></span>,
+        symbol: <>O<sub>2</sub></>,
+        svgSymbol: <>O<tspan baselineShift="sub">2</tspan></>,
         mass: 31.9988
     },
     {
@@ -30,7 +32,8 @@ const gases = [
         particleSize: 3.5,
         color: 0xB87B41,
         name: 'Nitrogen',
-        symbol: <span>N<sub>2</sub></span>,
+        symbol: <>N<sub>2</sub></>,
+        svgSymbol: <>N<tspan baselineShift="sub">2</tspan></>,
         mass: 28.0134
     },
     {
@@ -38,7 +41,8 @@ const gases = [
         particleSize: 3,
         color: 0x0050ff,
         name: 'Water',
-        symbol: <span>H<sub>2</sub>O</span>,
+        symbol: <>H<sub>2</sub>O</>,
+        svgSymbol: <>H<tspan baselineShift="sub">2</tspan>O</>,
         mass: 18.015280
     },
     {
@@ -46,7 +50,8 @@ const gases = [
         particleSize: 3,
         color: 0xa050ff,
         name: 'Ammonia',
-        symbol: <span>NH<sub>3</sub></span>,
+        symbol: <>NH<sub>3</sub></>,
+        svgSymbol: <>NH<tspan baselineShift="sub">3</tspan></>,
         mass: 17.03052
     },
     {
@@ -54,7 +59,8 @@ const gases = [
         particleSize: 3,
         color: 0xff6600,
         name: 'Methane',
-        symbol: <span>CH<sub>4</sub></span>,
+        symbol: <>CH<sub>4</sub></>,
+        svgSymbol: <>CH<tspan baselineShift="sub">4</tspan></>,
         mass: 16.042460
     },
     {
@@ -70,7 +76,8 @@ const gases = [
         particleSize: 2.5,
         color: 0xff0000,
         name: 'Hydrogen',
-        symbol: <span>H<sub>2</sub></span>,
+        symbol: <>H<sub>2</sub></>,
+        svgSymbol: <>H<tspan baselineShift="sub">2</tspan></>,
         mass: 2.01588
     }
 ];
