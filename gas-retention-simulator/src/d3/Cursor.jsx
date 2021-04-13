@@ -3,6 +3,25 @@ import PropTypes from 'prop-types';
 import * as d3 from 'd3';
 import 'd3-drag';
 
+const getFasterParticlesPercentage = function(particles, cursorPosition) {
+    const totalParticles = particles.reduce(
+        function(prev, cur) {
+            return prev + cur[1];
+        }, 0);
+
+    const fasterParticles = particles.filter(
+        function(el) {
+            return el[0] >= cursorPosition;
+        });
+
+    const fasterParticlesSum = fasterParticles.reduce(
+        function(prev, cur) {
+            return prev + cur[1];
+        }, 0);
+
+    return Math.round((fasterParticlesSum / totalParticles) * 100);
+};
+
 export default class Cursor extends React.Component {
     constructor(props) {
         super(props);
@@ -25,8 +44,9 @@ export default class Cursor extends React.Component {
         let selectedGas = null;
         let selectedGasSymbol = null;
 
+        const me = this;
+
         if (this.props.activeGases) {
-            const me = this;
             selectedGas = this.props.activeGases.find(function(el) {
                 return el.id === me.props.selectedGas;
             });
@@ -36,7 +56,9 @@ export default class Cursor extends React.Component {
             }
         }
 
-        let percentageFasterThanCursor = 0;
+        let percentageFasterThanCursor = getFasterParticlesPercentage(
+            this.props.selectedGasPoints,
+            this.state.xPos);
 
         return <React.Fragment>
                    <line
@@ -111,6 +133,7 @@ export default class Cursor extends React.Component {
 };
 
 Cursor.propTypes = {
+    selectedGasPoints: PropTypes.array,
     activeGases: PropTypes.array,
     selectedGas: PropTypes.number,
     showCursor: PropTypes.bool.isRequired,
