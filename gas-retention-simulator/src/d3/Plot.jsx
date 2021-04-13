@@ -31,7 +31,8 @@ export default class Plot extends React.Component {
 
         this.state = {
             x: 0,
-            isDragging: false
+            isDragging: false,
+            selectedGasPoints: []
         };
 
         this.plot = React.createRef();
@@ -65,8 +66,11 @@ export default class Plot extends React.Component {
 
         this.props.activeGases.forEach(function(gas, i) {
             const proportion = me.props.gasProportions[i];
+            const isSelected = gas.id === me.props.selectedGas;
 
             const points = [];
+            const rawPoints = [];
+
             for (let i=0; i < 2000; i += 5) {
                 let y = maxwellPDF(
                     i / (me.width / 1.5),
@@ -81,6 +85,14 @@ export default class Plot extends React.Component {
                     (me.height - yscale(y)) - me.props.padding
                 ];
                 points.push(point);
+
+                if (isSelected) {
+                    rawPoints.push([i, y]);
+                }
+            }
+
+            if (isSelected) {
+                me.setState({selectedGasPoints: rawPoints});
             }
 
             const line = d3.line();
@@ -112,6 +124,7 @@ export default class Plot extends React.Component {
                  width={props.width} height={props.height}>
                 <Axis ax={'x'} {...props} {...scales} />
                 <Cursor
+                    selectedGasPoints={this.state.selectedGasPoints}
                     activeGases={props.activeGases}
                     selectedGas={props.selectedGas}
                     showCursor={props.showCursor}
