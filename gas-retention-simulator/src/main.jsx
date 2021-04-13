@@ -331,7 +331,8 @@ class GasRetentionSimulator extends React.Component {
                                 </tbody>
                             </table>
 
-                            <button className="btn btn-sm btn-secondary">
+                            <button className="btn btn-sm btn-secondary"
+                                    onClick={this.onResetProportionsClick.bind(this)}>
                                 Reset proportions
                             </button>
                         </div>
@@ -565,6 +566,18 @@ class GasRetentionSimulator extends React.Component {
     onResetClick(e) {
         e.preventDefault();
         this.setState(this.initialState);
+    }
+    onResetProportionsClick(e) {
+        e.preventDefault();
+
+        const proportions = [];
+        this.state.gasProportions.forEach(function() {
+            proportions.push(100);
+        });
+
+        this.setState({
+            gasProportions: proportions
+        });
     }
 
     /* Gas Bar interaction */
