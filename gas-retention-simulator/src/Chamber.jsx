@@ -4,7 +4,6 @@ import Matter from 'matter-js';
 import Color from 'color';
 import {maxwellPDF} from './utils';
 
-
 export default class Chamber extends React.Component {
     constructor(props) {
         super(props);
@@ -22,6 +21,31 @@ export default class Chamber extends React.Component {
         return (
             <div id="ChamberPixiView" ref={this.el} />
         );
+    }
+
+    isOutOfBounds(pos) {
+        return (
+            pos.x < 0 ||
+                pos.y < 0 ||
+                pos.x > this.width ||
+                pos.y > this.height
+        );
+    }
+
+    removeEscapedParticles() {
+        const me = this;
+        this.particles.forEach(function(p, idx, array) {
+            if (
+                p.collisionFilter.category === 0 &&
+                    me.isOutOfBounds(p.position)
+            ) {
+                // If this particle is set to leave the scene, and
+                // it's already left the scene, remove it from the
+                // world and this array.
+                Matter.World.remove(me.engine.world, p);
+                array.splice(idx, 1);
+            }
+        });
     }
 
     makeParticle(gas, molecularSpeed) {
@@ -245,6 +269,14 @@ export default class Chamber extends React.Component {
                 me.height - ((me.margin - 25) * 2)
             );
             ctx.stroke();
+        });
+
+        let counter = 0;
+        Matter.Events.on(engine, 'afterUpdate', function(e) {
+            if (e.timestamp >= counter + 500) {
+                me.removeEscapedParticles();
+                counter = e.timestamp;
+            }
         });
 
         this.refreshScene();
