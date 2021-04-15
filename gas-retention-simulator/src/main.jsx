@@ -60,6 +60,8 @@ class GasRetentionSimulator extends React.Component {
             this.handleGasProportionChange.bind(this);
 
         this.onStartClick = this.onStartClick.bind(this);
+
+        this.onParticleCountUpdated = this.onParticleCountUpdated.bind(this);
     }
     render() {
         let startBtnText = 'Start Simulation';
@@ -94,6 +96,7 @@ class GasRetentionSimulator extends React.Component {
                              allowEscape={this.state.allowEscape}
                              escapeSpeed={this.state.escapeSpeed}
                              temperature={this.state.temperature}
+                             onParticleCountUpdated={this.onParticleCountUpdated}
                     />
 
                     <h6>Chamber Properties</h6>
@@ -231,6 +234,7 @@ class GasRetentionSimulator extends React.Component {
                                         <input
                                             type="number"
                                             className="form-control form-control-sm"
+                                            disabled={this.state.isPlaying}
                                             name="gasProportion0"
                                             value={Math.round(this.state.gasProportions[0])}
                                             onFocus={this.handleFocus}
@@ -241,6 +245,7 @@ class GasRetentionSimulator extends React.Component {
 
                                         <RangeStepInput
                                             className="form-control"
+                                            disabled={this.state.isPlaying}
                                             name="gasProportion0"
                                             data-gasIndex="0"
                                             value={this.state.gasProportions[0]}
@@ -255,6 +260,7 @@ class GasRetentionSimulator extends React.Component {
                                     <div className="form-group row">
                                         <input
                                             type="number"
+                                            disabled={this.state.isPlaying}
                                             className="form-control form-control-sm"
                                             name="gasProportion0"
                                             value={Math.round(this.state.gasProportions[1])}
@@ -266,6 +272,7 @@ class GasRetentionSimulator extends React.Component {
 
                                         <RangeStepInput
                                             className="form-control"
+                                            disabled={this.state.isPlaying}
                                             name="gasProportion1"
                                             value={this.state.gasProportions[1]}
                                             onChange={e => this.handleGasProportionChange(e, 1)}
@@ -279,6 +286,7 @@ class GasRetentionSimulator extends React.Component {
                                     <div className="form-group row">
                                         <input
                                             type="number"
+                                            disabled={this.state.isPlaying}
                                             className="form-control form-control-sm"
                                             name="gasProportion2"
                                             value={Math.round(this.state.gasProportions[2])}
@@ -290,6 +298,7 @@ class GasRetentionSimulator extends React.Component {
 
                                         <RangeStepInput
                                             className="form-control"
+                                            disabled={this.state.isPlaying}
                                             name="gasProportion2"
                                             value={this.state.gasProportions[2]}
                                             onChange={e => this.handleGasProportionChange(e, 2)}
@@ -589,16 +598,22 @@ class GasRetentionSimulator extends React.Component {
         this.setState({selectedGas: activeGasId});
     }
     onGasBarDragStart(e) {
+        if (this.state.isPlaying) {
+            return;
+        }
+
         const activeGasId = forceNumber(e.target.name);
-        //this.dragStartPos = e.data.getLocalPosition(this.app.stage).y;
         this.setState({draggingGas: activeGasId});
     }
     onGasBarDragEnd() {
-        //this.dragStartPos = null;
+        if (this.state.isPlaying) {
+            return;
+        }
+
         this.setState({draggingGas: null});
     }
     onGasBarMove(e) {
-        if (this.state.draggingGas === null) {
+        if (this.state.draggingGas === null || this.state.isPlaying) {
             return;
         }
 
@@ -625,6 +640,12 @@ class GasRetentionSimulator extends React.Component {
         } else {
             this.setState({isPlaying: false});
         }
+    }
+
+    onParticleCountUpdated(idx, newProportion) {
+        const gasProportions = this.state.gasProportions.slice();
+        gasProportions[idx] = newProportion;
+        this.setState({gasProportions: gasProportions});
     }
 
     handleInputChange(event) {
