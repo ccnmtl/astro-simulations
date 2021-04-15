@@ -31,7 +31,7 @@
     "d3-drag": "~2.0.0",
     "d3-path": "^2.0.0",
     "eslint-plugin-security": "^1.4.0",
-    "matter-js": "^0.16.1",
+    "matter-js": "^0.17.1",
     "pixi.js": "~6.0.0",
     "react": "~17.0.1",
     "react-dom": "~17.0.1",
