@@ -34,16 +34,38 @@ export default class Chamber extends React.Component {
 
     removeEscapedParticles() {
         const me = this;
-        this.particles.forEach(function(p, idx, array) {
-            if (
-                p.collisionFilter.category === 0 &&
-                    me.isOutOfBounds(p.position)
-            ) {
-                // If this particle is set to leave the scene, and
-                // it's already left the scene, remove it from the
-                // world and this array.
-                Matter.World.remove(me.engine.world, p);
-                array.splice(idx, 1);
+
+        // Record the current particle counts in this callback, to
+        // make it easy to determine whether any have escaped, based
+        // on the criteria below.
+        const currentParticleCounts = [null, null, null];
+        this.particles.forEach(function(gasParticles, idx) {
+            currentParticleCounts[idx] = gasParticles.length;
+        });
+
+        this.particles.forEach(function(gasParticles) {
+            gasParticles.forEach(function(p, idx, array) {
+                if (
+                    p.collisionFilter.category === 0 &&
+                        me.isOutOfBounds(p.position)
+                ) {
+                    // If this particle is set to leave the scene, and
+                    // it's already left the scene, remove it from the
+                    // world and this array.
+                    Matter.Composite.remove(me.engine.world, p);
+                    array.splice(idx, 1);
+                }
+            });
+        });
+
+        this.particles.forEach(function(gasParticles, idx) {
+            // If no particles escaped, we don't need to call
+            // onParticleCountUpdated.
+            if (currentParticleCounts[idx].length !== gasParticles.length) {
+                const proportion = gasParticles.length /
+                      me.initialParticleCounts[idx];
+
+                me.props.onParticleCountUpdated(idx, proportion * 100);
             }
         });
     }
@@ -96,6 +118,8 @@ export default class Chamber extends React.Component {
             const proportion = gasProportions[idx];
             const buckets = distributionBuckets[idx];
 
+            const p = [];
+
             buckets.forEach(function(bucket) {
                 // The number of particles to create for a given
                 // bucket depends on the pre-calculated distribution
@@ -104,10 +128,12 @@ export default class Chamber extends React.Component {
                     proportion / 100);
 
                 for (let i = 0; i < particleCount; i++) {
-                    particles.push(
+                    p.push(
                         me.makeParticle(gas, bucket.speed));
                 }
             });
+
+            particles[idx] = p;
         });
 
         return particles;
@@ -142,22 +168,38 @@ export default class Chamber extends React.Component {
     }
 
     refreshScene() {
+        const me = this;
+
         if (this.particles) {
-            Matter.World.remove(this.engine.world, this.particles);
+            this.particles.forEach(function(gasParticles) {
+                Matter.Composite.remove(me.engine.world, gasParticles);
+            });
         }
 
         const distributionBuckets = [];
-        const me = this;
+        const initialParticleCounts = [];
         this.props.activeGases.forEach(function(gas) {
-            distributionBuckets.push(me.generateBuckets(gas));
+            const buckets = me.generateBuckets(gas);
+
+            const totalParticles = buckets.reduce(
+                function(prev, cur) {
+                    return prev + cur.particleCount;
+                }, 0);
+
+            initialParticleCounts.push(totalParticles);
+            distributionBuckets.push(buckets);
         });
 
+        this.initialParticleCounts = initialParticleCounts;
         this.particles = this.drawParticles(
             this.props.activeGases,
             this.props.gasProportions,
             distributionBuckets);
 
-        Matter.World.add(this.engine.world, this.particles);
+        this.particles.forEach(function(gasParticles) {
+            Matter.Composite.add(me.engine.world, gasParticles);
+        });
+
     }
 
     drawBox() {
@@ -215,7 +257,7 @@ export default class Chamber extends React.Component {
         const Engine = Matter.Engine,
               Render = Matter.Render,
               Runner = Matter.Runner,
-              World = Matter.World;
+              Composite = Matter.Composite;
 
         // create an engine
         const engine = Engine.create();
@@ -236,7 +278,7 @@ export default class Chamber extends React.Component {
 
         const box = this.drawBox();
 
-        World.add(engine.world, box);
+        Composite.add(engine.world, box);
 
         Render.lookAt(render, {
             min: { x: 0, y: 0 },
@@ -273,7 +315,11 @@ export default class Chamber extends React.Component {
 
         let counter = 0;
         Matter.Events.on(engine, 'afterUpdate', function(e) {
-            if (e.timestamp >= counter + 500) {
+            if (!me.props.allowEscape) {
+                return;
+            }
+
+            if (e.timestamp >= counter + 200) {
                 me.removeEscapedParticles();
                 counter = e.timestamp;
             }
@@ -285,9 +331,15 @@ export default class Chamber extends React.Component {
     componentDidUpdate(prevProps) {
         if (
             prevProps.activeGases !== this.props.activeGases ||
-                prevProps.gasProportions !== this.props.gasProportions ||
                 prevProps.temperature !== this.props.temperature
            ) {
+            this.refreshScene();
+        }
+
+        if (
+            !this.props.isPlaying &&
+                prevProps.gasProportions !== this.props.gasProportions
+        ) {
             this.refreshScene();
         }
 
@@ -300,22 +352,26 @@ export default class Chamber extends React.Component {
         if (prevProps.allowEscape !== this.props.allowEscape) {
             // Update all the particles' category to make them ignore
             // the walls.
-            this.particles.forEach(function(p) {
-                if (!me.props.allowEscape) {
-                    p.collisionFilter.category = 1;
-                } else if (p.molecularSpeed >= me.props.escapeSpeed) {
-                    p.collisionFilter.category = 0;
-                }
+            this.particles.forEach(function(gasParticles) {
+                gasParticles.forEach(function(p) {
+                    if (!me.props.allowEscape) {
+                        p.collisionFilter.category = 1;
+                    } else if (p.molecularSpeed >= me.props.escapeSpeed) {
+                        p.collisionFilter.category = 0;
+                    }
+                });
             });
         }
 
         if (prevProps.escapeSpeed !== this.props.escapeSpeed) {
-            this.particles.forEach(function(p) {
-                if (p.molecularSpeed >= me.props.escapeSpeed) {
-                    p.collisionFilter.category = 0;
-                } else {
-                    p.collisionFilter.category = 1;
-                }
+            this.particles.forEach(function(gasParticles) {
+                gasParticles.forEach(function(p) {
+                    if (p.molecularSpeed >= me.props.escapeSpeed) {
+                        p.collisionFilter.category = 0;
+                    } else {
+                        p.collisionFilter.category = 1;
+                    }
+                });
             });
         }
     }
@@ -337,5 +393,6 @@ Chamber.propTypes = {
     isPlaying: PropTypes.bool.isRequired,
     allowEscape: PropTypes.bool.isRequired,
     escapeSpeed: PropTypes.number.isRequired,
-    temperature: PropTypes.number.isRequired
+    temperature: PropTypes.number.isRequired,
+    onParticleCountUpdated: PropTypes.func.isRequired
 };
