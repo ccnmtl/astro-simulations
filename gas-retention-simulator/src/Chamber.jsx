@@ -15,6 +15,28 @@ const isParticleAboveEscapeSpeed = function(particle, escapeSpeed) {
     return molecularSpeed >= escapeSpeed;
 };
 
+/**
+ * Adjust the velocity of a particle based on the initial speed we
+ * assigned it, to make sure it doesn't lose energy.
+ *
+ * Based on:
+ *   https://jsfiddle.net/xaLtoc2g/
+ */
+const adjustE = function(p) {
+    const baseSpeed = p.molecularSpeed * PARTICLE_SPEED;
+
+    if (p.speed !== 0) {
+        let speedMultiplier = baseSpeed / p.speed;
+
+        Matter.Body.setVelocity(
+            p, {
+                x: p.velocity.x * speedMultiplier,
+                y: p.velocity.y * speedMultiplier
+            }
+        );
+    }
+};
+
 export default class Chamber extends React.Component {
     constructor(props) {
         super(props);
@@ -108,6 +130,8 @@ export default class Chamber extends React.Component {
         } else {
             p.collisionFilter.category = 1;
         }
+
+        p.molecularSpeed = molecularSpeed;
 
         const direction = Math.random() * Math.PI * 2;
         Matter.Body.setVelocity(p, {
@@ -320,15 +344,28 @@ export default class Chamber extends React.Component {
             ctx.stroke();
         });
 
-        let counter = 0;
+        let counter0 = 0;
+        Matter.Events.on(engine, 'beforeUpdate', function(e) {
+            if (e.timestamp >= counter0 + 500) {
+                me.particles.forEach(function(gasParticles) {
+                    gasParticles.forEach(function(p) {
+                        adjustE(p);
+                    });
+                });
+
+                counter0 = e.timestamp;
+            }
+        });
+
+        let counter1 = 0;
         Matter.Events.on(engine, 'afterUpdate', function(e) {
             if (!me.props.allowEscape) {
                 return;
             }
 
-            if (e.timestamp >= counter + 200) {
+            if (e.timestamp >= counter1 + 200) {
                 me.removeEscapedParticles();
-                counter = e.timestamp;
+                counter1 = e.timestamp;
             }
         });
 
