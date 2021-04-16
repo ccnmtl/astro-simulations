@@ -6,6 +6,7 @@ import Cursor from './Cursor';
 import {toPaddedHexString, hexToRgb, maxwellPDF} from '../utils';
 
 const RIGHT_PADDING = 15;
+const WIDTH = 460;
 
 // Returns a function that "scales" X coordinates from the data to fit
 // the chart.
@@ -18,12 +19,36 @@ const xScale = function(props) {
     return scaleFunc;
 };
 
+const getYDomain = function(gases, temperature) {
+    let maxY = 0;
+    gases.forEach(function(gas) {
+        for (let i=0; i < 2000; i += 100) {
+            let y = maxwellPDF(
+                i / (WIDTH / 1.5),
+                gas.mass,
+                temperature
+            ) * 75;
+
+            if (y > maxY) {
+                maxY = y;
+            }
+        };
+    });
+
+    if (maxY > 0) {
+        return maxY + 20;
+    }
+
+    return 200;
+};
+
 const yScale = function(props) {
     return d3
         .scaleLinear()
-        .domain([0, 200])
+        .domain([0, getYDomain(props.activeGases, props.temperature)])
         .range([props.padding, props.height]);
 };
+
 
 export default class Plot extends React.Component {
     constructor(props) {
@@ -37,7 +62,6 @@ export default class Plot extends React.Component {
 
         this.plot = React.createRef();
 
-        this.width = 460;
         this.height = 280;
         this._a = 1;
         //this._xscale = this._yscale = 1;
@@ -45,7 +69,7 @@ export default class Plot extends React.Component {
         this._xMax = 2000;
 
         this.__yScale = -600;
-        this.__xScale = (this.width / this._xMax);
+        this.__xScale = (WIDTH / this._xMax);
 
         this.temperature = 300;
 
@@ -73,22 +97,22 @@ export default class Plot extends React.Component {
 
             for (let i=0; i < 2000; i += 5) {
                 let y = maxwellPDF(
-                    i / (me.width / 1.5),
+                    i / (WIDTH / 1.5),
                     gas.mass,
                     me.props.temperature
                 ) * 75;
 
                 y *= (proportion / 100);
 
+                if (isSelected) {
+                    rawPoints.push([i, y]);
+                }
+
                 const point = [
                     xscale(i),
                     (me.height - yscale(y)) - me.props.padding
                 ];
                 points.push(point);
-
-                if (isSelected) {
-                    rawPoints.push([i, y]);
-                }
             }
 
             if (isSelected) {
