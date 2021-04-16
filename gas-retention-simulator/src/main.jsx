@@ -341,6 +341,7 @@ class GasRetentionSimulator extends React.Component {
                             </table>
 
                             <button className="btn btn-sm btn-secondary"
+                                    disabled={this.state.isPlaying}
                                     onClick={this.onResetProportionsClick.bind(this)}>
                                 Reset proportions
                             </button>

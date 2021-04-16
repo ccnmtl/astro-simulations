@@ -4,6 +4,39 @@ import Matter from 'matter-js';
 import Color from 'color';
 import {maxwellPDF} from './utils';
 
+// Speed constant used to convert between matter.js speed and meters
+// per second (m/s)
+const PARTICLE_SPEED = 0.05;
+
+const isParticleAboveEscapeSpeed = function(particle, escapeSpeed) {
+    // Convert matter.js speed back to the meters per second (m/s)
+    // unit we're using in the graph.
+    const molecularSpeed = particle.speed / PARTICLE_SPEED;
+    return molecularSpeed >= escapeSpeed;
+};
+
+/**
+ * Adjust the velocity of a particle based on the initial speed we
+ * assigned it, to make sure it doesn't lose energy.
+ *
+ * Based on:
+ *   https://jsfiddle.net/xaLtoc2g/
+ */
+const adjustE = function(p) {
+    const baseSpeed = p.molecularSpeed * PARTICLE_SPEED;
+
+    if (p.speed !== 0) {
+        let speedMultiplier = baseSpeed / p.speed;
+
+        Matter.Body.setVelocity(
+            p, {
+                x: p.velocity.x * speedMultiplier,
+                y: p.velocity.y * speedMultiplier
+            }
+        );
+    }
+};
+
 export default class Chamber extends React.Component {
     constructor(props) {
         super(props);
@@ -90,21 +123,20 @@ export default class Chamber extends React.Component {
 
         Matter.Body.setInertia(p, Infinity);
 
-        // Used for the escape speed feature, not by matter.js.
-        p.molecularSpeed = molecularSpeed;
         if (this.props.allowEscape &&
-            p.molecularSpeed >= this.props.escapeSpeed
+            isParticleAboveEscapeSpeed(p, this.props.escapeSpeed)
            ) {
             p.collisionFilter.category = 0;
         } else {
             p.collisionFilter.category = 1;
         }
 
-        p.direction = Math.random() * Math.PI * 2;
-        const speedConstant = 0.05;
+        p.molecularSpeed = molecularSpeed;
+
+        const direction = Math.random() * Math.PI * 2;
         Matter.Body.setVelocity(p, {
-            x: Math.sin(p.direction) * (speedConstant * molecularSpeed),
-            y: Math.cos(p.direction) * (speedConstant * -molecularSpeed)
+            x: Math.sin(direction) * (PARTICLE_SPEED * molecularSpeed),
+            y: Math.cos(direction) * (PARTICLE_SPEED * -molecularSpeed)
         });
 
         return p;
@@ -202,7 +234,7 @@ export default class Chamber extends React.Component {
 
     }
 
-    drawBox() {
+    drawWalls() {
         const Bodies = Matter.Bodies;
         const margin = this.margin;
         const wallOptions = {
@@ -276,9 +308,8 @@ export default class Chamber extends React.Component {
             }
         });
 
-        const box = this.drawBox();
-
-        Composite.add(engine.world, box);
+        const walls = this.drawWalls();
+        Composite.add(engine.world, walls);
 
         Render.lookAt(render, {
             min: { x: 0, y: 0 },
@@ -313,15 +344,28 @@ export default class Chamber extends React.Component {
             ctx.stroke();
         });
 
-        let counter = 0;
+        let counter0 = 0;
+        Matter.Events.on(engine, 'beforeUpdate', function(e) {
+            if (e.timestamp >= counter0 + 500) {
+                me.particles.forEach(function(gasParticles) {
+                    gasParticles.forEach(function(p) {
+                        adjustE(p);
+                    });
+                });
+
+                counter0 = e.timestamp;
+            }
+        });
+
+        let counter1 = 0;
         Matter.Events.on(engine, 'afterUpdate', function(e) {
             if (!me.props.allowEscape) {
                 return;
             }
 
-            if (e.timestamp >= counter + 200) {
+            if (e.timestamp >= counter1 + 200) {
                 me.removeEscapedParticles();
-                counter = e.timestamp;
+                counter1 = e.timestamp;
             }
         });
 
@@ -356,7 +400,9 @@ export default class Chamber extends React.Component {
                 gasParticles.forEach(function(p) {
                     if (!me.props.allowEscape) {
                         p.collisionFilter.category = 1;
-                    } else if (p.molecularSpeed >= me.props.escapeSpeed) {
+                    } else if (
+                        isParticleAboveEscapeSpeed(p, me.props.escapeSpeed)
+                    ) {
                         p.collisionFilter.category = 0;
                     }
                 });
@@ -366,7 +412,7 @@ export default class Chamber extends React.Component {
         if (prevProps.escapeSpeed !== this.props.escapeSpeed) {
             this.particles.forEach(function(gasParticles) {
                 gasParticles.forEach(function(p) {
-                    if (p.molecularSpeed >= me.props.escapeSpeed) {
+                    if (isParticleAboveEscapeSpeed(p, me.props.escapeSpeed)) {
                         p.collisionFilter.category = 0;
                     } else {
                         p.collisionFilter.category = 1;
