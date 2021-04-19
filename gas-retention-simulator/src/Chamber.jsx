@@ -11,7 +11,15 @@ const PARTICLE_SPEED = 0.05;
 const isParticleAboveEscapeSpeed = function(particle, escapeSpeed) {
     // Convert matter.js speed back to the meters per second (m/s)
     // unit we're using in the graph.
-    const molecularSpeed = particle.speed / PARTICLE_SPEED;
+    let molecularSpeed = particle.speed / PARTICLE_SPEED;
+
+    // If the particle's current speed is 0, that means it hasn't
+    // started moving yet. In this case, just use the molecularSpeed
+    // we've assigned it on creation.
+    if (particle.speed === 0) {
+        molecularSpeed = particle.molecularSpeed;
+    }
+
     return molecularSpeed >= escapeSpeed;
 };
 
@@ -122,6 +130,7 @@ export default class Chamber extends React.Component {
             });
 
         Matter.Body.setInertia(p, Infinity);
+        p.molecularSpeed = molecularSpeed;
 
         if (this.props.allowEscape &&
             isParticleAboveEscapeSpeed(p, this.props.escapeSpeed)
@@ -130,8 +139,6 @@ export default class Chamber extends React.Component {
         } else {
             p.collisionFilter.category = 1;
         }
-
-        p.molecularSpeed = molecularSpeed;
 
         const direction = Math.random() * Math.PI * 2;
         Matter.Body.setVelocity(p, {
