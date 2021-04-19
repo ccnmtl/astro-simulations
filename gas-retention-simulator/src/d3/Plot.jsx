@@ -115,6 +115,11 @@ export default class Plot extends React.Component {
                 points.push(point);
             }
 
+            points.push([
+                WIDTH - RIGHT_PADDING + 2,
+                me.height - (me.props.padding * 2)
+            ]);
+
             if (isSelected) {
                 me.setState({selectedGasPoints: rawPoints});
             }
@@ -134,6 +139,15 @@ export default class Plot extends React.Component {
                 .attr('stroke', color)
                 .attr('fill', fillColor);
         });
+
+        d3.select(me.plot.current)
+            .append('rect')
+            .attr('x', WIDTH - RIGHT_PADDING - 1)
+            .attr('y', 20)
+            .attr('width', 16)
+            .attr('height', this.height - (this.props.padding * 2) - 20)
+            .attr('stroke', 'white')
+            .attr('fill', 'white');
     }
     render() {
         const props = this.props;
