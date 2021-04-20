@@ -40,9 +40,7 @@ class Line extends React.Component {
             line = d3
                 .line()
                 .x(function(d) {
-                    const xPos = x(
-                        (d[0] + me.props.offset) / me.props.width
-                    );
+                    const xPos = x(d[0] / me.props.width);
                     return xPos;
                 })
                 .y(function(d) {
