@@ -1,0 +1,95 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/eclipsing-binary-simulator"
+  schedule:
+    interval: daily
+    time: "10:00"
+  open-pull-requests-limit: 10
+  versioning-strategy: increase-if-necessary
+  ignore:
+  - dependency-name: webpack
+    versions:
+    - 5.20.0
+    - 5.31.1
+    - 5.34.0
+- package-ecosystem: npm
+  directory: "/exoplanet-transit-simulator"
+  schedule:
+    interval: daily
+    time: "10:00"
+  open-pull-requests-limit: 10
+  versioning-strategy: increase-if-necessary
+  ignore:
+  - dependency-name: webpack
+    versions:
+    - 5.20.0
+    - 5.34.0
+  - dependency-name: react-dom
+    versions:
+    - 17.0.1
+  - dependency-name: react
+    versions:
+    - 17.0.1
+- package-ecosystem: npm
+  directory: "/gas-retention-simulator"
+  schedule:
+    interval: daily
+    time: "10:00"
+  open-pull-requests-limit: 10
+  versioning-strategy: increase-if-necessary
+  ignore:
+  - dependency-name: webpack
+    versions:
+    - 5.20.0
+    - 5.34.0
+  - dependency-name: matter-js
+    versions:
+    - 0.17.0
+- package-ecosystem: npm
+  directory: "/lunar-phase-simulator"
+  schedule:
+    interval: daily
+    time: "10:00"
+  open-pull-requests-limit: 10
+  versioning-strategy: increase-if-necessary
+  ignore:
+  - dependency-name: webpack
+    versions:
+    - 5.34.0
+  - dependency-name: pixi.js
+    versions:
+    - 6.0.0
+    - 6.0.1
+- package-ecosystem: npm
+  directory: "/small-angle-demo"
+  schedule:
+    interval: daily
+    time: "10:00"
+  open-pull-requests-limit: 10
+  versioning-strategy: increase-if-necessary
+  ignore:
+  - dependency-name: webpack
+    versions:
+    - 5.20.0
+    - 5.34.0
+  - dependency-name: pixi.js
+    versions:
+    - 6.0.0
+    - 6.0.1
+- package-ecosystem: npm
+  directory: "/sun-motion-simulator"
+  schedule:
+    interval: daily
+    time: "10:00"
+  open-pull-requests-limit: 10
+  versioning-strategy: increase-if-necessary
+  ignore:
+  - dependency-name: webpack
+    versions:
+    - 5.20.0
+    - 5.34.0
+  - dependency-name: pixi.js
+    versions:
+    - 6.0.0
+    - 6.0.1
