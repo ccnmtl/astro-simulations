@@ -7,7 +7,7 @@ import {FXAAShader} from 'three/examples/jsm/shaders/FXAAShader.js';
 import {EffectComposer} from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import {RenderPass} from 'three/examples/jsm/postprocessing/RenderPass.js';
 import {ShaderPass} from 'three/examples/jsm/postprocessing/ShaderPass.js';
-import {getEqnOfTime, getPosition, getTime} from './utils';
+import {getDayOfYear, getEqnOfTime, getPosition, getTime} from './utils';
 import MutedColorsShader from './shaders/MutedColorsShader';
 
 /**
@@ -286,14 +286,16 @@ export default class CelestialSphere extends React.Component {
 
             this.orbitGroup.rotation.y = sunRotation;
             this.sunOrbitGroup.rotation.y = sunRotation;
-            this.eclipticOrbitGroup.rotation.y =
-                sunRotation - THREE.Math.degToRad(10);
         }
 
         if (prevProps.dateTime !== this.props.dateTime) {
             const time = getTime(this.props.dateTime);
             this.analemma.rotation.y = (-time * 2 * Math.PI) +
                 (Math.PI / 2);
+            const sunRotation = hourAngleToRadians(this.props.hourAngle);
+
+            this.eclipticOrbitGroup.rotation.y = THREE.Math.degToRad(
+                ((getDayOfYear(this.props.dateTime) / 365.24) * -360) + 141) + sunRotation;
         }
 
         if (prevProps.sunDeclination !== this.props.sunDeclination ||
@@ -301,6 +303,7 @@ export default class CelestialSphere extends React.Component {
         ) {
             const declinationRad = this.getSunDeclinationRadius(
                 this.props.sunDeclination);
+
             this.sun.position.x = declinationRad * Math.cos(
                 -THREE.Math.degToRad(90));
             this.sun.position.z = declinationRad * Math.sin(
@@ -309,12 +312,7 @@ export default class CelestialSphere extends React.Component {
                 this.props.sunDeclination);
             this.sun.rotation.x = this.props.sunDeclination;
 
-            this.light.position.x = declinationRad * Math.cos(
-                -THREE.Math.degToRad(90));
-            this.light.position.z = declinationRad * Math.sin(
-                -THREE.Math.degToRad(90));
-            this.light.position.y = THREE.Math.radToDeg(
-                this.props.sunDeclination);
+            this.light.position.copy(this.sun.position)
             this.light.rotation.x = this.props.sunDeclination;
 
             if (this.props.showDeclinationCircle) {
@@ -326,6 +324,7 @@ export default class CelestialSphere extends React.Component {
                     declinationRad - this.visualLineGap, 0.3, 16, 64);
                 this.sunDeclination.geometry.rotateX(THREE.Math.degToRad(90));
             }
+
         }
 
         if (prevState.mouseoverSun !== this.state.mouseoverSun) {
@@ -623,7 +622,7 @@ export default class CelestialSphere extends React.Component {
                         text.position.z = -1;
                         text.rotation.x = -Math.PI / 2;
                         text.rotation.y = -angle
-                                        + (Math.PI / 2) + (Math.PI / 48);
+                            + (Math.PI / 2) + (Math.PI / 48);
 
                         textGroup.add(text);
                     }
