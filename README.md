@@ -43,6 +43,7 @@ Here are some blog posts I've made about these simulations:
 * [How to make an analog clock (Part 1)](https://www.columbia.edu/~njn2118/journal/2018/9/27.html)
 * [How to work with Planes in three.js](https://compiled.ctl.columbia.edu/articles/planes-in-threejs/)
 * [How to make a draggable dialog box in JavaScript](https://www.columbia.edu/~njn2118/journal/2019/4/26.html)
+* [How to Simulate Gas Particles With Matter.js](https://compiled.ctl.columbia.edu/articles/how-to-simulate-gas-particles-with-matterjs/)
 
 There's also the [Conversion Guide](https://ccnmtl.github.io/astro-simulations/docs/conversion-guide.html)
  that documents how to put together a new interactive.
