@@ -698,27 +698,26 @@ export default class CelestialSphere extends React.Component {
         const n = 200;
         const a = this.initAnalemmaArray(n);
 
-        const AnalemmaCurve = function(scale) {
-            THREE.Curve.call(this);
-            this.scale = (scale === undefined) ? 1 : scale;
-        };
+        class AnalemmaCurve extends THREE.Curve {
+            constructor(scale){
+                super();
+                this.scale = scale ?? 1;
+            }
 
-        AnalemmaCurve.prototype = Object.create(THREE.Curve.prototype);
-        AnalemmaCurve.prototype.constructor = AnalemmaCurve;
-
-        AnalemmaCurve.prototype.getPoint = function(t) {
-            const idx = Math.round(t * (n - 1));
-            const v = a[parseInt(idx)];
-
-            // The curve is invisible unless you use 't' somewhere in
-            // the vector co-ordinates. I don't know why this is
-            // happening. I'm sure there's a better way to work around
-            // this, but for now, just add a really small value based on
-            // t to x.
-            const w = t / 99999999;
-            return new THREE.Vector3(v.x + w, 1.15 * v.z, 1.2 * v.y)
-                            .multiplyScalar(this.scale);
-        };
+            getPoint(t) {
+                const idx = Math.round(t * (n - 1));
+                const v = a[parseInt(idx)];
+    
+                // The curve is invisible unless you use 't' somewhere in
+                // the vector co-ordinates. I don't know why this is
+                // happening. I'm sure there's a better way to work around
+                // this, but for now, just add a really small value based on
+                // t to x.
+                const w = t / 99999999;
+                return new THREE.Vector3(v.x + w, 1.15 * v.z, 1.2 * v.y)
+                                .multiplyScalar(this.scale);
+            };
+        }
 
         const path = new AnalemmaCurve(49);
         const geometry = new THREE.TubeBufferGeometry(
