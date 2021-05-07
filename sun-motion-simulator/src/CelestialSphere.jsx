@@ -700,11 +700,11 @@ export default class CelestialSphere extends React.Component {
 
         class AnalemmaCurve extends THREE.Curve {
             constructor(scale){
-                super()
+                super();
                 this.scale = scale ?? 1;
             }
 
-            getPoint = t => {
+            getPoint(t) {
                 const idx = Math.round(t * (n - 1));
                 const v = a[parseInt(idx)];
     
