@@ -706,7 +706,7 @@ export default class CelestialSphere extends React.Component {
             getPoint(t) {
                 const idx = Math.round(t * (n - 1));
                 const v = a[parseInt(idx)];
-    
+
                 // The curve is invisible unless you use 't' somewhere in
                 // the vector co-ordinates. I don't know why this is
                 // happening. I'm sure there's a better way to work around
@@ -715,7 +715,7 @@ export default class CelestialSphere extends React.Component {
                 const w = t / 99999999;
                 return new THREE.Vector3(v.x + w, 1.15 * v.z, 1.2 * v.y)
                                 .multiplyScalar(this.scale);
-            };
+            }
         }
 
         const path = new AnalemmaCurve(49);
