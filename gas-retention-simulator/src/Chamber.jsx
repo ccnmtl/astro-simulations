@@ -23,6 +23,22 @@ const isParticleAboveEscapeSpeed = function(particle, escapeSpeed) {
     return molecularSpeed >= escapeSpeed;
 };
 
+
+/**
+ * Scan the given particles and let the appropriate ones escape.
+ */
+const letParticlesEscape = function(particles, escapeSpeed) {
+    particles.forEach(function(gasParticles) {
+        gasParticles.forEach(function(p) {
+            if (isParticleAboveEscapeSpeed(p, escapeSpeed)) {
+                p.collisionFilter.category = 0;
+            } else {
+                p.collisionFilter.category = 1;
+            }
+        });
+    });
+};
+
 /**
  * Adjust the velocity of a particle based on the initial speed we
  * assigned it, to make sure it doesn't lose energy.
@@ -43,6 +59,18 @@ const adjustE = function(p) {
             }
         );
     }
+};
+
+const updateParticleSpeed = function(p, molecularSpeed) {
+    p.molecularSpeed = molecularSpeed;
+
+    const baseSpeed = p.molecularSpeed * PARTICLE_SPEED;
+    let speedMultiplier = baseSpeed / p.speed;
+
+    Matter.Body.setVelocity(p, {
+        x: p.velocity.x * speedMultiplier,
+        y: p.velocity.y * speedMultiplier
+    });
 };
 
 export default class Chamber extends React.Component {
@@ -111,6 +139,60 @@ export default class Chamber extends React.Component {
         });
     }
 
+    /**
+     * Update particle speeds based on the new proportion, and the
+     * original distribution bucket.
+     */
+    updateParticleSpeeds(particles, distributionBucket, proportion) {
+        let pIdx = 0;
+        distributionBucket.forEach(function(bucket) {
+            const particlesAtThisSpeed = Math.round(
+                bucket.particleCount * (proportion / 100)
+            );
+
+            // If there are some particles set to this speed bucket,
+            // update the particles array.
+            if (particlesAtThisSpeed > 0) {
+                let i = 0;
+                for (i; i < particlesAtThisSpeed; i++) {
+                    const idx = pIdx + i;
+                    if (idx > particles.length) {
+                        console.error('particle idx error h:',
+                                      pIdx, i, particles.length);
+                        continue;
+                    }
+                    const p = particles[pIdx + i];
+                    if (p) {
+                        updateParticleSpeed(p, bucket.speed);
+                    } else {
+                        console.error('particle idx error:', p, pIdx, i);
+                    }
+                }
+                pIdx += particlesAtThisSpeed;
+            }
+        });
+
+        return particles;
+    }
+
+    /**
+     * Adjust each particle's speed to keep the distributions even as
+     * they escape.
+     */
+    refreshParticleSpeedDistribution() {
+        const me = this;
+        this.particles.forEach(function(gasParticles, idx) {
+            const gasParticleCount = gasParticles.length;
+            const initialCount = me.initialParticleCounts[idx];
+            if (initialCount !== gasParticleCount) {
+                me.updateParticleSpeeds(
+                    gasParticles,
+                    me.distributionBuckets[idx],
+                    me.props.gasProportions[idx]);
+            }
+        });
+    }
+
     makeParticle(gas, molecularSpeed) {
         const particleMargin = this.margin + 10;
         const particleColor = Color(gas.color);
@@ -141,6 +223,7 @@ export default class Chamber extends React.Component {
         }
 
         const direction = Math.random() * Math.PI * 2;
+        p.direction = direction;
         Matter.Body.setVelocity(p, {
             x: Math.sin(direction) * (PARTICLE_SPEED * molecularSpeed),
             y: Math.cos(direction) * (PARTICLE_SPEED * -molecularSpeed)
@@ -167,6 +250,40 @@ export default class Chamber extends React.Component {
                     proportion / 100);
 
                 for (let i = 0; i < particleCount; i++) {
+                    p.push(
+                        me.makeParticle(gas, bucket.speed));
+                }
+            });
+
+            particles[idx] = p;
+        });
+
+        return particles;
+    }
+
+    /**
+     * Adjust each particle's speed to keep the distributions even as
+     * they escape.
+     */
+    updateParticles(activeGases=[], gasProportions=[], distributionBuckets) {
+        const me = this;
+        const particles = [];
+
+        activeGases.forEach(function(gas, idx) {
+            const proportion = gasProportions[idx];
+            const buckets = distributionBuckets[idx];
+
+            const p = [];
+
+            buckets.forEach(function(bucket) {
+                // The number of particles to create for a given
+                // bucket depends on the pre-calculated distribution
+                // bucket as well as this gas's proportion state.
+                const particleCount = bucket.particleCount * (
+                    proportion / 100);
+
+                for (let i = 0; i < particleCount; i++) {
+
                     p.push(
                         me.makeParticle(gas, bucket.speed));
                 }
@@ -215,7 +332,7 @@ export default class Chamber extends React.Component {
             });
         }
 
-        const distributionBuckets = [];
+        this.distributionBuckets = [];
         const initialParticleCounts = [];
         this.props.activeGases.forEach(function(gas) {
             const buckets = me.generateBuckets(gas);
@@ -226,14 +343,14 @@ export default class Chamber extends React.Component {
                 }, 0);
 
             initialParticleCounts.push(totalParticles);
-            distributionBuckets.push(buckets);
+            me.distributionBuckets.push(buckets);
         });
 
         this.initialParticleCounts = initialParticleCounts;
         this.particles = this.drawParticles(
             this.props.activeGases,
             this.props.gasProportions,
-            distributionBuckets);
+            this.distributionBuckets);
 
         this.particles.forEach(function(gasParticles) {
             Matter.Composite.add(me.engine.world, gasParticles);
@@ -364,19 +481,21 @@ export default class Chamber extends React.Component {
             }
         });
 
+        this.refreshScene();
+
         let counter1 = 0;
         Matter.Events.on(engine, 'afterUpdate', function(e) {
-            if (!me.props.allowEscape) {
-                return;
-            }
-
             if (e.timestamp >= counter1 + 200) {
-                me.removeEscapedParticles();
+                if (me.props.allowEscape) {
+                    me.removeEscapedParticles();
+                    letParticlesEscape(me.particles, me.props.escapeSpeed);
+                }
+
+                me.refreshParticleSpeedDistribution();
+
                 counter1 = e.timestamp;
             }
         });
-
-        this.refreshScene();
     }
 
     componentDidUpdate(prevProps) {
@@ -416,16 +535,10 @@ export default class Chamber extends React.Component {
             });
         }
 
-        if (prevProps.escapeSpeed !== this.props.escapeSpeed) {
-            this.particles.forEach(function(gasParticles) {
-                gasParticles.forEach(function(p) {
-                    if (isParticleAboveEscapeSpeed(p, me.props.escapeSpeed)) {
-                        p.collisionFilter.category = 0;
-                    } else {
-                        p.collisionFilter.category = 1;
-                    }
-                });
-            });
+        if (this.props.allowEscape &&
+            prevProps.escapeSpeed !== this.props.escapeSpeed
+           ) {
+            letParticlesEscape(this.particles, this.props.escapeSpeed);
         }
     }
 
