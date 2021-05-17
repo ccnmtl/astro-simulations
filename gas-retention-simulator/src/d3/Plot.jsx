@@ -8,6 +8,13 @@ import {toPaddedHexString, hexToRgb, maxwellPDF} from '../utils';
 const RIGHT_PADDING = 15;
 const WIDTH = 460;
 
+// http://bl.ocks.org/eesur/4e0a69d57d3bfc8a82c2
+d3.selection.prototype.moveToFront = function() {
+    return this.each(function() {
+        this.parentNode.appendChild(this);
+    });
+};
+
 // Returns a function that "scales" X coordinates from the data to fit
 // the chart.
 const xScale = function(props) {
@@ -148,6 +155,9 @@ export default class Plot extends React.Component {
             .attr('height', this.height - (this.props.padding * 2) - 20)
             .attr('stroke', 'white')
             .attr('fill', 'white');
+
+        // Keep the cursor at the front
+        d3.select('g.cursor-container').moveToFront();
     }
     render() {
         const props = this.props;
