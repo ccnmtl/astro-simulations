@@ -60,7 +60,7 @@ export default class Cursor extends React.Component {
             this.props.selectedGasPoints,
             this.state.xPos);
 
-        return <React.Fragment>
+        return <g className="cursor-container">
                    <line
                        x1={xPos}
                        y1={this.props.padding}
@@ -100,7 +100,7 @@ export default class Cursor extends React.Component {
                         of {selectedGasSymbol} moves faster
                     </text>
                    }
-        </React.Fragment>;
+        </g>;
     }
     componentDidUpdate(prevProps) {
         if (prevProps.showCursor !== this.props.showCursor) {
