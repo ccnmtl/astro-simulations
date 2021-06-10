@@ -27,7 +27,7 @@
   "dependencies": {
     "babel-cli": "^6.26.0",
     "d3": "~6.7.0",
-    "d3-drag": "~2.0.0",
+    "d3-drag": "~3.0.0",
     "eslint-plugin-security": "^1.4.0",
     "pixi.js": "~6.0.0",
     "react": "~17.0.1",
