@@ -157,15 +157,11 @@ export default class Chamber extends React.Component {
                 for (i; i < particlesAtThisSpeed; i++) {
                     const idx = pIdx + i;
                     if (idx > particles.length) {
-                        console.error('particle idx error h:',
-                                      pIdx, i, particles.length);
                         continue;
                     }
                     const p = particles[pIdx + i];
                     if (p) {
                         updateParticleSpeed(p, bucket.speed);
-                    } else {
-                        console.error('particle idx error:', p, pIdx, i);
                     }
                 }
                 pIdx += particlesAtThisSpeed;
