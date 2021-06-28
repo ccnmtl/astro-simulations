@@ -645,7 +645,12 @@ class GasRetentionSimulator extends React.Component {
 
     onParticleCountUpdated(idx, newProportion) {
         const gasProportions = this.state.gasProportions.slice();
-        gasProportions[idx] = newProportion;
+
+        // On this event, the proportion should never grow, only
+        // shrink. Make sure of that by constraining the new value.
+        gasProportions[idx] = Math.min(
+            newProportion, this.state.gasProportions[idx]);
+
         this.setState({gasProportions: gasProportions});
     }
 
