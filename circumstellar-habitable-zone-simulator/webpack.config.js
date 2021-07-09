@@ -11,15 +11,7 @@ module.exports = {
     },
     resolve: {
         extensions: ['*', '.js', '.jsx'],
-        alias: {
-            'three/CopyShader': path.join(__dirname, 'node_modules/three/examples/js/shaders/CopyShader.js')
-        }
     },
-    plugins: [
-        new webpack.ProvidePlugin({
-            'THREE': 'three'
-        })
-    ],
     module: {
         rules: [
             {
