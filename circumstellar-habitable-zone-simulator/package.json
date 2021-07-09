@@ -1,0 +1,56 @@
+{
+  "name": "circumstellar-habitable-zone-simulator",
+  "version": "1.0.1",
+  "description": "Circumstellar Habitable Zone Simulator",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "test": "jest",
+    "serve": "webpack serve --mode development",
+    "dev": "webpack --mode development --watch",
+    "build": "webpack --mode production",
+    "eslint": "eslint src/*.js src/*.jsx"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ccnmtl/astro-simulations.git"
+  },
+  "keywords": [
+    "astronomy"
+  ],
+  "author": "Nick Buonincontri",
+  "license": "GPL-3.0+",
+  "bugs": {
+    "url": "https://github.com/ccnmtl/astro-simulations/issues"
+  },
+  "homepage": "https://github.com/ccnmtl/astro-simulations#readme",
+  "dependencies": {
+    "@babel/cli": "^7.5.5",
+    "eslint-plugin-security": "^1.4.0",
+    "pixi.js": "~6.0.4",
+    "react": "~17.0.1",
+    "react-dom": "~17.0.1",
+    "react-range-step-input": "^1.2.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "@babel/preset-react": "^7.0.0",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-eslint": "^10.0.0",
+    "babel-jest": "~27.0.2",
+    "babel-loader": "^8.0.0",
+    "eslint": "^7.0.0",
+    "eslint-plugin-react": "~7.24.0",
+    "jest": "~27.0.1",
+    "webpack": "^5.4.0",
+    "webpack-cli": "^4.0.0",
+    "webpack-dev-server": "^3.11.0"
+  },
+  "babel": {
+    "presets": [
+      "@babel/env",
+      "@babel/react"
+    ]
+  }
+}
