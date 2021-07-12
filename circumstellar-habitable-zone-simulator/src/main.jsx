@@ -5,6 +5,10 @@ import * as PIXI from 'pixi.js';
 import CSHZNav from './nav.js';
 import CSHZSettings from './diagram-settings.js';
 import CSHZStarProperties from './star-properties.js';
+import {
+    getLuminosityFromMass, getTempFromLuminosity, getRadiusFromTempAndLuminosity,
+    roundToTwoPlaces
+} from '../../eclipsing-binary-simulator/src/utils.js';
 
 class CircumstellarHabitableZoneSim extends React.Component {
     constructor(props) {
@@ -12,14 +16,19 @@ class CircumstellarHabitableZoneSim extends React.Component {
         this.initialState = {
             showScaleGrid: false,
             showSolarSystemOrbits: true,
-            activeStar: 0,
+            starMass: 1.0,
+            starLuminosity: 1.0,
+            starTemperature: 5700,
+            starRadius: 1.0,
+            planetDistance: 1.0,
         };
         this.state = this.initialState;
         this.cshzDiagram = React.createRef();
 
         this.handleShowScaleGrid = this.handleShowScaleGrid.bind(this);
         this.handleShowSolarSystemOrbits = this.handleShowSolarSystemOrbits.bind(this);
-
+        this.setStarMass = this.setStarMass.bind(this);
+        this.setPlanetDistance = this.setPlanetDistance.bind(this);
     }
 
     componentDidMount() {
@@ -46,6 +55,26 @@ class CircumstellarHabitableZoneSim extends React.Component {
             showSolarSystemOrbits: !state.showSolarSystemOrbits,
         }));
     }
+
+    setStarMass(starMass) {
+        // Given a star's mass, update luminosity, temp, and radius
+        const luminosity = getLuminosityFromMass(starMass);
+        const temp = getTempFromLuminosity(luminosity);
+        const radius = getRadiusFromTempAndLuminosity(temp, luminosity);
+        this.setState({
+            starMass: starMass,
+            starLuminosity: roundToTwoPlaces(luminosity),
+            starTemperature: Math.round(temp),
+            starRadius: roundToTwoPlaces(radius)
+        })
+    }
+
+    setPlanetDistance(distance) {
+        this.setState(() => ({
+            planetDistance: distance
+        }));
+    }
+
     render() {
         return(<>
             <CSHZNav />
@@ -62,7 +91,19 @@ class CircumstellarHabitableZoneSim extends React.Component {
                         />
                 </div>
                 <div className='col-9'>
-                    <CSHZStarProperties />
+                    <CSHZStarProperties 
+                        starMass={this.state.starMass}
+                        starLuminosity={this.state.starLuminosity}
+                        starTemperature={this.state.starTemperature}
+                        starRadius={this.state.starRadius}
+                        setStarMass={this.setStarMass}
+                        planetDistance={this.state.planetDistance}
+                        setPlanetDistance={this.setPlanetDistance} />
+                </div>
+            </div>
+            <div className='row mt-2'>
+                <div className='col-12'>
+                Timeline
                 </div>
             </div>
         </>);

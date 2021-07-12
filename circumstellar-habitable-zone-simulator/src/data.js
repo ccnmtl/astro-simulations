@@ -12,7 +12,7 @@
 //    planets[]: Planet;
 //}
 
-export const STAR_SYSTEMS = [
+const STAR_SYSTEMS = [
     {
         name: 'Sun',
         mass: 1.0,
@@ -70,3 +70,5 @@ export const STAR_SYSTEMS = [
         planets: []
     },
 ]
+
+export default STAR_SYSTEMS;
