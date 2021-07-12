@@ -11,6 +11,7 @@ JavaScript/HTML ports of the Flash originals, found here: [http://astro.unl.edu/
 * [Eclipsing Binary Simulator](https://ccnmtl.github.io/astro-simulations/eclipsing-binary-simulator/)
 * [Hydrogen Atom Simulator](https://ccnmtl.github.io/astro-simulations/hydrogen-atom-simulator/)
 * [Gas Retention Simulator](https://ccnmtl.github.io/astro-simulations/gas-retention-simulator/)
+* [Circumstellar Habitable Zone Simulator](https://ccnmtl.github.io/astro-simulations/circumstellar-habitable-zone-simulator/)
 
 ## Development guide
 
