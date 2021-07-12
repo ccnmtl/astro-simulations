@@ -1,7 +1,7 @@
 import React from 'react';
 import STAR_SYSTEMS from './data.js';
 import PropTypes from 'prop-types';
-import {NumericRangeInput} from './numeric-range-input.js';
+import {NumericRangeInput} from './numeric-range-input';
 
 export default class CSHZStarProperties extends React.Component {
     constructor(props) {

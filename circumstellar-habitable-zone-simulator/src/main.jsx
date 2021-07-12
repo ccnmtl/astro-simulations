@@ -2,9 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import * as PIXI from 'pixi.js';
 
-import CSHZNav from './nav.js';
-import CSHZSettings from './diagram-settings.js';
-import CSHZStarProperties from './star-properties.js';
+import CSHZNav from './nav';
+import CSHZSettings from './diagram-settings';
+import CSHZStarProperties from './star-properties';
 import {
     getLuminosityFromMass, getTempFromLuminosity, getRadiusFromTempAndLuminosity,
     roundToTwoPlaces
