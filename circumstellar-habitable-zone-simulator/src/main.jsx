@@ -1,19 +1,22 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import * as PIXI from 'pixi.js';
 
 import CSHZNav from './nav';
+import CSHZDiagram from './diagram';
 import CSHZSettings from './diagram-settings';
 import CSHZStarProperties from './star-properties';
 import {
     getLuminosityFromMass, getTempFromLuminosity, getRadiusFromTempAndLuminosity,
     roundToTwoPlaces
 } from '../../eclipsing-binary-simulator/src/utils.js';
+import STAR_SYSTEMS from './data';
+
 
 class CircumstellarHabitableZoneSim extends React.Component {
     constructor(props) {
         super(props);
         this.initialState = {
+            starSystem: 0,
             showScaleGrid: false,
             showSolarSystemOrbits: true,
             starMass: 1.0,
@@ -23,25 +26,12 @@ class CircumstellarHabitableZoneSim extends React.Component {
             planetDistance: 1.0,
         };
         this.state = this.initialState;
-        this.cshzDiagram = React.createRef();
 
         this.handleShowScaleGrid = this.handleShowScaleGrid.bind(this);
         this.handleShowSolarSystemOrbits = this.handleShowSolarSystemOrbits.bind(this);
         this.setStarMass = this.setStarMass.bind(this);
         this.setPlanetDistance = this.setPlanetDistance.bind(this);
-    }
-
-    componentDidMount() {
-        const app = new PIXI.Application({
-            backgroundColor: 0x000000,
-            width: this.cshzDiagram.current.clientWidth,
-            height: 300,
-            sharedLoader: true,
-            sharedTicker: true
-        });
-
-        this.app = app;
-        this.cshzDiagram.current.appendChild(app.view);
+        this.setStarSystem = this.setStarSystem.bind(this);
     }
 
     handleShowScaleGrid() {
@@ -75,11 +65,21 @@ class CircumstellarHabitableZoneSim extends React.Component {
         }));
     }
 
+    setStarSystem(idx) {
+        this.setState(() => ({
+            starSystem: idx,
+            starRadius: STAR_SYSTEMS[idx].radius
+        }));
+    }
+
     render() {
         return(<>
             <CSHZNav />
             <div className='row mt-2'>
-                <div className='col-12' ref={this.cshzDiagram} />
+                <CSHZDiagram 
+                    starRadius={this.state.starRadius}
+                    planetDistance={this.state.planetDistance}
+                    starSystem={this.state.starSystem}/>
             </div>
             <div className='row mt-2'>
                 <div className='col-3'>
@@ -98,7 +98,9 @@ class CircumstellarHabitableZoneSim extends React.Component {
                         starRadius={this.state.starRadius}
                         setStarMass={this.setStarMass}
                         planetDistance={this.state.planetDistance}
-                        setPlanetDistance={this.setPlanetDistance} />
+                        setPlanetDistance={this.setPlanetDistance}
+                        starSystem={this.state.starSystem}
+                        setStarSystem={this.setStarSystem}/>
                 </div>
             </div>
             <div className='row mt-2'>

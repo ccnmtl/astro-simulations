@@ -6,18 +6,15 @@ import {NumericRangeInput} from './numeric-range-input';
 export default class CSHZStarProperties extends React.Component {
     constructor(props) {
         super(props);
-        this.initialState = {
-            activeStarSystem: 0,
-        };
-        this.state = this.initialState;
         this.handleActiveStarSystem = this.handleActiveStarSystem.bind(this);
     }
 
     handleActiveStarSystem(evt) {
         evt.preventDefault();
         const activeStar = parseInt(evt.target.value);
-        if (activeStar) {
+        if (!isNaN(activeStar)) {
             this.setState({activeStarSystem: activeStar});
+            this.props.setStarSystem(activeStar);
             this.props.setStarMass(STAR_SYSTEMS[activeStar].mass);
         }
     }
@@ -39,7 +36,7 @@ export default class CSHZStarProperties extends React.Component {
                             </label>
                             <select
                                 id='star-system-select'
-                                value={this.state.activeStarSystem}
+                                value={this.props.starSystem ? this.props.starSystem : 0}
                                 onChange={this.handleActiveStarSystem}
                                 className='form-group'>
                                 {STAR_SYSTEMS.map((val, idx) => {
@@ -100,4 +97,6 @@ CSHZStarProperties.propTypes = {
     setStarMass: PropTypes.func.isRequired,
     planetDistance: PropTypes.number.isRequired,
     setPlanetDistance: PropTypes.func.isRequired,
+    starSystem: PropTypes.number.isRequired,
+    setStarSystem: PropTypes.func.isRequired,
 }
