@@ -7,30 +7,41 @@ import STAR_SYSTEMS from './data';
 const AU_PIXELS = 100;
 const STAR_ORIGIN_POINT = [100, 150];
 const KM_AU = 149597870.7;
-const SOLAR_RADIUS = 695700;
+const SOLAR_RADIUS_KM = 695700;
 
-function auToPixels(au) {
-    const val = au * AU_PIXELS;
-    return val >= 1 ? val : 1;
-}
+const ZOOM_UPPER_BREAKPOINT = 960 * 0.8;
+const ZOOM_LOWER_BREAKPOINT = STAR_ORIGIN_POINT[0] + 20;
 
-function kmToPixels(km) {
-    return auToPixels(km / KM_AU);
-}
-
-function solarRadiusToPixels(solarRadius) {
-    return kmToPixels(solarRadius * SOLAR_RADIUS);
-}
 
 export default class CSHZDiagram extends React.Component {
     constructor(props) {
         super(props)
+
+        this.state = {
+            zoomLevel: 0
+        }
+
         this.cshzDiagram = React.createRef();
         
         this.renderStarSystem = this.renderStarSystem.bind(this);
         this.renderStar = this.renderStar.bind(this);
         this.renderPlanet = this.renderPlanet.bind(this);
+        this.auToPixels = this.auToPixels.bind(this);
+        this.solarRadiusToPixels = this.solarRadiusToPixels.bind(this);
     }
+
+    zoomLevels = [
+        {label: '0.005 AU', pixelsPerAU: AU_PIXELS * (1 / 0.005)},
+        {label: '0.01 AU', pixelsPerAU: AU_PIXELS * (1 / 0.01)},
+        {label: '0.05 AU', pixelsPerAU: AU_PIXELS * (1 / 0.05)},
+        {label: '0.1 AU', pixelsPerAU: AU_PIXELS * (1 / 0.1)},
+        {label: '0.5 AU', pixelsPerAU: AU_PIXELS * (1 / 0.5)},
+        {label: '1 AU', pixelsPerAU: AU_PIXELS},
+        {label: '5 AU', pixelsPerAU: AU_PIXELS * (1 / 5)},
+        {label: '10 AU', pixelsPerAU: AU_PIXELS * (1 / 10)},
+        {label: '50 AU', pixelsPerAU: AU_PIXELS * (1 / 50)},
+        {label: '100 AU', pixelsPerAU: AU_PIXELS * (1 / 100)},
+    ]
 
     componentDidMount() {
         const app = new PIXI.Application({
@@ -48,8 +59,9 @@ export default class CSHZDiagram extends React.Component {
         this.renderStarSystem();
     }
 
-    componentDidUpdate(prevProps) {
-        if(this.props.starSystem !== prevProps.starSystem) {
+    componentDidUpdate(prevProps, prevState) {
+        if(this.props.starSystem !== prevProps.starSystem || 
+           this.state.zoomLevel !== prevState.zoomLevel) {
             this.renderStarSystem();
         }
 
@@ -62,21 +74,48 @@ export default class CSHZDiagram extends React.Component {
         }
     }
 
-    renderPlanet() {
-        if(this.planet) {
-            this.planet.clear();
-        } else {
-            this.planet = new PIXI.Graphics();
-            this.app.stage.addChild(this.planet);
-        }
+    auToPixels(au) {
+        const val = au * this.zoomLevels[this.state.zoomLevel].pixelsPerAU;
+        return val >= 1 ? val : 1;
+    }
 
-        this.planet.beginFill(0x0000FF);
-        this.planet.drawCircle(
-            STAR_ORIGIN_POINT[0] + auToPixels(this.props.planetDistance),
-            STAR_ORIGIN_POINT[1],
-            15
-        );
-        this.planet.endFill();
+    solarRadiusToPixels(solarRadius) {
+        return this.auToPixels((solarRadius * SOLAR_RADIUS_KM) / KM_AU);
+    }
+
+    renderPlanet() {
+        const planetXPosition = STAR_ORIGIN_POINT[0] + this.auToPixels(this.props.planetDistance)
+        // if planet is out of range
+        if (planetXPosition > ZOOM_UPPER_BREAKPOINT) {
+            // Set zoom level and rerender  
+            if (this.state.zoomLevel < 10) {
+                this.setState((state) => ({
+                    zoomLevel: state.zoomLevel + 1 
+                }))
+            }
+        } else if (planetXPosition < ZOOM_LOWER_BREAKPOINT) {
+            if (this.state.zoomLevel > 0) {
+                this.setState((state) => ({
+                    zoomLevel: state.zoomLevel - 1 
+                }))
+            }
+        } else {
+            // else render the planet
+            if(this.planet) {
+                this.planet.clear();
+            } else {
+                this.planet = new PIXI.Graphics();
+                this.app.stage.addChild(this.planet);
+            }
+
+            this.planet.beginFill(0x0000FF);
+            this.planet.drawCircle(
+                planetXPosition,
+                STAR_ORIGIN_POINT[1],
+                15
+            );
+            this.planet.endFill();
+        }
     }
 
     renderStar() {
@@ -91,7 +130,7 @@ export default class CSHZDiagram extends React.Component {
         this.star.drawCircle(
             STAR_ORIGIN_POINT[0],
             STAR_ORIGIN_POINT[1],
-            solarRadiusToPixels(this.props.starRadius)
+            this.solarRadiusToPixels(this.props.starRadius)
         );
         this.star.endFill();
     }
@@ -100,7 +139,12 @@ export default class CSHZDiagram extends React.Component {
         // Clear the stage
         for (const child of this.app.stage.children) {
             // TODO: note this also clears the star and planet
-            child.clear();
+            // Figure out a better way of checking this
+            if (typeof child.clear === 'function') {
+                child.clear();
+            } else {
+                child.destroy();
+            }
         }
 
         const starSystem = STAR_SYSTEMS[this.props.starSystem];
@@ -113,14 +157,27 @@ export default class CSHZDiagram extends React.Component {
             p.arc(
                 STAR_ORIGIN_POINT[0],
                 STAR_ORIGIN_POINT[1],
-                auToPixels(planet.distance),
+                this.auToPixels(planet.distance),
                 0,
                 Math.PI * 2
             )
             this.app.stage.addChild(p);
         }
 
+        let scaleText = new PIXI.Text(
+            this.zoomLevels[this.state.zoomLevel].label,
+            {fill: 0xFFFFFF, fontSize: 16}
+        );
+        scaleText.position.set(800, 20);
+        let scaleRect = new PIXI.Graphics();
+        scaleRect.beginFill(0xFFFFFF);
+        scaleRect.lineStyle(1, 0xFFFFFF);
+        scaleRect.drawRect(800, 50, AU_PIXELS, 10)
+        this.app.stage.addChild(scaleText);
+        this.app.stage.addChild(scaleRect);
+        // Because this can initiate a rerender, place it last
         this.renderPlanet();
+        
     }
 
     render() {
