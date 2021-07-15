@@ -12,6 +12,10 @@ import {
 import STAR_SYSTEMS from './data';
 
 
+const SS_HZ_INNER = 0.818;
+const SS_HZ_OUTER = 1.17;
+
+
 class CircumstellarHabitableZoneSim extends React.Component {
     constructor(props) {
         super(props);
@@ -24,6 +28,8 @@ class CircumstellarHabitableZoneSim extends React.Component {
             starTemperature: 5700,
             starRadius: 1.0,
             planetDistance: 1.0,
+            habitableZoneInner: SS_HZ_INNER,
+            habitableZoneOuter: SS_HZ_OUTER,
         };
         this.state = this.initialState;
 
@@ -51,11 +57,16 @@ class CircumstellarHabitableZoneSim extends React.Component {
         const luminosity = getLuminosityFromMass(starMass);
         const temp = getTempFromLuminosity(luminosity);
         const radius = getRadiusFromTempAndLuminosity(temp, luminosity);
+        const hZoneInner = Math.sqrt(luminosity) * SS_HZ_INNER;
+        const hZoneOuter = Math.sqrt(luminosity) * SS_HZ_OUTER;
+
         this.setState({
             starMass: starMass,
             starLuminosity: roundToTwoPlaces(luminosity),
             starTemperature: Math.round(temp),
-            starRadius: roundToTwoPlaces(radius)
+            starRadius: roundToTwoPlaces(radius),
+            habitableZoneInner: hZoneInner,
+            habitableZoneOuter: hZoneOuter
         })
     }
 
@@ -79,7 +90,9 @@ class CircumstellarHabitableZoneSim extends React.Component {
                 <CSHZDiagram 
                     starRadius={this.state.starRadius}
                     planetDistance={this.state.planetDistance}
-                    starSystem={this.state.starSystem}/>
+                    starSystem={this.state.starSystem}
+                    habitableZoneInner={this.state.habitableZoneInner}
+                    habitableZoneOuter={this.state.habitableZoneOuter}/>
             </div>
             <div className='row mt-2'>
                 <div className='col-3'>

@@ -61,7 +61,8 @@ export default class CSHZDiagram extends React.Component {
 
     componentDidUpdate(prevProps, prevState) {
         if(this.props.starSystem !== prevProps.starSystem || 
-           this.state.zoomLevel !== prevState.zoomLevel) {
+           this.state.zoomLevel !== prevState.zoomLevel ||
+           this.props.habitableZoneInner !== prevProps.habitableZoneInner) {
             this.renderStarSystem();
         }
 
@@ -151,6 +152,7 @@ export default class CSHZDiagram extends React.Component {
 
         this.renderStar();
 
+        // Planets
         for (const planet of starSystem.planets) {
             let p = new PIXI.Graphics();
             p.lineStyle(1, 0xFFFFFF);
@@ -164,6 +166,19 @@ export default class CSHZDiagram extends React.Component {
             this.app.stage.addChild(p);
         }
 
+        // Habitable Zone
+        const hZoneInner = this.auToPixels(this.props.habitableZoneInner);
+        const hZoneOuter = this.auToPixels(this.props.habitableZoneOuter);
+        const HZONE_ALPHA = 0.5;
+        let hZone = new PIXI.Graphics();
+        hZone.beginFill(0x0000FF, HZONE_ALPHA)
+            .drawCircle(STAR_ORIGIN_POINT[0], STAR_ORIGIN_POINT[1], hZoneOuter)
+            .beginHole()
+            .drawCircle(STAR_ORIGIN_POINT[0], STAR_ORIGIN_POINT[1], hZoneInner)
+            .endHole()
+        this.app.stage.addChild(hZone);
+
+        // Scale
         let scaleText = new PIXI.Text(
             this.zoomLevels[this.state.zoomLevel].label,
             {fill: 0xFFFFFF, fontSize: 16}
@@ -191,4 +206,6 @@ CSHZDiagram.propTypes = {
     starRadius: PropTypes.number.isRequired,
     planetDistance: PropTypes.number.isRequired,
     starSystem: PropTypes.number.isRequired,
+    habitableZoneInner: PropTypes.number.isRequired,
+    habitableZoneOuter: PropTypes.number.isRequired,
 }
