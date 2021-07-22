@@ -30,7 +30,8 @@
     "pixi.js": "~6.0.4",
     "react": "~17.0.1",
     "react-dom": "~17.0.1",
-    "react-range-step-input": "^1.2.1"
+    "react-range-step-input": "^1.2.1",
+    "victory": "^35.9.1"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",

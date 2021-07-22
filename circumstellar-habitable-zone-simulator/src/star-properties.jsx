@@ -2,6 +2,12 @@ import React from 'react';
 import STAR_SYSTEMS from './data.js';
 import PropTypes from 'prop-types';
 import {NumericRangeInput} from './numeric-range-input';
+import {
+    getLuminosityFromTempAndClass
+} from '../../eclipsing-binary-simulator/src/utils.js';
+import {
+    VictoryAxis, VictoryChart, VictoryContainer, VictoryLine, VictoryScatter
+} from 'victory';
 
 export default class CSHZStarProperties extends React.Component {
     constructor(props) {
@@ -56,7 +62,7 @@ export default class CSHZStarProperties extends React.Component {
                     <NumericRangeInput
                         label={'Initial Star Mass:'}
                         value={this.props.starMass}
-                        min={0}
+                        min={0.2}
                         max={30}
                         step={0.1}
                         onChange={this.props.setStarMass}
@@ -82,7 +88,40 @@ export default class CSHZStarProperties extends React.Component {
                         name={'star-mass'} />
                 </div>
                 <div className='col-3'>
-                    Herzsprung-Russell goes here
+                    <VictoryChart 
+                        domain={{x: [50000, 2000]}}
+                        scale={'log'}
+                        sortKey={'x'}
+                        sortOrder='descending'
+                        height={142}
+                        width={142}
+                        padding={18}>
+                        <VictoryAxis 
+                            label={'Temperature (K)'}
+                            style={{
+                                tickLabels: {display: 'none'},
+                                axisLabel: {padding: 5}
+                            }}
+                            tickFormat={[]}/>
+                        <VictoryAxis 
+                            dependentAxis={true}
+                            tickFormat={[]}
+                            style={{
+                                tickLabels: {display: 'none'},
+                                axisLabel: {padding: 5}
+                            }}
+                            label='Luminosity'/>
+                        <VictoryLine
+                            domain={{x: [50000, 3000]}}
+                            y={(temp) => {
+                                return getLuminosityFromTempAndClass(temp.x, 'v') }}/>
+                        <VictoryScatter 
+                            style={{data: { fill: '#FF0000' }}}
+                            data={[{
+                                x: this.props.starTemperature,
+                                y: this.props.starLuminosity
+                            }]} />
+                    </VictoryChart>
                 </div>
             </div>
         </div>)
