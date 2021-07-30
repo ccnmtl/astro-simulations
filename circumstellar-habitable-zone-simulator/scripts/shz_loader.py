@@ -56,9 +56,9 @@ def main():
 
             del star['rawDataTable']
 
-        export.write('export default const shzStarData = ')
+        export.write('export const shzStarData = ')
         export.write(json.dumps(parsed_data))
-        pretty_print.write('export default const shzStarData = ')
+        pretty_print.write('export const shzStarData = ')
         pretty_print.write(json.dumps(parsed_data, indent=4))
 
 
