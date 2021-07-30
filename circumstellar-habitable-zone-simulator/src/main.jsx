@@ -5,37 +5,52 @@ import CSHZNav from './nav';
 import CSHZDiagram from './diagram';
 import CSHZSettings from './diagram-settings';
 import CSHZStarProperties from './star-properties';
+import CSHZTimeline from './timeline';
 import {
-    getLuminosityFromMass, getTempFromLuminosity, getRadiusFromTempAndLuminosity,
     roundToTwoPlaces
 } from '../../eclipsing-binary-simulator/src/utils.js';
+import { getHZone } from './utils.js';
 import STAR_SYSTEMS from './data';
+import {shzStarData as STAR_DATA} from './shzStars.js';
 
 
-const SS_HZ_INNER = 0.818;
-const SS_HZ_OUTER = 1.17;
+export const SOLAR_MASSES = STAR_DATA.reduce((acc, val) => {
+    acc.push(val.mass);
+    return acc;
+}, [])
+
+const INIT_STAR_IDX = 7
+
+export const LOG_BASE = 10;
 
 
 class CircumstellarHabitableZoneSim extends React.Component {
     constructor(props) {
         super(props);
+        const initLum = LOG_BASE ** STAR_DATA[INIT_STAR_IDX].dataTable[0].logLum;
+        const [hZoneInner, hZoneOuter] = getHZone(initLum);
         this.initialState = {
             starSystem: 0,
             showScaleGrid: false,
             showSolarSystemOrbits: true,
-            starMass: 1.0,
-            starLuminosity: 1.0,
-            starTemperature: 5700,
-            starRadius: 1.0,
+            starMassIdx: INIT_STAR_IDX,
+            starAge: 0.0,
+            // TODO: How should these values be initialized w/ respect to
+            // the Sun's age? If values are taken for the Sun at the start
+            // of it's life, then the values will be < 1, which might be
+            // confusing for users
+            starLuminosity: roundToTwoPlaces(initLum), 
+            starTemperature: Math.round(LOG_BASE ** STAR_DATA[INIT_STAR_IDX].dataTable[0].logTemp),
+            starRadius: roundToTwoPlaces(LOG_BASE ** STAR_DATA[INIT_STAR_IDX].dataTable[0].logRadius),
             planetDistance: 1.0,
-            habitableZoneInner: SS_HZ_INNER,
-            habitableZoneOuter: SS_HZ_OUTER,
+            habitableZoneInner: hZoneInner,
+            habitableZoneOuter: hZoneOuter,
         };
         this.state = this.initialState;
 
         this.handleShowScaleGrid = this.handleShowScaleGrid.bind(this);
         this.handleShowSolarSystemOrbits = this.handleShowSolarSystemOrbits.bind(this);
-        this.setStarMass = this.setStarMass.bind(this);
+        this.setStarMassIdx = this.setStarMassIdx.bind(this);
         this.setPlanetDistance = this.setPlanetDistance.bind(this);
         this.setStarSystem = this.setStarSystem.bind(this);
     }
@@ -52,16 +67,19 @@ class CircumstellarHabitableZoneSim extends React.Component {
         }));
     }
 
-    setStarMass(starMass) {
+    setStarMassIdx(starMassIdx) {
         // Given a star's mass, update luminosity, temp, and radius
-        const luminosity = getLuminosityFromMass(starMass);
-        const temp = getTempFromLuminosity(luminosity);
-        const radius = getRadiusFromTempAndLuminosity(temp, luminosity);
-        const hZoneInner = Math.sqrt(luminosity) * SS_HZ_INNER;
-        const hZoneOuter = Math.sqrt(luminosity) * SS_HZ_OUTER;
+        // Reset the star's age to zero, then lookup the other values in the data
+        // also set the age range of the star and the increments of age range - you'll need those for the timeline
+        const star = STAR_DATA[starMassIdx]
+
+        const luminosity = LOG_BASE ** star.dataTable[0].logLum;
+        const temp = LOG_BASE ** star.dataTable[0].logTemp;
+        const radius = LOG_BASE ** star.dataTable[0].logRadius;
+        const [hZoneInner, hZoneOuter] = getHZone(luminosity);
 
         this.setState({
-            starMass: starMass,
+            starMassIdx: starMassIdx,
             starLuminosity: roundToTwoPlaces(luminosity),
             starTemperature: Math.round(temp),
             starRadius: roundToTwoPlaces(radius),
@@ -105,11 +123,11 @@ class CircumstellarHabitableZoneSim extends React.Component {
                 </div>
                 <div className='col-9'>
                     <CSHZStarProperties 
-                        starMass={this.state.starMass}
+                        starMassIdx={this.state.starMassIdx}
                         starLuminosity={this.state.starLuminosity}
                         starTemperature={this.state.starTemperature}
                         starRadius={this.state.starRadius}
-                        setStarMass={this.setStarMass}
+                        setStarMassIdx={this.setStarMassIdx}
                         planetDistance={this.state.planetDistance}
                         setPlanetDistance={this.setPlanetDistance}
                         starSystem={this.state.starSystem}
@@ -118,7 +136,10 @@ class CircumstellarHabitableZoneSim extends React.Component {
             </div>
             <div className='row mt-2'>
                 <div className='col-12'>
-                Timeline
+                    <CSHZTimeline 
+                        starMassIdx={this.state.starMassIdx}
+                        starAge={this.state.starAge}
+                        planetDistance={this.state.planetDistance}/>
                 </div>
             </div>
         </>);
