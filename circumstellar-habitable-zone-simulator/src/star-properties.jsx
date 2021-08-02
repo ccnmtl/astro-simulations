@@ -1,10 +1,12 @@
 import React from 'react';
 import STAR_SYSTEMS from './data.js';
 import PropTypes from 'prop-types';
+import {IncrementRangeInput} from './increment-range-input';
 import {NumericRangeInput} from './numeric-range-input';
 import {
     getLuminosityFromTempAndClass
 } from '../../eclipsing-binary-simulator/src/utils.js';
+import { SOLAR_MASSES } from './main';
 import {
     VictoryAxis, VictoryChart, VictoryContainer, VictoryLine, VictoryScatter
 } from 'victory';
@@ -21,7 +23,7 @@ export default class CSHZStarProperties extends React.Component {
         if (!isNaN(activeStar)) {
             this.setState({activeStarSystem: activeStar});
             this.props.setStarSystem(activeStar);
-            this.props.setStarMass(STAR_SYSTEMS[activeStar].mass);
+            this.props.setStarMassIdx(activeStar);
         }
     }
 
@@ -59,20 +61,18 @@ export default class CSHZStarProperties extends React.Component {
                     </form>
                 </div>
                 <div className='col-6'>
-                    <NumericRangeInput
+                    <IncrementRangeInput
                         label={'Initial Star Mass:'}
-                        value={this.props.starMass}
-                        min={0.2}
-                        max={30}
-                        step={0.1}
-                        onChange={this.props.setStarMass}
+                        valueIdx={this.props.starMassIdx}
+                        values={SOLAR_MASSES}
+                        onChange={this.props.setStarMassIdx}
                         name={'star-mass'} />
                     <div className='form-group row'>
                         <label className='col-4 col-form-label col-form-label-sm'>
                             Star Properties:
                         </label>
                         <div className='col-8'>
-                            <div>Mass: {this.props.starMass} M<sub>sun</sub></div>
+                            <div>Mass: {SOLAR_MASSES[this.props.starMassIdx]} M<sub>sun</sub></div>
                             <div>Luminosity: {this.props.starLuminosity} L<sub>sun</sub></div>
                             <div>Temperature: {this.props.starTemperature} K</div>
                             <div>Radius: {this.props.starRadius} R<sub>sun</sub></div>
@@ -129,11 +129,11 @@ export default class CSHZStarProperties extends React.Component {
 }
 
 CSHZStarProperties.propTypes = {
-    starMass: PropTypes.number.isRequired,
+    starMassIdx: PropTypes.number.isRequired,
     starLuminosity: PropTypes.number.isRequired,
     starTemperature: PropTypes.number.isRequired,
     starRadius: PropTypes.number.isRequired,
-    setStarMass: PropTypes.func.isRequired,
+    setStarMassIdx: PropTypes.func.isRequired,
     planetDistance: PropTypes.number.isRequired,
     setPlanetDistance: PropTypes.func.isRequired,
     starSystem: PropTypes.number.isRequired,

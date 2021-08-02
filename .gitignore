@@ -1,1 +1,4 @@
 node_modules/
+venv/
+bin/
+circumstellar-habitable-zone-simulator/scripts/*.js

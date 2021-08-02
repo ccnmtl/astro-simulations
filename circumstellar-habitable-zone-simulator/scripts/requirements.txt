@@ -1,0 +1,3 @@
+defusedxml==0.7.1
+-e git+https://github.com/nbuonin/mini-amf.git@0da393aea2d4f9c6b48b6330ef6a4bf1f745e77c#egg=Mini_AMF
+six==1.16.0
