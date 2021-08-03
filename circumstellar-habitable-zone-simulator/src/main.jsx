@@ -35,6 +35,7 @@ class CircumstellarHabitableZoneSim extends React.Component {
             showSolarSystemOrbits: true,
             starMassIdx: INIT_STAR_IDX,
             starAge: 0.0,
+            starAgeIdx: 0,
             // TODO: How should these values be initialized w/ respect to
             // the Sun's age? If values are taken for the Sun at the start
             // of it's life, then the values will be < 1, which might be
@@ -139,6 +140,7 @@ class CircumstellarHabitableZoneSim extends React.Component {
                     <CSHZTimeline 
                         starMassIdx={this.state.starMassIdx}
                         starAge={this.state.starAge}
+                        starAgeIdx={this.state.starAgeIdx}
                         planetDistance={this.state.planetDistance}/>
                 </div>
             </div>
