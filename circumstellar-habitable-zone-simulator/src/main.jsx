@@ -9,7 +9,7 @@ import CSHZTimeline from './timeline';
 import {
     roundToTwoPlaces
 } from '../../eclipsing-binary-simulator/src/utils.js';
-import { getHZone } from './utils.js';
+import { getHZone } from './utils';
 import STAR_SYSTEMS from './data';
 import {shzStarData as STAR_DATA} from './shzStars.js';
 
@@ -54,6 +54,7 @@ class CircumstellarHabitableZoneSim extends React.Component {
         this.setStarMassIdx = this.setStarMassIdx.bind(this);
         this.setPlanetDistance = this.setPlanetDistance.bind(this);
         this.setStarSystem = this.setStarSystem.bind(this);
+        this.setStarAgeIdx = this.setStarAgeIdx.bind(this);
     }
 
     handleShowScaleGrid() {
@@ -102,6 +103,12 @@ class CircumstellarHabitableZoneSim extends React.Component {
         }));
     }
 
+    setStarAgeIdx(idx) {
+        if (idx >= 0 && idx < STAR_DATA[this.state.starMassIdx].dataTable.length) {
+            this.setState({starAgeIdx: idx});
+        }
+    }
+
     render() {
         return(<>
             <CSHZNav />
@@ -141,6 +148,7 @@ class CircumstellarHabitableZoneSim extends React.Component {
                         starMassIdx={this.state.starMassIdx}
                         starAge={this.state.starAge}
                         starAgeIdx={this.state.starAgeIdx}
+                        setStarAgeIdx={this.setStarAgeIdx}
                         planetDistance={this.state.planetDistance}/>
                 </div>
             </div>

@@ -1,8 +1,7 @@
 import React from 'react';
 import STAR_SYSTEMS from './data.js';
 import PropTypes from 'prop-types';
-import {IncrementRangeInput} from './increment-range-input';
-import {NumericRangeInput} from './numeric-range-input';
+import { IncrementRangeInput, NumericRangeInput } from './utils';
 import {
     getLuminosityFromTempAndClass
 } from '../../eclipsing-binary-simulator/src/utils.js';

@@ -4,14 +4,21 @@ import PropTypes from 'prop-types';
 import {
     VictoryAxis, VictoryBar, VictoryChart, VictoryContainer, VictoryLine
 } from 'victory';
-import { getHZone } from './utils.js';
+import { getHZone, DraggableCursor } from './utils';
 import { LOG_BASE } from './main';
 import {shzStarData as STAR_DATA} from './shzStars.js';
+import {
+    roundToTwoPlaces
+} from '../../eclipsing-binary-simulator/src/utils.js';
 
 export default class CSHZTimeline extends React.Component {
     constructor(props) {
         super(props)
+        this.state = {
+            timelinePosition: 0.0
+        }
         this.getPlanetTemp = this.getPlanetTemp.bind(this);
+        this.handleTimelineUpdate = this.handleTimelineUpdate.bind(this);
     }
 
     getPlanetTemp(solarRadii, starTemp, planetDistance) {
@@ -19,7 +26,28 @@ export default class CSHZTimeline extends React.Component {
        // convert solar radii to meters
        const radius = solarRadii * 6.96 * (10 ** 8) 
        // return planet temp in C
-       return ((((radius ** 2) * (starTemp ** 4)) / (4 * (planetDistance ** 2))) ** 0.25) - 275;
+       return ((((radius ** 2) * (starTemp ** 4)) / (4 * (planetDistance ** 2))) ** 0.25) - 273;
+    }
+
+    handleTimelineUpdate(position) {
+        // 0 <= position <= 1
+        this.setState({timelinePosition: position});
+
+        // Find the closest index
+        const yearsAfterFormation = position * Math.round(STAR_DATA[this.props.starMassIdx].timespan);
+        let [low, mid, high, found] = [0, 0, STAR_DATA[this.props.starMassIdx].dataTable.length - 1, false]
+        const dataTable = STAR_DATA[this.props.starMassIdx].dataTable 
+        while (!found) {
+            mid = Math.floor((high + low) / 2);
+            if (dataTable[mid].time <= yearsAfterFormation && yearsAfterFormation < dataTable[mid + 1].time) {
+                found = true; 
+            } else if (dataTable[mid].time < yearsAfterFormation) {
+                low = mid;
+            } else {
+                high = mid;
+            }
+        }
+        this.props.setStarAgeIdx(mid);
     }
 
     render() {
@@ -28,9 +56,17 @@ export default class CSHZTimeline extends React.Component {
                 <h2>Timeline and Simulation Controls</h2>    
             </div>
             <div>
-                Time since star system formation: {typeof this.props.starMassIdx == 'number' && (<>{STAR_DATA[this.props.starMassIdx].dataTable[this.props.starAgeIdx].time}</>)}
+                Time since star system formation: {typeof this.props.starMassIdx == 'number' && (
+                        (() => {
+                            let starAge = Math.floor(STAR_DATA[this.props.starMassIdx].dataTable[this.props.starAgeIdx].time)
+                            return starAge < 1000 ? `${starAge} My` : `${roundToTwoPlaces(starAge / 1000)} Gy`
+                        } )()
+                )}
             </div>
             <div>
+                <DraggableCursor 
+                    cursorPosition={0}
+                    onUpdate={this.handleTimelineUpdate}/>
                 {typeof this.props.starMassIdx == 'number' && this.props.planetDistance && (<>
                     <VictoryChart
                         // Domain is the stars age, range is surface temp of planet in C
@@ -40,10 +76,11 @@ export default class CSHZTimeline extends React.Component {
                         width={960}>
                         <VictoryBar 
                             barWidth={2}
+                            domain={{x: [0, 100]}}
                             style={{
                                 data: {fill: 'red'}
                             }}
-                            data={[{x: STAR_DATA[this.props.starMassIdx].dataTable[this.props.starAgeIdx].time, y: 1}]}/>
+                            data={[{x: this.state.timelinePosition * Math.round(STAR_DATA[this.props.starMassIdx].timespan), y: 1}]}/>
                         <VictoryAxis 
                             tickCount={8}
                             style={{
@@ -120,6 +157,7 @@ export default class CSHZTimeline extends React.Component {
                             }}
                             data={[{x: STAR_DATA[this.props.starMassIdx].dataTable[this.props.starAgeIdx].time, y: 1}]}/>
                     </VictoryChart>
+                    <div className={'mb-3'}></div>
                 </>)}
             </div>
         </div>)
@@ -129,6 +167,7 @@ export default class CSHZTimeline extends React.Component {
 CSHZTimeline.propTypes = {
     starMassIdx: PropTypes.number.isRequired,
     starAge: PropTypes.number.isRequired,
+    setStarAgeIdx: PropTypes.func.isRequired,
     starAgeIdx: PropTypes.number.isRequired,
     planetDistance: PropTypes.number.isRequired,
 }
