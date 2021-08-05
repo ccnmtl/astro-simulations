@@ -27,7 +27,7 @@
   "dependencies": {
     "@babel/cli": "^7.5.5",
     "eslint-plugin-security": "^1.4.0",
-    "pixi.js": "~6.0.4",
+    "pixi.js": "~6.1.0",
     "react": "~17.0.1",
     "react-dom": "~17.0.1",
     "react-range-step-input": "^1.2.1",
