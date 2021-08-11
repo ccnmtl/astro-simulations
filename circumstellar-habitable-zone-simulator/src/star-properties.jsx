@@ -6,8 +6,9 @@ import {
     getLuminosityFromTempAndClass
 } from '../../eclipsing-binary-simulator/src/utils.js';
 import {shzStarData as STAR_DATA} from './shzStars.js';
+import { LOG_BASE } from './main';
 import {
-    VictoryAxis, VictoryChart, VictoryContainer, VictoryLine, VictoryScatter
+    VictoryAxis, VictoryChart, VictoryLine, VictoryScatter
 } from 'victory';
 
 export default class CSHZStarProperties extends React.Component {
@@ -91,7 +92,7 @@ export default class CSHZStarProperties extends React.Component {
                         name={'star-mass'} />
                 </div>
                 <div className='col-3'>
-                    <VictoryChart 
+                    <VictoryChart
                         domain={{x: [50000, 2000]}}
                         scale={'log'}
                         sortKey={'x'}
@@ -99,14 +100,14 @@ export default class CSHZStarProperties extends React.Component {
                         height={142}
                         width={142}
                         padding={18}>
-                        <VictoryAxis 
+                        <VictoryAxis
                             label={'Temperature (K)'}
                             style={{
                                 tickLabels: {display: 'none'},
                                 axisLabel: {padding: 5}
                             }}
                             tickFormat={[]}/>
-                        <VictoryAxis 
+                        <VictoryAxis
                             dependentAxis={true}
                             tickFormat={[]}
                             style={{
@@ -118,12 +119,17 @@ export default class CSHZStarProperties extends React.Component {
                             domain={{x: [50000, 3000]}}
                             y={(temp) => {
                                 return getLuminosityFromTempAndClass(temp.x, 'v') }}/>
-                        <VictoryScatter 
+                        <VictoryScatter
                             style={{data: { fill: '#FF0000' }}}
-                            data={[{
-                                x: this.props.starTemperature,
-                                y: this.props.starLuminosity
-                            }]} />
+                            data={STAR_DATA[this.props.starMassIdx].
+                                    dataTable.slice(0, this.props.starAgeIdx + 1).
+                                    reduce((acc, val) => {
+                                acc.push({
+                                    x: LOG_BASE ** val.logTemp,
+                                    y: LOG_BASE ** val.logLum
+                                })
+                                return acc;
+                            }, [])}/>
                     </VictoryChart>
                 </div>
             </div>
