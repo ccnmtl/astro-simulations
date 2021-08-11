@@ -5,7 +5,7 @@ import { IncrementRangeInput, NumericRangeInput } from './utils';
 import {
     getLuminosityFromTempAndClass
 } from '../../eclipsing-binary-simulator/src/utils.js';
-import { SOLAR_MASSES } from './main';
+import {shzStarData as STAR_DATA} from './shzStars.js';
 import {
     VictoryAxis, VictoryChart, VictoryContainer, VictoryLine, VictoryScatter
 } from 'victory';
@@ -63,7 +63,11 @@ export default class CSHZStarProperties extends React.Component {
                     <IncrementRangeInput
                         label={'Initial Star Mass:'}
                         valueIdx={this.props.starMassIdx}
-                        values={SOLAR_MASSES}
+                        values={
+                            STAR_DATA.reduce((acc, val) => {
+                                acc.push(val.mass);
+                                return acc;
+                            }, [])}
                         onChange={this.props.setStarMassIdx}
                         name={'star-mass'} />
                     <div className='form-group row'>
@@ -71,7 +75,7 @@ export default class CSHZStarProperties extends React.Component {
                             Star Properties:
                         </label>
                         <div className='col-8'>
-                            <div>Mass: {SOLAR_MASSES[this.props.starMassIdx]} M<sub>sun</sub></div>
+                            <div>Mass: {STAR_DATA[this.props.starMassIdx].mass} M<sub>sun</sub></div>
                             <div>Luminosity: {this.props.starLuminosity} L<sub>sun</sub></div>
                             <div>Temperature: {this.props.starTemperature} K</div>
                             <div>Radius: {this.props.starRadius} R<sub>sun</sub></div>
@@ -129,6 +133,7 @@ export default class CSHZStarProperties extends React.Component {
 
 CSHZStarProperties.propTypes = {
     starMassIdx: PropTypes.number.isRequired,
+    starAgeIdx: PropTypes.number.isRequired,
     starLuminosity: PropTypes.number.isRequired,
     starTemperature: PropTypes.number.isRequired,
     starRadius: PropTypes.number.isRequired,

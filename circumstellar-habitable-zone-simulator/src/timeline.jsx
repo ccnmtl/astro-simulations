@@ -2,7 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import {
-    VictoryAxis, VictoryBar, VictoryChart, VictoryContainer, VictoryLine
+    VictoryAxis, VictoryBar, VictoryChart, VictoryContainer, VictoryLine, VictoryStack,
+    Background
 } from 'victory';
 import { getHZone, DraggableCursor } from './utils';
 import { LOG_BASE } from './main';
@@ -14,11 +15,22 @@ import {
 export default class CSHZTimeline extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {
-            timelinePosition: 0.0
-        }
         this.getPlanetTemp = this.getPlanetTemp.bind(this);
         this.handleTimelineUpdate = this.handleTimelineUpdate.bind(this);
+        this.annotateDataTable = this.annotateDataTable.bind(this);
+        this.calculateZonePcts = this.calculateZonePcts.bind(this);
+
+        const dataTable = this.annotateDataTable(
+                STAR_DATA[this.props.starMassIdx].dataTable, this.props.planetDistance);
+        const [temperateZonePct, hotZonePct, whiteDwarfPct] = this.calculateZonePcts(dataTable, STAR_DATA[this.props.starMassIdx].timespan)
+
+        this.state = {
+            timelinePosition: 0.0,
+            dataTable: dataTable,
+            temperateZonePct: temperateZonePct,
+            hotZonePct: hotZonePct,
+            whiteDwarfPct: whiteDwarfPct
+        }
     }
 
     getPlanetTemp(solarRadii, starTemp, planetDistance) {
@@ -29,19 +41,69 @@ export default class CSHZTimeline extends React.Component {
        return ((((radius ** 2) * (starTemp ** 4)) / (4 * (planetDistance ** 2))) ** 0.25) - 273;
     }
 
+    annotateDataTable(dataTable, distP) {
+        // Takes a dataTable, returns a new one with temp added
+        return dataTable.reduce((acc, datum) => { 
+            // Calculate the temp
+            const starRadius = LOG_BASE ** datum.logRadius;
+            const starTemp = LOG_BASE ** datum.logTemp;
+            const planetDistance = distP * (1.495978707 * (10 ** 11))
+            const temp = this.getPlanetTemp(
+                starRadius,
+                starTemp,
+                planetDistance)
+            acc.push({time: datum.time, temp: temp});
+            return acc;
+        }, [])
+    }
+
+    calculateZonePcts(dataTable, lifetime) {
+        const obj = dataTable.reduce((acc, val) => {
+            if(acc.temperateZonePct == null && val.temp > 0) {
+                acc.temperateZonePct = Math.round((val.time / lifetime) * 100);
+            } else if (acc.hotZonePct == null && val.temp > 100) {
+                acc.hotZonePct = Math.round((val.time / lifetime) * 100);
+            } else if (val.temp > acc.maxTemp) {
+                acc.whiteDwarfPct = Math.round((val.time / lifetime) * 100);
+                acc.maxTemp = val.temp
+            }
+            return acc
+        }, {temperateZonePct: null, hotZonePct: null, whiteDwarfPct: null, maxTemp: Number.NEGATIVE_INFINITY});
+
+        return [
+            obj.temperateZonePct, obj.hotZonePct, obj.whiteDwarfPct
+        ]
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (this.props.planetDistance != prevProps.planetDistance ||
+            this.props.starMassIdx != prevProps.starMassIdx) {
+
+            const dataTable = this.annotateDataTable(
+                    STAR_DATA[this.props.starMassIdx].dataTable, this.props.planetDistance);
+            const [temperateZonePct, hotZonePct, whiteDwarfPct] = this.calculateZonePcts(dataTable, STAR_DATA[this.props.starMassIdx].timespan)
+
+            this.setState({
+                dataTable: dataTable,
+                temperateZonePct: temperateZonePct,
+                hotZonePct: hotZonePct,
+                whiteDwarfPct: whiteDwarfPct
+            }) 
+        }
+    }
+
     handleTimelineUpdate(position) {
         // 0 <= position <= 1
         this.setState({timelinePosition: position});
 
         // Find the closest index
         const yearsAfterFormation = position * Math.round(STAR_DATA[this.props.starMassIdx].timespan);
-        let [low, mid, high, found] = [0, 0, STAR_DATA[this.props.starMassIdx].dataTable.length - 1, false]
-        const dataTable = STAR_DATA[this.props.starMassIdx].dataTable 
+        let [low, mid, high, found] = [0, 0, this.state.dataTable.length - 1, false]
         while (!found) {
             mid = Math.floor((high + low) / 2);
-            if (dataTable[mid].time <= yearsAfterFormation && yearsAfterFormation < dataTable[mid + 1].time) {
+            if (this.state.dataTable[mid].time <= yearsAfterFormation && yearsAfterFormation < this.state.dataTable[mid + 1].time) {
                 found = true; 
-            } else if (dataTable[mid].time < yearsAfterFormation) {
+            } else if (this.state.dataTable[mid].time < yearsAfterFormation) {
                 low = mid;
             } else {
                 high = mid;
@@ -58,7 +120,7 @@ export default class CSHZTimeline extends React.Component {
             <div>
                 Time since star system formation: {typeof this.props.starMassIdx == 'number' && (
                         (() => {
-                            let starAge = Math.floor(STAR_DATA[this.props.starMassIdx].dataTable[this.props.starAgeIdx].time)
+                            let starAge = Math.floor(this.state.dataTable[this.props.starAgeIdx].time)
                             return starAge < 1000 ? `${starAge} My` : `${roundToTwoPlaces(starAge / 1000)} Gy`
                         } )()
                 )}
@@ -119,30 +181,36 @@ export default class CSHZTimeline extends React.Component {
                             style={{
                                 data: {fill: 'red'}
                             }}
-                            data={[{x: STAR_DATA[this.props.starMassIdx].dataTable[this.props.starAgeIdx].time, y: 100}]}/>
+                            data={[{x: this.state.dataTable[this.props.starAgeIdx].time, y: 100}]}/>
                         <VictoryLine 
-                            data={STAR_DATA[this.props.starMassIdx].dataTable}
+                            data={this.state.dataTable}
+                            interpolation={'natural'}
                             x={(datum) => { return datum.time }}
-                            y={(datum) => { 
-                                // Calculate the temp
-                                const starRadius = LOG_BASE ** datum.logRadius;
-                                const starTemp = LOG_BASE ** datum.logTemp;
-                                const planetDistance = this.props.planetDistance * (1.495978707 * (10 ** 11))
-                                const temp = this.getPlanetTemp(
-                                    starRadius,
-                                    starTemp,
-                                    planetDistance)
-                                return temp;
-                                }}
+                            y={(datum) => { return datum.temp }}
                             >
                         </VictoryLine>
                     </VictoryChart>
+
                     <VictoryChart
                         // Domain is the stars age, range is surface temp of planet in C
                         domain={{x: [
                             0, Math.round(STAR_DATA[this.props.starMassIdx].timespan)]}} 
+                        style={{
+                            background: {fill: 'url(#temp-gradient)'}
+                        }}
+                        backgroundComponent={<Background x={50} y={7} height={10}/>}
                         height={25}
                         width={960}>
+                        <defs>
+                            <linearGradient id={'temp-gradient'}>
+                                <stop style={{stopColor: 'lightblue'}} offset={`${this.state.temperateZonePct}%`} />
+                                <stop style={{stopColor: 'blue'}} offset={`${this.state.temperateZonePct}%`} />
+                                <stop style={{stopColor: 'blue'}} offset={`${this.state.hotZonePct}%`} />
+                                <stop style={{stopColor: 'red'}} offset={`${this.state.hotZonePct}%`} />
+                                <stop style={{stopColor: 'red'}} offset={`${this.state.whiteDwarfPct}%`} />
+                                <stop style={{stopColor: 'grey'}} offset={`${this.state.whiteDwarfPct}%`} />
+                            </linearGradient>
+                        </defs>
                         <VictoryAxis 
                             style={{
                                 axis: {display: 'none'},
@@ -153,9 +221,9 @@ export default class CSHZTimeline extends React.Component {
                         <VictoryBar 
                             barWidth={2}
                             style={{
-                                data: {fill: 'red'}
+                                data: {fill: 'red'},
                             }}
-                            data={[{x: STAR_DATA[this.props.starMassIdx].dataTable[this.props.starAgeIdx].time, y: 1}]}/>
+                            data={[{x: this.state.dataTable[this.props.starAgeIdx].time, y: 1}]}/>
                     </VictoryChart>
                     <div className={'mb-3'}></div>
                 </>)}
