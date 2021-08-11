@@ -191,16 +191,11 @@ export default class CSHZTimeline extends React.Component {
                         </VictoryLine>
                     </VictoryChart>
 
-                    <VictoryChart
-                        // Domain is the stars age, range is surface temp of planet in C
-                        domain={{x: [
-                            0, Math.round(STAR_DATA[this.props.starMassIdx].timespan)]}} 
-                        style={{
-                            background: {fill: 'url(#temp-gradient)'}
-                        }}
-                        backgroundComponent={<Background x={50} y={7} height={10}/>}
-                        height={25}
-                        width={960}>
+                    <svg 
+                        width={960} 
+                        height={25} 
+                        viewBox={'0 0 960 25'} 
+                        style={{pointerEvents: 'all', width: '100%', height: '100%'}}>
                         <defs>
                             <linearGradient id={'temp-gradient'}>
                                 <stop style={{stopColor: 'lightblue'}} offset={`${this.state.temperateZonePct}%`} />
@@ -211,20 +206,32 @@ export default class CSHZTimeline extends React.Component {
                                 <stop style={{stopColor: 'grey'}} offset={`${this.state.whiteDwarfPct}%`} />
                             </linearGradient>
                         </defs>
-                        <VictoryAxis 
+                        <VictoryChart
+                            // Domain is the stars age, range is surface temp of planet in C
+                            domain={{x: [
+                                0, Math.round(STAR_DATA[this.props.starMassIdx].timespan)]}} 
                             style={{
-                                axis: {display: 'none'},
-                                tickLabels: {display: 'none'},
+                                background: {fill: 'url(#temp-gradient)'}
                             }}
-                            tickFormat={[]}
-                            label={''}/>
-                        <VictoryBar 
-                            barWidth={2}
-                            style={{
-                                data: {fill: 'red'},
-                            }}
-                            data={[{x: this.state.dataTable[this.props.starAgeIdx].time, y: 1}]}/>
-                    </VictoryChart>
+                            backgroundComponent={<Background x={50} y={7} height={10}/>}
+                            standalone={false}
+                            height={25}
+                            width={960}>
+                            <VictoryAxis 
+                                style={{
+                                    axis: {display: 'none'},
+                                    tickLabels: {display: 'none'},
+                                }}
+                                tickFormat={[]}
+                                label={''}/>
+                            <VictoryBar 
+                                barWidth={2}
+                                style={{
+                                    data: {fill: 'red'},
+                                }}
+                                data={[{x: this.state.dataTable[this.props.starAgeIdx].time, y: 1}]}/>
+                        </VictoryChart>
+                    </svg>
                     <div className={'mb-3'}></div>
                 </>)}
             </div>
