@@ -34,16 +34,16 @@ export default class CSHZTimeline extends React.Component {
     }
 
     getPlanetTemp(solarRadii, starTemp, planetDistance) {
-       // T(planet) = [R(star)^2 x T(star)^4 / 4 d(planet)^2]^0.25  
+       // T(planet) = [R(star)^2 x T(star)^4 / 4 d(planet)^2]^0.25
        // convert solar radii to meters
-       const radius = solarRadii * 6.96 * (10 ** 8) 
+       const radius = solarRadii * 6.96 * (10 ** 8)
        // return planet temp in C
        return ((((radius ** 2) * (starTemp ** 4)) / (4 * (planetDistance ** 2))) ** 0.25) - 273;
     }
 
     annotateDataTable(dataTable, distP) {
         // Takes a dataTable, returns a new one with temp added
-        return dataTable.reduce((acc, datum) => { 
+        return dataTable.reduce((acc, datum) => {
             // Calculate the temp
             const starRadius = LOG_BASE ** datum.logRadius;
             const starTemp = LOG_BASE ** datum.logTemp;
@@ -88,7 +88,7 @@ export default class CSHZTimeline extends React.Component {
                 temperateZonePct: temperateZonePct,
                 hotZonePct: hotZonePct,
                 whiteDwarfPct: whiteDwarfPct
-            }) 
+            })
         }
     }
 
@@ -102,7 +102,7 @@ export default class CSHZTimeline extends React.Component {
         while (!found) {
             mid = Math.floor((high + low) / 2);
             if (this.state.dataTable[mid].time <= yearsAfterFormation && yearsAfterFormation < this.state.dataTable[mid + 1].time) {
-                found = true; 
+                found = true;
             } else if (this.state.dataTable[mid].time < yearsAfterFormation) {
                 low = mid;
             } else {
@@ -115,7 +115,7 @@ export default class CSHZTimeline extends React.Component {
     render() {
         return(<div>
             <div>
-                <h2>Timeline and Simulation Controls</h2>    
+                <h2>Timeline and Simulation Controls</h2>
             </div>
             <div>
                 Time since star system formation: {typeof this.props.starMassIdx == 'number' && (
@@ -126,40 +126,40 @@ export default class CSHZTimeline extends React.Component {
                 )}
             </div>
             <div>
-                <DraggableCursor 
+                <DraggableCursor
                     cursorPosition={0}
                     onUpdate={this.handleTimelineUpdate}/>
                 {typeof this.props.starMassIdx == 'number' && this.props.planetDistance && (<>
                     <VictoryChart
                         // Domain is the stars age, range is surface temp of planet in C
                         domain={{x: [
-                            0, Math.round(STAR_DATA[this.props.starMassIdx].timespan)]}} 
+                            0, Math.round(STAR_DATA[this.props.starMassIdx].timespan)]}}
                         height={50}
                         width={960}>
-                        <VictoryBar 
+                        <VictoryBar
                             barWidth={2}
                             domain={{x: [0, 100]}}
                             style={{
                                 data: {fill: 'red'}
                             }}
                             data={[{x: this.state.timelinePosition * Math.round(STAR_DATA[this.props.starMassIdx].timespan), y: 1}]}/>
-                        <VictoryAxis 
+                        <VictoryAxis
                             tickCount={8}
                             style={{
                                 ticks: {stroke: 'black', size: 10}
                             }}
                             tickFormat={(val) => {
-                                return val < 1000 ? `${Math.round(val)} My` : `${Math.round(val / 1000)} Gy`  
+                                return val < 1000 ? `${Math.round(val)} My` : `${Math.round(val / 1000)} Gy`
                             }}/>
                     </VictoryChart>
                     <VictoryChart
                         // Domain is the stars age, range is surface temp of planet in C
                         domain={{x: [
                             0, Math.round(STAR_DATA[this.props.starMassIdx].timespan)],
-                            y: [0, 100]}} 
+                            y: [0, 100]}}
                         height={200}
                         width={960}>
-                        <VictoryAxis 
+                        <VictoryAxis
                             style={{
                                 axis: {stroke: '#0000FF'},
                                 tickLabels: {display: 'none'},
@@ -167,7 +167,7 @@ export default class CSHZTimeline extends React.Component {
                             }}
                             tickFormat={[]}
                             label={'Too cold'}/>
-                        <VictoryAxis 
+                        <VictoryAxis
                             orientation={'top'}
                             style={{
                                 axis: {stroke: '#FF0000'},
@@ -176,13 +176,13 @@ export default class CSHZTimeline extends React.Component {
                             }}
                             tickFormat={[]}
                             label={'Too hot'}/>
-                        <VictoryBar 
+                        <VictoryBar
                             barWidth={2}
                             style={{
                                 data: {fill: 'red'}
                             }}
                             data={[{x: this.state.dataTable[this.props.starAgeIdx].time, y: 100}]}/>
-                        <VictoryLine 
+                        <VictoryLine
                             data={this.state.dataTable}
                             interpolation={'natural'}
                             x={(datum) => { return datum.time }}
@@ -191,10 +191,10 @@ export default class CSHZTimeline extends React.Component {
                         </VictoryLine>
                     </VictoryChart>
 
-                    <svg 
-                        width={960} 
-                        height={25} 
-                        viewBox={'0 0 960 25'} 
+                    <svg
+                        width={960}
+                        height={25}
+                        viewBox={'0 0 960 25'}
                         style={{pointerEvents: 'all', width: '100%', height: '100%'}}>
                         <defs>
                             <linearGradient id={'temp-gradient'}>
@@ -209,7 +209,7 @@ export default class CSHZTimeline extends React.Component {
                         <VictoryChart
                             // Domain is the stars age, range is surface temp of planet in C
                             domain={{x: [
-                                0, Math.round(STAR_DATA[this.props.starMassIdx].timespan)]}} 
+                                0, Math.round(STAR_DATA[this.props.starMassIdx].timespan)]}}
                             style={{
                                 background: {fill: 'url(#temp-gradient)'}
                             }}
@@ -217,14 +217,14 @@ export default class CSHZTimeline extends React.Component {
                             standalone={false}
                             height={25}
                             width={960}>
-                            <VictoryAxis 
+                            <VictoryAxis
                                 style={{
                                     axis: {display: 'none'},
                                     tickLabels: {display: 'none'},
                                 }}
                                 tickFormat={[]}
                                 label={''}/>
-                            <VictoryBar 
+                            <VictoryBar
                                 barWidth={2}
                                 style={{
                                     data: {fill: 'red'},
