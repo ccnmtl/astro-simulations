@@ -118,7 +118,7 @@ export default class CSHZTimeline extends React.Component {
                 <h2>Timeline and Simulation Controls</h2>
             </div>
             <div>
-                Time since star system formation: {typeof this.props.starMassIdx == 'number' && (
+                Time since star system formation: {typeof this.props.starMassIdx === 'number' && (
                         (() => {
                             let starAge = Math.floor(this.state.dataTable[this.props.starAgeIdx].time)
                             return starAge < 1000 ? `${starAge} My` : `${roundToTwoPlaces(starAge / 1000)} Gy`
@@ -129,7 +129,7 @@ export default class CSHZTimeline extends React.Component {
                 <DraggableCursor
                     cursorPosition={0}
                     onUpdate={this.handleTimelineUpdate}/>
-                {typeof this.props.starMassIdx == 'number' && this.props.planetDistance && (<>
+                {typeof this.props.starMassIdx === 'number' && this.props.planetDistance && (<>
                     <VictoryChart
                         // Domain is the stars age, range is surface temp of planet in C
                         domain={{x: [
