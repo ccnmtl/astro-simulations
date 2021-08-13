@@ -16,8 +16,8 @@ export function arrayCompare(arr0, arr1) {
     return a.size === 0 ? true : false
 }
 
-const SS_HZ_INNER = 0.818;
-const SS_HZ_OUTER = 1.17;
+const SS_HZ_INNER = 0.56;
+const SS_HZ_OUTER = 1.065;
 
 export function getHZone(luminosity) {
     return [

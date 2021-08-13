@@ -35,7 +35,7 @@ class CircumstellarHabitableZoneSim extends React.Component {
             // the Sun's age? If values are taken for the Sun at the start
             // of it's life, then the values will be < 1, which might be
             // confusing for users
-            starLuminosity: roundToTwoPlaces(initLum), 
+            starLuminosity: roundToTwoPlaces(initLum),
             starTemperature: Math.round(LOG_BASE ** STAR_DATA[INIT_STAR_IDX].dataTable[0].logTemp),
             starRadius: roundToTwoPlaces(LOG_BASE ** STAR_DATA[INIT_STAR_IDX].dataTable[0].logRadius),
             planetDistance: 1.0,
@@ -122,7 +122,7 @@ class CircumstellarHabitableZoneSim extends React.Component {
         return(<>
             <CSHZNav />
             <div className='row mt-2'>
-                <CSHZDiagram 
+                <CSHZDiagram
                     starRadius={this.state.starRadius}
                     planetDistance={this.state.planetDistance}
                     starSystem={this.state.starSystem}
@@ -131,7 +131,7 @@ class CircumstellarHabitableZoneSim extends React.Component {
             </div>
             <div className='row mt-2'>
                 <div className='col-3'>
-                    <CSHZSettings 
+                    <CSHZSettings
                         showScaleGrid={this.state.showScaleGrid}
                         handleShowScaleGrid={this.handleShowScaleGrid}
                         showSolarSystemOrbits={this.state.showSolarSystemOrbits}
@@ -139,7 +139,7 @@ class CircumstellarHabitableZoneSim extends React.Component {
                         />
                 </div>
                 <div className='col-9'>
-                    <CSHZStarProperties 
+                    <CSHZStarProperties
                         starMassIdx={this.state.starMassIdx}
                         starAgeIdx={this.state.starAgeIdx}
                         starLuminosity={this.state.starLuminosity}
@@ -154,7 +154,7 @@ class CircumstellarHabitableZoneSim extends React.Component {
             </div>
             <div className='row mt-2'>
                 <div className='col-12'>
-                    <CSHZTimeline 
+                    <CSHZTimeline
                         starMassIdx={this.state.starMassIdx}
                         starAge={this.state.starAge}
                         starAgeIdx={this.state.starAgeIdx}

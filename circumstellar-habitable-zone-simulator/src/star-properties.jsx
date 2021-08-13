@@ -93,7 +93,9 @@ export default class CSHZStarProperties extends React.Component {
                 </div>
                 <div className='col-3'>
                     <VictoryChart
-                        domain={{x: [50000, 2000]}}
+                        domain={{
+                            x: [50000, 2000],
+                        }}
                         scale={'log'}
                         sortKey={'x'}
                         sortOrder='descending'
