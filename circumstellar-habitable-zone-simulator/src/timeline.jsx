@@ -9,19 +9,21 @@ import { getHZone, DraggableCursor } from './utils';
 import { LOG_BASE } from './main';
 import {shzStarData as STAR_DATA} from './shzStars.js';
 import {
-    roundToTwoPlaces
+    roundToTwoPlaces, forceNumber
 } from '../../eclipsing-binary-simulator/src/utils.js';
+import { RangeStepInput } from 'react-range-step-input';
 
 // In milliseconds
-const ANIMATION_INTERVAL = 100
+const ANIMATION_INTERVAL = 25
 // how far the timeline should move with each increment, in pct
-const ANIMATION_INCREMENT = 0.01
+const ANIMATION_INCREMENT = 0.005
 
 export default class CSHZTimeline extends React.Component {
     constructor(props) {
         super(props)
         this.getPlanetTemp = this.getPlanetTemp.bind(this);
         this.handleTimelineUpdate = this.handleTimelineUpdate.bind(this);
+        this.handleUpdateAnimationRate = this.handleUpdateAnimationRate.bind(this);
         this.annotateDataTable = this.annotateDataTable.bind(this);
         this.calculateZonePcts = this.calculateZonePcts.bind(this);
         this.incrementAnimation = this.incrementAnimation.bind(this);
@@ -38,7 +40,8 @@ export default class CSHZTimeline extends React.Component {
             dataTable: dataTable,
             temperateZonePct: temperateZonePct,
             hotZonePct: hotZonePct,
-            whiteDwarfPct: whiteDwarfPct
+            whiteDwarfPct: whiteDwarfPct,
+            animationRate: 1
         }
     }
 
@@ -48,6 +51,13 @@ export default class CSHZTimeline extends React.Component {
        const radius = solarRadii * 6.96 * (10 ** 8)
        // return planet temp in C
        return ((((radius ** 2) * (starTemp ** 4)) / (4 * (planetDistance ** 2))) ** 0.25) - 273;
+    }
+
+    handleUpdateAnimationRate(evt) {
+        const val = forceNumber(evt.target.value);
+        if(0.1 <= val && val <= 2) {
+            this.setState({animationRate: val})
+        }
     }
 
     annotateDataTable(dataTable, distP) {
@@ -127,14 +137,14 @@ export default class CSHZTimeline extends React.Component {
     }
 
     incrementAnimation() {
-        console.log('interval:', this.interval.current);
         if (this.interval.current !== null) {
             this.setState((state, props) => {
                 if (state.timelinePosition >= 1) {
                     this.clearInterval();
                     return {timelinePosition: 1}
                 } else {
-                    const position = state.timelinePosition + ANIMATION_INCREMENT <= 1 ? state.timelinePosition + ANIMATION_INCREMENT : 1;
+                    const nextPosition = state.timelinePosition + (ANIMATION_INCREMENT * this.state.animationRate);
+                    const position = nextPosition <= 1 ? nextPosition : 1;
                     // Find the closest index
                     const yearsAfterFormation = position * Math.round(STAR_DATA[props.starMassIdx].timespan);
                     let [low, mid, high, found] = [0, 0, state.dataTable.length - 1, false]
@@ -183,6 +193,14 @@ export default class CSHZTimeline extends React.Component {
                     )}
                 </div>
                 <div>
+                    <RangeStepInput
+                        className='form-control'
+                        name={'animation-rate-range-input'}
+                        value={this.state.animationRate}
+                        onChange={this.handleUpdateAnimationRate}
+                        min={0.1}
+                        max={2}
+                        step={0.1} />
                     <button
                         type={'button'}
                         onClick={this.toggleTimelineAnimation}
