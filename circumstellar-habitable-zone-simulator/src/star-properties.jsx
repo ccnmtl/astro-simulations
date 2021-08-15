@@ -1,5 +1,4 @@
 import React from 'react';
-import STAR_SYSTEMS from './data.js';
 import PropTypes from 'prop-types';
 import { IncrementRangeInput, NumericRangeInput } from './utils';
 import {
@@ -14,17 +13,6 @@ import {
 export default class CSHZStarProperties extends React.Component {
     constructor(props) {
         super(props);
-        this.handleActiveStarSystem = this.handleActiveStarSystem.bind(this);
-    }
-
-    handleActiveStarSystem(evt) {
-        evt.preventDefault();
-        const activeStar = parseInt(evt.target.value);
-        if (!isNaN(activeStar)) {
-            this.setState({activeStarSystem: activeStar});
-            this.props.setStarSystem(activeStar);
-            this.props.setStarMassIdx(activeStar);
-        }
     }
 
     render() {
@@ -36,30 +24,6 @@ export default class CSHZStarProperties extends React.Component {
                 </div>
             </div>
             <div className='row'>
-                <div className='col-3'>
-                    <form>
-                        <div className='form-group'>
-                            <label htmlFor='star-system-select'>
-                                Star System
-                            </label>
-                            <select
-                                id='star-system-select'
-                                value={this.props.starSystem ? this.props.starSystem : 0}
-                                onChange={this.handleActiveStarSystem}
-                                className='form-group'>
-                                {STAR_SYSTEMS.map((val, idx) => {
-                                    return (
-                                        <option
-                                            key={idx}
-                                            value={String(idx)}>
-                                            {val.name}
-                                        </option>
-                                    )
-                                })}
-                            </select>
-                        </div>
-                    </form>
-                </div>
                 <div className='col-6'>
                     <IncrementRangeInput
                         label={'Initial Star Mass:'}
@@ -91,7 +55,7 @@ export default class CSHZStarProperties extends React.Component {
                         onChange={this.props.setPlanetDistance}
                         name={'star-mass'} />
                 </div>
-                <div className='col-3'>
+                <div className='col-6'>
                     <VictoryChart
                         domain={{
                             x: [50000, 2000],
@@ -148,6 +112,4 @@ CSHZStarProperties.propTypes = {
     setStarMassIdx: PropTypes.func.isRequired,
     planetDistance: PropTypes.number.isRequired,
     setPlanetDistance: PropTypes.func.isRequired,
-    starSystem: PropTypes.number.isRequired,
-    setStarSystem: PropTypes.func.isRequired,
 }
