@@ -57,6 +57,8 @@ class CircumstellarHabitableZoneSim extends React.Component {
 
         this.setState({
             starMassIdx: starMassIdx,
+            starAge: 0, // Reset the star age
+            starAgeIdx: 0,
             starLuminosity: roundToTwoPlaces(luminosity),
             starTemperature: Math.round(temp),
             starRadius: roundToTwoPlaces(radius),

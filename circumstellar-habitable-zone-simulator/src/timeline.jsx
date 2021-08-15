@@ -95,14 +95,23 @@ export default class CSHZTimeline extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if (this.props.planetDistance != prevProps.planetDistance ||
-            this.props.starMassIdx != prevProps.starMassIdx) {
+        if (this.props.planetDistance !== prevProps.planetDistance ||
+            this.props.starAge !== prevProps.starAge ||
+            this.props.starMassIdx !== prevProps.starMassIdx) {
 
             const dataTable = this.annotateDataTable(
                     STAR_DATA[this.props.starMassIdx].dataTable, this.props.planetDistance);
             const [temperateZonePct, hotZonePct, whiteDwarfPct] = this.calculateZonePcts(dataTable, STAR_DATA[this.props.starMassIdx].timespan)
 
+            // Update the timeline position only if the star changes
+            let timelinePosition = prevState.timelinePosition;
+            if (this.props.starAge !== prevProps.starAge ||
+                this.props.starMassIdx !== prevProps.starMassIdx) {
+               timelinePosition = 0.0;
+            }
+
             this.setState({
+                timelinePosition: timelinePosition,
                 dataTable: dataTable,
                 temperateZonePct: temperateZonePct,
                 hotZonePct: hotZonePct,

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { IncrementRangeInput, NumericRangeInput } from './utils';
 import {
-    getLuminosityFromTempAndClass
+    getLuminosityFromTempAndClass, forceNumber
 } from '../../eclipsing-binary-simulator/src/utils.js';
 import {shzStarData as STAR_DATA} from './shzStars.js';
 import { LOG_BASE } from './main';
@@ -25,15 +25,30 @@ export default class CSHZStarProperties extends React.Component {
             </div>
             <div className='row'>
                 <div className='col-6'>
-                    <IncrementRangeInput
-                        label={'Initial Star Mass:'}
-                        valueIdx={this.props.starMassIdx}
-                        values={
-                            STAR_DATA.reduce((acc, val) => {
-                                acc.push(val.mass);
-                                return acc;
-                            }, [])}
-                        onChange={this.props.setStarMassIdx}
+                    <form>
+                        <div className="form-group">
+                            <label>
+                                Initial star mass:
+                                <select
+                                    className={'form-control'}
+                                    value={String(this.props.starMassIdx)}
+                                    onChange={(evt) => {
+                                        evt.preventDefault();
+                                        this.props.setStarMassIdx(forceNumber(evt.target.value)) }}>
+                                    {STAR_DATA.map((el, idx) => {
+                                        return (<option value={idx} key={idx}>{el.mass}</option>)
+                                    })}
+                                </select>
+                            </label>
+                        </div>
+                    </form>
+                    <NumericRangeInput
+                        label={'Initial Planet Distance:'}
+                        value={this.props.planetDistance}
+                        min={0.01}
+                        max={500}
+                        step={0.1}
+                        onChange={this.props.setPlanetDistance}
                         name={'star-mass'} />
                     <div className='form-group row'>
                         <label className='col-4 col-form-label col-form-label-sm'>
@@ -46,14 +61,6 @@ export default class CSHZStarProperties extends React.Component {
                             <div>Radius: {this.props.starRadius} R<sub>sun</sub></div>
                         </div>
                     </div>
-                    <NumericRangeInput
-                        label={'Initial Planet Distance:'}
-                        value={this.props.planetDistance}
-                        min={0.01}
-                        max={500}
-                        step={0.1}
-                        onChange={this.props.setPlanetDistance}
-                        name={'star-mass'} />
                 </div>
                 <div className='col-6'>
                     <VictoryChart
