@@ -33,7 +33,7 @@ export default class CSHZStarProperties extends React.Component {
                                 <label>
                                     Initial star mass:
                                     <select
-                                        className={'form-control'}
+                                        className={'form-control form-control-sm'}
                                         value={String(this.props.starMassIdx)}
                                         onChange={(evt) => {
                                             evt.preventDefault();
@@ -50,7 +50,20 @@ export default class CSHZStarProperties extends React.Component {
                             valueIdx={this.props.planetDistanceIdx}
                             values={PLANET_DISTANCES}
                             onChange={this.props.setPlanetDistanceIdx}
-                            name={'planet-distance'}/>
+                            name={'planet-distance'}
+                            getStepFunc={(val) => {
+                                if (val < 0.1) {
+                                    return 0.0001;
+                                } else if (0.1 <= val && val < 1) {
+                                    return 0.001;
+                                } else if (1 <= val && val < 10) {
+                                    return 0.01;
+                                } else if (10 <= val && val < 100) {
+                                    return 0.1;
+                                } else if (100 <= val) {
+                                    return 1;
+                                }
+                            }}/>
                     </div>
                     <div className='form-group row'>
                         <label className='col-4 col-form-label col-form-label-sm'>

@@ -39,23 +39,17 @@ export class DraggableCursor extends React.Component {
         }
     }
 
-    handleMouseDown(evt) {
+    handleMouseDown() {
         this.setState({dragging: true})
-        evt.stopPropagation()
-        evt.preventDefault()
     }
 
-    handleMouseUp(evt) {
+    handleMouseUp() {
         if (this.state.dragging) {
             this.setState({dragging: false})
         }
-        evt.stopPropagation()
-        evt.preventDefault()
     }
 
     handleMouseMove(evt) {
-        evt.stopPropagation()
-        evt.preventDefault()
         if (this.state.dragging) {
             const clientRect = this.cursorContainer.current.getBoundingClientRect();
             const [containerX, containerWidth] = [clientRect.x, clientRect.width]
