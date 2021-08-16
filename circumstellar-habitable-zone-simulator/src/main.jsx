@@ -8,19 +8,19 @@ import CSHZTimeline from './timeline';
 import {
     roundToTwoPlaces
 } from '../../eclipsing-binary-simulator/src/utils.js';
-import { getHZone } from './utils';
+import { getHZone, PLANET_DISTANCES } from './utils';
 import {shzStarData as STAR_DATA} from './shzStars.js';
 
 const INIT_STAR_IDX = 7
 
 export const LOG_BASE = 10;
 
-
 class CircumstellarHabitableZoneSim extends React.Component {
     constructor(props) {
         super(props);
         const initLum = LOG_BASE ** STAR_DATA[INIT_STAR_IDX].dataTable[0].logLum;
         const [hZoneInner, hZoneOuter] = getHZone(initLum);
+        const initPlanetDistIdx = 1899;
         this.initialState = {
             starMassIdx: INIT_STAR_IDX,
             starMass: STAR_DATA[INIT_STAR_IDX].mass,
@@ -33,14 +33,15 @@ class CircumstellarHabitableZoneSim extends React.Component {
             starLuminosity: roundToTwoPlaces(initLum),
             starTemperature: Math.round(LOG_BASE ** STAR_DATA[INIT_STAR_IDX].dataTable[0].logTemp),
             starRadius: roundToTwoPlaces(LOG_BASE ** STAR_DATA[INIT_STAR_IDX].dataTable[0].logRadius),
-            planetDistance: 1.0,
+            planetDistance: PLANET_DISTANCES[initPlanetDistIdx],
+            planetDistanceIdx: initPlanetDistIdx,
             habitableZoneInner: hZoneInner,
             habitableZoneOuter: hZoneOuter,
         };
         this.state = this.initialState;
 
         this.setStarMassIdx = this.setStarMassIdx.bind(this);
-        this.setPlanetDistance = this.setPlanetDistance.bind(this);
+        this.setPlanetDistanceIdx = this.setPlanetDistanceIdx.bind(this);
         this.setStarAgeIdx = this.setStarAgeIdx.bind(this);
     }
 
@@ -67,10 +68,13 @@ class CircumstellarHabitableZoneSim extends React.Component {
         })
     }
 
-    setPlanetDistance(distance) {
-        this.setState(() => ({
-            planetDistance: distance
-        }));
+    setPlanetDistanceIdx(distanceIdx) {
+        if (0 <= distanceIdx && distanceIdx < PLANET_DISTANCES.length) {
+            this.setState(() => ({
+                planetDistance: PLANET_DISTANCES[distanceIdx],
+                planetDistanceIdx: distanceIdx
+            }));
+        }
     }
 
     setStarAgeIdx(idx) {
@@ -112,8 +116,8 @@ class CircumstellarHabitableZoneSim extends React.Component {
                         starTemperature={this.state.starTemperature}
                         starRadius={this.state.starRadius}
                         setStarMassIdx={this.setStarMassIdx}
-                        planetDistance={this.state.planetDistance}
-                        setPlanetDistance={this.setPlanetDistance}/>
+                        planetDistanceIdx={this.state.planetDistanceIdx}
+                        setPlanetDistanceIdx={this.setPlanetDistanceIdx}/>
                 </div>
             </div>
             <div className='row mt-2'>
