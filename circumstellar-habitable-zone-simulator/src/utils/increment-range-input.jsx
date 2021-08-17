@@ -38,22 +38,18 @@ export class IncrementRangeInput extends React.Component {
                     initialVal: this.props.values[this.props.valueIdx]
                 })
             } else {
-                throw new Error('Numeric Range Input: passed value is outside min/max range');
+                throw new Error('Increment Range Input: passed value is outside min/max range');
             }
         }
     }
 
     handleNumericInput(evt) {
-        evt.preventDefault();
-        // TODO: update to valueIdx
         this.setState({
             inputVal: forceNumber(evt.target.value)
         });
     }
 
     handleRangeInput(evt) {
-        evt.preventDefault();
-        // TODO: may not need change, value should be a valueIdx
         this.props.onChange(forceNumber(evt.target.value));
     }
 
@@ -65,7 +61,8 @@ export class IncrementRangeInput extends React.Component {
         // Validate value, else reset to initial value
         const val = evt.target.value;
         // TODO: round the value down to the closest value in values
-        if (val < this.props.values[0] || val > this.props.values.slice(-1)[0]) {
+        if (val < this.props.values[0] ||
+            val > this.props.values[this.props.values.length - 1]) {
             // Reset value if it fails validation
             this.setState((state) => ({
                 inputVal: state.initialVal
@@ -77,10 +74,6 @@ export class IncrementRangeInput extends React.Component {
                    this.props.values[i] < this.state.inputVal) {
                 i += 1
             }
-            this.setState((state, props) => ({
-                inputVal: props.values[i],
-                initialVal: props.values[i]
-            }))
             this.props.onChange(i);
         }
     }
@@ -94,14 +87,13 @@ export class IncrementRangeInput extends React.Component {
                         type="number"
                         className="form-control form-control-sm"
                         name={this.props.name + '-input'}
-                        value={
-                            this.state.inputVal ? this.state.inputVal : this.props.values[0]}
+                        value={this.state.inputVal || this.props.values[0]}
                         onFocus={this.handleFocus}
                         onChange={this.handleNumericInput}
                         onBlur={this.handleBlur}
                         min={this.props.values[0]}
-                        max={this.props.values.slice(-1)[0]}
-                        step={0.1} />
+                        max={this.props.values[this.props.values.length - 1]}
+                        step={this.props.getStepFunc(this.state.inputVal || this.props.values[0])} />
                 </label>
                 <div className='col-6'>
                     <RangeStepInput
@@ -124,4 +116,5 @@ IncrementRangeInput.propTypes = {
     values: PropTypes.array.isRequired,
     onChange: PropTypes.func.isRequired,
     name: PropTypes.string.isRequired,
+    getStepFunc: PropTypes.func.isRequired,
 }

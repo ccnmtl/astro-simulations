@@ -1,7 +1,6 @@
 import React from 'react';
 import * as PIXI from 'pixi.js';
 import PropTypes from 'prop-types';
-import STAR_SYSTEMS from './data';
 
 // Sun's diameter in pixels
 const AU_PIXELS = 100;
@@ -12,22 +11,43 @@ const SOLAR_RADIUS_KM = 695700;
 const ZOOM_UPPER_BREAKPOINT = 960 * 0.8;
 const ZOOM_LOWER_BREAKPOINT = STAR_ORIGIN_POINT[0] + 20;
 
+const SOLAR_SYSTEM = {
+    name: 'Sun',
+    mass: 1.0,
+    luminosity: 1.0,
+    temperature: 5700,
+    radius: 1.0,
+    planets: [
+        {name: 'Mercury', distance: 0.387098},
+        {name: 'Venus', distance: 0.723332},
+        {name: 'Earth', distance: 1.0},
+        {name: 'Mars', distance: 1.523679},
+        {name: 'Jupiter', distance: 5.2044},
+        {name: 'Saturn', distance: 9.5826},
+        {name: 'Uranus', distance: 19.2185},
+        {name: 'Neptune', distance: 30.07},
+        {name: 'Pluto', distance: 39.482},
+    ]
+}
+
 
 export default class CSHZDiagram extends React.Component {
     constructor(props) {
         super(props)
 
         this.state = {
-            zoomLevel: 0
+            zoomLevel: 0,
+            showSolarSystemOrbits: true
         }
 
         this.cshzDiagram = React.createRef();
-        
+
         this.renderStarSystem = this.renderStarSystem.bind(this);
         this.renderStar = this.renderStar.bind(this);
         this.renderPlanet = this.renderPlanet.bind(this);
         this.auToPixels = this.auToPixels.bind(this);
         this.solarRadiusToPixels = this.solarRadiusToPixels.bind(this);
+        this.handleShowSolarSystemOrbits = this.handleShowSolarSystemOrbits.bind(this);
     }
 
     zoomLevels = [
@@ -55,12 +75,12 @@ export default class CSHZDiagram extends React.Component {
 
         this.app = app;
         this.cshzDiagram.current.appendChild(app.view);
-        
+
         this.renderStarSystem();
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if(this.props.starSystem !== prevProps.starSystem || 
+        if(this.state.showSolarSystemOrbits !== prevState.showSolarSystemOrbits ||
            this.state.zoomLevel !== prevState.zoomLevel ||
            this.props.habitableZoneInner !== prevProps.habitableZoneInner) {
             this.renderStarSystem();
@@ -88,16 +108,16 @@ export default class CSHZDiagram extends React.Component {
         const planetXPosition = STAR_ORIGIN_POINT[0] + this.auToPixels(this.props.planetDistance)
         // if planet is out of range
         if (planetXPosition > ZOOM_UPPER_BREAKPOINT) {
-            // Set zoom level and rerender  
+            // Set zoom level and rerender
             if (this.state.zoomLevel < 10) {
                 this.setState((state) => ({
-                    zoomLevel: state.zoomLevel + 1 
+                    zoomLevel: state.zoomLevel + 1
                 }))
             }
         } else if (planetXPosition < ZOOM_LOWER_BREAKPOINT) {
             if (this.state.zoomLevel > 0) {
                 this.setState((state) => ({
-                    zoomLevel: state.zoomLevel - 1 
+                    zoomLevel: state.zoomLevel - 1
                 }))
             }
         } else {
@@ -148,22 +168,23 @@ export default class CSHZDiagram extends React.Component {
             }
         }
 
-        const starSystem = STAR_SYSTEMS[this.props.starSystem];
 
         this.renderStar();
 
         // Planets
-        for (const planet of starSystem.planets) {
-            let p = new PIXI.Graphics();
-            p.lineStyle(1, 0xFFFFFF);
-            p.arc(
-                STAR_ORIGIN_POINT[0],
-                STAR_ORIGIN_POINT[1],
-                this.auToPixels(planet.distance),
-                0,
-                Math.PI * 2
-            )
-            this.app.stage.addChild(p);
+        if (this.state.showSolarSystemOrbits) {
+            for (const planet of SOLAR_SYSTEM.planets) {
+                let p = new PIXI.Graphics();
+                p.lineStyle(1, 0xFFFFFF);
+                p.arc(
+                    STAR_ORIGIN_POINT[0],
+                    STAR_ORIGIN_POINT[1],
+                    this.auToPixels(planet.distance),
+                    0,
+                    Math.PI * 2
+                )
+                this.app.stage.addChild(p);
+            }
         }
 
         // Habitable Zone
@@ -192,20 +213,42 @@ export default class CSHZDiagram extends React.Component {
         this.app.stage.addChild(scaleRect);
         // Because this can initiate a rerender, place it last
         this.renderPlanet();
-        
+
+    }
+
+    handleShowSolarSystemOrbits() {
+        this.setState((prevState) => {
+            return {showSolarSystemOrbits: !prevState.showSolarSystemOrbits}
+        })
     }
 
     render() {
-        return (
+        return (<>
             <div className='col-12' ref={this.cshzDiagram} />
-        )
+            <div className="col-12">
+                <form>
+                    <div className='form-check'>
+                        <input
+                            id='show-orbits'
+                            type='checkbox'
+                            checked={this.state.showSolarSystemOrbits}
+                            onChange={this.handleShowSolarSystemOrbits}
+                            className={'form-check-input'} />
+                        <label
+                            className='form-check-label'
+                            htmlFor='show-orbits'>
+                            Show Solar System Orbits
+                        </label>
+                    </div>
+                </form>
+            </div>
+        </>)
     }
 }
 
 CSHZDiagram.propTypes = {
     starRadius: PropTypes.number.isRequired,
     planetDistance: PropTypes.number.isRequired,
-    starSystem: PropTypes.number.isRequired,
     habitableZoneInner: PropTypes.number.isRequired,
     habitableZoneOuter: PropTypes.number.isRequired,
 }
