@@ -50,7 +50,6 @@ export class IncrementRangeInput extends React.Component {
     }
 
     handleRangeInput(evt) {
-        console.log('A', evt.target.value);
         this.props.onChange(forceNumber(evt.target.value));
     }
 
