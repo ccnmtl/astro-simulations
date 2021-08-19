@@ -1,6 +1,8 @@
 import React from 'react';
 import * as PIXI from 'pixi.js';
 import PropTypes from 'prop-types';
+import anime from 'animejs/lib/anime.es.js';
+
 
 // Sun's diameter in pixels
 const AU_PIXELS = 100;
@@ -8,8 +10,8 @@ const STAR_ORIGIN_POINT = [100, 150];
 const KM_AU = 149597870.7;
 const SOLAR_RADIUS_KM = 695700;
 
-const ZOOM_UPPER_BREAKPOINT = 960 * 0.8;
-const ZOOM_LOWER_BREAKPOINT = STAR_ORIGIN_POINT[0] + 20;
+const ZOOM_UPPER_BREAKPOINT = 960 * 0.6;
+const ZOOM_LOWER_BREAKPOINT = STAR_ORIGIN_POINT[0] + 100;
 
 const SOLAR_SYSTEM = {
     name: 'Sun',
@@ -36,7 +38,7 @@ export default class CSHZDiagram extends React.Component {
         super(props)
 
         this.state = {
-            zoomLevel: 0,
+            zoomLevel: 4,
             showSolarSystemOrbits: true
         }
 
@@ -76,70 +78,122 @@ export default class CSHZDiagram extends React.Component {
         this.app = app;
         this.cshzDiagram.current.appendChild(app.view);
 
-        this.renderStarSystem();
+        const planetXPosition = STAR_ORIGIN_POINT[0] + this.auToPixels(
+            this.props.planetDistance, this.zoomLevels[this.state.zoomLevel].pixelsPerAU)
+        this.renderStarSystem(this.zoomLevels[this.state.zoomLevel].pixelsPerAU, planetXPosition);
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if(this.state.showSolarSystemOrbits !== prevState.showSolarSystemOrbits ||
-           this.state.zoomLevel !== prevState.zoomLevel ||
+        const planetXPosition = STAR_ORIGIN_POINT[0] + this.auToPixels(
+            this.props.planetDistance, this.zoomLevels[this.state.zoomLevel].pixelsPerAU)
+        if (this.state.showSolarSystemOrbits !== prevState.showSolarSystemOrbits ||
            this.props.habitableZoneInner !== prevProps.habitableZoneInner) {
-            this.renderStarSystem();
-        }
-
-        if(this.props.starRadius !== prevProps.starRadius) {
-            this.renderStar();
-        }
-
-        if(this.props.planetDistance !== prevProps.planetDistance) {
-            this.renderPlanet();
+           // If the zoomLevel changes, renderStarSytem is called, then renderPlanet, which then increments
+           // the zoom level so that the planet can be seen
+           // If the zoomLevel changes, animate the transition somehow
+                //anime({
+                    //targets: obj,
+                    //pixPerAU: [
+                        //me.zoomLevels[me.state.zoomLevel].pixelsPerAU,
+                        //me.zoomLevels[me.state.zoomLevel + 1].pixelsPerAU],
+                    //duration: 10000,
+                    //easing: 'linear',
+                    //update: function() {
+                        //console.log('A', obj);
+                        //me.renderStarSystem(obj.pixPerAU);
+                    //},
+                    //complete: function() {
+                        //console.log('B');
+                        //me.setState((state) => ({
+                            //zoomLevel: state.zoomLevel + 1
+                        //}))
+                    //}
+                //})
+            // this.renderPlanet should not assess the zoom level, it should be done here
+            this.renderStarSystem(this.zoomLevels[this.state.zoomLevel].pixelsPerAU, planetXPosition);
+        } else if (this.state.zoomLevel !== prevState.zoomLevel) {
+            // Animate the zoom here
+            const obj = {pixPerAU: 0}
+            const me = this;
+            anime({
+                targets: obj,
+                pixPerAU: [
+                    me.zoomLevels[prevState.zoomLevel].pixelsPerAU,
+                    me.zoomLevels[me.state.zoomLevel].pixelsPerAU],
+                duration: 1000,
+                easing: 'linear',
+                update: function() {
+                    me.renderStarSystem(obj.pixPerAU, planetXPosition);
+                },
+            })
+        } else if (this.props.starRadius !== prevProps.starRadius) {
+            this.renderStar(this.zoomLevels[this.state.zoomLevel].pixelsPerAU);
+        } else if(this.props.planetDistance !== prevProps.planetDistance) {
+            console.log('Planet distance changed')
+            if (planetXPosition > ZOOM_UPPER_BREAKPOINT) {
+                let tempPos = planetXPosition;
+                let tempZoomLevel = this.state.zoomLevel
+                while (tempPos > ZOOM_UPPER_BREAKPOINT && tempZoomLevel < 9) {
+                    tempZoomLevel += 1;
+                    tempPos = this.auToPixels(
+                        this.props.planetDistance, this.zoomLevels[tempZoomLevel])
+                }
+                console.log('Zoom Out');
+                // Zoom out
+                // Set zoom level and rerender
+                if (this.state.zoomLevel < 10) {
+                    this.setState(() => ({
+                        zoomLevel: tempZoomLevel
+                    }))
+                }
+            } else if (planetXPosition < ZOOM_LOWER_BREAKPOINT) {
+                console.log('Zoom In');
+                let tempPos = planetXPosition;
+                let tempZoomLevel = this.state.zoomLevel
+                while (tempPos < ZOOM_UPPER_BREAKPOINT && tempZoomLevel > 0) {
+                    tempZoomLevel -= 1;
+                    tempPos = this.auToPixels(
+                        this.props.planetDistance, this.zoomLevels[tempZoomLevel])
+                }
+                // Zoom in
+                if (this.state.zoomLevel > 0) {
+                    this.setState(() => ({
+                        zoomLevel: tempZoomLevel
+                    }))
+                }
+            } else {
+                this.renderStarSystem(this.zoomLevels[this.state.zoomLevel].pixelsPerAU, planetXPosition);
+            }
         }
     }
 
-    auToPixels(au) {
-        const val = au * this.zoomLevels[this.state.zoomLevel].pixelsPerAU;
+    auToPixels(au, pixelsPerAU) {
+        const val = au * pixelsPerAU;
         return val >= 1 ? val : 1;
     }
 
-    solarRadiusToPixels(solarRadius) {
-        return this.auToPixels((solarRadius * SOLAR_RADIUS_KM) / KM_AU);
+    solarRadiusToPixels(solarRadius, pixelsPerAU) {
+        return this.auToPixels((solarRadius * SOLAR_RADIUS_KM) / KM_AU, pixelsPerAU);
     }
 
-    renderPlanet() {
-        const planetXPosition = STAR_ORIGIN_POINT[0] + this.auToPixels(this.props.planetDistance)
-        // if planet is out of range
-        if (planetXPosition > ZOOM_UPPER_BREAKPOINT) {
-            // Set zoom level and rerender
-            if (this.state.zoomLevel < 10) {
-                this.setState((state) => ({
-                    zoomLevel: state.zoomLevel + 1
-                }))
-            }
-        } else if (planetXPosition < ZOOM_LOWER_BREAKPOINT) {
-            if (this.state.zoomLevel > 0) {
-                this.setState((state) => ({
-                    zoomLevel: state.zoomLevel - 1
-                }))
-            }
+    renderPlanet(pixelsPerAU, planetXPosition) {
+        if(this.planet) {
+            this.planet.clear();
         } else {
-            // else render the planet
-            if(this.planet) {
-                this.planet.clear();
-            } else {
-                this.planet = new PIXI.Graphics();
-                this.app.stage.addChild(this.planet);
-            }
-
-            this.planet.beginFill(0x0000FF);
-            this.planet.drawCircle(
-                planetXPosition,
-                STAR_ORIGIN_POINT[1],
-                15
-            );
-            this.planet.endFill();
+            this.planet = new PIXI.Graphics();
+            this.app.stage.addChild(this.planet);
         }
+
+        this.planet.beginFill(0x0000FF);
+        this.planet.drawCircle(
+            planetXPosition,
+            STAR_ORIGIN_POINT[1],
+            15
+        );
+        this.planet.endFill();
     }
 
-    renderStar() {
+    renderStar(pixelsPerAU) {
         if(this.star) {
             this.star.clear();
         } else {
@@ -151,12 +205,12 @@ export default class CSHZDiagram extends React.Component {
         this.star.drawCircle(
             STAR_ORIGIN_POINT[0],
             STAR_ORIGIN_POINT[1],
-            this.solarRadiusToPixels(this.props.starRadius)
+            this.solarRadiusToPixels(this.props.starRadius, pixelsPerAU)
         );
         this.star.endFill();
     }
 
-    renderStarSystem() {
+    renderStarSystem(pixelsPerAU, planetXPosition) {
         // Clear the stage
         for (const child of this.app.stage.children) {
             // TODO: note this also clears the star and planet
@@ -169,7 +223,7 @@ export default class CSHZDiagram extends React.Component {
         }
 
 
-        this.renderStar();
+        this.renderStar(pixelsPerAU);
 
         // Planets
         if (this.state.showSolarSystemOrbits) {
@@ -179,7 +233,7 @@ export default class CSHZDiagram extends React.Component {
                 p.arc(
                     STAR_ORIGIN_POINT[0],
                     STAR_ORIGIN_POINT[1],
-                    this.auToPixels(planet.distance),
+                    this.auToPixels(planet.distance, pixelsPerAU),
                     0,
                     Math.PI * 2
                 )
@@ -188,8 +242,8 @@ export default class CSHZDiagram extends React.Component {
         }
 
         // Habitable Zone
-        const hZoneInner = this.auToPixels(this.props.habitableZoneInner);
-        const hZoneOuter = this.auToPixels(this.props.habitableZoneOuter);
+        const hZoneInner = this.auToPixels(this.props.habitableZoneInner, pixelsPerAU);
+        const hZoneOuter = this.auToPixels(this.props.habitableZoneOuter, pixelsPerAU);
         const HZONE_ALPHA = 0.5;
         let hZone = new PIXI.Graphics();
         hZone.beginFill(0x0000FF, HZONE_ALPHA)
@@ -212,7 +266,7 @@ export default class CSHZDiagram extends React.Component {
         this.app.stage.addChild(scaleText);
         this.app.stage.addChild(scaleRect);
         // Because this can initiate a rerender, place it last
-        this.renderPlanet();
+        this.renderPlanet(pixelsPerAU, planetXPosition);
 
     }
 
