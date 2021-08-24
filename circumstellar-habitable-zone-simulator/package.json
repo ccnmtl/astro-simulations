@@ -26,6 +26,7 @@
   "homepage": "https://github.com/ccnmtl/astro-simulations#readme",
   "dependencies": {
     "@babel/cli": "^7.5.5",
+    "animejs": "^3.2.1",
     "eslint-plugin-security": "^1.4.0",
     "pixi.js": "~6.1.0",
     "react": "~17.0.1",
