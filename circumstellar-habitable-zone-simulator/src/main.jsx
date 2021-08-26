@@ -20,7 +20,7 @@ class CircumstellarHabitableZoneSim extends React.Component {
         super(props);
         const initLum = LOG_BASE ** STAR_DATA[INIT_STAR_IDX].dataTable[0].logLum;
         const [hZoneInner, hZoneOuter] = getHZone(initLum);
-        const initPlanetDistIdx = 1899;
+        const initPlanetDistIdx = 189;
         this.initialState = {
             starMassIdx: INIT_STAR_IDX,
             starMass: STAR_DATA[INIT_STAR_IDX].mass,

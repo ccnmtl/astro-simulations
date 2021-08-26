@@ -34,14 +34,12 @@ const pDist = [];
 let lastDistVal = 0;
 while (lastDistVal < 500) {
     if (lastDistVal < 0.1) {
-        lastDistVal = roundFloatToPrec(lastDistVal + 0.0001, 4);
+        lastDistVal = roundFloatToPrec(lastDistVal + 0.001, 4);
     } else if (0.1 <= lastDistVal && lastDistVal < 1) {
-        lastDistVal = roundFloatToPrec(lastDistVal + 0.001, 3);
+        lastDistVal = roundFloatToPrec(lastDistVal + 0.01, 3);
     } else if (1 <= lastDistVal && lastDistVal < 10) {
-        lastDistVal = roundFloatToPrec(lastDistVal + 0.01, 2);
-    } else if (10 <= lastDistVal && lastDistVal < 100) {
-        lastDistVal = roundFloatToPrec(lastDistVal + 0.1, 1);
-    } else if (100 <= lastDistVal) {
+        lastDistVal = roundFloatToPrec(lastDistVal + 0.1, 2);
+    } else if (10 <= lastDistVal) {
         lastDistVal += 1;
     }
     pDist.push(lastDistVal);
