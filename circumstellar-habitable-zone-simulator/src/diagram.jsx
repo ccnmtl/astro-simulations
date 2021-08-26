@@ -5,13 +5,14 @@ import anime from 'animejs/lib/anime.es.js';
 
 
 // Sun's diameter in pixels
-const AU_PIXELS = 100;
-const STAR_ORIGIN_POINT = [100, 150];
+const DIAGRAM_SCALER = 3;
+const AU_PIXELS = 100 * DIAGRAM_SCALER;
+const STAR_ORIGIN_POINT = [100, 150 * DIAGRAM_SCALER];
 const KM_AU = 149597870.7;
 const SOLAR_RADIUS_KM = 695700;
 
-const ZOOM_UPPER_BREAKPOINT = 960 * 0.8;
-const ZOOM_LOWER_BREAKPOINT = STAR_ORIGIN_POINT[0] + 100;
+const ZOOM_UPPER_BREAKPOINT = (960 * 0.8) * DIAGRAM_SCALER;
+const ZOOM_LOWER_BREAKPOINT = (STAR_ORIGIN_POINT[0] + 100) * DIAGRAM_SCALER;
 
 const SOLAR_SYSTEM = {
     name: 'Sun',
@@ -69,8 +70,8 @@ export default class CSHZDiagram extends React.Component {
     componentDidMount() {
         const app = new PIXI.Application({
             backgroundColor: 0x000000,
-            width: this.cshzDiagram.current.clientWidth,
-            height: 300,
+            width: this.cshzDiagram.current.clientWidth * DIAGRAM_SCALER,
+            height: 300 * DIAGRAM_SCALER,
             sharedLoader: true,
             sharedTicker: true,
             antiAliasing: true,
@@ -119,7 +120,7 @@ export default class CSHZDiagram extends React.Component {
         }
 
         const pixBtnBreakpnts = ZOOM_UPPER_BREAKPOINT - ZOOM_LOWER_BREAKPOINT;
-        const pctDistFromStar = pixelsFromStar / pixBtnBreakpnts;
+        const pctDistFromStar = (pixelsFromStar - ZOOM_LOWER_BREAKPOINT) / pixBtnBreakpnts;
         const pixPerAUInterval = this.zoomLevels[zoomLevel].pixelsPerAU - this.zoomLevels[zoomLevel + 1].pixelsPerAU
         const scaledPixPerAU = this.zoomLevels[zoomLevel].pixelsPerAU - (pctDistFromStar * pixPerAUInterval)
         return [planetXPosition, scaledPixPerAU, zoomLevel];
@@ -147,7 +148,7 @@ export default class CSHZDiagram extends React.Component {
         this.planet.drawCircle(
             planetXPosition,
             STAR_ORIGIN_POINT[1],
-            15
+            15 * DIAGRAM_SCALER
         );
         this.planet.endFill();
     }
@@ -184,22 +185,6 @@ export default class CSHZDiagram extends React.Component {
 
         this.renderStar(pixelsPerAU);
 
-        // Planets
-        if (this.state.showSolarSystemOrbits) {
-            for (const planet of SOLAR_SYSTEM.planets) {
-                let p = new PIXI.Graphics();
-                p.lineStyle(1, 0xFFFFFF);
-                p.arc(
-                    STAR_ORIGIN_POINT[0],
-                    STAR_ORIGIN_POINT[1],
-                    this.auToPixels(planet.distance, pixelsPerAU),
-                    0,
-                    Math.PI * 2
-                )
-                this.app.stage.addChild(p);
-            }
-        }
-
         // Habitable Zone
         const hZoneInner = this.auToPixels(this.props.habitableZoneInner, pixelsPerAU);
         const hZoneOuter = this.auToPixels(this.props.habitableZoneOuter, pixelsPerAU);
@@ -212,16 +197,32 @@ export default class CSHZDiagram extends React.Component {
             .endHole()
         this.app.stage.addChild(hZone);
 
+        // Planets
+        if (this.state.showSolarSystemOrbits) {
+            for (const planet of SOLAR_SYSTEM.planets) {
+                let p = new PIXI.Graphics();
+                p.lineStyle(2 * DIAGRAM_SCALER, 0xFFFFFF);
+                p.arc(
+                    STAR_ORIGIN_POINT[0],
+                    STAR_ORIGIN_POINT[1],
+                    this.auToPixels(planet.distance, pixelsPerAU),
+                    0,
+                    Math.PI * 2
+                )
+                this.app.stage.addChild(p);
+            }
+        }
+
         // Scale
         let scaleText = new PIXI.Text(
             this.zoomLevels[zoomLevel].value + ' AU',
-            {fill: 0xFFFFFF, fontSize: 16}
+            {fill: 0xFFFFFF, fontSize: 16 * DIAGRAM_SCALER}
         );
-        scaleText.position.set(800, 20);
+        scaleText.position.set(800 * DIAGRAM_SCALER, 20 * DIAGRAM_SCALER);
         let scaleRect = new PIXI.Graphics();
         scaleRect.beginFill(0xFFFFFF);
         scaleRect.lineStyle(1, 0xFFFFFF);
-        scaleRect.drawRect(800, 50, pixelsPerAU * this.zoomLevels[zoomLevel].value, 10)
+        scaleRect.drawRect(800 * DIAGRAM_SCALER, 50 * DIAGRAM_SCALER, pixelsPerAU * this.zoomLevels[zoomLevel].value, 10)
         this.app.stage.addChild(scaleText);
         this.app.stage.addChild(scaleRect);
         // Because this can initiate a rerender, place it last
@@ -237,7 +238,9 @@ export default class CSHZDiagram extends React.Component {
 
     render() {
         return (<>
-            <div className='col-12' ref={this.cshzDiagram} />
+            <div className='col-12'>
+                <div id="cshzDiagram-contianer" ref={this.cshzDiagram}/>
+            </div>
             <div className="col-12">
                 <form>
                     <div className='form-check'>
