@@ -11,8 +11,8 @@ const STAR_ORIGIN_POINT = [100, 150 * DIAGRAM_SCALER];
 const KM_AU = 149597870.7;
 const SOLAR_RADIUS_KM = 695700;
 
-const ZOOM_UPPER_BREAKPOINT = (960 * 0.8) * DIAGRAM_SCALER;
-const ZOOM_LOWER_BREAKPOINT = (STAR_ORIGIN_POINT[0] + 100) * DIAGRAM_SCALER;
+const ZOOM_UPPER_BREAKPOINT = (960 * 0.9) * DIAGRAM_SCALER;
+const ZOOM_LOWER_BREAKPOINT = STAR_ORIGIN_POINT[0] + (20 * DIAGRAM_SCALER);
 
 const SOLAR_SYSTEM = {
     name: 'Sun',
@@ -112,19 +112,7 @@ export default class CSHZDiagram extends React.Component {
              pixelsFromStar = this.auToPixels(this.props.planetDistance, this.zoomLevels[zoomLevel].pixelsPerAU);
              planetXPosition = STAR_ORIGIN_POINT[0] + pixelsFromStar;
         }
-
-        // Then calculate an offset based on a percentage of the
-        // planet's distance between the two breakpoints
-        if (zoomLevel == this.zoomLevels.length - 1) {
-            return [planetXPosition, this.zoomLevels[zoomLevel].pixelsPerAU, zoomLevel]
-        }
-
-        const pixBtnBreakpnts = ZOOM_UPPER_BREAKPOINT - ZOOM_LOWER_BREAKPOINT;
-        const pctDistFromStar = (pixelsFromStar - ZOOM_LOWER_BREAKPOINT) / pixBtnBreakpnts;
-        const pixPerAUInterval = this.zoomLevels[zoomLevel].pixelsPerAU - this.zoomLevels[zoomLevel + 1].pixelsPerAU
-        const scaledPixPerAU = this.zoomLevels[zoomLevel].pixelsPerAU - (pctDistFromStar * pixPerAUInterval)
-        return [planetXPosition, scaledPixPerAU, zoomLevel];
-
+        return [planetXPosition, this.zoomLevels[zoomLevel].pixelsPerAU, zoomLevel]
     }
 
     auToPixels(au, pixelsPerAU) {
