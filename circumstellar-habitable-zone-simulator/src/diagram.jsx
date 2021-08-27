@@ -6,6 +6,7 @@ import anime from 'animejs/lib/anime.es.js';
 
 // Sun's diameter in pixels
 const DIAGRAM_SCALER = 3;
+const HEIGHT = 300 * DIAGRAM_SCALER;
 const AU_PIXELS = 100 * DIAGRAM_SCALER;
 const STAR_ORIGIN_POINT = [100, 150 * DIAGRAM_SCALER];
 const KM_AU = 149597870.7;
@@ -48,6 +49,7 @@ export default class CSHZDiagram extends React.Component {
         this.renderStarSystem = this.renderStarSystem.bind(this);
         this.renderStar = this.renderStar.bind(this);
         this.renderPlanet = this.renderPlanet.bind(this);
+        this.findX = this.findX.bind(this);
         this.auToPixels = this.auToPixels.bind(this);
         this.solarRadiusToPixels = this.solarRadiusToPixels.bind(this);
         this.handleShowSolarSystemOrbits = this.handleShowSolarSystemOrbits.bind(this);
@@ -71,7 +73,7 @@ export default class CSHZDiagram extends React.Component {
         const app = new PIXI.Application({
             backgroundColor: 0x000000,
             width: this.cshzDiagram.current.clientWidth * DIAGRAM_SCALER,
-            height: 300 * DIAGRAM_SCALER,
+            height: HEIGHT,
             sharedLoader: true,
             sharedTicker: true,
             antiAliasing: true,
@@ -122,6 +124,10 @@ export default class CSHZDiagram extends React.Component {
 
     solarRadiusToPixels(solarRadius, pixelsPerAU) {
         return this.auToPixels((solarRadius * SOLAR_RADIUS_KM) / KM_AU, pixelsPerAU);
+    }
+
+    findX(r, xOrigin, yOrigin, y) {
+        return Math.sqrt((r ** 2) - ((y - yOrigin) ** 2)) + xOrigin;
     }
 
     renderPlanet(pixelsPerAU, planetXPosition) {
@@ -197,7 +203,16 @@ export default class CSHZDiagram extends React.Component {
                     {fill: 0xFFFFFF, fontSize: 16 * DIAGRAM_SCALER}
                 )
                 planetLabel.anchor.set(0, 0.5);
-                planetLabel.position.set(planetDistPixels + 45 * DIAGRAM_SCALER, 150 * DIAGRAM_SCALER);
+                const labelRadius = planetDistPixels + 10 * DIAGRAM_SCALER;
+                const bottomLabelPadding = 18 * DIAGRAM_SCALER
+                const angle = (45 / 180) * Math.PI;
+                let labelX = STAR_ORIGIN_POINT[0] + labelRadius * Math.cos(angle);
+                let labelY = STAR_ORIGIN_POINT[1] + labelRadius * Math.sin(angle);
+                if (labelY > HEIGHT - bottomLabelPadding) {
+                    labelX = this.findX(labelRadius, STAR_ORIGIN_POINT[0], STAR_ORIGIN_POINT[1], HEIGHT - bottomLabelPadding);
+                    labelY = HEIGHT - bottomLabelPadding;
+                }
+                planetLabel.position.set(labelX, labelY);
                 this.app.stage.addChild(planetLabel);
             }
         }
