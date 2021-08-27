@@ -201,15 +201,25 @@ export default class CSHZDiagram extends React.Component {
         if (this.state.showSolarSystemOrbits) {
             for (const planet of SOLAR_SYSTEM.planets) {
                 let p = new PIXI.Graphics();
+                let planetDistPixels = this.auToPixels(planet.distance, pixelsPerAU);
                 p.lineStyle(2 * DIAGRAM_SCALER, 0xFFFFFF);
                 p.arc(
                     STAR_ORIGIN_POINT[0],
                     STAR_ORIGIN_POINT[1],
-                    this.auToPixels(planet.distance, pixelsPerAU),
+                    planetDistPixels,
                     0,
                     Math.PI * 2
                 )
                 this.app.stage.addChild(p);
+
+                // Planet label
+                let planetLabel = new PIXI.Text(
+                    planet.name,
+                    {fill: 0xFFFFFF, fontSize: 16 * DIAGRAM_SCALER}
+                )
+                planetLabel.anchor.set(0, 0.5);
+                planetLabel.position.set(planetDistPixels + 45 * DIAGRAM_SCALER, 150 * DIAGRAM_SCALER);
+                this.app.stage.addChild(planetLabel);
             }
         }
 
