@@ -137,12 +137,12 @@ export default class CSHZDiagram extends React.Component {
     }
 
     renderPlanet(pixelsPerAU, planetXPosition) {
-        if(this.planet) {
-            this.planet.clear();
-        } else {
-            this.planet = new PIXI.Graphics();
-            this.app.stage.addChild(this.planet);
+        if (this.planet) {
+            this.app.stage.removeChild(this.planet);
         }
+
+        this.planet = new PIXI.Graphics();
+        this.app.stage.addChild(this.planet);
 
         this.planet.beginFill(0x0000FF);
         this.planet.drawCircle(
@@ -154,12 +154,12 @@ export default class CSHZDiagram extends React.Component {
     }
 
     renderStar(pixelsPerAU) {
-        if(this.star) {
-            this.star.clear();
-        } else {
-            this.star = new PIXI.Graphics();
-            this.app.stage.addChild(this.star);
+        if (this.star) {
+            this.app.stage.removeChild(this.star);
         }
+
+        this.star = new PIXI.Graphics();
+        this.app.stage.addChild(this.star);
 
         this.star.beginFill(0xFFFFFF);
         this.star.drawCircle(
@@ -172,16 +172,7 @@ export default class CSHZDiagram extends React.Component {
 
     renderStarSystem(pixelsPerAU, planetXPosition, zoomLevel) {
         // Clear the stage
-        for (const child of this.app.stage.children) {
-            // TODO: note this also clears the star and planet
-            // Figure out a better way of checking this
-            if (typeof child.clear === 'function') {
-                child.clear();
-            } else {
-                child.destroy();
-            }
-        }
-
+        this.app.stage.removeChildren();
 
         this.renderStar(pixelsPerAU);
 
