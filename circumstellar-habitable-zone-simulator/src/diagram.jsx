@@ -5,13 +5,15 @@ import anime from 'animejs/lib/anime.es.js';
 
 
 // Sun's diameter in pixels
-const AU_PIXELS = 100;
-const STAR_ORIGIN_POINT = [100, 150];
+const DIAGRAM_SCALER = 3;
+const HEIGHT = 300 * DIAGRAM_SCALER;
+const AU_PIXELS = 100 * DIAGRAM_SCALER;
+const STAR_ORIGIN_POINT = [100, 150 * DIAGRAM_SCALER];
 const KM_AU = 149597870.7;
 const SOLAR_RADIUS_KM = 695700;
 
-const ZOOM_UPPER_BREAKPOINT = 960 * 0.8;
-const ZOOM_LOWER_BREAKPOINT = STAR_ORIGIN_POINT[0] + 100;
+const ZOOM_UPPER_BREAKPOINT = (960 * 0.9) * DIAGRAM_SCALER;
+const ZOOM_LOWER_BREAKPOINT = STAR_ORIGIN_POINT[0] + (20 * DIAGRAM_SCALER);
 
 const SOLAR_SYSTEM = {
     name: 'Sun',
@@ -47,6 +49,7 @@ export default class CSHZDiagram extends React.Component {
         this.renderStarSystem = this.renderStarSystem.bind(this);
         this.renderStar = this.renderStar.bind(this);
         this.renderPlanet = this.renderPlanet.bind(this);
+        this.findX = this.findX.bind(this);
         this.auToPixels = this.auToPixels.bind(this);
         this.solarRadiusToPixels = this.solarRadiusToPixels.bind(this);
         this.handleShowSolarSystemOrbits = this.handleShowSolarSystemOrbits.bind(this);
@@ -69,8 +72,8 @@ export default class CSHZDiagram extends React.Component {
     componentDidMount() {
         const app = new PIXI.Application({
             backgroundColor: 0x000000,
-            width: this.cshzDiagram.current.clientWidth,
-            height: 300,
+            width: this.cshzDiagram.current.clientWidth * DIAGRAM_SCALER,
+            height: HEIGHT,
             sharedLoader: true,
             sharedTicker: true,
             antiAliasing: true,
@@ -111,19 +114,7 @@ export default class CSHZDiagram extends React.Component {
              pixelsFromStar = this.auToPixels(this.props.planetDistance, this.zoomLevels[zoomLevel].pixelsPerAU);
              planetXPosition = STAR_ORIGIN_POINT[0] + pixelsFromStar;
         }
-
-        // Then calculate an offset based on a percentage of the
-        // planet's distance between the two breakpoints
-        if (zoomLevel == this.zoomLevels.length - 1) {
-            return [planetXPosition, this.zoomLevels[zoomLevel].pixelsPerAU, zoomLevel]
-        }
-
-        const pixBtnBreakpnts = ZOOM_UPPER_BREAKPOINT - ZOOM_LOWER_BREAKPOINT;
-        const pctDistFromStar = pixelsFromStar / pixBtnBreakpnts;
-        const pixPerAUInterval = this.zoomLevels[zoomLevel].pixelsPerAU - this.zoomLevels[zoomLevel + 1].pixelsPerAU
-        const scaledPixPerAU = this.zoomLevels[zoomLevel].pixelsPerAU - (pctDistFromStar * pixPerAUInterval)
-        return [planetXPosition, scaledPixPerAU, zoomLevel];
-
+        return [planetXPosition, this.zoomLevels[zoomLevel].pixelsPerAU, zoomLevel]
     }
 
     auToPixels(au, pixelsPerAU) {
@@ -135,30 +126,34 @@ export default class CSHZDiagram extends React.Component {
         return this.auToPixels((solarRadius * SOLAR_RADIUS_KM) / KM_AU, pixelsPerAU);
     }
 
+    findX(r, xOrigin, yOrigin, y) {
+        return Math.sqrt((r ** 2) - ((y - yOrigin) ** 2)) + xOrigin;
+    }
+
     renderPlanet(pixelsPerAU, planetXPosition) {
-        if(this.planet) {
-            this.planet.clear();
-        } else {
-            this.planet = new PIXI.Graphics();
-            this.app.stage.addChild(this.planet);
+        if (this.planet) {
+            this.app.stage.removeChild(this.planet);
         }
+
+        this.planet = new PIXI.Graphics();
+        this.app.stage.addChild(this.planet);
 
         this.planet.beginFill(0x0000FF);
         this.planet.drawCircle(
             planetXPosition,
             STAR_ORIGIN_POINT[1],
-            15
+            15 * DIAGRAM_SCALER
         );
         this.planet.endFill();
     }
 
     renderStar(pixelsPerAU) {
-        if(this.star) {
-            this.star.clear();
-        } else {
-            this.star = new PIXI.Graphics();
-            this.app.stage.addChild(this.star);
+        if (this.star) {
+            this.app.stage.removeChild(this.star);
         }
+
+        this.star = new PIXI.Graphics();
+        this.app.stage.addChild(this.star);
 
         this.star.beginFill(0xFFFFFF);
         this.star.drawCircle(
@@ -171,34 +166,9 @@ export default class CSHZDiagram extends React.Component {
 
     renderStarSystem(pixelsPerAU, planetXPosition, zoomLevel) {
         // Clear the stage
-        for (const child of this.app.stage.children) {
-            // TODO: note this also clears the star and planet
-            // Figure out a better way of checking this
-            if (typeof child.clear === 'function') {
-                child.clear();
-            } else {
-                child.destroy();
-            }
-        }
-
+        this.app.stage.removeChildren();
 
         this.renderStar(pixelsPerAU);
-
-        // Planets
-        if (this.state.showSolarSystemOrbits) {
-            for (const planet of SOLAR_SYSTEM.planets) {
-                let p = new PIXI.Graphics();
-                p.lineStyle(1, 0xFFFFFF);
-                p.arc(
-                    STAR_ORIGIN_POINT[0],
-                    STAR_ORIGIN_POINT[1],
-                    this.auToPixels(planet.distance, pixelsPerAU),
-                    0,
-                    Math.PI * 2
-                )
-                this.app.stage.addChild(p);
-            }
-        }
 
         // Habitable Zone
         const hZoneInner = this.auToPixels(this.props.habitableZoneInner, pixelsPerAU);
@@ -212,16 +182,51 @@ export default class CSHZDiagram extends React.Component {
             .endHole()
         this.app.stage.addChild(hZone);
 
+        // Planets
+        if (this.state.showSolarSystemOrbits) {
+            for (const planet of SOLAR_SYSTEM.planets) {
+                let p = new PIXI.Graphics();
+                let planetDistPixels = this.auToPixels(planet.distance, pixelsPerAU);
+                p.lineStyle(2 * DIAGRAM_SCALER, 0xFFFFFF);
+                p.arc(
+                    STAR_ORIGIN_POINT[0],
+                    STAR_ORIGIN_POINT[1],
+                    planetDistPixels,
+                    0,
+                    Math.PI * 2
+                )
+                this.app.stage.addChild(p);
+
+                // Planet label
+                let planetLabel = new PIXI.Text(
+                    planet.name,
+                    {fill: 0xFFFFFF, fontSize: 16 * DIAGRAM_SCALER}
+                )
+                planetLabel.anchor.set(0, 0.5);
+                const labelRadius = planetDistPixels + 10 * DIAGRAM_SCALER;
+                const bottomLabelPadding = 18 * DIAGRAM_SCALER
+                const angle = (45 / 180) * Math.PI;
+                let labelX = STAR_ORIGIN_POINT[0] + labelRadius * Math.cos(angle);
+                let labelY = STAR_ORIGIN_POINT[1] + labelRadius * Math.sin(angle);
+                if (labelY > HEIGHT - bottomLabelPadding) {
+                    labelX = this.findX(labelRadius, STAR_ORIGIN_POINT[0], STAR_ORIGIN_POINT[1], HEIGHT - bottomLabelPadding);
+                    labelY = HEIGHT - bottomLabelPadding;
+                }
+                planetLabel.position.set(labelX, labelY);
+                this.app.stage.addChild(planetLabel);
+            }
+        }
+
         // Scale
         let scaleText = new PIXI.Text(
             this.zoomLevels[zoomLevel].value + ' AU',
-            {fill: 0xFFFFFF, fontSize: 16}
+            {fill: 0xFFFFFF, fontSize: 16 * DIAGRAM_SCALER}
         );
-        scaleText.position.set(800, 20);
+        scaleText.position.set(800 * DIAGRAM_SCALER, 20 * DIAGRAM_SCALER);
         let scaleRect = new PIXI.Graphics();
         scaleRect.beginFill(0xFFFFFF);
         scaleRect.lineStyle(1, 0xFFFFFF);
-        scaleRect.drawRect(800, 50, pixelsPerAU * this.zoomLevels[zoomLevel].value, 10)
+        scaleRect.drawRect(800 * DIAGRAM_SCALER, 50 * DIAGRAM_SCALER, pixelsPerAU * this.zoomLevels[zoomLevel].value, 10)
         this.app.stage.addChild(scaleText);
         this.app.stage.addChild(scaleRect);
         // Because this can initiate a rerender, place it last
@@ -237,7 +242,9 @@ export default class CSHZDiagram extends React.Component {
 
     render() {
         return (<>
-            <div className='col-12' ref={this.cshzDiagram} />
+            <div className='col-12'>
+                <div id="cshzDiagram-contianer" ref={this.cshzDiagram}/>
+            </div>
             <div className="col-12">
                 <form>
                     <div className='form-check'>

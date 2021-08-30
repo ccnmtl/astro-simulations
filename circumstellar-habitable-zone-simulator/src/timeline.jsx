@@ -78,7 +78,7 @@ export default class CSHZTimeline extends React.Component {
 
     calculateZonePcts(dataTable, lifetime) {
         const obj = dataTable.reduce((acc, val) => {
-            if(acc.temperateZonePct == null && val.temp > 0) {
+            if(acc.temperateZonePct == null && val.temp > 0 && val.temp < 100) {
                 acc.temperateZonePct = Math.round((val.time / lifetime) * 100);
             } else if (acc.hotZonePct == null && val.temp > 100) {
                 acc.hotZonePct = Math.round((val.time / lifetime) * 100);
@@ -88,6 +88,30 @@ export default class CSHZTimeline extends React.Component {
             }
             return acc
         }, {temperateZonePct: null, hotZonePct: null, whiteDwarfPct: null, maxTemp: Number.NEGATIVE_INFINITY});
+
+        // Extra cases to consider:
+        // - temperate is null, hot is not null
+        //   means that the planet was too close to the star
+        //   during the stars lifetime, and the planet was always
+        //   too hot
+        if (obj.temperateZonePct == null && obj.hotZonePct != null) {
+            obj.temperateZonePct = 0;
+        }
+
+        // - temperate is not null, hot is null
+        //   means that the planet reached the temperate zone
+        //   but somehow the star never got too hot, possible
+        //   but very unlikely
+        if (obj.temperateZonePct != null && obj.hotZonePct == null) {
+            obj.hotZonePct = obj.temperateZonePct;
+        }
+
+        // - temperate is null, hot is null
+        //   means that the planet was always too cold for life
+        if (obj.temperateZonePct == null && obj.hotZonePct == null) {
+            obj.temperateZonePct = obj.whiteDwarfPct;
+            obj.hotZonePct = obj.whiteDwarfPct;
+        }
 
         return [
             obj.temperateZonePct, obj.hotZonePct, obj.whiteDwarfPct
