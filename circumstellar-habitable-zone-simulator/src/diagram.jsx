@@ -7,6 +7,7 @@ import anime from 'animejs/lib/anime.es.js';
 // Sun's diameter in pixels
 const DIAGRAM_SCALER = 3;
 const HEIGHT = 300 * DIAGRAM_SCALER;
+const WIDTH = 980 * DIAGRAM_SCALER;
 const AU_PIXELS = 100 * DIAGRAM_SCALER;
 const STAR_ORIGIN_POINT = [100, 150 * DIAGRAM_SCALER];
 const KM_AU = 149597870.7;
@@ -14,6 +15,8 @@ const SOLAR_RADIUS_KM = 695700;
 
 const ZOOM_UPPER_BREAKPOINT = (960 * 0.9) * DIAGRAM_SCALER;
 const ZOOM_LOWER_BREAKPOINT = STAR_ORIGIN_POINT[0] + (20 * DIAGRAM_SCALER);
+
+const HZONE_COLOR = 0x7090FF
 
 const SOLAR_SYSTEM = {
     name: 'Sun',
@@ -72,7 +75,7 @@ export default class CSHZDiagram extends React.Component {
     componentDidMount() {
         const app = new PIXI.Application({
             backgroundColor: 0x000000,
-            width: this.cshzDiagram.current.clientWidth * DIAGRAM_SCALER,
+            width: WIDTH,
             height: HEIGHT,
             sharedLoader: true,
             sharedTicker: true,
@@ -173,14 +176,40 @@ export default class CSHZDiagram extends React.Component {
         // Habitable Zone
         const hZoneInner = this.auToPixels(this.props.habitableZoneInner, pixelsPerAU);
         const hZoneOuter = this.auToPixels(this.props.habitableZoneOuter, pixelsPerAU);
-        const HZONE_ALPHA = 0.5;
         let hZone = new PIXI.Graphics();
-        hZone.beginFill(0x0000FF, HZONE_ALPHA)
+        hZone.beginFill(HZONE_COLOR)
             .drawCircle(STAR_ORIGIN_POINT[0], STAR_ORIGIN_POINT[1], hZoneOuter)
             .beginHole()
             .drawCircle(STAR_ORIGIN_POINT[0], STAR_ORIGIN_POINT[1], hZoneInner)
             .endHole()
         this.app.stage.addChild(hZone);
+        // Habitable Zone Label
+        if (hZoneOuter > WIDTH) {
+            const hZoneLabel = new PIXI.Text(
+                'Habitable Zone →',
+                {fill: HZONE_COLOR, fontSize: 16 * DIAGRAM_SCALER, fontWeight: 'bolder'}
+            )
+            hZoneLabel.position.set(750 * DIAGRAM_SCALER, 65 * DIAGRAM_SCALER);
+            this.app.stage.addChild(hZoneLabel);
+        } else {
+            const hZoneLabel = new PIXI.Text(
+                'Habitable Zone',
+                {fill: HZONE_COLOR, fontSize: 16 * DIAGRAM_SCALER, fontWeight: 'bolder'}
+            )
+            hZoneLabel.position.set(770 * DIAGRAM_SCALER, 65 * DIAGRAM_SCALER);
+            this.app.stage.addChild(hZoneLabel);
+            const hZoneLabelKey = new PIXI.Graphics();
+            hZoneLabelKey.beginFill(HZONE_COLOR);
+            hZoneLabelKey.lineStyle(1, HZONE_COLOR);
+            hZoneLabelKey.drawRect(
+                750 * DIAGRAM_SCALER,
+                67 * DIAGRAM_SCALER,
+                14 * DIAGRAM_SCALER,
+                14 * DIAGRAM_SCALER
+            );
+            this.app.stage.addChild(hZoneLabelKey);
+        }
+
 
         // Planets
         if (this.state.showSolarSystemOrbits) {
@@ -222,11 +251,11 @@ export default class CSHZDiagram extends React.Component {
             this.zoomLevels[zoomLevel].value + ' AU',
             {fill: 0xFFFFFF, fontSize: 16 * DIAGRAM_SCALER}
         );
-        scaleText.position.set(800 * DIAGRAM_SCALER, 20 * DIAGRAM_SCALER);
+        scaleText.position.set(750 * DIAGRAM_SCALER, 20 * DIAGRAM_SCALER);
         let scaleRect = new PIXI.Graphics();
         scaleRect.beginFill(0xFFFFFF);
         scaleRect.lineStyle(1, 0xFFFFFF);
-        scaleRect.drawRect(800 * DIAGRAM_SCALER, 50 * DIAGRAM_SCALER, pixelsPerAU * this.zoomLevels[zoomLevel].value, 10)
+        scaleRect.drawRect(750 * DIAGRAM_SCALER, 50 * DIAGRAM_SCALER, pixelsPerAU * this.zoomLevels[zoomLevel].value, 10)
         this.app.stage.addChild(scaleText);
         this.app.stage.addChild(scaleRect);
         // Because this can initiate a rerender, place it last
