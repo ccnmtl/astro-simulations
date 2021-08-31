@@ -35,12 +35,17 @@ export default class CSHZTimeline extends React.Component {
         this.moveTimelineToMouse = this.moveTimelineToMouse.bind(this);
         this.updateMousePosition = this.updateMousePosition.bind(this);
         this.clearTimelineInterval = this.clearTimelineInterval.bind(this);
+        this.handleTimelineKeyDown = this.handleTimelineKeyDown.bind(this);
+        this.handleTimelineKeyUp = this.handleTimelineKeyUp.bind(this);
+        this.incrementTimeline = this.incrementTimeline.bind(this);
+        this.decrementTimeline = this.decrementTimeline.bind(this);
 
         const dataTable = this.annotateDataTable(
                 STAR_DATA[this.props.starMassIdx].dataTable, this.props.planetDistance);
         const [temperateZonePct, hotZonePct, whiteDwarfPct] = this.calculateZonePcts(dataTable, STAR_DATA[this.props.starMassIdx].timespan)
         this.interval = React.createRef(null);
         this.timelineMouseInterval = React.createRef(null);
+        this.timelineKeyInterval = React.createRef(null);
         this.timelineContainer = React.createRef(null);
         this.mouseX = React.createRef(-1);
         this.mouseY = React.createRef(-1);
@@ -290,6 +295,57 @@ export default class CSHZTimeline extends React.Component {
         this.mouseY.current = evt.clientY;
     }
 
+    incrementTimeline() {
+        // Increment
+        this.setState((state, props) => {
+            const position = state.timelinePosition + 0.01;
+            if (position <= 1) {
+                const yearsAfterFormation = position * Math.round(STAR_DATA[props.starMassIdx].timespan);
+                props.setStarAgeIdx(this.findStarAgeIdx(yearsAfterFormation, state.dataTable));
+                return {timelinePosition: position}
+            } else {
+                return {timelinePosition: 1}
+            }
+        })
+    }
+
+    decrementTimeline() {
+        // Decrement
+        this.setState((state, props) => {
+            const position = state.timelinePosition - 0.01;
+            if (position >= 0) {
+                const yearsAfterFormation = position * Math.round(STAR_DATA[props.starMassIdx].timespan);
+                props.setStarAgeIdx(this.findStarAgeIdx(yearsAfterFormation, state.dataTable));
+                return {timelinePosition: position}
+            } else {
+                return {timelinePosition: 0}
+            }
+        })
+    }
+
+    handleTimelineKeyDown(evt) {
+        evt.stopPropagation();
+        evt.preventDefault();
+        if (this.timelineKeyInterval.current === null) {
+            if (evt.keyCode == 37) {
+                // Decrement
+                this.timelineKeyInterval.current = window.setInterval(this.decrementTimeline, 100);
+            } else if (evt.keyCode == 39) {
+                // Increment
+                this.timelineKeyInterval.current = window.setInterval(this.incrementTimeline, 100);
+            }
+        }
+    }
+
+    handleTimelineKeyUp(evt) {
+        evt.stopPropagation();
+        evt.preventDefault();
+        if (this.timelineKeyInterval.current !== null) {
+            window.clearInterval(this.timelineKeyInterval.current);
+            this.timelineKeyInterval.current = null;
+        }
+    }
+
     render() {
         return(<div>
             <div>
@@ -331,7 +387,10 @@ export default class CSHZTimeline extends React.Component {
                         height={50}
                         viewBox={'0 0 960 50'}
                         style={{pointerEvents: 'all', width: '100%', height: '100%'}}
+                        tabIndex={0}
                         ref={this.timelineContainer}
+                        onKeyDown={this.handleTimelineKeyDown}
+                        onKeyUp={this.handleTimelineKeyUp}
                         onMouseDown={this.handleTimelineMouseDown}
                         onMouseUp={this.handleTimelineMouseUp}>
                         <VictoryChart
