@@ -13,7 +13,7 @@ const STAR_ORIGIN_POINT = [100, 150 * DIAGRAM_SCALER];
 const KM_AU = 149597870.7;
 const SOLAR_RADIUS_KM = 695700;
 
-const ZOOM_UPPER_BREAKPOINT = (960 * 0.9) * DIAGRAM_SCALER;
+const ZOOM_UPPER_BREAKPOINT = (960 * 0.65) * DIAGRAM_SCALER;
 const ZOOM_LOWER_BREAKPOINT = STAR_ORIGIN_POINT[0] + (20 * DIAGRAM_SCALER);
 
 const HZONE_COLOR = 0x7090FF
@@ -62,13 +62,28 @@ export default class CSHZDiagram extends React.Component {
     zoomLevels = [
         {value: 0.005, pixelsPerAU: AU_PIXELS * (1 / 0.005)},
         {value: 0.01, pixelsPerAU: AU_PIXELS * (1 / 0.01)},
+        {value: 0.02, pixelsPerAU: AU_PIXELS * (1 / 0.02)},
+        {value: 0.03, pixelsPerAU: AU_PIXELS * (1 / 0.03)},
+        {value: 0.04, pixelsPerAU: AU_PIXELS * (1 / 0.04)},
         {value: 0.05, pixelsPerAU: AU_PIXELS * (1 / 0.05)},
+        {value: 0.075, pixelsPerAU: AU_PIXELS * (1 / 0.075)},
         {value: 0.1, pixelsPerAU: AU_PIXELS * (1 / 0.1)},
+        {value: 0.2, pixelsPerAU: AU_PIXELS * (1 / 0.2)},
+        {value: 0.3, pixelsPerAU: AU_PIXELS * (1 / 0.3)},
+        {value: 0.4, pixelsPerAU: AU_PIXELS * (1 / 0.4)},
         {value: 0.5, pixelsPerAU: AU_PIXELS * (1 / 0.5)},
+        {value: 0.75, pixelsPerAU: AU_PIXELS * (1 / 0.75)},
         {value: 1, pixelsPerAU: AU_PIXELS},
+        {value: 2, pixelsPerAU: AU_PIXELS * (1 / 2)},
+        {value: 3, pixelsPerAU: AU_PIXELS * (1 / 3)},
+        {value: 4, pixelsPerAU: AU_PIXELS * (1 / 4)},
         {value: 5, pixelsPerAU: AU_PIXELS * (1 / 5)},
+        {value: 7.5, pixelsPerAU: AU_PIXELS * (1 / 7.5)},
         {value: 10, pixelsPerAU: AU_PIXELS * (1 / 10)},
+        {value: 20, pixelsPerAU: AU_PIXELS * (1 / 20)},
+        {value: 25, pixelsPerAU: AU_PIXELS * (1 / 25)},
         {value: 50, pixelsPerAU: AU_PIXELS * (1 / 50)},
+        {value: 75, pixelsPerAU: AU_PIXELS * (1 / 75)},
         {value: 100, pixelsPerAU: AU_PIXELS * (1 / 100)},
     ]
 
@@ -85,7 +100,7 @@ export default class CSHZDiagram extends React.Component {
         this.app = app;
         this.cshzDiagram.current.appendChild(app.view);
 
-        const INITIAL_ZOOM_LEVEL = 4;
+        const INITIAL_ZOOM_LEVEL = 8;
         const planetXPosition = STAR_ORIGIN_POINT[0] + this.auToPixels(this.props.planetDistance, this.zoomLevels[INITIAL_ZOOM_LEVEL].pixelsPerAU)
         this.renderStarSystem(this.zoomLevels[INITIAL_ZOOM_LEVEL].pixelsPerAU, planetXPosition, INITIAL_ZOOM_LEVEL);
     }
@@ -108,16 +123,24 @@ export default class CSHZDiagram extends React.Component {
         // Returns the planet's position in pixels in the PIXI scene and the pixels
         // per AU to draw the scene
 
-        // First determine a zoom level
-        let zoomLevel = 0;
-        let pixelsFromStar = this.auToPixels(planetDistance, this.zoomLevels[zoomLevel].pixelsPerAU);
+        // First determine a value for pixels per AU
+        let pixelsPerAU = this.zoomLevels[0].pixelsPerAU;
+        let pixelsFromStar = this.auToPixels(planetDistance, pixelsPerAU);
         let planetXPosition = STAR_ORIGIN_POINT[0] + pixelsFromStar;
-        while (planetXPosition > ZOOM_UPPER_BREAKPOINT) {
-             zoomLevel++;
-             pixelsFromStar = this.auToPixels(this.props.planetDistance, this.zoomLevels[zoomLevel].pixelsPerAU);
-             planetXPosition = STAR_ORIGIN_POINT[0] + pixelsFromStar;
+        const lastZoomIdx = this.zoomLevels.length - 1;
+        while (planetXPosition > ZOOM_UPPER_BREAKPOINT && pixelsPerAU >= this.zoomLevels[lastZoomIdx].pixelsPerAU) {
+            pixelsPerAU -= 1;
+            pixelsFromStar = this.auToPixels(this.props.planetDistance, pixelsPerAU);
+            planetXPosition = STAR_ORIGIN_POINT[0] + pixelsFromStar;
         }
-        return [planetXPosition, this.zoomLevels[zoomLevel].pixelsPerAU, zoomLevel]
+
+        // Then determine the inidicator for the zoom level
+        let zoomLevel = 0;
+        while (this.zoomLevels[zoomLevel].pixelsPerAU > pixelsPerAU && zoomLevel <= this.zoomLevels.length) {
+            zoomLevel += 1;
+        }
+
+        return [planetXPosition, pixelsPerAU, zoomLevel]
     }
 
     auToPixels(au, pixelsPerAU) {
