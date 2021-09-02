@@ -81,8 +81,10 @@ export class IncrementRangeInput extends React.Component {
     render() {
         return (
             <div className='form-group row'>
-                <label className='col-12 col-form-label col-form-label-sm'>
-                    {this.props.label}
+                <div className="col-6 d-flex">
+                    <label className='col-form-label text-nowrap mr-1'>
+                        <strong>{this.props.label}</strong>
+                    </label>
                     <input
                         type="number"
                         className="form-control form-control-sm"
@@ -94,7 +96,7 @@ export class IncrementRangeInput extends React.Component {
                         min={this.props.values[0]}
                         max={this.props.values[this.props.values.length - 1]}
                         step={this.props.getStepFunc(this.state.inputVal || this.props.values[0])} />
-                </label>
+                </div>
                 <div className='col-12'>
                     <RangeStepInput
                         className='form-control'

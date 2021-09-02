@@ -347,32 +347,32 @@ export default class CSHZTimeline extends React.Component {
     }
 
     render() {
-        return(<div>
-            <div>
-                <h2>Timeline and Simulation Controls</h2>
-            </div>
+        return(<div className={'border rounded'}>
             <div className={'d-flex justify-content-between'}>
                 <div>
-                    Time since star system formation: {typeof this.props.starMassIdx === 'number' && (
+                    <strong>Time since star system formation:</strong> {typeof this.props.starMassIdx === 'number' && (
                             (() => {
                                 let starAge = Math.floor(this.state.dataTable[this.props.starAgeIdx].time)
                                 return starAge < 1000 ? `${starAge} My` : `${roundToTwoPlaces(starAge / 1000)} Gy`
                             } )()
                     )}
                 </div>
-                <div>
-                    <RangeStepInput
-                        className='form-control'
-                        name={'animation-rate-range-input'}
-                        value={this.state.animationRate}
-                        onChange={this.handleUpdateAnimationRate}
-                        min={0.1}
-                        max={2}
-                        step={0.1} />
+                <div className={'d-flex'}>
+                    <div className={'d-flex'}>
+                        <strong className={'text-nowrap mr-3 pt-1'}>Animation speed:</strong>
+                        <RangeStepInput
+                            className='form-control'
+                            name={'animation-rate-range-input'}
+                            value={this.state.animationRate}
+                            onChange={this.handleUpdateAnimationRate}
+                            min={0.1}
+                            max={2}
+                            step={0.1} />
+                    </div>
                     <button
                         type={'button'}
                         onClick={this.toggleTimelineAnimation}
-                        className={'btn btn-primary'}>
+                        className={'btn btn-primary ml-3'}>
                         {this.interval.current ? ('Stop') : ('Play')}
                     </button>
                 </div>

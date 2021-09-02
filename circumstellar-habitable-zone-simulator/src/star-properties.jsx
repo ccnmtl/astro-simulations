@@ -12,6 +12,7 @@ import {
     VictoryAxis, VictoryChart, VictoryLine, VictoryScatter
 } from 'victory';
 
+
 export default class CSHZStarProperties extends React.Component {
     constructor(props) {
         super(props);
@@ -21,30 +22,23 @@ export default class CSHZStarProperties extends React.Component {
         return(
         <div className='container'>
             <div className='row'>
-                <div className='col-12'>
-                    <h2>Star and Planet Settings and Properties</h2>
-                </div>
-            </div>
-            <div className='row'>
-                <div className='col-8'>
-                    <div className="d-flex justify-content-between">
-                        <form>
-                            <div className="form-group">
-                                <label>
-                                    Initial star mass:
-                                    <select
-                                        className={'form-control form-control-sm'}
-                                        value={String(this.props.starMassIdx)}
-                                        onChange={(evt) => {
-                                            evt.preventDefault();
-                                            this.props.setStarMassIdx(forceNumber(evt.target.value)) }}>
-                                        {STAR_DATA.map((el, idx) => {
-                                            return (<option value={idx} key={idx}>{el.mass}</option>)
-                                        })}
-                                    </select>
-                                </label>
-                            </div>
-                        </form>
+                <div className='col-6 border rounded'>
+                    <div className="col-6 d-flex">
+                        <label className={'text-nowrap mr-2'}>
+                            <strong>Initial star mass:</strong>
+                        </label>
+                        <select
+                            className={'form-control form-control-sm'}
+                            value={String(this.props.starMassIdx)}
+                            onChange={(evt) => {
+                                evt.preventDefault();
+                                this.props.setStarMassIdx(forceNumber(evt.target.value)) }}>
+                            {STAR_DATA.map((el, idx) => {
+                                return (<option value={idx} key={idx}>{el.mass}</option>)
+                            })}
+                        </select>
+                    </div>
+                    <div>
                         <IncrementRangeInput
                             label={'Planet distance:'}
                             valueIdx={this.props.planetDistanceIdx}
@@ -63,11 +57,11 @@ export default class CSHZStarProperties extends React.Component {
                                 }
                             }}/>
                     </div>
+                </div>
+                <div className={'col-3 border rounded'}>
                     <div className='form-group row'>
-                        <label className='col-4 col-form-label col-form-label-sm'>
-                            Star Properties:
-                        </label>
-                        <div className='col-8'>
+                        <strong>Star Properties:</strong>
+                        <div>
                             <div>Mass: {STAR_DATA[this.props.starMassIdx].mass} M<sub>sun</sub></div>
                             <div>Luminosity: {this.props.starLuminosity} L<sub>sun</sub></div>
                             <div>Temperature: {this.props.starTemperature} K</div>
@@ -75,7 +69,7 @@ export default class CSHZStarProperties extends React.Component {
                         </div>
                     </div>
                 </div>
-                <div className='col-4'>
+                <div className='col-3 border rounded'>
                     <VictoryChart
                         domain={{
                             x: [50000, 2000],
@@ -87,7 +81,7 @@ export default class CSHZStarProperties extends React.Component {
                         width={142}
                         padding={18}>
                         <VictoryAxis
-                            label={'Temperature (K)'}
+                            label={'← Temperature (K)'}
                             style={{
                                 tickLabels: {display: 'none'},
                                 axisLabel: {padding: 5}
@@ -100,7 +94,7 @@ export default class CSHZStarProperties extends React.Component {
                                 tickLabels: {display: 'none'},
                                 axisLabel: {padding: 5}
                             }}
-                            label='Luminosity'/>
+                            label='Luminosity →'/>
                         <VictoryLine
                             domain={{x: [50000, 3000]}}
                             y={(temp) => {
