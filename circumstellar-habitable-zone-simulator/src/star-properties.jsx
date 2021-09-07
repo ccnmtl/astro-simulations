@@ -37,6 +37,21 @@ export default class CSHZStarProperties extends React.Component {
                                 return (<option value={idx} key={idx}>{el.mass}</option>)
                             })}
                         </select>
+                        <form>
+                            <div className='form-check'>
+                                <input
+                                    id='show-orbits'
+                                    type='checkbox'
+                                    checked={this.props.showSolarSystemOrbits}
+                                    onChange={this.props.handleShowSolarSystemOrbits}
+                                    className={'form-check-input'} />
+                                <label
+                                    className='form-check-label'
+                                    htmlFor='show-orbits'>
+                                    Show Solar System Orbits
+                                </label>
+                            </div>
+                        </form>
                     </div>
                     <div>
                         <IncrementRangeInput
@@ -126,4 +141,6 @@ CSHZStarProperties.propTypes = {
     setStarMassIdx: PropTypes.func.isRequired,
     planetDistanceIdx: PropTypes.number.isRequired,
     setPlanetDistanceIdx: PropTypes.func.isRequired,
+    showSolarSystemOrbits: PropTypes.bool.isRequired,
+    handleShowSolarSystemOrbits: PropTypes.func.isRequired
 }

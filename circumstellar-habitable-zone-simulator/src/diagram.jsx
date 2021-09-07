@@ -43,10 +43,6 @@ export default class CSHZDiagram extends React.Component {
     constructor(props) {
         super(props)
 
-        this.state = {
-            showSolarSystemOrbits: true
-        }
-
         this.cshzDiagram = React.createRef();
         this.animation = React.createRef();
 
@@ -56,7 +52,6 @@ export default class CSHZDiagram extends React.Component {
         this.findX = this.findX.bind(this);
         this.auToPixels = this.auToPixels.bind(this);
         this.solarRadiusToPixels = this.solarRadiusToPixels.bind(this);
-        this.handleShowSolarSystemOrbits = this.handleShowSolarSystemOrbits.bind(this);
         this.getPosPixelsPerAU = this.getPosPixelsPerAU.bind(this);
     }
 
@@ -109,7 +104,7 @@ export default class CSHZDiagram extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         const [planetXPosition, pixelsPerAU, zoomLevel] = this.getPosPixelsPerAU(this.props.planetDistance);
 
-        if (this.state.showSolarSystemOrbits !== prevState.showSolarSystemOrbits ||
+        if (this.props.showSolarSystemOrbits !== prevProps.showSolarSystemOrbits ||
            this.props.habitableZoneInner !== prevProps.habitableZoneInner) {
            // You don't need to rerender the whole star system, break this up
             this.renderStarSystem(pixelsPerAU, planetXPosition, zoomLevel);
@@ -209,7 +204,7 @@ export default class CSHZDiagram extends React.Component {
         this.app.stage.addChild(hZone);
 
         // Planets
-        if (this.state.showSolarSystemOrbits) {
+        if (this.props.showSolarSystemOrbits) {
             for (const planet of SOLAR_SYSTEM.planets) {
                 let p = new PIXI.Graphics();
                 let planetDistPixels = this.auToPixels(planet.distance, pixelsPerAU);
@@ -315,35 +310,12 @@ export default class CSHZDiagram extends React.Component {
 
     }
 
-    handleShowSolarSystemOrbits() {
-        this.setState((prevState) => {
-            return {showSolarSystemOrbits: !prevState.showSolarSystemOrbits}
-        })
-    }
-
     render() {
-        return (<>
+        return (
             <div className='col-12'>
                 <div id="cshzDiagram-contianer" ref={this.cshzDiagram}/>
             </div>
-            <div className="col-12">
-                <form>
-                    <div className='form-check'>
-                        <input
-                            id='show-orbits'
-                            type='checkbox'
-                            checked={this.state.showSolarSystemOrbits}
-                            onChange={this.handleShowSolarSystemOrbits}
-                            className={'form-check-input'} />
-                        <label
-                            className='form-check-label'
-                            htmlFor='show-orbits'>
-                            Show Solar System Orbits
-                        </label>
-                    </div>
-                </form>
-            </div>
-        </>)
+        )
     }
 }
 
@@ -352,4 +324,5 @@ CSHZDiagram.propTypes = {
     planetDistance: PropTypes.number.isRequired,
     habitableZoneInner: PropTypes.number.isRequired,
     habitableZoneOuter: PropTypes.number.isRequired,
+    showSolarSystemOrbits: PropTypes.bool.isRequired,
 }

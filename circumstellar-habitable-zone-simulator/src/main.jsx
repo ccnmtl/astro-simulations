@@ -37,12 +37,14 @@ class CircumstellarHabitableZoneSim extends React.Component {
             planetDistanceIdx: initPlanetDistIdx,
             habitableZoneInner: hZoneInner,
             habitableZoneOuter: hZoneOuter,
+            showSolarSystemOrbits: true,
         };
         this.state = this.initialState;
 
         this.setStarMassIdx = this.setStarMassIdx.bind(this);
         this.setPlanetDistanceIdx = this.setPlanetDistanceIdx.bind(this);
         this.setStarAgeIdx = this.setStarAgeIdx.bind(this);
+        this.handleShowSolarSystemOrbits = this.handleShowSolarSystemOrbits.bind(this);
     }
 
     setStarMassIdx(starMassIdx) {
@@ -97,6 +99,12 @@ class CircumstellarHabitableZoneSim extends React.Component {
         }
     }
 
+    handleShowSolarSystemOrbits() {
+        this.setState((prevState) => {
+            return {showSolarSystemOrbits: !prevState.showSolarSystemOrbits}
+        })
+    }
+
     render() {
         return(<>
             <CSHZNav />
@@ -105,7 +113,8 @@ class CircumstellarHabitableZoneSim extends React.Component {
                     starRadius={this.state.starRadius}
                     planetDistance={this.state.planetDistance}
                     habitableZoneInner={this.state.habitableZoneInner}
-                    habitableZoneOuter={this.state.habitableZoneOuter}/>
+                    habitableZoneOuter={this.state.habitableZoneOuter}
+                    showSolarSystemOrbits={this.state.showSolarSystemOrbits}/>
             </div>
             <div className='row mt-2'>
                 <div className='col-12'>
@@ -117,7 +126,9 @@ class CircumstellarHabitableZoneSim extends React.Component {
                         starRadius={this.state.starRadius}
                         setStarMassIdx={this.setStarMassIdx}
                         planetDistanceIdx={this.state.planetDistanceIdx}
-                        setPlanetDistanceIdx={this.setPlanetDistanceIdx}/>
+                        setPlanetDistanceIdx={this.setPlanetDistanceIdx}
+                        showSolarSystemOrbits={this.state.showSolarSystemOrbits}
+                        handleShowSolarSystemOrbits={this.handleShowSolarSystemOrbits}/>
                 </div>
             </div>
             <div className='row mt-2'>
