@@ -69,8 +69,8 @@ export class DraggableCursor extends React.Component {
                 ref={this.cursorContainer}
                 id={'draggable-cursor-container'}
                 style={{
-                    width: '835px',
-                    margin: '0 74px 0.5em 32px',
+                    width: '875px',
+                    margin: '0 36px 0.5em 36px',
                 }}>
                 <div
                     id={'draggable-cursor'}
