@@ -177,7 +177,8 @@ export default class CSHZTimeline extends React.Component {
 
         // Find the closest index
         const yearsAfterFormation = position * Math.round(STAR_DATA[this.props.starMassIdx].timespan);
-        this.props.setStarAgeIdx(this.findStarAgeIdx(yearsAfterFormation, this.state.dataTable));
+        const starAgeIdx = this.findStarAgeIdx(yearsAfterFormation, this.state.dataTable);
+        this.props.setStarAgeIdx(starAgeIdx);
     }
 
     clearInterval() {
@@ -396,8 +397,8 @@ export default class CSHZTimeline extends React.Component {
                 {typeof this.props.starMassIdx === 'number' && this.props.planetDistance && (<>
                     <svg
                         width={960}
-                        height={50}
-                        viewBox={'0 0 960 50'}
+                        height={35}
+                        viewBox={'0 0 960 35'}
                         style={{pointerEvents: 'all', width: '100%', height: '100%'}}
                         tabIndex={0}
                         ref={this.timelineContainer}
@@ -410,7 +411,8 @@ export default class CSHZTimeline extends React.Component {
                             domain={{x: [
                                 0, Math.round(STAR_DATA[this.props.starMassIdx].timespan)]}}
                             standalone={false}
-                            height={50}
+                            padding={{top: 35, bottom: 35, left: 50, right: 50}}
+                            height={35}
                             width={960}>
                             <VictoryBar
                                 barWidth={2}
@@ -434,7 +436,8 @@ export default class CSHZTimeline extends React.Component {
                         domain={{x: [
                             0, Math.round(STAR_DATA[this.props.starMassIdx].timespan)],
                             y: [0, 100]}}
-                        height={200}
+                        padding={{top: 35, bottom: 35, left: 50, right: 50}}
+                        height={160}
                         width={960}>
                         <VictoryAxis
                             style={{
