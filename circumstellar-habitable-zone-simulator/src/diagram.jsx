@@ -12,6 +12,7 @@ const DIAGRAM_SCALER = 3;
 const HEIGHT = 300 * DIAGRAM_SCALER;
 const WIDTH = 980 * DIAGRAM_SCALER;
 const KEY_POSITION_X = 750 * DIAGRAM_SCALER;
+const KEY_POSITION_Y = 225 * DIAGRAM_SCALER;
 const AU_PIXELS = 100 * DIAGRAM_SCALER;
 const STAR_ORIGIN_POINT = [100, 150 * DIAGRAM_SCALER];
 const KM_AU = 149597870.7;
@@ -289,7 +290,7 @@ export default class CSHZDiagram extends React.Component {
                 'Habitable Zone →',
                 hZoneLabelStyle
             )
-            hZoneLabel.position.set(KEY_POSITION_X, 65 * DIAGRAM_SCALER);
+            hZoneLabel.position.set(KEY_POSITION_X, KEY_POSITION_Y);
             this.app.stage.addChild(hZoneLabel);
         } else if (hZoneOuter < KEY_POSITION_X) {
             const hZoneLabel = new PIXI.Text(
@@ -298,7 +299,7 @@ export default class CSHZDiagram extends React.Component {
             )
             hZoneLabel.position.set(
                 KEY_POSITION_X + (20 * DIAGRAM_SCALER),
-                65 * DIAGRAM_SCALER
+                KEY_POSITION_Y
             );
             this.app.stage.addChild(hZoneLabel);
             const hZoneLabelKey = new PIXI.Graphics();
@@ -306,7 +307,7 @@ export default class CSHZDiagram extends React.Component {
             hZoneLabelKey.lineStyle(1, HZONE_COLOR);
             hZoneLabelKey.drawRect(
                 KEY_POSITION_X,
-                67 * DIAGRAM_SCALER,
+                KEY_POSITION_Y,
                 14 * DIAGRAM_SCALER,
                 14 * DIAGRAM_SCALER
             );
@@ -318,7 +319,7 @@ export default class CSHZDiagram extends React.Component {
             )
             hZoneLabel.position.set(
                 hZoneInner - (120 * DIAGRAM_SCALER),
-                65 * DIAGRAM_SCALER
+                KEY_POSITION_Y
             );
             this.app.stage.addChild(hZoneLabel);
         }
