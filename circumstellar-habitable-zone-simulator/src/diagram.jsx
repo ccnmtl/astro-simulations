@@ -8,6 +8,7 @@ import anime from 'animejs/lib/anime.es.js';
 const DIAGRAM_SCALER = 3;
 const HEIGHT = 300 * DIAGRAM_SCALER;
 const WIDTH = 980 * DIAGRAM_SCALER;
+const KEY_POSITION_X = 750 * DIAGRAM_SCALER;
 const AU_PIXELS = 100 * DIAGRAM_SCALER;
 const STAR_ORIGIN_POINT = [100, 150 * DIAGRAM_SCALER];
 const KM_AU = 149597870.7;
@@ -42,10 +43,6 @@ export default class CSHZDiagram extends React.Component {
     constructor(props) {
         super(props)
 
-        this.state = {
-            showSolarSystemOrbits: true
-        }
-
         this.cshzDiagram = React.createRef();
         this.animation = React.createRef();
 
@@ -55,7 +52,6 @@ export default class CSHZDiagram extends React.Component {
         this.findX = this.findX.bind(this);
         this.auToPixels = this.auToPixels.bind(this);
         this.solarRadiusToPixels = this.solarRadiusToPixels.bind(this);
-        this.handleShowSolarSystemOrbits = this.handleShowSolarSystemOrbits.bind(this);
         this.getPosPixelsPerAU = this.getPosPixelsPerAU.bind(this);
     }
 
@@ -108,7 +104,7 @@ export default class CSHZDiagram extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         const [planetXPosition, pixelsPerAU, zoomLevel] = this.getPosPixelsPerAU(this.props.planetDistance);
 
-        if (this.state.showSolarSystemOrbits !== prevState.showSolarSystemOrbits ||
+        if (this.props.showSolarSystemOrbits !== prevProps.showSolarSystemOrbits ||
            this.props.habitableZoneInner !== prevProps.habitableZoneInner) {
            // You don't need to rerender the whole star system, break this up
             this.renderStarSystem(pixelsPerAU, planetXPosition, zoomLevel);
@@ -206,36 +202,9 @@ export default class CSHZDiagram extends React.Component {
             .drawCircle(STAR_ORIGIN_POINT[0], STAR_ORIGIN_POINT[1], hZoneInner)
             .endHole()
         this.app.stage.addChild(hZone);
-        // Habitable Zone Label
-        if (hZoneOuter > WIDTH) {
-            const hZoneLabel = new PIXI.Text(
-                'Habitable Zone →',
-                {fill: HZONE_COLOR, fontSize: 16 * DIAGRAM_SCALER, fontWeight: 'bolder'}
-            )
-            hZoneLabel.position.set(750 * DIAGRAM_SCALER, 65 * DIAGRAM_SCALER);
-            this.app.stage.addChild(hZoneLabel);
-        } else {
-            const hZoneLabel = new PIXI.Text(
-                'Habitable Zone',
-                {fill: HZONE_COLOR, fontSize: 16 * DIAGRAM_SCALER, fontWeight: 'bolder'}
-            )
-            hZoneLabel.position.set(770 * DIAGRAM_SCALER, 65 * DIAGRAM_SCALER);
-            this.app.stage.addChild(hZoneLabel);
-            const hZoneLabelKey = new PIXI.Graphics();
-            hZoneLabelKey.beginFill(HZONE_COLOR);
-            hZoneLabelKey.lineStyle(1, HZONE_COLOR);
-            hZoneLabelKey.drawRect(
-                750 * DIAGRAM_SCALER,
-                67 * DIAGRAM_SCALER,
-                14 * DIAGRAM_SCALER,
-                14 * DIAGRAM_SCALER
-            );
-            this.app.stage.addChild(hZoneLabelKey);
-        }
-
 
         // Planets
-        if (this.state.showSolarSystemOrbits) {
+        if (this.props.showSolarSystemOrbits) {
             for (const planet of SOLAR_SYSTEM.planets) {
                 let p = new PIXI.Graphics();
                 let planetDistPixels = this.auToPixels(planet.distance, pixelsPerAU);
@@ -274,47 +243,79 @@ export default class CSHZDiagram extends React.Component {
             this.zoomLevels[zoomLevel].value + ' AU',
             {fill: 0xFFFFFF, fontSize: 16 * DIAGRAM_SCALER}
         );
-        scaleText.position.set(750 * DIAGRAM_SCALER, 20 * DIAGRAM_SCALER);
+        scaleText.position.set(KEY_POSITION_X, 20 * DIAGRAM_SCALER);
         let scaleRect = new PIXI.Graphics();
         scaleRect.beginFill(0xFFFFFF);
         scaleRect.lineStyle(1, 0xFFFFFF);
-        scaleRect.drawRect(750 * DIAGRAM_SCALER, 50 * DIAGRAM_SCALER, pixelsPerAU * this.zoomLevels[zoomLevel].value, 10)
+        scaleRect.drawRect(
+            KEY_POSITION_X,
+            50 * DIAGRAM_SCALER,
+            pixelsPerAU * this.zoomLevels[zoomLevel].value,
+            10
+        )
         this.app.stage.addChild(scaleText);
         this.app.stage.addChild(scaleRect);
+
+        // Habitable Zone Label
+        // Show the Habitable zone label only outside or inside the
+        // habitable zone band, don't display over the habitable
+        // zone itself.
+        const hZoneLabelStyle = {
+            fill: HZONE_COLOR,
+            strokeThickness: 1 * DIAGRAM_SCALER,
+            fontSize: 16 * DIAGRAM_SCALER,
+            fontWeight: 'bolder',
+        }
+        if (hZoneInner > KEY_POSITION_X + (95 * DIAGRAM_SCALER)) {
+            const hZoneLabel = new PIXI.Text(
+                'Habitable Zone →',
+                hZoneLabelStyle
+            )
+            hZoneLabel.position.set(KEY_POSITION_X, 65 * DIAGRAM_SCALER);
+            this.app.stage.addChild(hZoneLabel);
+        } else if (hZoneOuter < KEY_POSITION_X) {
+            const hZoneLabel = new PIXI.Text(
+                'Habitable Zone',
+                hZoneLabelStyle
+            )
+            hZoneLabel.position.set(
+                KEY_POSITION_X + (20 * DIAGRAM_SCALER),
+                65 * DIAGRAM_SCALER
+            );
+            this.app.stage.addChild(hZoneLabel);
+            const hZoneLabelKey = new PIXI.Graphics();
+            hZoneLabelKey.beginFill(HZONE_COLOR);
+            hZoneLabelKey.lineStyle(1, HZONE_COLOR);
+            hZoneLabelKey.drawRect(
+                KEY_POSITION_X,
+                67 * DIAGRAM_SCALER,
+                14 * DIAGRAM_SCALER,
+                14 * DIAGRAM_SCALER
+            );
+            this.app.stage.addChild(hZoneLabelKey);
+        } else {
+            const hZoneLabel = new PIXI.Text(
+                'Habitable Zone →',
+                hZoneLabelStyle
+            )
+            hZoneLabel.position.set(
+                hZoneInner - (120 * DIAGRAM_SCALER),
+                65 * DIAGRAM_SCALER
+            );
+            this.app.stage.addChild(hZoneLabel);
+        }
+
         // Because this can initiate a rerender, place it last
         this.renderPlanet(pixelsPerAU, planetXPosition);
 
     }
 
-    handleShowSolarSystemOrbits() {
-        this.setState((prevState) => {
-            return {showSolarSystemOrbits: !prevState.showSolarSystemOrbits}
-        })
-    }
-
     render() {
-        return (<>
+        return (
             <div className='col-12'>
                 <div id="cshzDiagram-contianer" ref={this.cshzDiagram}/>
             </div>
-            <div className="col-12">
-                <form>
-                    <div className='form-check'>
-                        <input
-                            id='show-orbits'
-                            type='checkbox'
-                            checked={this.state.showSolarSystemOrbits}
-                            onChange={this.handleShowSolarSystemOrbits}
-                            className={'form-check-input'} />
-                        <label
-                            className='form-check-label'
-                            htmlFor='show-orbits'>
-                            Show Solar System Orbits
-                        </label>
-                    </div>
-                </form>
-            </div>
-        </>)
+        )
     }
 }
 
@@ -323,4 +324,5 @@ CSHZDiagram.propTypes = {
     planetDistance: PropTypes.number.isRequired,
     habitableZoneInner: PropTypes.number.isRequired,
     habitableZoneOuter: PropTypes.number.isRequired,
+    showSolarSystemOrbits: PropTypes.bool.isRequired,
 }

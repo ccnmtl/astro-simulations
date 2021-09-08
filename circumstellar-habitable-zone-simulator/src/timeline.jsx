@@ -39,6 +39,7 @@ export default class CSHZTimeline extends React.Component {
         this.handleTimelineKeyUp = this.handleTimelineKeyUp.bind(this);
         this.incrementTimeline = this.incrementTimeline.bind(this);
         this.decrementTimeline = this.decrementTimeline.bind(this);
+        this.resetTimeline = this.resetTimeline.bind(this);
 
         const dataTable = this.annotateDataTable(
                 STAR_DATA[this.props.starMassIdx].dataTable, this.props.planetDistance);
@@ -323,6 +324,11 @@ export default class CSHZTimeline extends React.Component {
         })
     }
 
+    resetTimeline() {
+        this.props.setStarAgeIdx(0);
+        this.setState({timelinePosition: 0})
+    }
+
     handleTimelineKeyDown(evt) {
         evt.stopPropagation();
         evt.preventDefault();
@@ -347,33 +353,39 @@ export default class CSHZTimeline extends React.Component {
     }
 
     render() {
-        return(<div>
-            <div>
-                <h2>Timeline and Simulation Controls</h2>
-            </div>
-            <div className={'d-flex justify-content-between'}>
+        return(<div className={'border rounded p-2'}>
+            <div className={'d-flex justify-content-between mb-1'}>
                 <div>
-                    Time since star system formation: {typeof this.props.starMassIdx === 'number' && (
+                    <strong>Time since star system formation:</strong> {typeof this.props.starMassIdx === 'number' && (
                             (() => {
                                 let starAge = Math.floor(this.state.dataTable[this.props.starAgeIdx].time)
                                 return starAge < 1000 ? `${starAge} My` : `${roundToTwoPlaces(starAge / 1000)} Gy`
                             } )()
                     )}
                 </div>
-                <div>
-                    <RangeStepInput
-                        className='form-control'
-                        name={'animation-rate-range-input'}
-                        value={this.state.animationRate}
-                        onChange={this.handleUpdateAnimationRate}
-                        min={0.1}
-                        max={2}
-                        step={0.1} />
+                <div className={'d-flex'}>
+                    <div className={'d-flex'}>
+                        <strong className={'text-nowrap mr-3 pt-1'}>Animation speed:</strong>
+                        <RangeStepInput
+                            className='form-control'
+                            name={'animation-rate-range-input'}
+                            value={this.state.animationRate}
+                            onChange={this.handleUpdateAnimationRate}
+                            min={0.1}
+                            max={2}
+                            step={0.1} />
+                    </div>
                     <button
                         type={'button'}
                         onClick={this.toggleTimelineAnimation}
-                        className={'btn btn-primary'}>
+                        className={'btn btn-primary btn-sm ml-3'}>
                         {this.interval.current ? ('Stop') : ('Play')}
+                    </button>
+                    <button
+                        type={'button'}
+                        onClick={this.resetTimeline}
+                        className={'btn btn-secondary btn-sm ml-1'}>
+                        {'Reset'}
                     </button>
                 </div>
             </div>
@@ -494,7 +506,7 @@ export default class CSHZTimeline extends React.Component {
                                 style={{
                                     data: {fill: 'red'},
                                 }}
-                                data={[{x: this.state.dataTable[this.props.starAgeIdx].time, y: 1}]}/>
+                                data={[{x: this.state.timelinePosition * Math.round(STAR_DATA[this.props.starMassIdx].timespan), y: 1}]}/>
                         </VictoryChart>
                     </svg>
                     <div className={'mb-3'}></div>

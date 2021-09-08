@@ -37,12 +37,14 @@ class CircumstellarHabitableZoneSim extends React.Component {
             planetDistanceIdx: initPlanetDistIdx,
             habitableZoneInner: hZoneInner,
             habitableZoneOuter: hZoneOuter,
+            showSolarSystemOrbits: true,
         };
         this.state = this.initialState;
 
         this.setStarMassIdx = this.setStarMassIdx.bind(this);
         this.setPlanetDistanceIdx = this.setPlanetDistanceIdx.bind(this);
         this.setStarAgeIdx = this.setStarAgeIdx.bind(this);
+        this.handleShowSolarSystemOrbits = this.handleShowSolarSystemOrbits.bind(this);
     }
 
     setStarMassIdx(starMassIdx) {
@@ -97,30 +99,24 @@ class CircumstellarHabitableZoneSim extends React.Component {
         }
     }
 
+    handleShowSolarSystemOrbits() {
+        this.setState((prevState) => {
+            return {showSolarSystemOrbits: !prevState.showSolarSystemOrbits}
+        })
+    }
+
     render() {
         return(<>
             <CSHZNav />
-            <div className='row mt-2'>
+            <div className='row mt-2 mb-2'>
                 <CSHZDiagram
                     starRadius={this.state.starRadius}
                     planetDistance={this.state.planetDistance}
                     habitableZoneInner={this.state.habitableZoneInner}
-                    habitableZoneOuter={this.state.habitableZoneOuter}/>
+                    habitableZoneOuter={this.state.habitableZoneOuter}
+                    showSolarSystemOrbits={this.state.showSolarSystemOrbits}/>
             </div>
-            <div className='row mt-2'>
-                <div className='col-12'>
-                    <CSHZStarProperties
-                        starMassIdx={this.state.starMassIdx}
-                        starAgeIdx={this.state.starAgeIdx}
-                        starLuminosity={this.state.starLuminosity}
-                        starTemperature={this.state.starTemperature}
-                        starRadius={this.state.starRadius}
-                        setStarMassIdx={this.setStarMassIdx}
-                        planetDistanceIdx={this.state.planetDistanceIdx}
-                        setPlanetDistanceIdx={this.setPlanetDistanceIdx}/>
-                </div>
-            </div>
-            <div className='row mt-2'>
+            <div className='row mb-2'>
                 <div className='col-12'>
                     <CSHZTimeline
                         starMassIdx={this.state.starMassIdx}
@@ -130,6 +126,17 @@ class CircumstellarHabitableZoneSim extends React.Component {
                         planetDistance={this.state.planetDistance}/>
                 </div>
             </div>
+            <CSHZStarProperties
+                starMassIdx={this.state.starMassIdx}
+                starAgeIdx={this.state.starAgeIdx}
+                starLuminosity={this.state.starLuminosity}
+                starTemperature={this.state.starTemperature}
+                starRadius={this.state.starRadius}
+                setStarMassIdx={this.setStarMassIdx}
+                planetDistanceIdx={this.state.planetDistanceIdx}
+                setPlanetDistanceIdx={this.setPlanetDistanceIdx}
+                showSolarSystemOrbits={this.state.showSolarSystemOrbits}
+                handleShowSolarSystemOrbits={this.handleShowSolarSystemOrbits}/>
         </>);
     }
 }
