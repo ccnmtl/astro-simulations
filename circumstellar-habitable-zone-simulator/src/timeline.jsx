@@ -39,6 +39,7 @@ export default class CSHZTimeline extends React.Component {
         this.handleTimelineKeyUp = this.handleTimelineKeyUp.bind(this);
         this.incrementTimeline = this.incrementTimeline.bind(this);
         this.decrementTimeline = this.decrementTimeline.bind(this);
+        this.resetTimeline = this.resetTimeline.bind(this);
 
         const dataTable = this.annotateDataTable(
                 STAR_DATA[this.props.starMassIdx].dataTable, this.props.planetDistance);
@@ -323,6 +324,11 @@ export default class CSHZTimeline extends React.Component {
         })
     }
 
+    resetTimeline() {
+        this.props.setStarAgeIdx(0);
+        this.setState({timelinePosition: 0})
+    }
+
     handleTimelineKeyDown(evt) {
         evt.stopPropagation();
         evt.preventDefault();
@@ -347,8 +353,8 @@ export default class CSHZTimeline extends React.Component {
     }
 
     render() {
-        return(<div className={'border rounded'}>
-            <div className={'d-flex justify-content-between'}>
+        return(<div className={'border rounded p-2'}>
+            <div className={'d-flex justify-content-between mb-1'}>
                 <div>
                     <strong>Time since star system formation:</strong> {typeof this.props.starMassIdx === 'number' && (
                             (() => {
@@ -372,8 +378,14 @@ export default class CSHZTimeline extends React.Component {
                     <button
                         type={'button'}
                         onClick={this.toggleTimelineAnimation}
-                        className={'btn btn-primary ml-3'}>
+                        className={'btn btn-primary btn-sm ml-3'}>
                         {this.interval.current ? ('Stop') : ('Play')}
+                    </button>
+                    <button
+                        type={'button'}
+                        onClick={this.resetTimeline}
+                        className={'btn btn-secondary btn-sm ml-1'}>
+                        {'Reset'}
                     </button>
                 </div>
             </div>

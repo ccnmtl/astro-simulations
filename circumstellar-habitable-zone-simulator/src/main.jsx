@@ -108,7 +108,7 @@ class CircumstellarHabitableZoneSim extends React.Component {
     render() {
         return(<>
             <CSHZNav />
-            <div className='row mt-2'>
+            <div className='row mt-2 mb-2'>
                 <CSHZDiagram
                     starRadius={this.state.starRadius}
                     planetDistance={this.state.planetDistance}
@@ -116,7 +116,7 @@ class CircumstellarHabitableZoneSim extends React.Component {
                     habitableZoneOuter={this.state.habitableZoneOuter}
                     showSolarSystemOrbits={this.state.showSolarSystemOrbits}/>
             </div>
-            <div className='row mt-2'>
+            <div className='row mb-2'>
                 <div className='col-12'>
                     <CSHZTimeline
                         starMassIdx={this.state.starMassIdx}
@@ -126,21 +126,17 @@ class CircumstellarHabitableZoneSim extends React.Component {
                         planetDistance={this.state.planetDistance}/>
                 </div>
             </div>
-            <div className='row mt-2'>
-                <div className='col-12'>
-                    <CSHZStarProperties
-                        starMassIdx={this.state.starMassIdx}
-                        starAgeIdx={this.state.starAgeIdx}
-                        starLuminosity={this.state.starLuminosity}
-                        starTemperature={this.state.starTemperature}
-                        starRadius={this.state.starRadius}
-                        setStarMassIdx={this.setStarMassIdx}
-                        planetDistanceIdx={this.state.planetDistanceIdx}
-                        setPlanetDistanceIdx={this.setPlanetDistanceIdx}
-                        showSolarSystemOrbits={this.state.showSolarSystemOrbits}
-                        handleShowSolarSystemOrbits={this.handleShowSolarSystemOrbits}/>
-                </div>
-            </div>
+            <CSHZStarProperties
+                starMassIdx={this.state.starMassIdx}
+                starAgeIdx={this.state.starAgeIdx}
+                starLuminosity={this.state.starLuminosity}
+                starTemperature={this.state.starTemperature}
+                starRadius={this.state.starRadius}
+                setStarMassIdx={this.setStarMassIdx}
+                planetDistanceIdx={this.state.planetDistanceIdx}
+                setPlanetDistanceIdx={this.setPlanetDistanceIdx}
+                showSolarSystemOrbits={this.state.showSolarSystemOrbits}
+                handleShowSolarSystemOrbits={this.handleShowSolarSystemOrbits}/>
         </>);
     }
 }
