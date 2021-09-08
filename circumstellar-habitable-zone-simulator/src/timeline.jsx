@@ -506,7 +506,7 @@ export default class CSHZTimeline extends React.Component {
                                 style={{
                                     data: {fill: 'red'},
                                 }}
-                                data={[{x: this.state.dataTable[this.props.starAgeIdx].time, y: 1}]}/>
+                                data={[{x: this.state.timelinePosition * Math.round(STAR_DATA[this.props.starMassIdx].timespan), y: 1}]}/>
                         </VictoryChart>
                     </svg>
                     <div className={'mb-3'}></div>
