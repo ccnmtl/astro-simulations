@@ -1,7 +1,10 @@
 import React from 'react';
 import * as PIXI from 'pixi.js';
 import PropTypes from 'prop-types';
-import anime from 'animejs/lib/anime.es.js';
+import sustainablePlanet from './images/sustainable.png';
+import coldPlanet from './images/too-cold.png';
+import hotPlanet from './images/too-hot.png';
+import unsustainablePlanet from './images/unsustainable.png';
 
 
 // Sun's diameter in pixels
@@ -9,6 +12,7 @@ const DIAGRAM_SCALER = 3;
 const HEIGHT = 300 * DIAGRAM_SCALER;
 const WIDTH = 980 * DIAGRAM_SCALER;
 const KEY_POSITION_X = 750 * DIAGRAM_SCALER;
+const KEY_POSITION_Y = 225 * DIAGRAM_SCALER;
 const AU_PIXELS = 100 * DIAGRAM_SCALER;
 const STAR_ORIGIN_POINT = [100, 150 * DIAGRAM_SCALER];
 const KM_AU = 149597870.7;
@@ -38,6 +42,12 @@ const SOLAR_SYSTEM = {
     ]
 }
 
+const PLANET_STATUS = {
+    'TOO_COLD': 0,
+    'TEMPERATE': 1,
+    'TOO_HOT': 2
+}
+
 
 export default class CSHZDiagram extends React.Component {
     constructor(props) {
@@ -53,6 +63,11 @@ export default class CSHZDiagram extends React.Component {
         this.auToPixels = this.auToPixels.bind(this);
         this.solarRadiusToPixels = this.solarRadiusToPixels.bind(this);
         this.getPosPixelsPerAU = this.getPosPixelsPerAU.bind(this);
+
+        this.sustainablePlanet = new PIXI.Texture.from(sustainablePlanet);
+        this.coldPlanet = new PIXI.Texture.from(coldPlanet);
+        this.hotPlanet = new PIXI.Texture.from(hotPlanet);
+        this.unsustainablePlanet = new PIXI.Texture.from(unsustainablePlanet);
     }
 
     zoomLevels = [
@@ -152,21 +167,25 @@ export default class CSHZDiagram extends React.Component {
         return Math.sqrt((r ** 2) - ((y - yOrigin) ** 2)) + xOrigin;
     }
 
-    renderPlanet(pixelsPerAU, planetXPosition) {
+    renderPlanet(pixelsPerAU, planetXPosition, status) {
         if (this.planet) {
             this.app.stage.removeChild(this.planet);
         }
 
-        this.planet = new PIXI.Graphics();
+        const size = 42 * DIAGRAM_SCALER;
+        if (status == PLANET_STATUS.TOO_HOT) {
+            this.planet = new PIXI.Sprite(this.hotPlanet);
+        } else if (status == PLANET_STATUS.TEMPERATE) {
+            this.planet = new PIXI.Sprite(this.sustainablePlanet);
+        } else {
+            this.planet = new PIXI.Sprite(this.coldPlanet);
+        }
+        this.planet.anchor.set(0.5);
+        this.planet.x = planetXPosition;
+        this.planet.y = STAR_ORIGIN_POINT[1];
+        this.planet.height = size;
+        this.planet.width = size;
         this.app.stage.addChild(this.planet);
-
-        this.planet.beginFill(0x0000FF);
-        this.planet.drawCircle(
-            planetXPosition,
-            STAR_ORIGIN_POINT[1],
-            15 * DIAGRAM_SCALER
-        );
-        this.planet.endFill();
     }
 
     renderStar(pixelsPerAU) {
@@ -271,7 +290,7 @@ export default class CSHZDiagram extends React.Component {
                 'Habitable Zone →',
                 hZoneLabelStyle
             )
-            hZoneLabel.position.set(KEY_POSITION_X, 65 * DIAGRAM_SCALER);
+            hZoneLabel.position.set(KEY_POSITION_X, KEY_POSITION_Y);
             this.app.stage.addChild(hZoneLabel);
         } else if (hZoneOuter < KEY_POSITION_X) {
             const hZoneLabel = new PIXI.Text(
@@ -280,7 +299,7 @@ export default class CSHZDiagram extends React.Component {
             )
             hZoneLabel.position.set(
                 KEY_POSITION_X + (20 * DIAGRAM_SCALER),
-                65 * DIAGRAM_SCALER
+                KEY_POSITION_Y
             );
             this.app.stage.addChild(hZoneLabel);
             const hZoneLabelKey = new PIXI.Graphics();
@@ -288,7 +307,7 @@ export default class CSHZDiagram extends React.Component {
             hZoneLabelKey.lineStyle(1, HZONE_COLOR);
             hZoneLabelKey.drawRect(
                 KEY_POSITION_X,
-                67 * DIAGRAM_SCALER,
+                KEY_POSITION_Y,
                 14 * DIAGRAM_SCALER,
                 14 * DIAGRAM_SCALER
             );
@@ -300,14 +319,21 @@ export default class CSHZDiagram extends React.Component {
             )
             hZoneLabel.position.set(
                 hZoneInner - (120 * DIAGRAM_SCALER),
-                65 * DIAGRAM_SCALER
+                KEY_POSITION_Y
             );
             this.app.stage.addChild(hZoneLabel);
         }
 
-        // Because this can initiate a rerender, place it last
-        this.renderPlanet(pixelsPerAU, planetXPosition);
+        let planetStatus = null;
+        if (planetXPosition < hZoneInner) {
+            planetStatus = PLANET_STATUS.TOO_HOT
+        } else if (hZoneInner <= planetXPosition && planetXPosition <= hZoneOuter) {
+            planetStatus = PLANET_STATUS.TEMPERATE;
+        } else {
+            planetStatus = PLANET_STATUS.TOO_COLD
+        }
 
+        this.renderPlanet(pixelsPerAU, planetXPosition, planetStatus);
     }
 
     render() {
