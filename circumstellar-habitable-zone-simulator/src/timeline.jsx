@@ -206,6 +206,12 @@ export default class CSHZTimeline extends React.Component {
 
     findStarAgeIdx(yearsAfterFormation, dataTable) {
         // Note, this is called within a set state call, so it needs to be thread-safe
+        if (yearsAfterFormation <= 0) {
+            return 0
+        } else if (yearsAfterFormation >= dataTable[dataTable.length - 1].time) {
+            return dataTable.length - 1
+        }
+
         let [low, mid, high, found] = [0, 0, dataTable.length - 1, false]
         while (!found) {
             mid = Math.floor((high + low) / 2);
@@ -237,35 +243,36 @@ export default class CSHZTimeline extends React.Component {
         // Increment/decrement timeline to the mouse position
 
         // calculate the mouse position over the timeline
+        const me = this;
         this.setState((state, props) => {
-            const el = this.timelineContainer.current.getElementsByTagName('g');
+            const el = me.timelineContainer.current.getElementsByTagName('g');
             const cursor = el[1];
             const cursorX = cursor.getBoundingClientRect().x;
             // if the mouse is within some small number of pixels of the cursor, clear the callback
             const epsilon = 5;
-            if (Math.abs(this.mouseX.current - cursorX) < epsilon) {
-                this.clearTimelineInterval();
+            if (Math.abs(me.mouseX.current - cursorX) < epsilon) {
+                me.clearTimelineInterval();
                 return {timelinePosition: state.timelinePosition}
-            } else if (this.mouseX.current < cursorX) {
+            } else if (me.mouseX.current < cursorX) {
                 // if the mouse is the left of the cursor, decrement timelinePosition
-                if (state.timelinePosition <= 0) {
-                    return {timelinePosition: 0}
-                } else {
-                    const position = state.timelinePosition - 0.01;
-                    const yearsAfterFormation = position * Math.round(STAR_DATA[props.starMassIdx].timespan);
-                    props.setStarAgeIdx(this.findStarAgeIdx(yearsAfterFormation, state.dataTable));
-                    return {timelinePosition: position}
+                const position = Math.max(state.timelinePosition - 0.01, 0);
+                const yearsAfterFormation = position * Math.round(STAR_DATA[props.starMassIdx].timespan);
+                const starAgeIdx = me.findStarAgeIdx(yearsAfterFormation, state.dataTable);
+                if (position == 0) {
+                    me.clearTimelineInterval();
                 }
+                props.setStarAgeIdx(starAgeIdx);
+                return {timelinePosition: position}
             } else {
                 // if the mouse is the right of the cursor, increment timelinePosition
-                if (state.timelinePosition >= 1) {
-                    return {timelinePosition: 1}
-                } else {
-                    const position = state.timelinePosition + 0.01;
-                    const yearsAfterFormation = position * Math.round(STAR_DATA[props.starMassIdx].timespan);
-                    props.setStarAgeIdx(this.findStarAgeIdx(yearsAfterFormation, state.dataTable));
-                    return {timelinePosition: position}
+                const position = Math.min(state.timelinePosition + 0.01, 1);
+                const yearsAfterFormation = position * Math.round(STAR_DATA[props.starMassIdx].timespan);
+                const starAgeIdx = me.findStarAgeIdx(yearsAfterFormation, state.dataTable);
+                if (position == 1) {
+                    me.clearTimelineInterval();
                 }
+                props.setStarAgeIdx(starAgeIdx);
+                return {timelinePosition: position}
             }
         })
     }
@@ -277,14 +284,16 @@ export default class CSHZTimeline extends React.Component {
     }
 
     handleTimelineMouseUp() {
-        if (this.state.timelineClickDown !== null) {
-            this.setState({timelineClickDown: false});
-        }
-
-        // clear the interval here
-        if (this.timelineMouseInterval.current !== null) {
-            this.clearTimelineInterval();
-        }
+        const me = this;
+        this.setState((state) => {
+            // clear the interval
+            if (me.timelineMouseInterval.current !== null) {
+                me.clearTimelineInterval();
+            }
+            if (state.timelineClickDown) {
+                return {timelineClickDown: false};
+            }
+        })
     }
 
     clearTimelineInterval() {

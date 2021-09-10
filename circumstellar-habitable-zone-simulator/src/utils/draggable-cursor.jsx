@@ -44,9 +44,11 @@ export class DraggableCursor extends React.Component {
     }
 
     handleMouseUp() {
-        if (this.state.dragging) {
-            this.setState({dragging: false})
-        }
+        this.setState((state) => {
+            if (state.dragging) {
+                return {dragging: false}
+            }
+        })
     }
 
     handleMouseMove(evt) {
