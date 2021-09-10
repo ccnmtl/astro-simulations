@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import sustainablePlanet from './images/sustainable.png';
 import coldPlanet from './images/too-cold.png';
 import hotPlanet from './images/too-hot.png';
-import unsustainablePlanet from './images/unsustainable.png';
 
 
 // Sun's diameter in pixels
@@ -67,7 +66,6 @@ export default class CSHZDiagram extends React.Component {
         this.sustainablePlanet = new PIXI.Texture.from(sustainablePlanet);
         this.coldPlanet = new PIXI.Texture.from(coldPlanet);
         this.hotPlanet = new PIXI.Texture.from(hotPlanet);
-        this.unsustainablePlanet = new PIXI.Texture.from(unsustainablePlanet);
     }
 
     zoomLevels = [
