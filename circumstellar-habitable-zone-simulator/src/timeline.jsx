@@ -14,9 +14,9 @@ import {
 import { RangeStepInput } from 'react-range-step-input';
 
 // In milliseconds
-const ANIMATION_INTERVAL = 25
+const ANIMATION_INTERVAL = 10;
 // how far the timeline should move with each increment, in pct
-const ANIMATION_INCREMENT = 0.005
+const ANIMATION_INCREMENT = 0.01;
 
 export default class CSHZTimeline extends React.Component {
     constructor(props) {
