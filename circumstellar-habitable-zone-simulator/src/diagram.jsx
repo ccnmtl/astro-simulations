@@ -165,7 +165,7 @@ export default class CSHZDiagram extends React.Component {
         return Math.sqrt((r ** 2) - ((y - yOrigin) ** 2)) + xOrigin;
     }
 
-    renderPlanet(pixelsPerAU, planetXPosition, status) {
+    renderPlanet(planetXPosition, status) {
         if (this.planet) {
             this.app.stage.removeChild(this.planet);
         }
@@ -323,15 +323,17 @@ export default class CSHZDiagram extends React.Component {
         }
 
         let planetStatus = null;
-        if (planetXPosition < hZoneInner) {
+        const hZoneIn = hZoneInner + STAR_ORIGIN_POINT[0];
+        const hZoneOut = hZoneOuter + STAR_ORIGIN_POINT[0];
+        if (planetXPosition < hZoneIn) {
             planetStatus = PLANET_STATUS.TOO_HOT
-        } else if (hZoneInner <= planetXPosition && planetXPosition <= hZoneOuter) {
+        } else if (hZoneIn <= planetXPosition && planetXPosition <= hZoneOut) {
             planetStatus = PLANET_STATUS.TEMPERATE;
         } else {
             planetStatus = PLANET_STATUS.TOO_COLD
         }
 
-        this.renderPlanet(pixelsPerAU, planetXPosition, planetStatus);
+        this.renderPlanet(planetXPosition, planetStatus);
     }
 
     render() {
