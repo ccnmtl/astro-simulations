@@ -8,6 +8,8 @@ updates:
   open-pull-requests-limit: 10
   versioning-strategy: increase-if-necessary
   ignore:
+  - dependency-name: "*"
+    update-types: ["version-update:semver-patch"]
   - dependency-name: webpack
     versions:
     - 5.20.0
@@ -21,6 +23,8 @@ updates:
   open-pull-requests-limit: 10
   versioning-strategy: increase-if-necessary
   ignore:
+  - dependency-name: "*"
+    update-types: ["version-update:semver-patch"]
   - dependency-name: webpack
     versions:
     - 5.20.0
@@ -39,6 +43,8 @@ updates:
   open-pull-requests-limit: 10
   versioning-strategy: increase-if-necessary
   ignore:
+  - dependency-name: "*"
+    update-types: ["version-update:semver-patch"]
   - dependency-name: webpack
     versions:
     - 5.20.0
@@ -54,6 +60,8 @@ updates:
   open-pull-requests-limit: 10
   versioning-strategy: increase-if-necessary
   ignore:
+  - dependency-name: "*"
+    update-types: ["version-update:semver-patch"]
   - dependency-name: webpack
     versions:
     - 5.34.0
@@ -69,6 +77,8 @@ updates:
   open-pull-requests-limit: 10
   versioning-strategy: increase-if-necessary
   ignore:
+  - dependency-name: "*"
+    update-types: ["version-update:semver-patch"]
   - dependency-name: webpack
     versions:
     - 5.20.0
@@ -85,6 +95,8 @@ updates:
   open-pull-requests-limit: 10
   versioning-strategy: increase-if-necessary
   ignore:
+  - dependency-name: "*"
+    update-types: ["version-update:semver-patch"]
   - dependency-name: webpack
     versions:
     - 5.20.0
@@ -100,3 +112,6 @@ updates:
     time: "10:00"
   open-pull-requests-limit: 10
   versioning-strategy: increase-if-necessary
+  ignore:
+  - dependency-name: "*"
+    update-types: ["version-update:semver-patch"]
