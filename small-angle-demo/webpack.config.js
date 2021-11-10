@@ -9,6 +9,11 @@ module.exports = {
         filename: 'bundle.js',
         publicPath: '/dist/',
     },
+    devServer: {
+        static: {
+            directory: './'
+        },
+    },
     resolve: {
         extensions: ['*', '.js', '.jsx'],
     },
