@@ -3,7 +3,8 @@ sims := exoplanet-transit-simulator \
 	small-angle-demo \
 	sun-motion-simulator \
 	eclipsing-binary-simulator \
-	gas-retention-simulator
+	gas-retention-simulator \
+	circumstellar-habitable-zone-simulator
 
 eslint-all:
 	@$(foreach dir, $(sims), cd $(dir) && npm i && npm run eslint && cd ..;)

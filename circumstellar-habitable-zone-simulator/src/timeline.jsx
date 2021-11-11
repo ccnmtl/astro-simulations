@@ -1,11 +1,10 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import {
-    VictoryAxis, VictoryBar, VictoryChart, VictoryContainer, VictoryLine, VictoryStack,
+    VictoryAxis, VictoryBar, VictoryChart, VictoryLine,
     Background
 } from 'victory';
-import { getHZone, DraggableCursor } from './utils';
+import { DraggableCursor } from './utils';
 import { LOG_BASE } from './main';
 import {shzStarData as STAR_DATA} from './shzStars.js';
 import {

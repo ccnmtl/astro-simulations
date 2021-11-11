@@ -18,7 +18,7 @@ const KM_AU = 149597870.7;
 const SOLAR_RADIUS_KM = 695700;
 
 const ZOOM_UPPER_BREAKPOINT = (960 * 0.65) * DIAGRAM_SCALER;
-const ZOOM_LOWER_BREAKPOINT = STAR_ORIGIN_POINT[0] + (20 * DIAGRAM_SCALER);
+// const ZOOM_LOWER_BREAKPOINT = STAR_ORIGIN_POINT[0] + (20 * DIAGRAM_SCALER);
 
 const HZONE_COLOR = 0x7090FF
 
@@ -114,7 +114,7 @@ export default class CSHZDiagram extends React.Component {
         this.renderStarSystem(this.zoomLevels[INITIAL_ZOOM_LEVEL].pixelsPerAU, planetXPosition, INITIAL_ZOOM_LEVEL);
     }
 
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
         const [planetXPosition, pixelsPerAU, zoomLevel] = this.getPosPixelsPerAU(this.props.planetDistance);
 
         if (this.props.showSolarSystemOrbits !== prevProps.showSolarSystemOrbits ||
