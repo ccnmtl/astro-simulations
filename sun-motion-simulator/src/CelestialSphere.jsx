@@ -7,6 +7,8 @@ import {FXAAShader} from 'three/examples/jsm/shaders/FXAAShader.js';
 import {EffectComposer} from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import {RenderPass} from 'three/examples/jsm/postprocessing/RenderPass.js';
 import {ShaderPass} from 'three/examples/jsm/postprocessing/ShaderPass.js';
+import {FontLoader} from 'three/examples/jsm/loaders/FontLoader.js';
+import {TextGeometry} from 'three/examples/jsm/geometries/TextGeometry.js';
 import {getDayOfYear, getEqnOfTime, getPosition, getTime} from './utils';
 import MutedColorsShader from './shaders/MutedColorsShader';
 
@@ -589,7 +591,7 @@ export default class CelestialSphere extends React.Component {
      * Returns a promise containing a three.js Group.
      */
     drawPrimeHourMonthsText() {
-        const loader = new THREE.FontLoader();
+        const loader = new FontLoader();
         const months = [
             'Jan', 'Feb', 'Mar',
             'Apr', 'May', 'Jun',
@@ -608,7 +610,7 @@ export default class CelestialSphere extends React.Component {
                     const textGroup = new THREE.Group();
                     for (let i = 0; i < months.length; i++) {
                         let angle = -i * ((Math.PI * 2) / months.length);
-                        let geometry = new THREE.TextGeometry(months[parseInt(i)], {
+                        let geometry = new TextGeometry(months[parseInt(i)], {
                             font: font,
                             size: 4,
                             height: 0.1,
