@@ -32,7 +32,7 @@
     "d3-path": "^3.0.1",
     "eslint-plugin-security": "^1.4.0",
     "matter-js": "^0.18.0",
-    "pixi.js": "~6.3.0",
+    "pixi.js": "~6.4.2",
     "react": "~17.0.1",
     "react-dom": "~17.0.1",
     "react-range-step-input": "^1.3.0"
