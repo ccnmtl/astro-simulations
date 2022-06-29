@@ -31,7 +31,7 @@
     "react": "~17.0.1",
     "react-dom": "~17.0.1",
     "react-range-step-input": "^1.2.1",
-    "three": "~0.140.2"
+    "three": "~0.142.0"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",
