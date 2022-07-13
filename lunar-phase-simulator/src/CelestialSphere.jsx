@@ -64,8 +64,8 @@ export default class CelestialSphere extends React.Component {
 
         // Only let the user see the top of the scene - no need to
         // flip it completely over.
-        controls.minPolarAngle = THREE.Math.degToRad(0);
-        controls.maxPolarAngle = THREE.Math.degToRad(70);
+        controls.minPolarAngle = THREE.MathUtils.degToRad(0);
+        controls.maxPolarAngle = THREE.MathUtils.degToRad(70);
 
         const renderer = new THREE.WebGLRenderer({
             antialias: true,
@@ -101,7 +101,7 @@ export default class CelestialSphere extends React.Component {
         this.orbitGroup.add(this.moon);
         this.orbitGroup.add(this.celestialEquator);
         this.orbitGroup.add(this.angle);
-        this.orbitGroup.rotation.x = THREE.Math.degToRad(-50);
+        this.orbitGroup.rotation.x = THREE.MathUtils.degToRad(-50);
         scene.add(this.orbitGroup);
 
         // Make an invisible plane on the orbitGroup's axis.
@@ -111,7 +111,7 @@ export default class CelestialSphere extends React.Component {
         this.orbitPlane = new THREE.Plane(
             // Make this plane the same rotation as the orbitGroup (50
             // degrees).
-            new THREE.Vector3(0, THREE.Math.degToRad(50), -1), 0);
+            new THREE.Vector3(0, THREE.MathUtils.degToRad(50), -1), 0);
 
         // For visualizing the orbitPlane
         // const planeHelper = new THREE.PlaneHelper(
@@ -218,7 +218,7 @@ export default class CelestialSphere extends React.Component {
         moon.position.z = 50.25 * Math.sin(
             -moonAngle + observerAngle - Math.PI);
         moon.rotation.y = -(-moonAngle + observerAngle) +
-                          THREE.Math.degToRad(90) - Math.PI;
+                          THREE.MathUtils.degToRad(90) - Math.PI;
     }
     drawPlane(scene) {
         const texture = new THREE.TextureLoader().load('img/plane.svg');
@@ -229,7 +229,7 @@ export default class CelestialSphere extends React.Component {
         const geometry = new THREE.CircleBufferGeometry(50, 64);
         const plane = new THREE.Mesh(geometry, material);
         plane.name = 'Plane';
-        plane.rotation.x = THREE.Math.degToRad(-90);
+        plane.rotation.x = THREE.MathUtils.degToRad(-90);
         scene.add(plane);
         return plane;
     }
@@ -268,13 +268,13 @@ export default class CelestialSphere extends React.Component {
         // A north-south line
         const observersMeridian = new THREE.Mesh(
             thinTorusGeometry, lineMeshMaterial);
-        observersMeridian.rotation.y = THREE.Math.degToRad(90);
+        observersMeridian.rotation.y = THREE.MathUtils.degToRad(90);
         scene.add(observersMeridian);
 
         // An east-west line at the top of the observer's globe
         const zenithEquator = new THREE.Mesh(
             thinTorusGeometry, lineMeshMaterial);
-        zenithEquator.rotation.z = THREE.Math.degToRad(90);
+        zenithEquator.rotation.z = THREE.MathUtils.degToRad(90);
         scene.add(zenithEquator);
 
         // The sun and moon orbit along this next line.
@@ -285,7 +285,7 @@ export default class CelestialSphere extends React.Component {
             50, 0.3, 16, 64);
         this.celestialEquator = new THREE.Mesh(
             thickTorusGeometry, solidLineMaterial);
-        this.celestialEquator.rotation.x = THREE.Math.degToRad(90);
+        this.celestialEquator.rotation.x = THREE.MathUtils.degToRad(90);
     }
     drawStickFigure(scene) {
         const spriteMap = new THREE.TextureLoader().load('img/stickfigure.svg');
@@ -411,7 +411,7 @@ export default class CelestialSphere extends React.Component {
         this.sun.position.x = 50.25 * Math.cos(this.props.observerAngle);
         this.sun.position.z = 50.25 * Math.sin(this.props.observerAngle);
         this.sun.rotation.y = -this.props.observerAngle +
-                              THREE.Math.degToRad(90);
+                              THREE.MathUtils.degToRad(90);
         this.renderScene();
         this.frameId = window.requestAnimationFrame(this.animate);
     }
@@ -431,7 +431,7 @@ export default class CelestialSphere extends React.Component {
     getTime(observerAngle) {
         // Convert from radian to angle, since it's easier to deal
         // with.
-        const angle = THREE.Math.radToDeg(observerAngle);
+        const angle = THREE.MathUtils.radToDeg(observerAngle);
         const seconds = angle / (360 / 24) * 3600;
         const d1 = new Date('1/1/2018 6:00 AM');
         return new Date(d1.getTime() + (seconds * 1000));
