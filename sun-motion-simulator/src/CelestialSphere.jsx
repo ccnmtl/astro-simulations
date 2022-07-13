@@ -96,8 +96,8 @@ export default class CelestialSphere extends React.Component {
 
         // Only let the user see the top of the scene - no need to
         // flip it completely over.
-        controls.minPolarAngle = THREE.Math.degToRad(0);
-        controls.maxPolarAngle = THREE.Math.degToRad(85);
+        controls.minPolarAngle = THREE.MathUtils.degToRad(0);
+        controls.maxPolarAngle = THREE.MathUtils.degToRad(85);
 
         const canvas = document.getElementById(this.id + 'Canvas');
         const renderer = new THREE.WebGLRenderer({
@@ -125,10 +125,10 @@ export default class CelestialSphere extends React.Component {
         const declinationRad = this.getSunDeclinationRadius(
             this.props.sunDeclination);
         this.light.position.x = declinationRad * Math.cos(
-            -THREE.Math.degToRad(90));
+            -THREE.MathUtils.degToRad(90));
         this.light.position.z = declinationRad * Math.sin(
-            -THREE.Math.degToRad(90));
-        this.light.position.y = THREE.Math.radToDeg(
+            -THREE.MathUtils.degToRad(90));
+        this.light.position.y = THREE.MathUtils.radToDeg(
             this.props.sunDeclination);
         this.light.rotation.x = this.props.sunDeclination;
 
@@ -186,18 +186,18 @@ export default class CelestialSphere extends React.Component {
 
         this.analemma = this.drawAnalemma(scene);
         this.analemma.rotation.x =
-            THREE.Math.degToRad(this.props.latitude) - (Math.PI / 2);
+            THREE.MathUtils.degToRad(this.props.latitude) - (Math.PI / 2);
         this.analemma.rotation.y = hourAngleToRadians(
             this.props.hourAngle) + (Math.PI / 2);
         scene.add(this.analemma);
 
         this.orbitGroup.rotation.x =
-            THREE.Math.degToRad(this.props.latitude) - (Math.PI / 2);
+            THREE.MathUtils.degToRad(this.props.latitude) - (Math.PI / 2);
         this.orbitGroup.rotation.y = hourAngleToRadians(this.props.hourAngle);
         scene.add(this.orbitGroup);
 
         this.sunOrbitGroup.rotation.x =
-            THREE.Math.degToRad(this.props.latitude) - (Math.PI / 2);
+            THREE.MathUtils.degToRad(this.props.latitude) - (Math.PI / 2);
         this.sunOrbitGroup.rotation.y = hourAngleToRadians(this.props.hourAngle);
         scene.add(this.sunOrbitGroup);
 
@@ -211,7 +211,7 @@ export default class CelestialSphere extends React.Component {
         this.orbitPlane = new THREE.Plane(
             // The default vector of an Object3d
             this.zVec,
-            -THREE.Math.radToDeg(this.props.sunDeclination));
+            -THREE.MathUtils.radToDeg(this.props.sunDeclination));
         this.updateOrbitPlanePosition(
             this.orbitPlane, this.orbitGroup, this.props.sunDeclination);
 
@@ -230,9 +230,9 @@ export default class CelestialSphere extends React.Component {
         this.eclipticOrbitGroup.add(this.ecliptic);
 
         this.eclipticOrbitGroup.rotation.x =
-            THREE.Math.degToRad(this.props.latitude) - (Math.PI / 2);
+            THREE.MathUtils.degToRad(this.props.latitude) - (Math.PI / 2);
         this.eclipticOrbitGroup.rotation.y =
-            hourAngleToRadians(this.props.hourAngle) - THREE.Math.degToRad(10);
+            hourAngleToRadians(this.props.hourAngle) - THREE.MathUtils.degToRad(10);
         scene.add(this.eclipticOrbitGroup);
 
         this.scene = scene;
@@ -253,16 +253,16 @@ export default class CelestialSphere extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.latitude !== this.props.latitude) {
             this.orbitGroup.rotation.x =
-                THREE.Math.degToRad(this.props.latitude) - (Math.PI / 2);
+                THREE.MathUtils.degToRad(this.props.latitude) - (Math.PI / 2);
 
             this.analemma.rotation.x =
-                THREE.Math.degToRad(this.props.latitude) - (Math.PI / 2);
+                THREE.MathUtils.degToRad(this.props.latitude) - (Math.PI / 2);
 
             this.sunOrbitGroup.rotation.x =
-                THREE.Math.degToRad(this.props.latitude) - (Math.PI / 2);
+                THREE.MathUtils.degToRad(this.props.latitude) - (Math.PI / 2);
 
             this.eclipticOrbitGroup.rotation.x =
-                THREE.Math.degToRad(this.props.latitude) - (Math.PI / 2);
+                THREE.MathUtils.degToRad(this.props.latitude) - (Math.PI / 2);
 
             this.updateOrbitPlanePosition(
                 this.orbitPlane, this.orbitGroup, this.props.sunDeclination);
@@ -296,7 +296,7 @@ export default class CelestialSphere extends React.Component {
                 (Math.PI / 2);
             const sunRotation = hourAngleToRadians(this.props.hourAngle);
 
-            this.eclipticOrbitGroup.rotation.y = THREE.Math.degToRad(
+            this.eclipticOrbitGroup.rotation.y = THREE.MathUtils.degToRad(
                 ((getDayOfYear(this.props.dateTime) / 365.24) * -360) + 141) + sunRotation;
         }
 
@@ -307,10 +307,10 @@ export default class CelestialSphere extends React.Component {
                 this.props.sunDeclination);
 
             this.sun.position.x = declinationRad * Math.cos(
-                -THREE.Math.degToRad(90));
+                -THREE.MathUtils.degToRad(90));
             this.sun.position.z = declinationRad * Math.sin(
-                -THREE.Math.degToRad(90));
-            this.sun.position.y = THREE.Math.radToDeg(
+                -THREE.MathUtils.degToRad(90));
+            this.sun.position.y = THREE.MathUtils.radToDeg(
                 this.props.sunDeclination);
             this.sun.rotation.x = this.props.sunDeclination;
 
@@ -319,12 +319,12 @@ export default class CelestialSphere extends React.Component {
 
             if (this.props.showDeclinationCircle) {
                 this.sunDeclination.position.y =
-                    THREE.Math.radToDeg(this.props.sunDeclination);
+                    THREE.MathUtils.radToDeg(this.props.sunDeclination);
 
                 this.sunDeclination.verticesNeedUpdate = true;
                 this.sunDeclination.geometry = new THREE.TorusBufferGeometry(
                     declinationRad - this.visualLineGap, 0.3, 16, 64);
-                this.sunDeclination.geometry.rotateX(THREE.Math.degToRad(90));
+                this.sunDeclination.geometry.rotateX(THREE.MathUtils.degToRad(90));
             }
 
         }
@@ -361,7 +361,7 @@ export default class CelestialSphere extends React.Component {
                     this.getSunDeclinationLineRadius(this.props.sunDeclination),
                     0.3, 16, 64);
             }
-            this.sunDeclination.geometry.rotateX(THREE.Math.degToRad(90));
+            this.sunDeclination.geometry.rotateX(THREE.MathUtils.degToRad(90));
         }
 
         if (
@@ -422,7 +422,7 @@ export default class CelestialSphere extends React.Component {
         plane.name = 'Plane';
         plane.castShadow = false;
         plane.receiveShadow = true;
-        plane.rotation.x = THREE.Math.degToRad(-90);
+        plane.rotation.x = THREE.MathUtils.degToRad(-90);
         scene.add(plane);
         return plane;
     }
@@ -497,12 +497,12 @@ export default class CelestialSphere extends React.Component {
         // A north-south line
         const observersMeridian = new THREE.Mesh(
             thinTorusGeometry, lineMeshMaterial);
-        observersMeridian.rotation.y = THREE.Math.degToRad(90);
+        observersMeridian.rotation.y = THREE.MathUtils.degToRad(90);
         scene.add(observersMeridian);
 
         // An east-west line at the top of the observer's globe
         const zenithEquator = new THREE.Mesh(thinTorusGeometry, lineMeshMaterial);
-        zenithEquator.rotation.z = THREE.Math.degToRad(90);
+        zenithEquator.rotation.z = THREE.MathUtils.degToRad(90);
         scene.add(zenithEquator);
 
         // The sun orbits along this next line.
@@ -513,10 +513,10 @@ export default class CelestialSphere extends React.Component {
         const declinationGeometry = new THREE.TorusBufferGeometry(
             this.getSunDeclinationLineRadius(this.props.sunDeclination),
             0.3, 16, 64);
-        declinationGeometry.rotateX(THREE.Math.degToRad(90));
+        declinationGeometry.rotateX(THREE.MathUtils.degToRad(90));
         this.sunDeclination = new THREE.Mesh(declinationGeometry, yellowMaterial);
         this.sunDeclination.name = 'Declination';
-        this.sunDeclination.position.y = THREE.Math.radToDeg(
+        this.sunDeclination.position.y = THREE.MathUtils.radToDeg(
             this.props.sunDeclination);
 
         const thickTorusGeometry = new THREE.TorusBufferGeometry(
@@ -527,14 +527,14 @@ export default class CelestialSphere extends React.Component {
         this.celestialEquator = new THREE.Mesh(
             thickTorusGeometry, blueMaterial);
         this.celestialEquator.name = 'CelestialEquator';
-        this.celestialEquator.rotation.x = THREE.Math.degToRad(90);
+        this.celestialEquator.rotation.x = THREE.MathUtils.degToRad(90);
 
         const primeHourGeometry = new THREE.TorusBufferGeometry(
             this.sphereRadius - this.visualLineGap, 0.3, 16, 64, Math.PI);
         const primeHour = new THREE.Mesh(primeHourGeometry, blueMaterial);
         primeHour.name = 'PrimeHour';
-        primeHour.rotation.z = THREE.Math.degToRad(90);
-        primeHour.rotation.y = THREE.Math.degToRad(180 + 27);
+        primeHour.rotation.z = THREE.MathUtils.degToRad(90);
+        primeHour.rotation.y = THREE.MathUtils.degToRad(180 + 27);
 
         const primeHourTopCylGeo = new THREE.CylinderBufferGeometry(
             0.3, 0.3, 10, 32);
@@ -560,11 +560,11 @@ export default class CelestialSphere extends React.Component {
             primeHourMonthsText.visible = me.props.showMonthLabels;
 
             // Apply the same rotation as the ecliptic circle (this.ecliptic).
-            primeHourMonthsText.rotation.x = THREE.Math.degToRad(90 + 24);
-            primeHourMonthsText.rotation.y = THREE.Math.degToRad(-12);
+            primeHourMonthsText.rotation.x = THREE.MathUtils.degToRad(90 + 24);
+            primeHourMonthsText.rotation.y = THREE.MathUtils.degToRad(-12);
 
             // Rotate the Z axis so March 21 is on the prime hour line.
-            primeHourMonthsText.rotation.z = THREE.Math.degToRad(47);
+            primeHourMonthsText.rotation.z = THREE.MathUtils.degToRad(47);
 
             me.eclipticOrbitGroup.add(primeHourMonthsText);
             me.primeHourMonthsText = primeHourMonthsText;
@@ -579,8 +579,8 @@ export default class CelestialSphere extends React.Component {
         });
         this.ecliptic = new THREE.Mesh(thickTorusGeometry, whiteMaterial);
         this.ecliptic.name = 'Ecliptic';
-        this.ecliptic.rotation.x = THREE.Math.degToRad(90 + 24);
-        this.ecliptic.rotation.y = THREE.Math.degToRad(-12);
+        this.ecliptic.rotation.x = THREE.MathUtils.degToRad(90 + 24);
+        this.ecliptic.rotation.y = THREE.MathUtils.degToRad(-12);
     }
     /**
      * Draw a circle of months.
@@ -673,14 +673,14 @@ export default class CelestialSphere extends React.Component {
 
         group.add(sun);
         group.add(border);
-        group.position.y = THREE.Math.radToDeg(this.props.sunDeclination);
+        group.position.y = THREE.MathUtils.radToDeg(this.props.sunDeclination);
 
         const declinationRad = this.getSunDeclinationRadius(
             this.props.sunDeclination);
         group.position.x = declinationRad * Math.cos(
-            hourAngleToRadians(this.props.hourAngle) + THREE.Math.degToRad(90));
+            hourAngleToRadians(this.props.hourAngle) + THREE.MathUtils.degToRad(90));
         group.position.z = declinationRad * Math.sin(
-            hourAngleToRadians(this.props.hourAngle) + THREE.Math.degToRad(90));
+            hourAngleToRadians(this.props.hourAngle) + THREE.MathUtils.degToRad(90));
 
         group.rotation.x = this.props.sunDeclination;
 
@@ -808,7 +808,7 @@ export default class CelestialSphere extends React.Component {
     getTime(sunAngle) {
         // Convert from radian to angle, since it's easier to deal
         // with.
-        const angle = THREE.Math.radToDeg(sunAngle);
+        const angle = THREE.MathUtils.radToDeg(sunAngle);
         const seconds = angle / (360 / 24) * 3600;
         const d1 = new Date('1/1/2018 6:00 AM');
         return new Date(d1.getTime() + (seconds * 1000));
@@ -914,7 +914,7 @@ export default class CelestialSphere extends React.Component {
         // TODO: probably don't need to reset the surface normal here
         // twice every time. Find a way to just set the constant.
         orbitPlane.set(
-            this.zVec, -THREE.Math.radToDeg(sunDeclination));
+            this.zVec, -THREE.MathUtils.radToDeg(sunDeclination));
 
         orbitPlane.normal.set(0, 0, 1).applyQuaternion(q);
     }
@@ -976,7 +976,7 @@ export default class CelestialSphere extends React.Component {
             let minDistance = Infinity;
             const declinationWorldPos = new THREE.Vector3(
                 0,
-                THREE.Math.radToDeg(this.props.sunDeclination),
+                THREE.MathUtils.radToDeg(this.props.sunDeclination),
                 0);
 
             const rotation = this.orbitGroup.quaternion.clone();
@@ -1018,7 +1018,7 @@ export default class CelestialSphere extends React.Component {
 
             this.closestPoint.applyAxisAngle(
                 new THREE.Vector3(-1, 0, 0),
-                THREE.Math.degToRad(this.props.latitude) - (Math.PI / 2));
+                THREE.MathUtils.degToRad(this.props.latitude) - (Math.PI / 2));
 
             // Find the angle that the closestPoint vector represents, and
             // turn that into a time, to set the clock.
