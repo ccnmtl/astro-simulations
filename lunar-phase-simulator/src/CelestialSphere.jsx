@@ -185,10 +185,10 @@ export default class CelestialSphere extends React.Component {
 
             border.verticesNeedUpdate = true;
             if (this.state.mouseoverSun) {
-                border.geometry = new THREE.TorusBufferGeometry(
+                border.geometry = new THREE.TorusGeometry(
                     5, 0.35, 16, 32);
             } else {
-                border.geometry = new THREE.TorusBufferGeometry(
+                border.geometry = new THREE.TorusGeometry(
                     5, 0.2, 16, 32);
             }
         }
@@ -199,10 +199,10 @@ export default class CelestialSphere extends React.Component {
 
             border.verticesNeedUpdate = true;
             if (this.state.mouseoverMoon) {
-                border.geometry = new THREE.TorusBufferGeometry(
+                border.geometry = new THREE.TorusGeometry(
                     5, 0.35, 16, 32);
             } else {
-                border.geometry = new THREE.TorusBufferGeometry(
+                border.geometry = new THREE.TorusGeometry(
                     5, 0.2, 16, 32);
             }
         }
@@ -226,7 +226,7 @@ export default class CelestialSphere extends React.Component {
             map: texture
         });
         material.map.minFilter = THREE.LinearFilter;
-        const geometry = new THREE.CircleBufferGeometry(50, 64);
+        const geometry = new THREE.CircleGeometry(50, 64);
         const plane = new THREE.Mesh(geometry, material);
         plane.name = 'Plane';
         plane.rotation.x = THREE.MathUtils.degToRad(-90);
@@ -234,7 +234,7 @@ export default class CelestialSphere extends React.Component {
         return plane;
     }
     drawGlobe(scene) {
-        var domeGeometry = new THREE.SphereBufferGeometry(
+        var domeGeometry = new THREE.SphereGeometry(
             50, 64, 64, 0, Math.PI * 2, 0, Math.PI / 2);
         const nightDomeMaterial = new THREE.MeshBasicMaterial({
             transparent: true,
@@ -262,7 +262,7 @@ export default class CelestialSphere extends React.Component {
             color: 0xffffff
         });
 
-        const thinTorusGeometry = new THREE.TorusBufferGeometry(
+        const thinTorusGeometry = new THREE.TorusGeometry(
             50, 0.1, 16, 64);
 
         // A north-south line
@@ -281,7 +281,7 @@ export default class CelestialSphere extends React.Component {
         const solidLineMaterial = new THREE.MeshBasicMaterial({
             color: 0xffffff
         });
-        const thickTorusGeometry = new THREE.TorusBufferGeometry(
+        const thickTorusGeometry = new THREE.TorusGeometry(
             50, 0.3, 16, 64);
         this.celestialEquator = new THREE.Mesh(
             thickTorusGeometry, solidLineMaterial);
@@ -298,7 +298,7 @@ export default class CelestialSphere extends React.Component {
         scene.add(sprite);
     }
     drawSun() {
-        const thinTorusGeometry = new THREE.TorusBufferGeometry(
+        const thinTorusGeometry = new THREE.TorusGeometry(
             5, 0.2, 16, 32);
         const lineMeshMaterial = new THREE.MeshBasicMaterial({
             color: 0x000000
@@ -308,7 +308,7 @@ export default class CelestialSphere extends React.Component {
             color: 0xffdd00,
             side: THREE.DoubleSide
         });
-        const geometry = new THREE.CircleBufferGeometry(5, 32);
+        const geometry = new THREE.CircleGeometry(5, 32);
         const border = new THREE.Mesh(thinTorusGeometry, lineMeshMaterial);
 
         const sun = new THREE.Mesh(geometry, material);
@@ -321,7 +321,7 @@ export default class CelestialSphere extends React.Component {
         return group;
     }
     drawMoon() {
-        const thinTorusGeometry = new THREE.TorusBufferGeometry(
+        const thinTorusGeometry = new THREE.TorusGeometry(
             5, 0.2, 16, 32);
         const lineMeshMaterial = new THREE.MeshBasicMaterial({
             color: 0x000000
@@ -331,7 +331,7 @@ export default class CelestialSphere extends React.Component {
             color: 0xbbbbbb,
             side: THREE.DoubleSide
         });
-        const geometry = new THREE.CircleBufferGeometry(5, 32);
+        const geometry = new THREE.CircleGeometry(5, 32);
         const border = new THREE.Mesh(thinTorusGeometry, lineMeshMaterial);
 
         const moon = new THREE.Mesh(geometry, material);
@@ -352,12 +352,12 @@ export default class CelestialSphere extends React.Component {
         const angleSlice = group.children.find(function(e) {
             return e.name === 'angleSlice';
         });
-        const geometry = new THREE.TorusBufferGeometry(
+        const geometry = new THREE.TorusGeometry(
             50, 0.4, 16, 100, moonAngle - Math.PI
         );
         angleOutline.geometry = geometry;
 
-        const sliceGeometry = new THREE.CircleBufferGeometry(
+        const sliceGeometry = new THREE.CircleGeometry(
             50, 32, Math.PI,
             (moonAngle > 0) ? moonAngle - Math.PI : moonAngle + Math.PI);
         angleSlice.geometry = sliceGeometry;
@@ -365,7 +365,7 @@ export default class CelestialSphere extends React.Component {
         group.rotation.y = -observerAngle - Math.PI;
     }
     drawAngle() {
-        const geometry = new THREE.TorusBufferGeometry(
+        const geometry = new THREE.TorusGeometry(
             50, 0.4, 16, 100, 0
         );
         const material = new THREE.MeshBasicMaterial({
@@ -376,7 +376,7 @@ export default class CelestialSphere extends React.Component {
         angle.name = 'angleOutline';
         angle.rotation.x = Math.PI / 2;
 
-        const angleSliceGeom = new THREE.CircleBufferGeometry(
+        const angleSliceGeom = new THREE.CircleGeometry(
             50, 32, 0);
         const angleSliceMaterial = new THREE.MeshBasicMaterial({
             color : 0xffff00,
