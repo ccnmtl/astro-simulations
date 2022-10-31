@@ -28,7 +28,7 @@
     "@babel/cli": "^7.5.5",
     "animejs": "^3.2.1",
     "eslint-plugin-security": "^1.4.0",
-    "pixi.js": "~6.5.1",
+    "pixi.js": "~7.0.0",
     "react": "~17.0.1",
     "react-dom": "~17.0.1",
     "react-range-step-input": "^1.2.1",
