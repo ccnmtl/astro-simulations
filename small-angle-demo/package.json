@@ -29,7 +29,7 @@
     "eslint-plugin-security": "^1.4.0",
     "mathjax-full": "^3.1.2",
     "mathjax-react": "CharlieMcVicker/mathjax-react",
-    "pixi.js": "~6.5.1",
+    "pixi.js": "~7.0.2",
     "react": "~17.0.1",
     "react-dom": "~17.0.1",
     "react-range-step-input": "^1.2.1"
