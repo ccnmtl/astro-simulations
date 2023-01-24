@@ -63,9 +63,9 @@ export default class CSHZDiagram extends React.Component {
         this.solarRadiusToPixels = this.solarRadiusToPixels.bind(this);
         this.getPosPixelsPerAU = this.getPosPixelsPerAU.bind(this);
 
-        this.sustainablePlanet = new PIXI.Texture.from(sustainablePlanet);
-        this.coldPlanet = new PIXI.Texture.from(coldPlanet);
-        this.hotPlanet = new PIXI.Texture.from(hotPlanet);
+        this.sustainablePlanet = PIXI.Texture.from(sustainablePlanet);
+        this.coldPlanet = PIXI.Texture.from(coldPlanet);
+        this.hotPlanet = PIXI.Texture.from(hotPlanet);
     }
 
     zoomLevels = [
