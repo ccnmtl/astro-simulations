@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import * as THREE from 'three';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js';
-import 'three/CopyShader';  // For FXAAShader
 import {FXAAShader} from 'three/examples/jsm/shaders/FXAAShader.js';
 import {EffectComposer} from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import {RenderPass} from 'three/examples/jsm/postprocessing/RenderPass.js';
