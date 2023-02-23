@@ -46,7 +46,7 @@ export default class Window extends React.Component {
                     <div>HR Diagram</div>
                     <span className="window-close"
                           onClick={this.props.onWindowClose}>
-                        <svg viewport="0 0 12 12" version="1.1"
+                        <svg version="1.1"
                              width="16" height="16"
                              xmlns="http://www.w3.org/2000/svg">
                             <line x1="1" y1="11"
