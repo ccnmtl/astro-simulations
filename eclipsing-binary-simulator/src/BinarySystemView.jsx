@@ -567,11 +567,6 @@ export default class BinarySystemView extends React.Component {
 
         this.stars = this.drawStars(this.app);
 
-        const me = this;
-        this.app.loader.load((loader, resources) => {
-            me.resources = resources;
-        });
-
         this.initialize(this.initObject);
 
         // This scene offset is necessary for some reason.
