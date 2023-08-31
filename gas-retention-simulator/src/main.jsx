@@ -360,6 +360,7 @@ class GasRetentionSimulator extends React.Component {
             sharedLoader: true,
             sharedTicker: true
         });
+        app.renderer.events.features.globalMove = true;
 
         this.app = app;
         this.el.appendChild(app.view);
@@ -370,6 +371,10 @@ class GasRetentionSimulator extends React.Component {
         document.addEventListener('pointerupoutside', this.onGasBarDragEnd);
         document.addEventListener('touchup', this.onGasBarDragEnd);
         document.addEventListener('touchupoutside', this.onGasBarDragEnd);
+
+        app.stage.eventMode = 'static';
+        app.stage.on('globalpointermove', this.onGasBarMove);
+        app.stage.on('globaltouchmove', this.onGasBarMove);
 
     }
     componentDidUpdate(prevProps, prevState) {
@@ -387,7 +392,7 @@ class GasRetentionSimulator extends React.Component {
         const proportion = this.state.gasProportions[parseInt(idx)] / 100;
 
         const g = new PIXI.Graphics();
-        g.interactive = true;
+        g.eventMode = 'static';
         g.cursor = 'pointer';
         g.name = gas.id;
         g.lineStyle(1, '0x' + toPaddedHexString(gas.color, 6));
@@ -420,17 +425,14 @@ class GasRetentionSimulator extends React.Component {
 
         g.on('click', this.onGasBarClick)
 
-          .on('pointerdown', this.onGasBarDragStart)
-          .on('touchstart', this.onGasBarDragStart)
+            .on('pointerdown', this.onGasBarDragStart)
+            .on('touchstart', this.onGasBarDragStart)
 
-          .on('pointerup', this.onGasBarDragEnd)
-          .on('pointerupoutside', this.onGasBarDragEnd)
+            .on('pointerup', this.onGasBarDragEnd)
+            .on('pointerupoutside', this.onGasBarDragEnd)
 
-          .on('touchend', this.onGasBarDragEnd)
-          .on('touchendoutside', this.onGasBarDragEnd)
-
-          .on('pointermove', this.onGasBarMove)
-          .on('touchmove', this.onGasBarMove);
+            .on('touchend', this.onGasBarDragEnd)
+            .on('touchendoutside', this.onGasBarDragEnd);
     }
 
     drawGasBars(app) {
