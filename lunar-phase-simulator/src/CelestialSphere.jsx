@@ -70,6 +70,7 @@ export default class CelestialSphere extends React.Component {
             antialias: true,
             canvas: document.getElementById(this.id + 'Canvas')
         });
+        renderer.useLegacyLights = true;
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setClearColor(0xffffff);
 
