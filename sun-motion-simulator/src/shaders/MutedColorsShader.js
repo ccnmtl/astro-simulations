@@ -5,40 +5,40 @@
  * https://github.com/mrdoob/three.js/blob/master/examples/js/shaders/SepiaShader.js
  */
 const MutedColorsShader = {
-        uniforms: {
-            "tDiffuse": { value: null },
-            "amount":   { value: 1.0 }
-        },
+    uniforms: {
+        "tDiffuse": { value: null },
+        "amount":   { value: 1.0 }
+    },
 
-        vertexShader: [
-            "varying vec2 vUv;",
+    vertexShader: [
+        "varying vec2 vUv;",
 
-            "void main() {",
+        "void main() {",
 
-            "vUv = uv;",
-            "gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
+        "vUv = uv;",
+        "gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
 
-            "}"
-        ].join( "\n" ),
+        "}"
+    ].join( "\n" ),
 
-        fragmentShader: [
-            "uniform float amount;",
+    fragmentShader: /* glsl */`
 
-            "uniform sampler2D tDiffuse;",
+        uniform float amount;
 
-            "varying vec2 vUv;",
+        uniform sampler2D tDiffuse;
 
-            "void main() {",
+        varying vec2 vUv;
 
-            "vec4 color = texture2D( tDiffuse, vUv );",
-            "vec3 c = color.rgb;",
+        void main() {
 
-            "color.g = dot( c, vec3( 0.2 * amount, 1.0 - 0.314 * amount, 0.168 * amount ) );",
+            vec4 color = texture2D( tDiffuse, vUv );
+            vec3 c = color.rgb;
 
-            "gl_FragColor = vec4( min( vec3( 1.0 ), color.rgb ), color.a );",
+            color.g = dot( c, vec3( 0.349 * amount, 1.0 - 0.314 * amount, 0.168 * amount ) );
 
-            "}"
-        ].join( "\n" )
+            gl_FragColor = vec4( min( vec3( 1.0 ), color.rgb ), color.a );
+
+        }`
 };
 
 export default MutedColorsShader;

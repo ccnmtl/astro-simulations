@@ -5,138 +5,146 @@ object-assign
 */
 
 /*!
- * @pixi/app - v6.3.0
- * Compiled Wed, 23 Mar 2022 18:58:56 UTC
+ * @pixi/app - v6.5.1
+ * Compiled Sun, 24 Jul 2022 20:56:21 UTC
  *
  * @pixi/app is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
  */
 
 /*!
- * @pixi/constants - v6.3.0
- * Compiled Wed, 23 Mar 2022 18:58:56 UTC
+ * @pixi/constants - v6.5.1
+ * Compiled Sun, 24 Jul 2022 20:56:21 UTC
  *
  * @pixi/constants is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
  */
 
 /*!
- * @pixi/core - v6.3.0
- * Compiled Wed, 23 Mar 2022 18:58:56 UTC
+ * @pixi/core - v6.5.1
+ * Compiled Sun, 24 Jul 2022 20:56:21 UTC
  *
  * @pixi/core is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
  */
 
 /*!
- * @pixi/display - v6.3.0
- * Compiled Wed, 23 Mar 2022 18:58:56 UTC
+ * @pixi/display - v6.5.1
+ * Compiled Sun, 24 Jul 2022 20:56:21 UTC
  *
  * @pixi/display is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
  */
 
 /*!
- * @pixi/extract - v6.3.0
- * Compiled Wed, 23 Mar 2022 18:58:56 UTC
+ * @pixi/extensions - v6.5.1
+ * Compiled Sun, 24 Jul 2022 20:56:21 UTC
  *
- * @pixi/extract is licensed under the MIT License.
+ * @pixi/extensions is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
  */
 
 /*!
- * @pixi/filter-displacement - v6.3.0
- * Compiled Wed, 23 Mar 2022 18:58:56 UTC
+ * @pixi/filter-displacement - v6.5.1
+ * Compiled Sun, 24 Jul 2022 20:56:21 UTC
  *
  * @pixi/filter-displacement is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
  */
 
 /*!
- * @pixi/math - v6.3.0
- * Compiled Wed, 23 Mar 2022 18:58:56 UTC
+ * @pixi/math - v6.5.1
+ * Compiled Sun, 24 Jul 2022 20:56:21 UTC
  *
  * @pixi/math is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
  */
 
 /*!
- * @pixi/mesh-extras - v6.3.0
- * Compiled Wed, 23 Mar 2022 18:58:56 UTC
+ * @pixi/mesh-extras - v6.5.1
+ * Compiled Sun, 24 Jul 2022 20:56:21 UTC
  *
  * @pixi/mesh-extras is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
  */
 
 /*!
- * @pixi/mixin-get-child-by-name - v6.3.0
- * Compiled Wed, 23 Mar 2022 18:58:56 UTC
+ * @pixi/mixin-get-child-by-name - v6.5.1
+ * Compiled Sun, 24 Jul 2022 20:56:21 UTC
  *
  * @pixi/mixin-get-child-by-name is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
  */
 
 /*!
- * @pixi/mixin-get-global-position - v6.3.0
- * Compiled Wed, 23 Mar 2022 18:58:56 UTC
+ * @pixi/mixin-get-global-position - v6.5.1
+ * Compiled Sun, 24 Jul 2022 20:56:21 UTC
  *
  * @pixi/mixin-get-global-position is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
  */
 
 /*!
- * @pixi/polyfill - v6.3.0
- * Compiled Wed, 23 Mar 2022 18:58:56 UTC
+ * @pixi/polyfill - v6.5.1
+ * Compiled Sun, 24 Jul 2022 20:56:21 UTC
  *
  * @pixi/polyfill is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
  */
 
 /*!
- * @pixi/prepare - v6.3.0
- * Compiled Wed, 23 Mar 2022 18:58:56 UTC
+ * @pixi/prepare - v6.5.1
+ * Compiled Sun, 24 Jul 2022 20:56:21 UTC
  *
  * @pixi/prepare is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
  */
 
 /*!
- * @pixi/ticker - v6.3.0
- * Compiled Wed, 23 Mar 2022 18:58:56 UTC
+ * @pixi/settings - v6.5.1
+ * Compiled Sun, 24 Jul 2022 20:56:21 UTC
+ *
+ * @pixi/settings is licensed under the MIT License.
+ * http://www.opensource.org/licenses/mit-license
+ */
+
+/*!
+ * @pixi/ticker - v6.5.1
+ * Compiled Sun, 24 Jul 2022 20:56:21 UTC
  *
  * @pixi/ticker is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
  */
 
 /*!
- * @pixi/utils - v6.3.0
- * Compiled Wed, 23 Mar 2022 18:58:56 UTC
+ * @pixi/utils - v6.5.1
+ * Compiled Sun, 24 Jul 2022 20:56:21 UTC
  *
  * @pixi/utils is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
  */
 
 /*!
- * pixi.js - v6.3.0
- * Compiled Wed, 23 Mar 2022 18:58:56 UTC
+ * pixi.js - v6.5.1
+ * Compiled Sun, 24 Jul 2022 20:56:21 UTC
  *
  * pixi.js is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license
  */
 
 /*! *****************************************************************************
-Copyright (c) Microsoft Corporation. All rights reserved.
-Licensed under the Apache License, Version 2.0 (the "License"); you may not use
-this file except in compliance with the License. You may obtain a copy of the
-License at http://www.apache.org/licenses/LICENSE-2.0
+Copyright (c) Microsoft Corporation.
 
-THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
-WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
-MERCHANTABLITY OR NON-INFRINGEMENT.
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted.
 
-See the Apache Version 2.0 License for specific language governing permissions
-and limitations under the License.
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
 ***************************************************************************** */
 
 /*! For license information please see index.js.LICENSE.txt */
@@ -145,7 +153,7 @@ and limitations under the License.
 
 /**
  * @license
- * Copyright 2010-2022 Three.js Authors
+ * Copyright 2010-2023 Three.js Authors
  * SPDX-License-Identifier: MIT
  */
 
