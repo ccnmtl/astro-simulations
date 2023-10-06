@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import * as PIXI from 'pixi.js';
 import {RangeStepInput} from 'react-range-step-input';
 import Chamber from './Chamber';
@@ -686,4 +686,5 @@ class GasRetentionSimulator extends React.Component {
 }
 
 const domContainer = document.querySelector('#sim-container');
-ReactDOM.render(<GasRetentionSimulator />, domContainer);
+const root = createRoot(domContainer);
+root.render(<GasRetentionSimulator />);
