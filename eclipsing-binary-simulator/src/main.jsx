@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import {RangeStepInput} from 'react-range-step-input';
 import LightcurveView from './LightcurveView';
 import BinarySystemView from './BinarySystemView';
@@ -1321,4 +1321,5 @@ class EclipsingBinarySimulator extends React.Component {
 }
 
 const domContainer = document.querySelector('#sim-container');
-ReactDOM.render(<EclipsingBinarySimulator />, domContainer);
+const root = createRoot(domContainer);
+root.render(<EclipsingBinarySimulator />);
