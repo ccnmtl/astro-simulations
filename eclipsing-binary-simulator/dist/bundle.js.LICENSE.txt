@@ -1,158 +1,59 @@
-/*
-object-assign
-(c) Sindre Sorhus
-@license MIT
-*/
+/*! https://mths.be/punycode v1.4.1 by @mathias */
 
-/*!
- * @pixi/app - v6.3.0
- * Compiled Wed, 23 Mar 2022 18:58:56 UTC
- *
- * @pixi/app is licensed under the MIT License.
- * http://www.opensource.org/licenses/mit-license
- */
+/*!**********************!*\
+  !*** ./lib/index.js ***!
+  \**********************/
 
-/*!
- * @pixi/constants - v6.3.0
- * Compiled Wed, 23 Mar 2022 18:58:56 UTC
- *
- * @pixi/constants is licensed under the MIT License.
- * http://www.opensource.org/licenses/mit-license
- */
+/*!**********************!*\
+  !*** ./lib/utils.js ***!
+  \**********************/
 
-/*!
- * @pixi/core - v6.3.0
- * Compiled Wed, 23 Mar 2022 18:58:56 UTC
- *
- * @pixi/core is licensed under the MIT License.
- * http://www.opensource.org/licenses/mit-license
- */
+/*!********************************!*\
+  !*** ./lib/RangeStepInput.jsx ***!
+  \********************************/
 
-/*!
- * @pixi/display - v6.3.0
- * Compiled Wed, 23 Mar 2022 18:58:56 UTC
- *
- * @pixi/display is licensed under the MIT License.
- * http://www.opensource.org/licenses/mit-license
- */
+/*!*************************************!*\
+  !*** ./node_modules/react/index.js ***!
+  \*************************************/
 
-/*!
- * @pixi/extract - v6.3.0
- * Compiled Wed, 23 Mar 2022 18:58:56 UTC
- *
- * @pixi/extract is licensed under the MIT License.
- * http://www.opensource.org/licenses/mit-license
- */
+/*!****************************************!*\
+  !*** ./node_modules/react-is/index.js ***!
+  \****************************************/
 
-/*!
- * @pixi/filter-displacement - v6.3.0
- * Compiled Wed, 23 Mar 2022 18:58:56 UTC
- *
- * @pixi/filter-displacement is licensed under the MIT License.
- * http://www.opensource.org/licenses/mit-license
- */
+/*!******************************************!*\
+  !*** ./node_modules/prop-types/index.js ***!
+  \******************************************/
 
-/*!
- * @pixi/math - v6.3.0
- * Compiled Wed, 23 Mar 2022 18:58:56 UTC
- *
- * @pixi/math is licensed under the MIT License.
- * http://www.opensource.org/licenses/mit-license
- */
+/*!********************************************!*\
+  !*** ./node_modules/prop-types/lib/has.js ***!
+  \********************************************/
 
-/*!
- * @pixi/mesh-extras - v6.3.0
- * Compiled Wed, 23 Mar 2022 18:58:56 UTC
- *
- * @pixi/mesh-extras is licensed under the MIT License.
- * http://www.opensource.org/licenses/mit-license
- */
+/*!*********************************************!*\
+  !*** ./node_modules/object-assign/index.js ***!
+  \*********************************************/
 
-/*!
- * @pixi/mixin-get-child-by-name - v6.3.0
- * Compiled Wed, 23 Mar 2022 18:58:56 UTC
- *
- * @pixi/mixin-get-child-by-name is licensed under the MIT License.
- * http://www.opensource.org/licenses/mit-license
- */
+/*!***************************************************!*\
+  !*** ./node_modules/prop-types/checkPropTypes.js ***!
+  \***************************************************/
 
-/*!
- * @pixi/mixin-get-global-position - v6.3.0
- * Compiled Wed, 23 Mar 2022 18:58:56 UTC
- *
- * @pixi/mixin-get-global-position is licensed under the MIT License.
- * http://www.opensource.org/licenses/mit-license
- */
+/*!*****************************************************!*\
+  !*** ./node_modules/react/cjs/react.development.js ***!
+  \*****************************************************/
 
-/*!
- * @pixi/polyfill - v6.3.0
- * Compiled Wed, 23 Mar 2022 18:58:56 UTC
- *
- * @pixi/polyfill is licensed under the MIT License.
- * http://www.opensource.org/licenses/mit-license
- */
+/*!***********************************************************!*\
+  !*** ./node_modules/react-is/cjs/react-is.development.js ***!
+  \***********************************************************/
 
-/*!
- * @pixi/prepare - v6.3.0
- * Compiled Wed, 23 Mar 2022 18:58:56 UTC
- *
- * @pixi/prepare is licensed under the MIT License.
- * http://www.opensource.org/licenses/mit-license
- */
+/*!************************************************************!*\
+  !*** ./node_modules/prop-types/factoryWithTypeCheckers.js ***!
+  \************************************************************/
 
-/*!
- * @pixi/ticker - v6.3.0
- * Compiled Wed, 23 Mar 2022 18:58:56 UTC
- *
- * @pixi/ticker is licensed under the MIT License.
- * http://www.opensource.org/licenses/mit-license
- */
+/*!*************************************************************!*\
+  !*** ./node_modules/prop-types/lib/ReactPropTypesSecret.js ***!
+  \*************************************************************/
 
-/*!
- * @pixi/utils - v6.3.0
- * Compiled Wed, 23 Mar 2022 18:58:56 UTC
- *
- * @pixi/utils is licensed under the MIT License.
- * http://www.opensource.org/licenses/mit-license
- */
-
-/*!
- * pixi.js - v6.3.0
- * Compiled Wed, 23 Mar 2022 18:58:56 UTC
- *
- * pixi.js is licensed under the MIT License.
- * http://www.opensource.org/licenses/mit-license
- */
-
-/*! *****************************************************************************
-Copyright (c) Microsoft Corporation. All rights reserved.
-Licensed under the Apache License, Version 2.0 (the "License"); you may not use
-this file except in compliance with the License. You may obtain a copy of the
-License at http://www.apache.org/licenses/LICENSE-2.0
-
-THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
-WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
-MERCHANTABLITY OR NON-INFRINGEMENT.
-
-See the Apache Version 2.0 License for specific language governing permissions
-and limitations under the License.
-***************************************************************************** */
-
-/*! For license information please see index.js.LICENSE.txt */
-
-/*! https://mths.be/punycode v1.3.2 by @mathias */
-
-/** @license React v0.20.2
- * scheduler.production.min.js
- *
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
-/** @license React v17.0.2
+/**
+ * @license React
  * react-dom.production.min.js
  *
  * Copyright (c) Facebook, Inc. and its affiliates.
@@ -161,8 +62,19 @@ and limitations under the License.
  * LICENSE file in the root directory of this source tree.
  */
 
-/** @license React v17.0.2
+/**
+ * @license React
  * react.production.min.js
+ *
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+/**
+ * @license React
+ * scheduler.production.min.js
  *
  * Copyright (c) Facebook, Inc. and its affiliates.
  *
