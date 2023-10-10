@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import Lightcurve from './Lightcurve';
 import LightcurveView from './LightcurveView';
 import TransitView from './TransitView';
@@ -659,4 +659,5 @@ class ExoplanetTransitSimulator extends React.Component {
 }
 
 const domContainer = document.querySelector('#sim-container');
-ReactDOM.render(<ExoplanetTransitSimulator />, domContainer);
+const root = createRoot(domContainer);
+root.render(<ExoplanetTransitSimulator />);
