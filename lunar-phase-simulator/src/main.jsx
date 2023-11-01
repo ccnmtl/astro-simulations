@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import MainView from './MainView';
 import MoonPhaseView from './MoonPhaseView';
 import CelestialSphere from './CelestialSphere';
@@ -381,4 +381,6 @@ class LunarPhaseSim extends React.Component {
 }
 
 const domContainer = document.querySelector('#sim-container');
-ReactDOM.render(<LunarPhaseSim />, domContainer);
+const root = createRoot(domContainer);
+
+root.render(<LunarPhaseSim />);
