@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
 import CSHZNav from './nav';
 import CSHZDiagram from './diagram';
@@ -142,4 +142,6 @@ class CircumstellarHabitableZoneSim extends React.Component {
 }
 
 const domContainer = document.querySelector('#sim-container');
-ReactDOM.render(<CircumstellarHabitableZoneSim />, domContainer);
+const root = createRoot(domContainer);
+
+root.render(<CircumstellarHabitableZoneSim />);
