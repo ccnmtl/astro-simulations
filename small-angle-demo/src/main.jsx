@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import {MathComponent} from 'mathjax-react';
 import VisualDemo from './VisualDemo';
 import {RangeStepInput} from 'react-range-step-input';
@@ -159,4 +159,5 @@ class SmallAngleDemo extends React.Component {
 }
 
 const domContainer = document.querySelector('#sim-container');
-ReactDOM.render(<SmallAngleDemo />, domContainer);
+const root = createRoot(domContainer);
+root.render(<SmallAngleDemo />);
