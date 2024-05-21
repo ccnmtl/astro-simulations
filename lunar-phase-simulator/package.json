@@ -27,7 +27,7 @@
   "dependencies": {
     "@babel/cli": "^7.5.5",
     "eslint-plugin-security": "^2.1.0",
-    "pixi.js": "~6.5.1",
+    "pixi.js": "~8.1.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-range-step-input": "github:ccnmtl/react-range-step-input",
