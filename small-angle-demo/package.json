@@ -25,10 +25,9 @@
   },
   "homepage": "https://github.com/ccnmtl/astro-simulations#readme",
   "dependencies": {
-    "babel-cli": "^6.26.0",
     "eslint-plugin-security": "^2.1.0",
     "mathjax-full": "^3.1.2",
-    "mathjax-react": "CharlieMcVicker/mathjax-react",
+    "mathjax-react": "^2.0.1",
     "pixi.js": "~6.5.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -36,9 +35,9 @@
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",
+    "@babel/eslint-parser": "^7.15.8",
     "@babel/preset-env": "^7.5.5",
     "@babel/preset-react": "^7.0.0",
-    "@babel/eslint-parser": "^7.15.8",
     "babel-loader": "^9.0.1",
     "eslint": "^8.0.1",
     "eslint-plugin-react": "~7.34.0",
