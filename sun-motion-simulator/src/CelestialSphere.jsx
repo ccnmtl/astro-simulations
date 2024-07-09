@@ -2,13 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import * as THREE from 'three';
 import WEBGL from './utils/WebGL';
-import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js';
-import {FXAAShader} from 'three/examples/jsm/shaders/FXAAShader.js';
-import {EffectComposer} from 'three/examples/jsm/postprocessing/EffectComposer.js';
-import {RenderPass} from 'three/examples/jsm/postprocessing/RenderPass.js';
-import {ShaderPass} from 'three/examples/jsm/postprocessing/ShaderPass.js';
-import {FontLoader} from 'three/examples/jsm/loaders/FontLoader.js';
-import {TextGeometry} from 'three/examples/jsm/geometries/TextGeometry.js';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {FXAAShader} from 'three/addons/shaders/FXAAShader.js';
+import {EffectComposer} from 'three/addons/postprocessing/EffectComposer.js';
+import {RenderPass} from 'three/addons/postprocessing/RenderPass.js';
+import {ShaderPass} from 'three/addons/postprocessing/ShaderPass.js';
+import {FontLoader} from 'three/addons/loaders/FontLoader.js';
+import {TextGeometry} from 'three/addons/geometries/TextGeometry.js';
 import {getDayOfYear, getEqnOfTime, getPosition, getTime} from './utils';
 import MutedColorsShader from './shaders/MutedColorsShader';
 
@@ -113,14 +113,18 @@ export default class CelestialSphere extends React.Component {
         renderer.domElement.addEventListener(
             'pointerout', this.onMouseUp, false);
         renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.setClearColor(0x000000);
+        //renderer.setClearColor(0x000000);
         renderer.shadowMap.enabled = true;
 
+        // TODO: this will be removed in the future, but necessary for now:
+        // https://discourse.threejs.org/t/updates-to-lighting-in-three-js-r155/53733
+        renderer.useLegacyLights = true;
+
         // Lights
-        const ambient = new THREE.AmbientLight(0x909090);
+        const ambient = new THREE.AmbientLight(0xd0d0d0);
         scene.add(ambient);
 
-        const light = new THREE.DirectionalLight(0xb0b0b0);
+        const light = new THREE.DirectionalLight(0xc0c0c0);
         this.light = light;
         const declinationRad = this.getSunDeclinationRadius(
             this.props.sunDeclination);
@@ -314,7 +318,7 @@ export default class CelestialSphere extends React.Component {
                 this.props.sunDeclination);
             this.sun.rotation.x = this.props.sunDeclination;
 
-            this.light.position.copy(this.sun.position)
+            this.light.position.copy(this.sun.position);
             this.light.rotation.x = this.props.sunDeclination;
 
             if (this.props.showDeclinationCircle) {
