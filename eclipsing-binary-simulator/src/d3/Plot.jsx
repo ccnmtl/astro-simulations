@@ -17,10 +17,22 @@ const xScale = props => {
 // Returns a function that "scales" Y coordinates from the data to fit
 // the chart.
 const yScale = props => {
-    const domain = d3.extent(props.lightcurveData, d => d[1]);
+    // Convert flux in lightcurveData to normalized flux (what's visually presented)
+    // so as to scale the y-axis accordingly
+    const flux = props.lightcurveData.map(d => d[1]);
+    flux.sort();
+    const halfIdx = Math.floor(flux.length / 2);
+    const fluxMedian = flux[halfIdx];
+    const fluxNorm = flux.map(d => d / fluxMedian);
+
+    const yExtent = d3.extent(fluxNorm);
+    const diff = yExtent[1] - yExtent[0];
+    // Add 10% space above and below the lightcurve.
+    const dataPad = diff / 10;
+
     return d3
         .scaleLinear()
-        .domain([0, 1.1])
+        .domain([yExtent[0] - dataPad, yExtent[1] + dataPad])
         .range([props.height - props.padding, props.padding]);
 };
 
