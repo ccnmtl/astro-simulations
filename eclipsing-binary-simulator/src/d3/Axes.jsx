@@ -23,9 +23,8 @@ export default class Axes extends Component {
             0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9
         ]);
         const xAxis = d3.axisBottom(this.props.xScale || 1).ticks(10);
-        const yAxis = d3.axisLeft(this.props.yScale).tickValues([
-            0, 0.25, 0.5, 0.75, 1
-        ]).tickFormat(d3.format('.2r'));
+        const yAxis = d3.axisLeft(this.props.yScale).ticks(4)
+                        .tickFormat(d3.format('.3r'));
 
         const node1 = this.xAxis.current;
         d3.select(node1).call(xAxis);
