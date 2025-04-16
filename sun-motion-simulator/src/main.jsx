@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import * as solar from 'solar-calculator';
 import CelestialSphere from './CelestialSphere';
 import AnimationControls from './AnimationControls';
@@ -407,4 +407,5 @@ class SunMotionSim extends React.Component {
 }
 
 const domContainer = document.querySelector('#sim-container');
-ReactDOM.render(<SunMotionSim />, domContainer);
+const root = createRoot(domContainer);
+root.render(<SunMotionSim />);

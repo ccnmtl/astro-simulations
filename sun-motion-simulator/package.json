@@ -28,9 +28,9 @@
     "@babel/cli": "^7.5.5",
     "eslint-plugin-security": "^3.0.1",
     "pixi.js": "~6.5.1",
-    "react": "~17.0.1",
-    "react-dom": "~17.0.1",
-    "react-range-step-input": "^1.2.1",
+    "react": "~19.1.0",
+    "react-dom": "~19.1.0",
+    "react-range-step-input": "github:ccnmtl/react-range-step-input",
     "solar-calculator": "^0.3.0",
     "three": "~0.155.0"
   },
