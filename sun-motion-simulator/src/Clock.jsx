@@ -37,13 +37,13 @@ export default class Clock extends React.Component {
             <label>
                 The time of day:
                 <input type="time"
-                       value={this.displayTime(this.props.dateTime)}
-                       onChange={this.onTimeUpdate}
-                       className="form-control form-control-sm"
-                       required />
+                    value={this.displayTime(this.props.dateTime)}
+                    onChange={this.onTimeUpdate}
+                    className="form-control form-control-sm"
+                    required />
             </label>
             <div className="pixi-scene astro-clock"
-                 ref={this.timePicker}></div>
+                ref={this.timePicker}></div>
         </React.Fragment>;
     }
     componentDidMount() {
@@ -108,8 +108,8 @@ export default class Clock extends React.Component {
 
         // Draw a thin border around the clock
         const border = new PIXI.Graphics()
-                               .lineStyle(1, 0x000000)
-                               .drawCircle(center.x, center.y, 96.5 * 2);
+            .lineStyle(1, 0x000000)
+            .drawCircle(center.x, center.y, 96.5 * 2);
         app.stage.addChild(border);
 
         // Draw the hour hand
@@ -127,11 +127,11 @@ export default class Clock extends React.Component {
         hourContainer.interactive = true;
         hourContainer.buttonMode = true;
         const hourHand = new PIXI.Graphics()
-                                 .beginFill(0x000000)
-                                 .drawRoundedRect(
-                                     -3, 0,
-                                     14, bg.height / 4.5,
-                                     7);
+            .beginFill(0x000000)
+            .drawRoundedRect(
+                -3, 0,
+                14, bg.height / 4.5,
+                7);
         hourContainer.addChild(hourHand);
         hourContainer.position.set(this.center.x, this.center.y);
         hourContainer.pivot = new PIXI.Point(4, 5);
@@ -144,11 +144,11 @@ export default class Clock extends React.Component {
         minuteContainer.interactive = true;
         minuteContainer.buttonMode = true;
         const minuteHand = new PIXI.Graphics()
-                                 .beginFill(0x666666)
-                                 .drawRoundedRect(
-                                     -2, 0,
-                                     8, (bg.height / 2.5),
-                                     6);
+            .beginFill(0x666666)
+            .drawRoundedRect(
+                -2, 0,
+                8, (bg.height / 2.5),
+                6);
         minuteContainer.addChild(minuteHand);
         minuteContainer.position.set(this.center.x, this.center.y);
         minuteContainer.pivot = new PIXI.Point(2, 5);
@@ -158,8 +158,8 @@ export default class Clock extends React.Component {
 
         // Draw brown circle at the center
         const cog = new PIXI.Graphics()
-                            .beginFill(0x80522d)
-                            .drawCircle(this.center.x, this.center.y, 6);
+            .beginFill(0x80522d)
+            .drawCircle(this.center.x, this.center.y, 6);
         app.stage.addChild(cog);
 
         // Set up events
@@ -235,9 +235,9 @@ export default class Clock extends React.Component {
             const pos = e.data.getLocalPosition(this.timePickerApp.stage);
 
             const vAngle = Math.atan2(pos.y - this.center.y,
-                                      pos.x - this.center.x) -
+                pos.x - this.center.x) -
                            Math.atan2(this.dragStartPos.y - this.center.y,
-                                      this.dragStartPos.x - this.center.x);
+                               this.dragStartPos.x - this.center.x);
 
             const minute = minuteAngleToTime(vAngle);
 
@@ -281,9 +281,9 @@ export default class Clock extends React.Component {
             const pos = e.data.getLocalPosition(this.timePickerApp.stage);
 
             const vAngle = Math.atan2(pos.y - this.center.y,
-                                      pos.x - this.center.x) -
+                pos.x - this.center.x) -
                            Math.atan2(this.dragStartPos.y - this.center.y,
-                                      this.dragStartPos.x - this.center.x);
+                               this.dragStartPos.x - this.center.x);
 
             const hour = hourAngleToTime(vAngle);
 

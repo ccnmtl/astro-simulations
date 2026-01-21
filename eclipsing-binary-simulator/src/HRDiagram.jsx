@@ -152,7 +152,7 @@ export default class HRDiagram extends React.Component {
         this.dot1.addChild(this.makeDot(0, 0, this.dotRadius));
 
         const label1 = new PIXI.Text('1', {
-            fontFamily : 'Arial',
+            fontFamily: 'Arial',
             fontSize: 15,
             fill: 0x000000,
             align: 'center'
@@ -181,7 +181,7 @@ export default class HRDiagram extends React.Component {
         this.dot2.addChild(this.makeDot(0, 0, this.dotRadius));
 
         const label2 = new PIXI.Text('2', {
-            fontFamily : 'Arial',
+            fontFamily: 'Arial',
             fontSize: 15,
             fill: 0x000000,
             align: 'center'
@@ -270,10 +270,10 @@ export default class HRDiagram extends React.Component {
     }
 
     showRanges(star) {
-        var radiusRange = this._parent._parent["radius"+star+"Slider"].getRange();
-        var tempRange = this._parent._parent["temp"+star+"Slider"].getRange();
+        var radiusRange = this._parent._parent['radius'+star+'Slider'].getRange();
+        var tempRange = this._parent._parent['temp'+star+'Slider'].getRange();
 
-        if (!this._parent._parent["restrict"+star+"Check"].getValue()) tempRange.max = this._parent._parent.TmaxSld;
+        if (!this._parent._parent['restrict'+star+'Check'].getValue()) tempRange.max = this._parent._parent.TmaxSld;
 
         var k1 = Math.pow((tempRange.max/5808.3), 4);
         var k2 = 0.071168672;

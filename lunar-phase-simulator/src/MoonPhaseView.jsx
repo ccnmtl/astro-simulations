@@ -10,7 +10,7 @@ export default class MoonPhaseView extends React.Component {
     constructor(props) {
         super(props);
 
-        this.id = 'MoonPhaseView'
+        this.id = 'MoonPhaseView';
         this.moon = null;
         this.radius = 100.5;
 
@@ -26,8 +26,8 @@ export default class MoonPhaseView extends React.Component {
                 visibility: this.props.isHidden ? 'hidden' : 'visible'
             }}>
                 <select className="form-control form-control-sm"
-                        onChange={this.onMoonAngleUpdate.bind(this)}
-                        value={phaseSlot}>
+                    onChange={this.onMoonAngleUpdate.bind(this)}
+                    value={phaseSlot}>
                     <option value={180}>New Moon</option>
                     <option value={-135}>Waxing Crescent</option>
                     <option value={-90}>First Quarter</option>
@@ -38,7 +38,7 @@ export default class MoonPhaseView extends React.Component {
                     <option value={135}>Waning Crescent</option>
                 </select>
                 <div className="mt-1"
-                     ref={(thisDiv) => {this.el = thisDiv}} />
+                    ref={(thisDiv) => {this.el = thisDiv;}} />
                 <div className="text-center">
                     {
                         roundToOnePlace(getPercentIlluminated(
@@ -52,8 +52,8 @@ export default class MoonPhaseView extends React.Component {
             </div>
             <div className="text-right">
                 <button type="button"
-                        onClick={this.props.onHideShowToggle}
-                        className="btn btn-primary btn-sm">
+                    onClick={this.props.onHideShowToggle}
+                    className="btn btn-primary btn-sm">
                     {this.props.isHidden ? 'Show' : 'Hide'}
                 </button>
             </div>
@@ -78,7 +78,7 @@ export default class MoonPhaseView extends React.Component {
     componentDidUpdate(prevProps) {
         if (prevProps.moonAngle !== this.props.moonAngle) {
             this.drawPhase(this.leftShade, this.rightShade,
-                           this.convertPhase(this.props.moonAngle));
+                this.convertPhase(this.props.moonAngle));
         }
         if (prevProps.showLunarLandmark !== this.props.showLunarLandmark) {
             this.lunarLandmark.visible = this.props.showLunarLandmark;
@@ -88,7 +88,7 @@ export default class MoonPhaseView extends React.Component {
         this.drawMoon(this.app);
         this.drawShades(this.app);
         this.drawPhase(this.leftShade, this.rightShade,
-                       this.convertPhase(this.props.moonAngle));
+            this.convertPhase(this.props.moonAngle));
         this.drawLunarLandmark(this.app);
     }
     drawMoon(app) {
@@ -103,13 +103,13 @@ export default class MoonPhaseView extends React.Component {
 
         this.leftShade.beginFill(0x000000, 0.7);
         this.leftShade.arc(this.center.x * 2, this.center.y * 2,
-                           this.radius, Math.PI / 2, -Math.PI / 2);
+            this.radius, Math.PI / 2, -Math.PI / 2);
         this.leftShade.endFill();
         app.stage.addChild(this.leftShade);
 
         this.rightShade.beginFill(0x000000, 0.7);
         this.rightShade.arc(this.center.x * 2, this.center.y * 2,
-                            this.radius, -Math.PI / 2, Math.PI / 2);
+            this.radius, -Math.PI / 2, Math.PI / 2);
         this.rightShade.endFill();
         app.stage.addChild(this.rightShade);
 

@@ -41,7 +41,7 @@ export default class LightcurveView extends React.Component {
             this._positionTable[parseInt(i)] = {};
         }
 
-        this._dataType = "visual flux";
+        this._dataType = 'visual flux';
 
         this._c = {};
     }
@@ -91,17 +91,17 @@ export default class LightcurveView extends React.Component {
         }
 
         switch (this._dataType) {
-            case ("visual flux") :
-                this.data.flux.visible = true;
-                this.data.mag.visible = false;
-                break;
-            case ("visual magnitude") :
-                this.data.flux.visible = false;
-                this.data.mag.visible = true;
-                break;
-            default:
-                this.data.flux.visible = false;
-                this.data.mag.visible = false;
+        case ('visual flux') :
+            this.data.flux.visible = true;
+            this.data.mag.visible = false;
+            break;
+        case ('visual magnitude') :
+            this.data.flux.visible = false;
+            this.data.mag.visible = true;
+            break;
+        default:
+            this.data.flux.visible = false;
+            this.data.mag.visible = false;
         }
     }
     plotCurve() {
@@ -110,31 +110,31 @@ export default class LightcurveView extends React.Component {
         let dT, yScale, yOffset;
 
         switch (this._dataType) {
-            case ("visual flux") :
-                this.data.flux.visible = true;
-                this.data.mag.visible = false;
-                if (!noEclipse) {
-                    dT = this._visualFluxTable;
-                    yScale = -PLOT_HEIGHT / this._maxVisFlux;
-                    yOffset = 0;
-                }
-                break;
-            case ("visual magnitude") :
-                this.data.flux.visible = false;
-                this.data.mag.visible = true;
-                if (!noEclipse) {
-                    dT = this._visualMagnitudeTable;
-                    yScale = PLOT_HEIGHT / (this._maxVisMag - this._minVisMag);
-                    yOffset = -PLOT_HEIGHT - yScale*this._minVisMag;
-                }
-                this.positionMagTicks();
-                break;
-            default :
-                this.data.flux.visible = false;
-                this.data.mag.visible = false;
-                //this.curve.mc1.clear();
-                this.positionClips();
-                return;
+        case ('visual flux') :
+            this.data.flux.visible = true;
+            this.data.mag.visible = false;
+            if (!noEclipse) {
+                dT = this._visualFluxTable;
+                yScale = -PLOT_HEIGHT / this._maxVisFlux;
+                yOffset = 0;
+            }
+            break;
+        case ('visual magnitude') :
+            this.data.flux.visible = false;
+            this.data.mag.visible = true;
+            if (!noEclipse) {
+                dT = this._visualMagnitudeTable;
+                yScale = PLOT_HEIGHT / (this._maxVisMag - this._minVisMag);
+                yOffset = -PLOT_HEIGHT - yScale*this._minVisMag;
+            }
+            this.positionMagTicks();
+            break;
+        default :
+            this.data.flux.visible = false;
+            this.data.mag.visible = false;
+            //this.curve.mc1.clear();
+            this.positionClips();
+            return;
         }
 
         //var mc = this.curve.mc1;

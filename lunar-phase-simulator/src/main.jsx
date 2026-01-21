@@ -82,17 +82,17 @@ class LunarPhaseSim extends React.Component {
                         <div className="col">
                             <h4>Animation and Time Controls</h4>
                             <button type="button" className="btn btn-primary btn-sm"
-                                    onClick={this.onStartClick.bind(this)}>
+                                onClick={this.onStartClick.bind(this)}>
                                 {startBtnText}
                             </button>
                             <form className="form-inline">
                                 <label htmlFor="diamRange">Animation rate:</label>
                                 <RangeStepInput name="animationRate"
-                                       className="form-control-range ml-2"
-                                       value={this.state.animationRate}
-                                       onChange={this.onAnimationRateChange.bind(this)}
-                                       step={0.1}
-                                       min={0.1} max={5} />
+                                    className="form-control-range ml-2"
+                                    value={this.state.animationRate}
+                                    onChange={this.onAnimationRateChange.bind(this)}
+                                    step={0.1}
+                                    min={0.1} max={5} />
                             </form>
                         </div>
 
@@ -151,31 +151,31 @@ class LunarPhaseSim extends React.Component {
                             <h4>Diagram Options</h4>
                             <div className="custom-control custom-checkbox">
                                 <input type="checkbox" className="custom-control-input"
-                                       name="showAngle"
-                                       onChange={this.handleInputChange}
-                                       checked={this.state.showAngle}
-                                       id="showAngleToggle" />
+                                    name="showAngle"
+                                    onChange={this.handleInputChange}
+                                    checked={this.state.showAngle}
+                                    id="showAngleToggle" />
                                 <label className="custom-control-label"
-                                       htmlFor="showAngleToggle">
+                                    htmlFor="showAngleToggle">
                                     Show angle
                                 </label>
                             </div>
                             <div className="custom-control custom-checkbox">
                                 <input type="checkbox" className="custom-control-input"
-                                       name="showLunarLandmark"
-                                       onChange={this.handleInputChange}
-                                       checked={this.state.showLunarLandmark}
-                                       id="showLunarLandmarkToggle" />
+                                    name="showLunarLandmark"
+                                    onChange={this.handleInputChange}
+                                    checked={this.state.showLunarLandmark}
+                                    id="showLunarLandmarkToggle" />
                                 <label className="custom-control-label" htmlFor="showLunarLandmarkToggle">
                                     Show lunar landmark
                                 </label>
                             </div>
                             <div className="custom-control custom-checkbox">
                                 <input type="checkbox" className="custom-control-input"
-                                       name="showTimeTickmarks"
-                                       onChange={this.handleInputChange}
-                                       checked={this.state.showTimeTickmarks}
-                                       id="showTimeTickmarksToggle" />
+                                    name="showTimeTickmarks"
+                                    onChange={this.handleInputChange}
+                                    checked={this.state.showTimeTickmarks}
+                                    id="showTimeTickmarksToggle" />
                                 <label className="custom-control-label" htmlFor="showTimeTickmarksToggle">
                                     Show time tickmarks
                                 </label>
@@ -348,7 +348,7 @@ class LunarPhaseSim extends React.Component {
     handleInputChange(event) {
         const target = event.target;
         const value = target.type === 'checkbox' ?
-                      target.checked : target.value;
+            target.checked : target.value;
         const name = target.name;
 
         this.setState({

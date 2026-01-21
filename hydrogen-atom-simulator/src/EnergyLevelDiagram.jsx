@@ -11,7 +11,7 @@ const convertToPixel = (energyLevel) => {
     const maxEnergyLevel = 13.6;
 
     return ((maxHeight - minHeight) * ((-energyLevel - minEnergyLevel) / (maxEnergyLevel - minEnergyLevel))) + minHeight;
-}
+};
 
 export default class EnergyLevelDiagram extends React.Component {
     constructor(props) {
@@ -35,13 +35,13 @@ export default class EnergyLevelDiagram extends React.Component {
         const e6 = convertToPixel(energyLevelValues[5]);
         const e7 = convertToPixel(energyLevelValues[6]);
 
-        const e1Color = this.props.currentEnergyLevel === 1 ? "deeppink" : "grey";
-        const e2Color = this.props.currentEnergyLevel === 2 ? "deeppink" : "grey";
-        const e3Color = this.props.currentEnergyLevel === 3 ? "deeppink" : "grey";
-        const e4Color = this.props.currentEnergyLevel === 4 ? "deeppink" : "grey";
-        const e5Color = this.props.currentEnergyLevel === 5 ? "deeppink" : "grey";
-        const e6Color = this.props.currentEnergyLevel === 6 ? "deeppink" : "grey";
-        const e7Color = this.props.currentEnergyLevel === 7 ? "deeppink" : "grey";
+        const e1Color = this.props.currentEnergyLevel === 1 ? 'deeppink' : 'grey';
+        const e2Color = this.props.currentEnergyLevel === 2 ? 'deeppink' : 'grey';
+        const e3Color = this.props.currentEnergyLevel === 3 ? 'deeppink' : 'grey';
+        const e4Color = this.props.currentEnergyLevel === 4 ? 'deeppink' : 'grey';
+        const e5Color = this.props.currentEnergyLevel === 5 ? 'deeppink' : 'grey';
+        const e6Color = this.props.currentEnergyLevel === 6 ? 'deeppink' : 'grey';
+        const e7Color = this.props.currentEnergyLevel === 7 ? 'deeppink' : 'grey';
 
         const leftX = 85;
         const rightX = 145;
@@ -58,8 +58,8 @@ export default class EnergyLevelDiagram extends React.Component {
         let energyValue = `${energyLevelValues[this.props.currentEnergyLevel - 1]} eV`;
 
         if (this.props.currentEnergyLevel === 7) {
-            energyLevel = "ionized";
-            energyValue = "> 0 ev";
+            energyLevel = 'ionized';
+            energyValue = '> 0 ev';
             heightOfLevel = 30;
             heightOfValue = 15;
             xEnergyLevelText = 95;
@@ -91,8 +91,8 @@ export default class EnergyLevelDiagram extends React.Component {
                 {/*Energy Level 7*/}
                 <line x1={leftX} y1={e7} x2={rightX} y2={e7} strokeWidth={1} stroke={e7Color}/>
 
-                <text x={xEnergyLevelText} y={heightOfLevel} id={"eLevelText"}>{energyLevel}</text>
-                <text x={xEnergyLevelValue} y={heightOfValue} id={"eLevelText"}>{energyValue}</text>
+                <text x={xEnergyLevelText} y={heightOfLevel} id={'eLevelText'}>{energyLevel}</text>
+                <text x={xEnergyLevelValue} y={heightOfValue} id={'eLevelText'}>{energyValue}</text>
 
             </svg>
         );

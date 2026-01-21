@@ -11,7 +11,7 @@ import {
 import { getHZone, PLANET_DISTANCES } from './utils';
 import {shzStarData as STAR_DATA} from './shzStars.js';
 
-const INIT_STAR_IDX = 7
+const INIT_STAR_IDX = 7;
 
 export const LOG_BASE = 10;
 
@@ -51,7 +51,7 @@ class CircumstellarHabitableZoneSim extends React.Component {
         // Given a star's mass, update luminosity, temp, and radius
         // Reset the star's age to zero, then lookup the other values in the data
         // also set the age range of the star and the increments of age range - you'll need those for the timeline
-        const star = STAR_DATA[starMassIdx]
+        const star = STAR_DATA[starMassIdx];
 
         const luminosity = LOG_BASE ** star.dataTable[0].logLum;
         const temp = LOG_BASE ** star.dataTable[0].logTemp;
@@ -67,7 +67,7 @@ class CircumstellarHabitableZoneSim extends React.Component {
             starRadius: roundToTwoPlaces(radius),
             habitableZoneInner: hZoneInner,
             habitableZoneOuter: hZoneOuter
-        })
+        });
     }
 
     setPlanetDistanceIdx(distanceIdx) {
@@ -81,7 +81,7 @@ class CircumstellarHabitableZoneSim extends React.Component {
 
     setStarAgeIdx(idx) {
         if (idx >= 0 && idx < STAR_DATA[this.state.starMassIdx].dataTable.length) {
-            const star = STAR_DATA[this.state.starMassIdx]
+            const star = STAR_DATA[this.state.starMassIdx];
 
             const luminosity = LOG_BASE ** star.dataTable[idx].logLum;
             const temp = LOG_BASE ** star.dataTable[idx].logTemp;
@@ -101,8 +101,8 @@ class CircumstellarHabitableZoneSim extends React.Component {
 
     handleShowSolarSystemOrbits() {
         this.setState((prevState) => {
-            return {showSolarSystemOrbits: !prevState.showSolarSystemOrbits}
-        })
+            return {showSolarSystemOrbits: !prevState.showSolarSystemOrbits};
+        });
     }
 
     render() {

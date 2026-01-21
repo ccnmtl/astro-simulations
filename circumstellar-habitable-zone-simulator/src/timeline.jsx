@@ -19,7 +19,7 @@ const ANIMATION_INCREMENT = 0.01;
 
 export default class CSHZTimeline extends React.Component {
     constructor(props) {
-        super(props)
+        super(props);
         this.getPlanetTemp = this.getPlanetTemp.bind(this);
         this.handleTimelineUpdate = this.handleTimelineUpdate.bind(this);
         this.handleUpdateAnimationRate = this.handleUpdateAnimationRate.bind(this);
@@ -41,8 +41,8 @@ export default class CSHZTimeline extends React.Component {
         this.resetTimeline = this.resetTimeline.bind(this);
 
         const dataTable = this.annotateDataTable(
-                STAR_DATA[this.props.starMassIdx].dataTable, this.props.planetDistance);
-        const [temperateZonePct, hotZonePct, whiteDwarfPct] = this.calculateZonePcts(dataTable, STAR_DATA[this.props.starMassIdx].timespan)
+            STAR_DATA[this.props.starMassIdx].dataTable, this.props.planetDistance);
+        const [temperateZonePct, hotZonePct, whiteDwarfPct] = this.calculateZonePcts(dataTable, STAR_DATA[this.props.starMassIdx].timespan);
         this.interval = React.createRef(null);
         this.timelineMouseInterval = React.createRef(null);
         this.timelineKeyInterval = React.createRef(null);
@@ -58,21 +58,21 @@ export default class CSHZTimeline extends React.Component {
             whiteDwarfPct: whiteDwarfPct,
             animationRate: 1,
             timelineClickDown: false,
-        }
+        };
     }
 
     getPlanetTemp(solarRadii, starTemp, planetDistance) {
-       // T(planet) = [R(star)^2 x T(star)^4 / 4 d(planet)^2]^0.25
-       // convert solar radii to meters
-       const radius = solarRadii * 6.96 * (10 ** 8)
-       // return planet temp in C
-       return ((((radius ** 2) * (starTemp ** 4)) / (4 * (planetDistance ** 2))) ** 0.25) - 273;
+        // T(planet) = [R(star)^2 x T(star)^4 / 4 d(planet)^2]^0.25
+        // convert solar radii to meters
+        const radius = solarRadii * 6.96 * (10 ** 8);
+        // return planet temp in C
+        return ((((radius ** 2) * (starTemp ** 4)) / (4 * (planetDistance ** 2))) ** 0.25) - 273;
     }
 
     handleUpdateAnimationRate(evt) {
         const val = forceNumber(evt.target.value);
         if(0.1 <= val && val <= 2) {
-            this.setState({animationRate: val})
+            this.setState({animationRate: val});
         }
     }
 
@@ -82,14 +82,14 @@ export default class CSHZTimeline extends React.Component {
             // Calculate the temp
             const starRadius = LOG_BASE ** datum.logRadius;
             const starTemp = LOG_BASE ** datum.logTemp;
-            const planetDistance = distP * (1.495978707 * (10 ** 11))
+            const planetDistance = distP * (1.495978707 * (10 ** 11));
             const temp = this.getPlanetTemp(
                 starRadius,
                 starTemp,
-                planetDistance)
+                planetDistance);
             acc.push({time: datum.time, temp: temp});
             return acc;
-        }, [])
+        }, []);
     }
 
     calculateZonePcts(dataTable, lifetime) {
@@ -100,9 +100,9 @@ export default class CSHZTimeline extends React.Component {
                 acc.hotZonePct = Math.round((val.time / lifetime) * 100);
             } else if (val.temp > acc.maxTemp) {
                 acc.whiteDwarfPct = Math.round((val.time / lifetime) * 100);
-                acc.maxTemp = val.temp
+                acc.maxTemp = val.temp;
             }
-            return acc
+            return acc;
         }, {temperateZonePct: null, hotZonePct: null, whiteDwarfPct: null, maxTemp: Number.NEGATIVE_INFINITY});
 
         // Extra cases to consider:
@@ -131,7 +131,7 @@ export default class CSHZTimeline extends React.Component {
 
         return [
             obj.temperateZonePct, obj.hotZonePct, obj.whiteDwarfPct
-        ]
+        ];
     }
 
     componentDidMount() {
@@ -150,14 +150,14 @@ export default class CSHZTimeline extends React.Component {
             this.props.starMassIdx !== prevProps.starMassIdx) {
 
             const dataTable = this.annotateDataTable(
-                    STAR_DATA[this.props.starMassIdx].dataTable, this.props.planetDistance);
-            const [temperateZonePct, hotZonePct, whiteDwarfPct] = this.calculateZonePcts(dataTable, STAR_DATA[this.props.starMassIdx].timespan)
+                STAR_DATA[this.props.starMassIdx].dataTable, this.props.planetDistance);
+            const [temperateZonePct, hotZonePct, whiteDwarfPct] = this.calculateZonePcts(dataTable, STAR_DATA[this.props.starMassIdx].timespan);
 
             // Update the timeline position only if the star changes
             let timelinePosition = prevState.timelinePosition;
             if (this.props.starAge !== prevProps.starAge ||
                 this.props.starMassIdx !== prevProps.starMassIdx) {
-               timelinePosition = 0.0;
+                timelinePosition = 0.0;
             }
 
             this.setState({
@@ -166,7 +166,7 @@ export default class CSHZTimeline extends React.Component {
                 temperateZonePct: temperateZonePct,
                 hotZonePct: hotZonePct,
                 whiteDwarfPct: whiteDwarfPct
-            })
+            });
         }
     }
 
@@ -190,28 +190,28 @@ export default class CSHZTimeline extends React.Component {
             this.setState((state, props) => {
                 if (state.timelinePosition >= 1) {
                     this.clearInterval();
-                    return {timelinePosition: 1}
+                    return {timelinePosition: 1};
                 } else {
                     const nextPosition = state.timelinePosition + (ANIMATION_INCREMENT * this.state.animationRate);
                     const position = nextPosition <= 1 ? nextPosition : 1;
                     // Find the closest index
                     const yearsAfterFormation = position * Math.round(STAR_DATA[props.starMassIdx].timespan);
                     props.setStarAgeIdx(this.findStarAgeIdx(yearsAfterFormation, state.dataTable));
-                    return {timelinePosition: position}
+                    return {timelinePosition: position};
                 }
-            })
+            });
         }
     }
 
     findStarAgeIdx(yearsAfterFormation, dataTable) {
         // Note, this is called within a set state call, so it needs to be thread-safe
         if (yearsAfterFormation <= 0) {
-            return 0
+            return 0;
         } else if (yearsAfterFormation >= dataTable[dataTable.length - 1].time) {
-            return dataTable.length - 1
+            return dataTable.length - 1;
         }
 
-        let [low, mid, high, found] = [0, 0, dataTable.length - 1, false]
+        let [low, mid, high, found] = [0, 0, dataTable.length - 1, false];
         while (!found) {
             mid = Math.floor((high + low) / 2);
             if (dataTable[mid].time <= yearsAfterFormation && yearsAfterFormation < dataTable[mid + 1].time) {
@@ -226,15 +226,15 @@ export default class CSHZTimeline extends React.Component {
     }
 
     toggleTimelineAnimation(evt) {
-        evt.stopPropagation()
-        evt.preventDefault()
+        evt.stopPropagation();
+        evt.preventDefault();
 
         if (this.interval.current) {
             this.clearInterval();
             // Force an update to update the Play/Stop button label
             this.forceUpdate();
         } else {
-            this.interval.current = window.setInterval(this.incrementAnimation, ANIMATION_INTERVAL)
+            this.interval.current = window.setInterval(this.incrementAnimation, ANIMATION_INTERVAL);
         }
     }
 
@@ -251,7 +251,7 @@ export default class CSHZTimeline extends React.Component {
             const epsilon = 5;
             if (Math.abs(me.mouseX.current - cursorX) < epsilon) {
                 me.clearTimelineInterval();
-                return {timelinePosition: state.timelinePosition}
+                return {timelinePosition: state.timelinePosition};
             } else if (me.mouseX.current < cursorX) {
                 // if the mouse is the left of the cursor, decrement timelinePosition
                 const position = Math.max(state.timelinePosition - 0.01, 0);
@@ -261,7 +261,7 @@ export default class CSHZTimeline extends React.Component {
                     me.clearTimelineInterval();
                 }
                 props.setStarAgeIdx(starAgeIdx);
-                return {timelinePosition: position}
+                return {timelinePosition: position};
             } else {
                 // if the mouse is the right of the cursor, increment timelinePosition
                 const position = Math.min(state.timelinePosition + 0.01, 1);
@@ -271,9 +271,9 @@ export default class CSHZTimeline extends React.Component {
                     me.clearTimelineInterval();
                 }
                 props.setStarAgeIdx(starAgeIdx);
-                return {timelinePosition: position}
+                return {timelinePosition: position};
             }
-        })
+        });
     }
 
     handleTimelineMouseDown() {
@@ -292,7 +292,7 @@ export default class CSHZTimeline extends React.Component {
             if (state.timelineClickDown) {
                 return {timelineClickDown: false};
             }
-        })
+        });
     }
 
     clearTimelineInterval() {
@@ -312,11 +312,11 @@ export default class CSHZTimeline extends React.Component {
             if (position <= 1) {
                 const yearsAfterFormation = position * Math.round(STAR_DATA[props.starMassIdx].timespan);
                 props.setStarAgeIdx(this.findStarAgeIdx(yearsAfterFormation, state.dataTable));
-                return {timelinePosition: position}
+                return {timelinePosition: position};
             } else {
-                return {timelinePosition: 1}
+                return {timelinePosition: 1};
             }
-        })
+        });
     }
 
     decrementTimeline() {
@@ -326,16 +326,16 @@ export default class CSHZTimeline extends React.Component {
             if (position >= 0) {
                 const yearsAfterFormation = position * Math.round(STAR_DATA[props.starMassIdx].timespan);
                 props.setStarAgeIdx(this.findStarAgeIdx(yearsAfterFormation, state.dataTable));
-                return {timelinePosition: position}
+                return {timelinePosition: position};
             } else {
-                return {timelinePosition: 0}
+                return {timelinePosition: 0};
             }
-        })
+        });
     }
 
     resetTimeline() {
         this.props.setStarAgeIdx(0);
-        this.setState({timelinePosition: 0})
+        this.setState({timelinePosition: 0});
     }
 
     handleTimelineKeyDown(evt) {
@@ -366,10 +366,10 @@ export default class CSHZTimeline extends React.Component {
             <div className={'d-flex justify-content-between mb-1'}>
                 <div>
                     <strong>Time since star system formation:</strong> {typeof this.props.starMassIdx === 'number' && (
-                            (() => {
-                                let starAge = Math.floor(this.state.dataTable[this.props.starAgeIdx].time)
-                                return starAge < 1000 ? `${starAge} My` : `${roundToTwoPlaces(starAge / 1000)} Gy`
-                            } )()
+                        (() => {
+                            let starAge = Math.floor(this.state.dataTable[this.props.starAgeIdx].time);
+                            return starAge < 1000 ? `${starAge} My` : `${roundToTwoPlaces(starAge / 1000)} Gy`;
+                        })()
                     )}
                 </div>
                 <div className={'d-flex'}>
@@ -435,7 +435,7 @@ export default class CSHZTimeline extends React.Component {
                                     ticks: {stroke: 'black', size: 10}
                                 }}
                                 tickFormat={(val) => {
-                                    return val < 1000 ? `${Math.round(val)} My` : `${Math.round(val / 1000)} Gy`
+                                    return val < 1000 ? `${Math.round(val)} My` : `${Math.round(val / 1000)} Gy`;
                                 }}/>
                         </VictoryChart>
                     </svg>
@@ -443,7 +443,7 @@ export default class CSHZTimeline extends React.Component {
                         // Domain is the stars age, range is surface temp of planet in C
                         domain={{x: [
                             0, Math.round(STAR_DATA[this.props.starMassIdx].timespan)],
-                            y: [0, 100]}}
+                        y: [0, 100]}}
                         padding={{top: 35, bottom: 35, left: 50, right: 50}}
                         height={160}
                         width={960}>
@@ -473,9 +473,9 @@ export default class CSHZTimeline extends React.Component {
                         <VictoryLine
                             data={this.state.dataTable}
                             interpolation={'natural'}
-                            x={(datum) => { return datum.time }}
-                            y={(datum) => { return datum.temp }}
-                            >
+                            x={(datum) => { return datum.time; }}
+                            y={(datum) => { return datum.temp; }}
+                        >
                         </VictoryLine>
                     </VictoryChart>
 
@@ -523,7 +523,7 @@ export default class CSHZTimeline extends React.Component {
                     <div className={'mb-3'}></div>
                 </>)}
             </div>
-        </div>)
+        </div>);
     }
 }
 
@@ -533,4 +533,4 @@ CSHZTimeline.propTypes = {
     setStarAgeIdx: PropTypes.func.isRequired,
     starAgeIdx: PropTypes.number.isRequired,
     planetDistance: PropTypes.number.isRequired,
-}
+};

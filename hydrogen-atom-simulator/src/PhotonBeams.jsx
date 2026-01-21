@@ -1,5 +1,5 @@
 import React from 'react';
-import { getWavelengthRGB} from "./utils/WavelengthToHex";
+import { getWavelengthRGB} from './utils/WavelengthToHex';
 import { scaleLog } from 'd3/dist/d3';
 import PropTypes from 'prop-types';
 
@@ -65,7 +65,7 @@ export default class PhotonBeams extends React.Component {
 
     componentDidMount() {
         this.canvas = this.canvasRef.current;
-        this.ctx = this.canvas.getContext("2d");
+        this.ctx = this.canvas.getContext('2d');
     }
 
     componentDidUpdate(prevProps) {
@@ -100,7 +100,7 @@ export default class PhotonBeams extends React.Component {
 
             this.emissionEnergy = energyLevelValues[
                 prevProps.currentEnergyLevel - 1] - energyLevelValues[
-                    this.props.currentEnergyLevel - 1];
+                this.props.currentEnergyLevel - 1];
 
             this.translateX = MIN_X_TRANSLATION + translation;
             this.translateY = MIN_Y_TRANSLATION + translation;
@@ -207,7 +207,7 @@ export default class PhotonBeams extends React.Component {
         return(
             <div>
                 <canvas ref={this.canvasRef}
-                        width={WIDTH} height={HEIGHT} />
+                    width={WIDTH} height={HEIGHT} />
             </div>
         );
     }
@@ -221,4 +221,4 @@ PhotonBeams.propTypes = {
     stopPhotonAnimation: PropTypes.func.isRequired,
     deexcitation: PropTypes.bool.isRequired,
     photon: PropTypes.object.isRequired
-}
+};

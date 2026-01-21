@@ -17,7 +17,7 @@ export default class Axis extends Component {
 
     renderAxis() {
         const axis = d3.axisLeft(this.props.yScale).ticks(4)
-                       .tickFormat(d3.format('.3f'));
+            .tickFormat(d3.format('.3f'));
 
         const node = this.axis.current;
         d3.select(node).call(axis);
@@ -26,7 +26,7 @@ export default class Axis extends Component {
     render() {
         return <React.Fragment>
             <g className="yAxis" ref={this.axis}
-               transform={`translate(${this.props.paddingLeft}, 0)`}
+                transform={`translate(${this.props.paddingLeft}, 0)`}
             />
             <text
                 transform="rotate(-90)"

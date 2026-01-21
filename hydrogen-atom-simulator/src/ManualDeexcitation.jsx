@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
 
 export default class ManualDeexcitation extends React.Component {
     constructor(props) {
@@ -17,13 +17,13 @@ export default class ManualDeexcitation extends React.Component {
     }
 
     updateOptions() {
-        const select = document.getElementById("level-select");
+        const select = document.getElementById('level-select');
         select.options.length = 0;
         this.currentSelection = 0;
         if (this.props.currentEnergyLevel === 1) return;
 
         let possibleEnergyDrops = this.props.currentEnergyLevel - 1;
-        select.options[select.options.length] = new Option(`Random Level`, `${0}`);
+        select.options[select.options.length] = new Option('Random Level', `${0}`);
 
         for (let i = 1; i <= possibleEnergyDrops; i++) {
             select.options[select.options.length] = new Option(`Level ${i}`, `${i}`);
@@ -36,7 +36,7 @@ export default class ManualDeexcitation extends React.Component {
     }
 
     dropToNewLevel() {
-        const select = document.getElementById("level-select");
+        const select = document.getElementById('level-select');
         if (select.options.length !== 0) this.props.manuallyEmit(this.currentSelection);
     }
 
@@ -50,7 +50,7 @@ export default class ManualDeexcitation extends React.Component {
                             className="dropButton btn btn-sm btn-secondary"
                             disabled={this.props.automaticDeExcitation}
                             onClick={this.dropToNewLevel.bind(this)}>
-                            {"Drop to: "}
+                            {'Drop to: '}
                         </button>
                     </div>
 

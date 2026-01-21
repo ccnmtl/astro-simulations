@@ -216,7 +216,7 @@ export default class TransitView extends React.Component {
     }
     render() {
         return <div className="TransitView"
-                    ref={(el) => {this.el = el;}}></div>;
+            ref={(el) => {this.el = el;}}></div>;
     }
     componentDidMount() {
         const app = new PIXI.Application({
