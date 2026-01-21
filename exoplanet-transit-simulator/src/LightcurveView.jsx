@@ -36,7 +36,7 @@ export default class LightcurveView extends React.Component {
 
             // Find the closest real data point to this random x
             // value.
-            const idx = d3.bisector(function (d) {
+            const idx = d3.bisector(function(d) {
                 return d[0];
             }).left(lightcurveData, randX);
 
@@ -59,7 +59,7 @@ export default class LightcurveView extends React.Component {
         return (
             <div className="LightcurveView">
                 <div className="LightcurveYAxis"
-                     ref={(el) => {this.yAxisEl = el;}}></div>
+                    ref={(el) => {this.yAxisEl = el;}}></div>
                 <Plot
                     noiseData={this.state.noiseData}
                     lightcurveData={this.props.curveCoords}

@@ -25,7 +25,7 @@ export default class VisualDemo extends React.Component {
     }
     render() {
         return <div className="pixi-scene"
-                    ref={this.el}></div>;
+            ref={this.el}></div>;
     }
     componentDidMount() {
         const app = new PIXI.Application({
@@ -61,7 +61,7 @@ export default class VisualDemo extends React.Component {
     componentDidUpdate(prevProps) {
         if (this.props.distance !== prevProps.distance ||
             this.props.diameter !== prevProps.diameter
-           ) {
+        ) {
             // Update the scene when this component has new prop
             // values that aren't reflected in the current scene.
             const size = this.unitToPixel(this.props.diameter);
@@ -120,16 +120,16 @@ export default class VisualDemo extends React.Component {
 
         ball
         // events for drag start
-          .on('pointerdown', this.onDragStart)
-          .on('touchstart', this.onDragStart)
+            .on('pointerdown', this.onDragStart)
+            .on('touchstart', this.onDragStart)
         // events for drag end
-          .on('pointerup', this.onDragEnd)
-          .on('pointerupoutside', this.onDragEnd)
-          .on('touchend', this.onDragEnd)
-          .on('touchendoutside', this.onDragEnd)
+            .on('pointerup', this.onDragEnd)
+            .on('pointerupoutside', this.onDragEnd)
+            .on('touchend', this.onDragEnd)
+            .on('touchendoutside', this.onDragEnd)
         // events for drag move
-          .on('pointermove', this.onMove)
-          .on('touchmove', this.onMove);
+            .on('pointermove', this.onMove)
+            .on('touchmove', this.onMove);
 
         return ball;
     }

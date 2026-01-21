@@ -150,10 +150,10 @@ export default class BinarySystemView extends React.Component {
     resizeStar(arg) {
         // resize the icon of the given body (where arg = 1 or 2)
         const body = this.stars.getChildByName(`star${arg}`)
-              .getChildByName('star');
+            .getChildByName('star');
 
         const bodyBackHalf = this.app.stage
-              .getChildByName(`star${arg}BackHalf`);
+            .getChildByName(`star${arg}BackHalf`);
 
         if (!body) {
             return;
@@ -234,7 +234,7 @@ export default class BinarySystemView extends React.Component {
 
         // do the equator as we finish drawing the mask
         const equator = this.stars.getChildByName(`star${arg}`)
-              .getChildByName('equator');
+            .getChildByName('equator');
         equator.clear();
 
         equator.lineStyle(
@@ -536,7 +536,7 @@ export default class BinarySystemView extends React.Component {
     render() {
         return (
             <div id="BinarySystemView"
-                 ref={this.el} />
+                ref={this.el} />
         );
     }
 
@@ -579,7 +579,7 @@ export default class BinarySystemView extends React.Component {
     componentDidUpdate(prevProps) {
         if (prevProps.star1Temp !== this.props.star1Temp) {
             const star1 = this.stars.getChildByName('star1')
-                              .getChildByName('star');
+                .getChildByName('star');
             star1.clear();
             star1.beginFill(getColorFromTemp(this.props.star1Temp));
             star1.drawCircle(0, 0, 200);
@@ -587,7 +587,7 @@ export default class BinarySystemView extends React.Component {
 
         if (prevProps.star2Temp !== this.props.star2Temp) {
             const star2 = this.stars.getChildByName('star2')
-                              .getChildByName('star');
+                .getChildByName('star');
             star2.clear();
             star2.beginFill(getColorFromTemp(this.props.star2Temp));
             star2.drawCircle(0, 0, 200);
@@ -622,7 +622,7 @@ export default class BinarySystemView extends React.Component {
         }
 
         if (
-                prevProps.star1Mass !== this.props.star1Mass ||
+            prevProps.star1Mass !== this.props.star1Mass ||
                 prevProps.star2Mass !== this.props.star2Mass ||
                 prevProps.star1Radius !== this.props.star1Radius ||
                 prevProps.star2Radius !== this.props.star2Radius ||

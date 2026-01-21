@@ -26,8 +26,8 @@ class SmallAngleDemo extends React.Component {
         const result = Math.round(
             206265 * (this.state.diameter / this.state.distance) * 10)
         / 10;
-        const tex = `\\alpha = 206{,}265 \\times ` +
-              `{\\text{linear diameter} \\over \\text{distance}} ` +
+        const tex = '\\alpha = 206{,}265 \\times ' +
+              '{\\text{linear diameter} \\over \\text{distance}} ' +
               `= ${result} \\text{ arcsec}`;
         return <React.Fragment>
             <nav className="navbar navbar-expand-md navbar-light bg-light d-flex justify-content-between">
@@ -60,18 +60,18 @@ class SmallAngleDemo extends React.Component {
                             <div className="form-group row">
 
                                 <label htmlFor="distRange"
-                                       className="col-sm-2 col-form-label col-form-label-sm">
+                                    className="col-sm-2 col-form-label col-form-label-sm">
                                     Distance:
                                 </label>
                                 <div className="col-sm-10">
                                     <input type="number" size="4"
-                                           className="form-control form-control-sm"
-                                           step="0.1" name="distance"
-                                           min={20} max={60}
-                                           value={this.state.distanceField}
-                                           onFocus={this.handleFocus}
-                                           onChange={this.handleInputFieldChange}
-                                           onBlur={this.handleInputChange} /> units
+                                        className="form-control form-control-sm"
+                                        step="0.1" name="distance"
+                                        min={20} max={60}
+                                        value={this.state.distanceField}
+                                        onFocus={this.handleFocus}
+                                        onChange={this.handleInputFieldChange}
+                                        onBlur={this.handleInputChange} /> units
                                     <RangeStepInput
                                         step={0.1}
                                         min={20} max={60}
@@ -86,18 +86,18 @@ class SmallAngleDemo extends React.Component {
                         <div className="col">
                             <div className="form-group row">
                                 <label htmlFor="diamRange"
-                                       className="col-sm-2 col-form-label col-form-label-sm">
+                                    className="col-sm-2 col-form-label col-form-label-sm">
                                     Diameter:
                                 </label>
                                 <div className="col-sm-10">
                                     <input type="number" size="4"
-                                           className="form-control form-control-sm"
-                                           step="0.1" name="diameter"
-                                           value={this.state.diameterField}
-                                           min={1} max={3}
-                                           onFocus={this.handleFocus}
-                                           onChange={this.handleInputFieldChange}
-                                           onBlur={this.handleInputChange} /> units
+                                        className="form-control form-control-sm"
+                                        step="0.1" name="diameter"
+                                        value={this.state.diameterField}
+                                        min={1} max={3}
+                                        onFocus={this.handleFocus}
+                                        onChange={this.handleInputFieldChange}
+                                        onBlur={this.handleInputChange} /> units
                                     <RangeStepInput
                                         step={0.1}
                                         min={1} max={3}

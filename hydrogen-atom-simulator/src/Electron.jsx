@@ -23,13 +23,13 @@ export default class Electron extends React.Component {
 
     componentDidMount() {
         this.circle = select(this.ref.current)
-            .attr("transform", `translate(40, 0)`)
-            .append("circle")
+            .attr('transform', 'translate(40, 0)')
+            .append('circle')
             .attr('class', 'electron')
-            .attr("cx", 0)
-            .attr("cy", HEIGHT / 2)
-            .attr("r", 7)
-            .attr("fill", "green");
+            .attr('cx', 0)
+            .attr('cy', HEIGHT / 2)
+            .attr('r', 7)
+            .attr('fill', 'green');
 
         // makeDraggable(this.ref.current, this.up);
         this.makeDraggable(this.ref.current);

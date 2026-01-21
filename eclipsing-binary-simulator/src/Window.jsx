@@ -42,21 +42,21 @@ export default class Window extends React.Component {
         return (
             <div className="window" style={style}>
                 <div className="window-bar"
-                     onMouseDown={this.onDragStart}>
+                    onMouseDown={this.onDragStart}>
                     <div>HR Diagram</div>
                     <span className="window-close"
-                          onClick={this.props.onWindowClose}>
+                        onClick={this.props.onWindowClose}>
                         <svg version="1.1"
-                             width="16" height="16"
-                             xmlns="http://www.w3.org/2000/svg">
+                            width="16" height="16"
+                            xmlns="http://www.w3.org/2000/svg">
                             <line x1="1" y1="11"
-                                  x2="11" y2="1"
-                                  stroke="black"
-                                  strokeWidth="2" />
+                                x2="11" y2="1"
+                                stroke="black"
+                                strokeWidth="2" />
                             <line x1="1" y1="1"
-                                  x2="11" y2="11"
-                                  stroke="black"
-                                  strokeWidth="2" />
+                                x2="11" y2="11"
+                                stroke="black"
+                                strokeWidth="2" />
                         </svg>
                     </span>
                 </div>
@@ -73,9 +73,9 @@ export default class Window extends React.Component {
                     </div>
                     <div className="main-seq-checkbox">
                         <input type="checkbox" name="showMainSequence"
-                               id="showMainSequenceCheckbox"
-                               defaultChecked={false}
-                               onChange={this.toggleMainSequence} />
+                            id="showMainSequenceCheckbox"
+                            defaultChecked={false}
+                            onChange={this.toggleMainSequence} />
                         <label className="ml-1 small" htmlFor="showMainSequenceCheckbox">
                             Show main sequence track
                         </label>

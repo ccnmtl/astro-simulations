@@ -32,19 +32,19 @@ export default class LatitudePicker extends React.Component {
                     <label style={{whiteSpace: 'nowrap'}}>
                         The observer&apos;s latitude:
                         <input type="number"
-                               style={{width: '75px'}}
-                               value={this.state.latitudeField}
-                               onFocus={this.handleFocus}
-                               onChange={this.onLatitudeFieldUpdate}
-                               onBlur={this.onLatitudeBlur}
-                               min={0} max={90} step={0.1}
-                               className="form-control form-control-sm ml-2" />&nbsp;&deg;
+                            style={{width: '75px'}}
+                            value={this.state.latitudeField}
+                            onFocus={this.handleFocus}
+                            onChange={this.onLatitudeFieldUpdate}
+                            onBlur={this.onLatitudeBlur}
+                            min={0} max={90} step={0.1}
+                            className="form-control form-control-sm ml-2" />&nbsp;&deg;
                         <span style={{cursor: 'pointer'}}
-                              onClick={this.onClickLatHemisphere}>&nbsp;{latHemisphere}</span>
+                            onClick={this.onClickLatHemisphere}>&nbsp;{latHemisphere}</span>
                     </label>
                 </div>
                 <div className="pixi-scene astro-earthmap"
-                     ref={this.latitudePicker}></div>
+                    ref={this.latitudePicker}></div>
             </div>
         );
     }
@@ -125,25 +125,25 @@ export default class LatitudePicker extends React.Component {
         const pickerTop = (app.view.height - bg.height) / 2;
 
         const line = new PIXI.Graphics()
-                             .lineStyle(4, 0x000000)
-                             .moveTo(0, pickerTop)
-                             .lineTo(app.view.width, pickerTop);
+            .lineStyle(4, 0x000000)
+            .moveTo(0, pickerTop)
+            .lineTo(app.view.width, pickerTop);
         picker.addChild(line);
 
         const arrowhead1 = new PIXI.Graphics()
-                                   .beginFill(0x000000)
-                                   .drawPolygon([
-                                       0, pickerTop - 14,
-                                       0, pickerTop + 14,
-                                       20, pickerTop
-                                   ]);
+            .beginFill(0x000000)
+            .drawPolygon([
+                0, pickerTop - 14,
+                0, pickerTop + 14,
+                20, pickerTop
+            ]);
         const arrowhead2 = new PIXI.Graphics()
-                                   .beginFill(0x000000)
-                                   .drawPolygon([
-                                       app.view.width, pickerTop - 14,
-                                       app.view.width, pickerTop + 14,
-                                       app.view.width - 20, pickerTop
-                                   ]);
+            .beginFill(0x000000)
+            .drawPolygon([
+                app.view.width, pickerTop - 14,
+                app.view.width, pickerTop + 14,
+                app.view.width - 20, pickerTop
+            ]);
         picker.addChild(arrowhead1);
         picker.addChild(arrowhead2);
 
@@ -162,7 +162,7 @@ export default class LatitudePicker extends React.Component {
 
         const latPos = this.latitudeToLocalPos(
             this.props.latitude,
-            bg.height)
+            bg.height);
         picker.position.y = latPos;
 
         app.stage.addChild(picker);

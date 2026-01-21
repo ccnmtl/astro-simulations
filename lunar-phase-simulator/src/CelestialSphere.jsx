@@ -369,7 +369,7 @@ export default class CelestialSphere extends React.Component {
             50, 0.4, 16, 100, 0
         );
         const material = new THREE.MeshBasicMaterial({
-            color : 0xffff00
+            color: 0xffff00
         });
 
         const angle = new THREE.Mesh(geometry, material);
@@ -379,7 +379,7 @@ export default class CelestialSphere extends React.Component {
         const angleSliceGeom = new THREE.CircleGeometry(
             50, 32, 0);
         const angleSliceMaterial = new THREE.MeshBasicMaterial({
-            color : 0xffff00,
+            color: 0xffff00,
             transparent: true,
             opacity: 0.4,
             side: THREE.DoubleSide
@@ -405,7 +405,7 @@ export default class CelestialSphere extends React.Component {
         }
     }
     stop() {
-        cancelAnimationFrame(this.frameId)
+        cancelAnimationFrame(this.frameId);
     }
     animate() {
         this.sun.position.x = 50.25 * Math.cos(this.props.observerAngle);
@@ -456,29 +456,29 @@ export default class CelestialSphere extends React.Component {
 
     render() {
         const time = this.getTime(this.props.observerAngle)
-                         .toLocaleTimeString(
-                             [], {hour: '2-digit', minute: '2-digit'});
+            .toLocaleTimeString(
+                [], {hour: '2-digit', minute: '2-digit'});
         return (
             <React.Fragment>
-            <div id={this.id}
-                 style={{
-                     width: '228px',
-                     height: '228px',
-                     visibility: this.props.isHidden ? 'hidden' : 'visible'
-                 }}
-                 ref={(mount) => { this.mount = mount }}>
-                <canvas id={this.id + 'Canvas'} width={228 * 2} height={228 * 2} />
-            </div>
-            <div style={{
-                visibility: this.props.isHidden ? 'hidden' : 'visible'
-            }}>Observer&apos;s local time: {time}</div>
-            <div className="text-right">
-                <button type="button"
+                <div id={this.id}
+                    style={{
+                        width: '228px',
+                        height: '228px',
+                        visibility: this.props.isHidden ? 'hidden' : 'visible'
+                    }}
+                    ref={(mount) => { this.mount = mount; }}>
+                    <canvas id={this.id + 'Canvas'} width={228 * 2} height={228 * 2} />
+                </div>
+                <div style={{
+                    visibility: this.props.isHidden ? 'hidden' : 'visible'
+                }}>Observer&apos;s local time: {time}</div>
+                <div className="text-right">
+                    <button type="button"
                         onClick={this.props.onHideShowToggle}
                         className="btn btn-primary btn-sm">
-                    {this.props.isHidden ? 'Show' : 'Hide'}
-                </button>
-            </div>
+                        {this.props.isHidden ? 'Show' : 'Hide'}
+                    </button>
+                </div>
             </React.Fragment>
         );
     }
@@ -496,7 +496,7 @@ export default class CelestialSphere extends React.Component {
         const objs = [
             this.plane
         ].concat(this.sun.children)
-         .concat(this.moon.children);
+            .concat(this.moon.children);
 
         const intersects = this.raycaster.intersectObjects(objs);
         return intersects;
@@ -540,9 +540,9 @@ export default class CelestialSphere extends React.Component {
             const triangle = new THREE.Triangle();
 
             for (let i = 0, l = index.count; i < l; i += 3) {
-                let a = index.getX( i );
-                let b = index.getX( i + 1 );
-                let c = index.getX( i + 2 );
+                let a = index.getX(i);
+                let b = index.getX(i + 1);
+                let c = index.getX(i + 2);
 
                 triangle.a.fromBufferAttribute(position, a);
                 triangle.b.fromBufferAttribute(position, b);
@@ -551,8 +551,8 @@ export default class CelestialSphere extends React.Component {
                 triangle.closestPointToPoint(pointOnPlane, target);
                 const distanceSq = pointOnPlane.distanceToSquared(target);
 
-                if ( distanceSq < minDistance ) {
-                    closestPoint.copy( target );
+                if (distanceSq < minDistance) {
+                    closestPoint.copy(target);
                     minDistance = distanceSq;
                 }
             }

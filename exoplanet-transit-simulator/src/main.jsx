@@ -34,7 +34,7 @@ const getEclipseDepthText = function(depth, duration) {
     }
 
     return 'Eclipse depth: ' + formatNumber(depth, 3);
-}
+};
 
 
 class ExoplanetTransitSimulator extends React.Component {
@@ -201,7 +201,7 @@ class ExoplanetTransitSimulator extends React.Component {
                     <h5>Presets</h5>
                     <form className="form-inline">
                         <select className="form-control form-control-sm mr-2"
-                                onChange={this.onPresetSelect}>
+                            onChange={this.onPresetSelect}>
                             <option value={-1}>--</option>
                             <option value={0}>1. Option A</option>
                             <option value={1}>2. Option B</option>
@@ -239,19 +239,19 @@ class ExoplanetTransitSimulator extends React.Component {
                     />
                     <div className="text-center">
                         {getEclipseText(
-                             this.lightcurve.eclipseOfBody1Duration,
-                             this.lightcurve.systemPeriod)}
+                            this.lightcurve.eclipseOfBody1Duration,
+                            this.lightcurve.systemPeriod)}
                     </div>
                     <div className="row mt-2">
                         <div className="col">
                             <div className="form-inline">
                                 <div className="custom-control custom-checkbox">
                                     <input type="checkbox" className="custom-control-input"
-                                           name="showTheoreticalCurve"
-                                           id="showTheoreticalCurveToggle"
-                                           checked={this.state.showTheoreticalCurve}
-                                           onFocus={this.handleFocus}
-                                           onChange={this.handleInputChange}
+                                        name="showTheoreticalCurve"
+                                        id="showTheoreticalCurveToggle"
+                                        checked={this.state.showTheoreticalCurve}
+                                        onFocus={this.handleFocus}
+                                        onChange={this.handleInputChange}
                                     />
                                     <label className="custom-control-label" htmlFor="showTheoreticalCurveToggle">
                                         Show theoretical curve
@@ -259,11 +259,11 @@ class ExoplanetTransitSimulator extends React.Component {
                                 </div>
                                 <div className="custom-control custom-checkbox">
                                     <input type="checkbox" className="custom-control-input"
-                                           name="showSimulatedMeasurements"
-                                           id="showSimulatedMeasurementsToggle"
-                                           checked={this.state.showSimulatedMeasurements}
-                                           onFocus={this.handleFocus}
-                                           onChange={this.handleInputChange}
+                                        name="showSimulatedMeasurements"
+                                        id="showSimulatedMeasurementsToggle"
+                                        checked={this.state.showSimulatedMeasurements}
+                                        onFocus={this.handleFocus}
+                                        onChange={this.handleInputChange}
                                     />
                                     <label className="custom-control-label" htmlFor="showSimulatedMeasurementsToggle">
                                         Show simulated measurements
@@ -322,8 +322,8 @@ class ExoplanetTransitSimulator extends React.Component {
                         </div>
                         <div className="col">
                             {getEclipseDepthText(
-                                 this.lightcurve.plottedVisualFluxDepth,
-                                 this.lightcurve.eclipseOfBody1Duration)}
+                                this.lightcurve.plottedVisualFluxDepth,
+                                this.lightcurve.eclipseOfBody1Duration)}
                         </div>
                     </div>
                 </div>
@@ -447,14 +447,14 @@ class ExoplanetTransitSimulator extends React.Component {
 
                             <div className="col-10">
                                 <input type="number"
-                                       className="form-control form-control-sm"
-                                       name="starMass"
-                                       value={this.state.starMassField}
-                                       onFocus={this.handleFocus}
-                                       onChange={this.handleInputChange}
-                                       onBlur={this.handleInputBlur}
-                                       min={0.5} max={2}
-                                       step={0.01} />
+                                    className="form-control form-control-sm"
+                                    name="starMass"
+                                    value={this.state.starMassField}
+                                    onFocus={this.handleFocus}
+                                    onChange={this.handleInputChange}
+                                    onBlur={this.handleInputBlur}
+                                    min={0.5} max={2}
+                                    step={0.01} />
                                 &nbsp;M<sub>sun</sub>&nbsp;
 
                                 <RangeStepInput
@@ -493,12 +493,12 @@ class ExoplanetTransitSimulator extends React.Component {
                                     onBlur={this.handleInputBlur}
                                     min={0} max={180} step={0.001} />&deg;&nbsp;
 
-        <RangeStepInput
-            className="form-control"
-            name="inclination"
-            value={this.state.inclination}
-            onChange={this.handleInputChange}
-            min={0} max={180} step={0.001} />
+                                <RangeStepInput
+                                    className="form-control"
+                                    name="inclination"
+                                    value={this.state.inclination}
+                                    onChange={this.handleInputChange}
+                                    min={0} max={180} step={0.001} />
                             </div>
                         </div>
 
@@ -518,18 +518,18 @@ class ExoplanetTransitSimulator extends React.Component {
                                     onBlur={this.handleInputBlur}
                                     step={0.1} />&deg;&nbsp;
 
-        <RangeStepInput
-            className="form-control"
-            name="longitude"
-            value={this.state.longitude}
-            onChange={this.handleInputChange}
-            min={0} max={360} step={0.1} />
+                                <RangeStepInput
+                                    className="form-control"
+                                    name="longitude"
+                                    value={this.state.longitude}
+                                    onChange={this.handleInputChange}
+                                    min={0} max={360} step={0.1} />
                             </div>
                         </div>
 
                         <div className="form-group row">
                             <label htmlFor="phaseSlider"
-                                   className="col-2 col-form-label col-form-label-sm">
+                                className="col-2 col-form-label col-form-label-sm">
                                 Phase:
                             </label>
 
@@ -587,7 +587,7 @@ class ExoplanetTransitSimulator extends React.Component {
         const target = event.target;
         const name = target.name;
         let value = target.type === 'checkbox' ?
-                    target.checked : target.value;
+            target.checked : target.value;
 
         if (target.type === 'radio') {
             value = target.id === (target.name + 'Radio');

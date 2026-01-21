@@ -91,12 +91,12 @@ class GasRetentionSimulator extends React.Component {
                 <div className="col-6">
                     <h6>Chamber</h6>
                     <Chamber activeGases={this.state.activeGases}
-                             gasProportions={this.state.gasProportions}
-                             isPlaying={this.state.isPlaying}
-                             allowEscape={this.state.allowEscape}
-                             escapeSpeed={this.state.escapeSpeed}
-                             temperature={this.state.temperature}
-                             onParticleCountUpdated={this.onParticleCountUpdated}
+                        gasProportions={this.state.gasProportions}
+                        isPlaying={this.state.isPlaying}
+                        allowEscape={this.state.allowEscape}
+                        escapeSpeed={this.state.escapeSpeed}
+                        temperature={this.state.temperature}
+                        onParticleCountUpdated={this.onParticleCountUpdated}
                     />
 
                     <h6>Chamber Properties</h6>
@@ -131,18 +131,18 @@ class GasRetentionSimulator extends React.Component {
                         </div>
                     </div>
 
-                <div className="custom-control custom-checkbox">
-                    <input type="checkbox" className="custom-control-input"
-                           name="allowEscape"
-                           onFocus={this.handleFocus}
-                           onChange={this.handleInputChange}
-                           checked={this.state.allowEscape}
-                           id="allowEscapeToggle" />
-                    <label className="custom-control-label"
-                           htmlFor="allowEscapeToggle">
+                    <div className="custom-control custom-checkbox">
+                        <input type="checkbox" className="custom-control-input"
+                            name="allowEscape"
+                            onFocus={this.handleFocus}
+                            onChange={this.handleInputChange}
+                            checked={this.state.allowEscape}
+                            id="allowEscapeToggle" />
+                        <label className="custom-control-label"
+                            htmlFor="allowEscapeToggle">
                         Allow escape from chamber
-                    </label>
-                </div>
+                        </label>
+                    </div>
 
                     <div className="form-inline">
                         <div className="form-group row">
@@ -198,25 +198,25 @@ class GasRetentionSimulator extends React.Component {
 
                     <div className="form-check form-check-inline">
                         <input className="form-check-input"
-                               onChange={this.handleInputChange}
-                               name="showPlotCursor"
-                               type="checkbox" checked={this.state.showPlotCursor}
-                               id="showCursorToggle" />
-                            <label className="form-check-label" htmlFor="showCursorToggle">
+                            onChange={this.handleInputChange}
+                            name="showPlotCursor"
+                            type="checkbox" checked={this.state.showPlotCursor}
+                            id="showCursorToggle" />
+                        <label className="form-check-label" htmlFor="showCursorToggle">
                                 Show draggable cursor
-                            </label>
+                        </label>
                     </div>
 
                     <div className="form-check form-check-inline">
                         <input className="form-check-input"
-                               onChange={this.handleInputChange}
-                               name="showDistInfo"
-                               disabled={!this.state.showPlotCursor}
-                               type="checkbox" checked={this.state.showDistInfo}
-                               id="showDistInfoToggle" />
-                            <label className="form-check-label" htmlFor="showDistInfoToggle">
+                            onChange={this.handleInputChange}
+                            name="showDistInfo"
+                            disabled={!this.state.showPlotCursor}
+                            type="checkbox" checked={this.state.showDistInfo}
+                            id="showDistInfoToggle" />
+                        <label className="form-check-label" htmlFor="showDistInfoToggle">
                                 Show distribution info for selected gas
-                            </label>
+                        </label>
                     </div>
 
                     <h6 className="mt-2">Gases</h6>
@@ -311,27 +311,27 @@ class GasRetentionSimulator extends React.Component {
                         </div>
 
                         <div className="p-2">
-                        <form className="ml-3 form-inline">
-                            <div className="form-group">
-                                {this.state.activeGases.length < 3 &&
+                            <form className="ml-3 form-inline">
+                                <div className="form-group">
+                                    {this.state.activeGases.length < 3 &&
                                  <select className="form-control form-control-sm"
-                                         value={-1}
-                                         onChange={this.onAddGas}>
+                                     value={-1}
+                                     onChange={this.onAddGas}>
                                      <option value={-1}>Select gas to add</option>
                                      {this.makeGasOptions(gases)}
                                  </select>
-                                }
-                                {this.state.activeGases.length === 3 &&
+                                    }
+                                    {this.state.activeGases.length === 3 &&
                                  <select className="form-control form-control-sm"
-                                         disabled="disabled">
+                                     disabled="disabled">
                                      <option value={-1}>(limit reached)</option>
                                  </select>
-                                }
+                                    }
 
-                                <button className="ml-3 btn btn-sm btn-secondary" onClick={this.onRemoveGas}>
+                                    <button className="ml-3 btn btn-sm btn-secondary" onClick={this.onRemoveGas}>
                                     Remove selected gas
-                                </button>
-                            </div>
+                                    </button>
+                                </div>
                             </form>
 
                             <table className="gas-table table table-sm">
@@ -341,8 +341,8 @@ class GasRetentionSimulator extends React.Component {
                             </table>
 
                             <button className="btn btn-sm btn-secondary"
-                                    disabled={this.state.isPlaying}
-                                    onClick={this.onResetProportionsClick.bind(this)}>
+                                disabled={this.state.isPlaying}
+                                onClick={this.onResetProportionsClick.bind(this)}>
                                 Reset proportions
                             </button>
                         </div>
@@ -487,7 +487,7 @@ class GasRetentionSimulator extends React.Component {
                     <td>
                         <svg height="12" width="8">
                             <circle cx="5" cy="5" r="3"
-                                    fill={'#' + toPaddedHexString(g.color, 6)} />
+                                fill={'#' + toPaddedHexString(g.color, 6)} />
                         </svg>
                     </td>
                     <td>{g.name} ({g.symbol})</td>
@@ -660,7 +660,7 @@ class GasRetentionSimulator extends React.Component {
         const target = event.target;
         const name = target.name;
         let value = target.type === 'checkbox' ?
-                    target.checked : target.value;
+            target.checked : target.value;
 
         if (target.type === 'radio') {
             value = target.id === (target.name + 'Radio');

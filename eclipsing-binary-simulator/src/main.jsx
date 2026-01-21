@@ -252,85 +252,85 @@ class EclipsingBinarySimulator extends React.Component {
                         </div>
                     </div>
 
-                <h6>Animation and Visualization Controls</h6>
+                    <h6>Animation and Visualization Controls</h6>
 
-                <div className="form-inline">
-                    <div className="form-group row">
-                        <button type="button"
+                    <div className="form-inline">
+                        <div className="form-group row">
+                            <button type="button"
                                 className="btn btn-primary btn-sm"
                                 onClick={this.onStartClick}>
-                            {startBtnText}
-                        </button>
-                        <div className="col-6">
-                            <RangeStepInput
-                                className="form-control-range"
-                                name="animationSpeed"
-                                min={0.01} max={2} step={0.01}
-                                value={this.state.animationSpeed}
-                                onChange={this.handleInputChange} />
-                            <div className="small form-text text-muted mb-2">
-                                <span>Slow</span>
-                                <span className="float-right">Fast</span>
+                                {startBtnText}
+                            </button>
+                            <div className="col-6">
+                                <RangeStepInput
+                                    className="form-control-range"
+                                    name="animationSpeed"
+                                    min={0.01} max={2} step={0.01}
+                                    value={this.state.animationSpeed}
+                                    onChange={this.handleInputChange} />
+                                <div className="small form-text text-muted mb-2">
+                                    <span>Slow</span>
+                                    <span className="float-right">Fast</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="form-group row">
+                            <label className="col-2 col-form-label col-form-label-sm">
+                            Phase:
+                            </label>
+
+                            <div className="col-10">
+                                <input
+                                    type="number"
+                                    className="form-control form-control-sm"
+                                    name="phase"
+                                    value={roundToTwoPlaces(this.state.phase)}
+                                    onFocus={this.handleFocus}
+                                    onChange={this.handleInputChange}
+                                    min={0} max={1} step={0.01} />
+
+                                <RangeStepInput
+                                    className="form-control"
+                                    name="phase"
+                                    value={this.state.phase}
+                                    onChange={this.handleInputChange}
+                                    min={0} max={1} step={0.01} />
                             </div>
                         </div>
                     </div>
 
-                    <div className="form-group row">
-                        <label className="col-2 col-form-label col-form-label-sm">
-                            Phase:
-                        </label>
-
-                        <div className="col-10">
-                            <input
-                                type="number"
-                                className="form-control form-control-sm"
-                                name="phase"
-                                value={roundToTwoPlaces(this.state.phase)}
-                                onFocus={this.handleFocus}
-                                onChange={this.handleInputChange}
-                                min={0} max={1} step={0.01} />
-
-                            <RangeStepInput
-                                className="form-control"
-                                name="phase"
-                                value={this.state.phase}
-                                onChange={this.handleInputChange}
-                                min={0} max={1} step={0.01} />
-                        </div>
-                    </div>
-                </div>
-
-                <div className="custom-control custom-checkbox">
-                    <input type="checkbox" className="custom-control-input"
-                           name="showOrbitalPaths"
-                           onFocus={this.handleFocus}
-                           onChange={this.handleInputChange}
-                           checked={this.state.showOrbitalPaths}
-                           id="showOrbitalPathsToggle" />
-                    <label className="custom-control-label"
-                           htmlFor="showOrbitalPathsToggle">
+                    <div className="custom-control custom-checkbox">
+                        <input type="checkbox" className="custom-control-input"
+                            name="showOrbitalPaths"
+                            onFocus={this.handleFocus}
+                            onChange={this.handleInputChange}
+                            checked={this.state.showOrbitalPaths}
+                            id="showOrbitalPathsToggle" />
+                        <label className="custom-control-label"
+                            htmlFor="showOrbitalPathsToggle">
                         Show orbital paths
-                    </label>
-                </div>
+                        </label>
+                    </div>
 
-                <div className="custom-control custom-checkbox">
-                    <input type="checkbox" className="custom-control-input"
-                           name="showOrbitalPlane"
-                           onFocus={this.handleFocus}
-                           onChange={this.handleInputChange}
-                           checked={this.state.showOrbitalPlane}
-                           id="showOrbitalPlaneToggle" />
-                    <label className="custom-control-label"
-                           htmlFor="showOrbitalPlaneToggle">
+                    <div className="custom-control custom-checkbox">
+                        <input type="checkbox" className="custom-control-input"
+                            name="showOrbitalPlane"
+                            onFocus={this.handleFocus}
+                            onChange={this.handleInputChange}
+                            checked={this.state.showOrbitalPlane}
+                            id="showOrbitalPlaneToggle" />
+                        <label className="custom-control-label"
+                            htmlFor="showOrbitalPlaneToggle">
                         Show orbital plane
-                    </label>
-                </div>
+                        </label>
+                    </div>
 
-                <button type="button"
+                    <button type="button"
                         onClick={this.onWindowOpen}
                         className="btn btn-primary btn-sm">
                     Show HR Diagram
-                </button>
+                    </button>
 
                 </div>
 
@@ -781,7 +781,7 @@ class EclipsingBinarySimulator extends React.Component {
         // stars and the eccentricity
         const AminVis = (
             this.state.star1Radius + this.state.star2Radius) / (
-                1 - this.state.eccentricity);
+            1 - this.state.eccentricity);
         const Amin = Math.max(this.AminSld, AminVis);
         const Amax = this.AmaxSld;
         this.setState({
@@ -969,7 +969,7 @@ class EclipsingBinarySimulator extends React.Component {
         const target = event.target;
         const name = target.name;
         let value = target.type === 'checkbox' ?
-                    target.checked : target.value;
+            target.checked : target.value;
 
         if (target.type === 'radio') {
             value = target.id === (target.name + 'Radio');
@@ -1085,7 +1085,7 @@ class EclipsingBinarySimulator extends React.Component {
 
         let i = systemsList;
 
-        if (i === " ") {
+        if (i === ' ') {
             return undefined;
         }
 
@@ -1162,7 +1162,7 @@ class EclipsingBinarySimulator extends React.Component {
             TmaxVis);
 
         if (Tmin > Tmax) {
-            console.error("case where T is too big");
+            console.error('case where T is too big');
 
             // need to adjust a and e to allow a main sequence star to fit
 
@@ -1194,8 +1194,8 @@ class EclipsingBinarySimulator extends React.Component {
             });
 
             let initObj = {};
-            initObj["radius" + star] = thisStar.r;
-            initObj["mass" + star] = thisStar.m;
+            initObj['radius' + star] = thisStar.r;
+            initObj['mass' + star] = thisStar.m;
             initObj.eccentricity = this.sysProps.e;
             initObj.separation = this.sysProps.a;
             //visualizationMC.initialize(initObj);
@@ -1211,14 +1211,14 @@ class EclipsingBinarySimulator extends React.Component {
             thisStar.m = getMassFromLuminosity(thisStar.l);
 
             let initObj = {};
-            initObj["radius"+star] = thisStar.r;
-            initObj["mass"+star] = thisStar.m;
+            initObj['radius'+star] = thisStar.r;
+            initObj['mass'+star] = thisStar.m;
             //visualizationMC.initialize(initObj);
         }
 
-        this["mass"+star+"Slider"] = thisStar.m;
-        this["radius"+star+"Slider"] = thisStar.r;
-        this["temp"+star+"Slider"] = thisStar.t;
+        this['mass'+star+'Slider'] = thisStar.m;
+        this['radius'+star+'Slider'] = thisStar.r;
+        this['temp'+star+'Slider'] = thisStar.t;
 
         //hrDiagramWindowMC.hrDiagramMC.setPointPosition(star, thisStar.t, thisStar.l);
 

@@ -43,7 +43,7 @@ export default class MainView extends React.Component {
     render() {
         return (
             <div className="MainView"
-                ref={(thisDiv) => {this.el = thisDiv}} />
+                ref={(thisDiv) => {this.el = thisDiv;}} />
         );
     }
     componentDidMount() {
@@ -79,17 +79,17 @@ export default class MainView extends React.Component {
             me.moonContainer = me.drawMoon(
                 resources.moon, resources.highlight);
             me.moonContainer
-              // events for drag start
-              .on('pointerdown', me.onDragStart)
-              .on('touchstart', me.onDragStart)
-              // events for drag end
-              .on('pointerup', me.onDragEnd)
-              .on('pointerupoutside', me.onDragEnd)
-              .on('touchend', me.onDragEnd)
-              .on('touchendoutside', me.onDragEnd)
-              // events for drag move
-              .on('pointermove', me.onMoonMove)
-              .on('touchmove', me.onMoonMove);
+            // events for drag start
+                .on('pointerdown', me.onDragStart)
+                .on('touchstart', me.onDragStart)
+            // events for drag end
+                .on('pointerup', me.onDragEnd)
+                .on('pointerupoutside', me.onDragEnd)
+                .on('touchend', me.onDragEnd)
+                .on('touchendoutside', me.onDragEnd)
+            // events for drag move
+                .on('pointermove', me.onMoonMove)
+                .on('touchmove', me.onMoonMove);
 
             me.earth = me.drawEarth(
                 resources.earth,
@@ -97,17 +97,17 @@ export default class MainView extends React.Component {
                 resources.highlight);
 
             me.earth
-              // events for drag start
-              .on('pointerdown', me.onDragStart)
-              .on('touchstart', me.onDragStart)
-              // events for drag end
-              .on('pointerup', me.onDragEnd)
-              .on('pointerupoutside', me.onDragEnd)
-              .on('touchend', me.onDragEnd)
-              .on('touchendoutside', me.onDragEnd)
-              // events for drag move
-              .on('pointermove', me.onEarthMove)
-              .on('touchmove', me.onEarthMove);
+            // events for drag start
+                .on('pointerdown', me.onDragStart)
+                .on('touchstart', me.onDragStart)
+            // events for drag end
+                .on('pointerup', me.onDragEnd)
+                .on('pointerupoutside', me.onDragEnd)
+                .on('touchend', me.onDragEnd)
+                .on('touchendoutside', me.onDragEnd)
+            // events for drag move
+                .on('pointermove', me.onEarthMove)
+                .on('touchmove', me.onEarthMove);
 
             me.timeCompass = me.drawTimeCompass(resources.timeCompass);
 
@@ -145,7 +145,7 @@ export default class MainView extends React.Component {
         }
     }
     stop() {
-        cancelAnimationFrame(this.frameId)
+        cancelAnimationFrame(this.frameId);
     }
     animate() {
         this.moonContainer.position = this.getMoonPos(this.props.moonAngle);
@@ -219,10 +219,10 @@ export default class MainView extends React.Component {
         g.lineStyle(6, 0xffe040);
         g.beginFill(0xffe200, 0.7);
         g.arc(this.orbitCenter.x, this.orbitCenter.y,
-              200 * 2,
-              Math.PI, -moonAngle,
-              // counter-clockwise?
-              moonAngle < 0 && moonAngle > -Math.PI);
+            200 * 2,
+            Math.PI, -moonAngle,
+            // counter-clockwise?
+            moonAngle < 0 && moonAngle > -Math.PI);
 
         g.lineTo(this.orbitCenter.x, this.orbitCenter.y);
         g.lineTo(170 * 2, 230 * 2);
@@ -367,12 +367,12 @@ export default class MainView extends React.Component {
 
             // Draw the arrowhead
             let arrowhead = new PIXI.Graphics()
-                                    .beginFill(0xffff80)
-                                    .drawPolygon([
-                                        2 * 110, (i * 50 + 26) * 2,
-                                        2 * 110, (i * 50 + 34) * 2,
-                                        2 * 123, (i * 50 + 30) * 2
-                                    ]);
+                .beginFill(0xffff80)
+                .drawPolygon([
+                    2 * 110, (i * 50 + 26) * 2,
+                    2 * 110, (i * 50 + 34) * 2,
+                    2 * 123, (i * 50 + 30) * 2
+                ]);
 
             this.app.stage.addChild(line);
             this.app.stage.addChild(arrowhead);
@@ -418,7 +418,7 @@ export default class MainView extends React.Component {
             // where it is now.
             const vAngle =
                 Math.atan2(newPosition.y - this.orbitCenter.y,
-                           newPosition.x - this.orbitCenter.x);
+                    newPosition.x - this.orbitCenter.x);
 
             const offset = Math.atan2(
                 this.dragStartPos.y - this.orbitCenter.y,
@@ -449,7 +449,7 @@ export default class MainView extends React.Component {
             // where it is now.
             const vAngle =
                 Math.atan2(newPosition.y - this.orbitCenter.y,
-                           newPosition.x - this.orbitCenter.x);
+                    newPosition.x - this.orbitCenter.x);
 
             this.props.onMoonAngleUpdate(-vAngle);
         }

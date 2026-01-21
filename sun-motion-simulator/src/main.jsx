@@ -92,18 +92,18 @@ class SunMotionSim extends React.Component {
         const hourAngleDisplay = formatHours(this.state.hourAngle);
 
         const formattedDate = this.state.dateTime
-                                  .toLocaleDateString([], {
-                                      day: 'numeric',
-                                      month: 'long',
-                                      timeZone: 'UTC'
-                                  });
+            .toLocaleDateString([], {
+                day: 'numeric',
+                month: 'long',
+                timeZone: 'UTC'
+            });
         const formattedTime = this.state.dateTime
-                                  .toLocaleTimeString([], {
-                                      hour: '2-digit',
-                                      minute: '2-digit',
-                                      hourCycle: 'h23',
-                                      timeZone: 'UTC'
-                                  });
+            .toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit',
+                hourCycle: 'h23',
+                timeZone: 'UTC'
+            });
 
         const latUnit = this.state.latitude >= 0 ? 'N' : 'S';
 
@@ -158,11 +158,11 @@ class SunMotionSim extends React.Component {
                                     </div>
                                     <div className="custom-control custom-checkbox">
                                         <input type="checkbox" className="custom-control-input"
-                                               onChange={this.handleInputChange}
-                                               checked={this.state.showAnalemma}
-                                               name="showAnalemma" id="showAnalemma" />
+                                            onChange={this.handleInputChange}
+                                            checked={this.state.showAnalemma}
+                                            name="showAnalemma" id="showAnalemma" />
                                         <label className="custom-control-label"
-                                               htmlFor="showAnalemma">
+                                            htmlFor="showAnalemma">
                                             Show analemma
                                         </label>
                                     </div>
@@ -327,7 +327,7 @@ class SunMotionSim extends React.Component {
         const target = event.target;
         const name = target.name;
         let value = target.type === 'checkbox' ?
-                    target.checked : target.value;
+            target.checked : target.value;
 
         if (target.type === 'radio') {
             value = target.id === (target.name + 'Radio');

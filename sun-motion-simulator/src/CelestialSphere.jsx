@@ -160,9 +160,9 @@ export default class CelestialSphere extends React.Component {
 
         this.planeTexture = new THREE.TextureLoader().load('img/plane.svg');
         this.planeTexSouthPole = new THREE.TextureLoader()
-                                          .load('img/plane_all_n.svg');
+            .load('img/plane_all_n.svg');
         this.planeTexNorthPole = new THREE.TextureLoader()
-                                          .load('img/plane_all_s.svg');
+            .load('img/plane_all_s.svg');
 
         this.plane = this.drawPlane(scene);
 
@@ -610,7 +610,7 @@ export default class CelestialSphere extends React.Component {
         return new Promise(function(resolve) {
             loader.load(
                 'fonts/helvetiker_bold.typeface.json',
-                function (font) {
+                function(font) {
                     const textGroup = new THREE.Group();
                     for (let i = 0; i < months.length; i++) {
                         let angle = -i * ((Math.PI * 2) / months.length);
@@ -720,7 +720,7 @@ export default class CelestialSphere extends React.Component {
                 // t to x.
                 const w = t / 99999999;
                 return new THREE.Vector3(v.x + w, 1.15 * v.z, 1.2 * v.y)
-                                .multiplyScalar(this.scale);
+                    .multiplyScalar(this.scale);
             }
         }
 
@@ -834,7 +834,7 @@ export default class CelestialSphere extends React.Component {
         }
         const c = new THREE.Color(0xb0c0ff);
         c.lerp(new THREE.Color(0x353535),
-               1 - Math.min(angle / 50));
+            1 - Math.min(angle / 50));
         return c;
     }
 
@@ -886,7 +886,7 @@ export default class CelestialSphere extends React.Component {
 
         return (
             <div id={this.id}
-                 ref={this.mount}>
+                ref={this.mount}>
                 <canvas
                     onMouseMove={this.onMouseMove}
                     id={this.id + 'Canvas'} width={860} height={860} />

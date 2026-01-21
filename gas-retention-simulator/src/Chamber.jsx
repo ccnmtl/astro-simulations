@@ -212,7 +212,7 @@ export default class Chamber extends React.Component {
 
         if (this.props.allowEscape &&
             isParticleAboveEscapeSpeed(p, this.props.escapeSpeed)
-           ) {
+        ) {
             p.collisionFilter.category = 0;
         } else {
             p.collisionFilter.category = 1;
@@ -407,9 +407,9 @@ export default class Chamber extends React.Component {
 
     componentDidMount() {
         const Engine = Matter.Engine,
-              Render = Matter.Render,
-              Runner = Matter.Runner,
-              Composite = Matter.Composite;
+            Render = Matter.Render,
+            Runner = Matter.Runner,
+            Composite = Matter.Composite;
 
         // create an engine
         const engine = Engine.create();
@@ -498,7 +498,7 @@ export default class Chamber extends React.Component {
         if (
             prevProps.activeGases !== this.props.activeGases ||
                 prevProps.temperature !== this.props.temperature
-           ) {
+        ) {
             this.refreshScene();
         }
 
@@ -533,7 +533,7 @@ export default class Chamber extends React.Component {
 
         if (this.props.allowEscape &&
             prevProps.escapeSpeed !== this.props.escapeSpeed
-           ) {
+        ) {
             letParticlesEscape(this.particles, this.props.escapeSpeed);
         }
     }

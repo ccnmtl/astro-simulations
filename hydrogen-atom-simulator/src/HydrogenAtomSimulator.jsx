@@ -3,13 +3,13 @@ import NavigationBar from './NavigationBar.jsx';
 import MainView from './MainView.jsx';
 import Spectrum from './Spectrum.jsx';
 import PhotonBeams from './PhotonBeams.jsx';
-import {formatEnergy, formatFrequency, formatWavelength} from "./utils/FormatValues";
-import {tickMarkEnergyValues, tickMarkFrequencyValues, tickMarkWavelengthValues} from "./utils/TickMarksData";
-import Slider from "./Slider";
-import EnergyLevelDiagram from "./EnergyLevelDiagram";
-import EventLog from "./EventLog";
-import { wavelengthToColor } from "./utils/WavelengthToHex";
-import ManualDeexcitation from "./ManualDeexcitation";
+import {formatEnergy, formatFrequency, formatWavelength} from './utils/FormatValues';
+import {tickMarkEnergyValues, tickMarkFrequencyValues, tickMarkWavelengthValues} from './utils/TickMarksData';
+import Slider from './Slider';
+import EnergyLevelDiagram from './EnergyLevelDiagram';
+import EventLog from './EventLog';
+import { wavelengthToColor } from './utils/WavelengthToHex';
+import ManualDeexcitation from './ManualDeexcitation';
 import Color from 'color';
 
 const WIDTH = 950;
@@ -73,9 +73,9 @@ export default class HydrogenAtomSimulator extends React.Component {
                 />
                 <div className="clearfix"></div>
 
-                <div className={"TopHalf"}>
-                    <div className={"MainView"}>
-                        <div className={"BackgroundSVG"}>
+                <div className={'TopHalf'}>
+                    <div className={'MainView'}>
+                        <div className={'BackgroundSVG'}>
                             <svg width={WIDTH} height={HEIGHT}>
                                 <MainView
                                     fired={this.state.photon.fired}
@@ -91,7 +91,7 @@ export default class HydrogenAtomSimulator extends React.Component {
                             </svg>
                         </div>
 
-                        <div className={"BackgroundCanvas"}>
+                        <div className={'BackgroundCanvas'}>
                             <PhotonBeams
                                 photon={this.state.photon}
                                 deexcitation={this.state.deexcitationEvent}
@@ -104,8 +104,8 @@ export default class HydrogenAtomSimulator extends React.Component {
                         </div>
                     </div>
 
-                    <div className={"Diagram"}>
-                        <p className={"TitleText"}>Energy Level Diagram</p>
+                    <div className={'Diagram'}>
+                        <p className={'TitleText'}>Energy Level Diagram</p>
                         <div>
                             <EnergyLevelDiagram
                                 currentEnergyLevel={this.state.currentEnergyLevel}
@@ -114,11 +114,11 @@ export default class HydrogenAtomSimulator extends React.Component {
                     </div>
                 </div>
 
-                <div className={"BottomHalf"}>
-                    <div className={"Controls"}>
-                        <p className={"TitleText"}>Photon Selection</p>
+                <div className={'BottomHalf'}>
+                    <div className={'Controls'}>
+                        <p className={'TitleText'}>Photon Selection</p>
 
-                        <div className={"PhotonSpectrum"}>
+                        <div className={'PhotonSpectrum'}>
                             <p id="frequencyLabel">
                                 <em>Frequency</em>
                             </p>
@@ -130,7 +130,7 @@ export default class HydrogenAtomSimulator extends React.Component {
                             />
                         </div>
 
-                        <div className={"PhotonSpectrum"}>
+                        <div className={'PhotonSpectrum'}>
                             <p id="wavelengthLabel">
                                 <em>Wavelength</em>
                             </p>
@@ -142,7 +142,7 @@ export default class HydrogenAtomSimulator extends React.Component {
                             />
                         </div>
 
-                        <div className={"PhotonSpectrum"}>
+                        <div className={'PhotonSpectrum'}>
                             <p id="energyLabel">
                                 <em>Energy</em>
                             </p>
@@ -154,10 +154,10 @@ export default class HydrogenAtomSimulator extends React.Component {
                             />
                         </div>
 
-                        <div className={"sliderNames"}>
-                            <p id={"infraredLabel"}>Infrared</p>
-                            <p id={"visibleLabel"}>Visible</p>
-                            <p id={"ultravioletLabel"}>Ultraviolet</p>
+                        <div className={'sliderNames'}>
+                            <p id={'infraredLabel'}>Infrared</p>
+                            <p id={'visibleLabel'}>Visible</p>
+                            <p id={'ultravioletLabel'}>Ultraviolet</p>
                         </div>
 
                         <Slider
@@ -168,13 +168,13 @@ export default class HydrogenAtomSimulator extends React.Component {
 
                         <div className="FirePhotonButton text-center mb-1">
                             <button type="button"
-                                    className="fireButton btn btn-secondary"
-                                    style={{
-                                        backgroundColor: this.state.photon.color,
-                                        color: photonButtonTextColor
-                                    }}
-                                    onClick={this.firePhoton.bind(this)}>
-                                {"Fire Photon "}
+                                className="fireButton btn btn-secondary"
+                                style={{
+                                    backgroundColor: this.state.photon.color,
+                                    color: photonButtonTextColor
+                                }}
+                                onClick={this.firePhoton.bind(this)}>
+                                {'Fire Photon '}
                             </button>
                         </div>
 
@@ -184,8 +184,8 @@ export default class HydrogenAtomSimulator extends React.Component {
                     <div className="RightColumn">
 
                         <div className="EventLog">
-                            <p className={"TitleText"}>Event Log</p>
-                            <div className={"LogContainer"}>
+                            <p className={'TitleText'}>Event Log</p>
+                            <div className={'LogContainer'}>
                                 <EventLog
                                     eventLog={this.state.eventLog}
                                 />
@@ -307,8 +307,8 @@ export default class HydrogenAtomSimulator extends React.Component {
             wavelengthToColor(photonWavelength * 1e9)
         ).rgb().string();
 
-        let photonEvent = "emitted";
-        let electronEvent = this.state.currentEnergyLevel === 7 ? "recombination" : "deexcitation";
+        let photonEvent = 'emitted';
+        let electronEvent = this.state.currentEnergyLevel === 7 ? 'recombination' : 'deexcitation';
 
         let newEvent = {
             previousEnergyLevel: this.state.currentEnergyLevel,
@@ -365,7 +365,7 @@ export default class HydrogenAtomSimulator extends React.Component {
     }
 
     changeElectronState(moveElectron) {
-        if (this.state.moveElectron !== moveElectron) this.setState( {moveElectron: moveElectron });
+        if (this.state.moveElectron !== moveElectron) this.setState({moveElectron: moveElectron });
     }
 
     changePhoton(newPhoton, firePhotonNow) {
@@ -401,9 +401,9 @@ export default class HydrogenAtomSimulator extends React.Component {
         photonState.fired = true;
         photonState.passThrough = newEnergyLevel === this.state.currentEnergyLevel;
 
-        let photonEvent = photonState.passThrough ? "not absorbed" : "absorbed";
-        let electronEvent = photonState.passThrough ? "" : "excitation";
-        if (newEnergyLevel === 7) electronEvent = "ionization";
+        let photonEvent = photonState.passThrough ? 'not absorbed' : 'absorbed';
+        let electronEvent = photonState.passThrough ? '' : 'excitation';
+        if (newEnergyLevel === 7) electronEvent = 'ionization';
 
         let newEvent = {
             previousEnergyLevel: this.state.currentEnergyLevel,

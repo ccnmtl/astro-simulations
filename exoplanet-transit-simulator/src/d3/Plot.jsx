@@ -45,13 +45,13 @@ class Line extends React.Component {
 
         const newline = line(data);
         const visibility = this.props.showTheoreticalCurve ?
-                           'visible' : 'hidden';
+            'visible' : 'hidden';
 
         return (
             <path className="line"
-                  visibility={visibility}
-                  stroke="#6080ff" fill="none"
-                  d={newline} />
+                visibility={visibility}
+                stroke="#6080ff" fill="none"
+                d={newline} />
         );
     }
 }

@@ -15,7 +15,7 @@ class DataCircles extends Component {
     }
     render() {
         return <g>{this.props.data.map(
-                this.renderCircles.bind(this))}</g>;
+            this.renderCircles.bind(this))}</g>;
     }
 }
 

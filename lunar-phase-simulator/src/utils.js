@@ -23,11 +23,11 @@ const radToDeg = function(radians) {
 const getPercentIlluminated = function(moonPhase) {
     const percent = (1 - Math.cos(moonPhase)) / 2;
     return percent * 100;
-}
+};
 
 const roundToOnePlace = function(n) {
     return Math.round(n * 10) / 10;
-}
+};
 
 /*
  * Given the exact moon phase, return the broad bucket that this
@@ -74,7 +74,7 @@ const getPhaseSlot = function(moonPhase) {
     // New Moon
     if (Math.abs(phase - 180) < 5 ||
         Math.abs(phase + 180) < 5
-       ) {
+    ) {
         return 180;
     }
 
@@ -115,7 +115,7 @@ const getPhaseSlot = function(moonPhase) {
 
     // error
     return null;
-}
+};
 
 /*
  * Given the moon phase (some point along the moon's 360-degree
@@ -129,7 +129,7 @@ const getPhaseSlot = function(moonPhase) {
  */
 const getTimeSinceNewMoon = function(phase) {
     return (phase + Math.PI) / ((Math.PI * 2) / 708.734136);
-}
+};
 
 /*
  * Given a time interval in hours, shorten it by displaying days and
@@ -147,7 +147,7 @@ const formatInterval = function(i) {
     } else {
         return `${remainder} hour${remainderPlural}`;
     }
-}
+};
 
 export {
     forceNumber, degToRad, radToDeg, getPercentIlluminated,

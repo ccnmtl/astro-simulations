@@ -6,8 +6,8 @@ const WIDTH = 860;
 const HEIGHT = 54;
 
 const scale = scaleLinear()
-        .domain([0, 15])
-        .range([48, WIDTH - 51]);
+    .domain([0, 15])
+    .range([48, WIDTH - 51]);
 
 const renderTickMarks = () => {
     return (data, index) => {
@@ -16,21 +16,21 @@ const renderTickMarks = () => {
             x2: data.x,
             y1: data.top,
             y2: data.bottom,
-            stroke: "white",
+            stroke: 'white',
             key: index
         };
 
         return <line {...lineProperties} />;
     };
-}
+};
 
 const renderTickTexts = () => {
     return (data, index) => {
         const textProperties = {
-            className: "tickMarkTexts",
+            className: 'tickMarkTexts',
             x: data.x - data.shift,
             y: data.top + 10,
-            fontSize: `12px`,
+            fontSize: '12px',
             key: index
         };
 
@@ -55,11 +55,11 @@ export default class Spectrum extends React.Component {
         return (
             <div>
                 <svg width={WIDTH} height={HEIGHT}>
-                    <g>{ this.props.tickMarksData.map( renderTickMarks()) }</g>
-                    <g>{ this.props.tickMarksData.map( renderTickTexts()) }</g>
+                    <g>{ this.props.tickMarksData.map(renderTickMarks()) }</g>
+                    <g>{ this.props.tickMarksData.map(renderTickTexts()) }</g>
                     <line x1={linePosition} x2={linePosition} y1={topY} y2={bottomY}
-                          stroke={"rgb(200, 0, 0)"} strokeWidth={2}/>
-                    <text className={"spectrumTexts"} x={linePosition - shiftLeft} y={16} fontSize={"15px"} >{this.props.value}</text>
+                        stroke={'rgb(200, 0, 0)'} strokeWidth={2}/>
+                    <text className={'spectrumTexts'} x={linePosition - shiftLeft} y={16} fontSize={'15px'} >{this.props.value}</text>
                 </svg>
             </div>
         );
@@ -71,4 +71,4 @@ Spectrum.propTypes = {
     tickMarksData: PropTypes.array.isRequired,
     id: PropTypes.number.isRequired,
     value: PropTypes.string.isRequired
-}
+};

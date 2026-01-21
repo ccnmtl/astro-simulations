@@ -1,5 +1,3 @@
-/* eslint-env jest */
-
 import {
     degToRad, radToDeg,
     getHourAngle,

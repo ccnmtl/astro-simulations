@@ -20,7 +20,7 @@ const SOLAR_RADIUS_KM = 695700;
 const ZOOM_UPPER_BREAKPOINT = (960 * 0.65) * DIAGRAM_SCALER;
 // const ZOOM_LOWER_BREAKPOINT = STAR_ORIGIN_POINT[0] + (20 * DIAGRAM_SCALER);
 
-const HZONE_COLOR = 0x7090FF
+const HZONE_COLOR = 0x7090FF;
 
 const SOLAR_SYSTEM = {
     name: 'Sun',
@@ -39,18 +39,18 @@ const SOLAR_SYSTEM = {
         {name: 'Neptune', distance: 30.07},
         {name: 'Pluto', distance: 39.482},
     ]
-}
+};
 
 const PLANET_STATUS = {
     'TOO_COLD': 0,
     'TEMPERATE': 1,
     'TOO_HOT': 2
-}
+};
 
 
 export default class CSHZDiagram extends React.Component {
     constructor(props) {
-        super(props)
+        super(props);
 
         this.cshzDiagram = React.createRef();
         this.animation = React.createRef();
@@ -94,7 +94,7 @@ export default class CSHZDiagram extends React.Component {
         {value: 50, pixelsPerAU: AU_PIXELS * (1 / 50)},
         {value: 75, pixelsPerAU: AU_PIXELS * (1 / 75)},
         {value: 100, pixelsPerAU: AU_PIXELS * (1 / 100)},
-    ]
+    ];
 
     componentDidMount() {
         const app = new PIXI.Application({
@@ -110,7 +110,7 @@ export default class CSHZDiagram extends React.Component {
         this.cshzDiagram.current.appendChild(app.view);
 
         const INITIAL_ZOOM_LEVEL = 8;
-        const planetXPosition = STAR_ORIGIN_POINT[0] + this.auToPixels(this.props.planetDistance, this.zoomLevels[INITIAL_ZOOM_LEVEL].pixelsPerAU)
+        const planetXPosition = STAR_ORIGIN_POINT[0] + this.auToPixels(this.props.planetDistance, this.zoomLevels[INITIAL_ZOOM_LEVEL].pixelsPerAU);
         this.renderStarSystem(this.zoomLevels[INITIAL_ZOOM_LEVEL].pixelsPerAU, planetXPosition, INITIAL_ZOOM_LEVEL);
     }
 
@@ -119,7 +119,7 @@ export default class CSHZDiagram extends React.Component {
 
         if (this.props.showSolarSystemOrbits !== prevProps.showSolarSystemOrbits ||
            this.props.habitableZoneInner !== prevProps.habitableZoneInner) {
-           // You don't need to rerender the whole star system, break this up
+            // You don't need to rerender the whole star system, break this up
             this.renderStarSystem(pixelsPerAU, planetXPosition, zoomLevel);
         } else if (this.props.starRadius !== prevProps.starRadius) {
             this.renderStar(pixelsPerAU);
@@ -149,7 +149,7 @@ export default class CSHZDiagram extends React.Component {
             zoomLevel += 1;
         }
 
-        return [planetXPosition, pixelsPerAU, zoomLevel]
+        return [planetXPosition, pixelsPerAU, zoomLevel];
     }
 
     auToPixels(au, pixelsPerAU) {
@@ -217,7 +217,7 @@ export default class CSHZDiagram extends React.Component {
             .drawCircle(STAR_ORIGIN_POINT[0], STAR_ORIGIN_POINT[1], hZoneOuter)
             .beginHole()
             .drawCircle(STAR_ORIGIN_POINT[0], STAR_ORIGIN_POINT[1], hZoneInner)
-            .endHole()
+            .endHole();
         this.app.stage.addChild(hZone);
 
         // Planets
@@ -232,17 +232,17 @@ export default class CSHZDiagram extends React.Component {
                     planetDistPixels,
                     0,
                     Math.PI * 2
-                )
+                );
                 this.app.stage.addChild(p);
 
                 // Planet label
                 let planetLabel = new PIXI.Text(
                     planet.name,
                     {fill: 0xFFFFFF, fontSize: 16 * DIAGRAM_SCALER}
-                )
+                );
                 planetLabel.anchor.set(0, 0.5);
                 const labelRadius = planetDistPixels + 10 * DIAGRAM_SCALER;
-                const bottomLabelPadding = 18 * DIAGRAM_SCALER
+                const bottomLabelPadding = 18 * DIAGRAM_SCALER;
                 const angle = (45 / 180) * Math.PI;
                 let labelX = STAR_ORIGIN_POINT[0] + labelRadius * Math.cos(angle);
                 let labelY = STAR_ORIGIN_POINT[1] + labelRadius * Math.sin(angle);
@@ -269,7 +269,7 @@ export default class CSHZDiagram extends React.Component {
             50 * DIAGRAM_SCALER,
             pixelsPerAU * this.zoomLevels[zoomLevel].value,
             10
-        )
+        );
         this.app.stage.addChild(scaleText);
         this.app.stage.addChild(scaleRect);
 
@@ -282,19 +282,19 @@ export default class CSHZDiagram extends React.Component {
             strokeThickness: 1 * DIAGRAM_SCALER,
             fontSize: 16 * DIAGRAM_SCALER,
             fontWeight: 'bolder',
-        }
+        };
         if (hZoneInner > KEY_POSITION_X + (95 * DIAGRAM_SCALER)) {
             const hZoneLabel = new PIXI.Text(
                 'Habitable Zone →',
                 hZoneLabelStyle
-            )
+            );
             hZoneLabel.position.set(KEY_POSITION_X, KEY_POSITION_Y);
             this.app.stage.addChild(hZoneLabel);
         } else if (hZoneOuter < KEY_POSITION_X) {
             const hZoneLabel = new PIXI.Text(
                 'Habitable Zone',
                 hZoneLabelStyle
-            )
+            );
             hZoneLabel.position.set(
                 KEY_POSITION_X + (20 * DIAGRAM_SCALER),
                 KEY_POSITION_Y
@@ -314,7 +314,7 @@ export default class CSHZDiagram extends React.Component {
             const hZoneLabel = new PIXI.Text(
                 'Habitable Zone →',
                 hZoneLabelStyle
-            )
+            );
             hZoneLabel.position.set(
                 hZoneInner - (120 * DIAGRAM_SCALER),
                 KEY_POSITION_Y
@@ -326,11 +326,11 @@ export default class CSHZDiagram extends React.Component {
         const hZoneIn = hZoneInner + STAR_ORIGIN_POINT[0];
         const hZoneOut = hZoneOuter + STAR_ORIGIN_POINT[0];
         if (planetXPosition < hZoneIn) {
-            planetStatus = PLANET_STATUS.TOO_HOT
+            planetStatus = PLANET_STATUS.TOO_HOT;
         } else if (hZoneIn <= planetXPosition && planetXPosition <= hZoneOut) {
             planetStatus = PLANET_STATUS.TEMPERATE;
         } else {
-            planetStatus = PLANET_STATUS.TOO_COLD
+            planetStatus = PLANET_STATUS.TOO_COLD;
         }
 
         this.renderPlanet(planetXPosition, planetStatus);
@@ -341,7 +341,7 @@ export default class CSHZDiagram extends React.Component {
             <div className='col-12'>
                 <div id="cshzDiagram-contianer" ref={this.cshzDiagram}/>
             </div>
-        )
+        );
     }
 }
 
@@ -351,4 +351,4 @@ CSHZDiagram.propTypes = {
     habitableZoneInner: PropTypes.number.isRequired,
     habitableZoneOuter: PropTypes.number.isRequired,
     showSolarSystemOrbits: PropTypes.bool.isRequired,
-}
+};

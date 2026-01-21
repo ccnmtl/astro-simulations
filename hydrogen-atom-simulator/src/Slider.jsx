@@ -1,6 +1,6 @@
 import React from 'react';
-import { getWavelengthHex, getWavelengthRGB } from "./utils/WavelengthToHex";
-import Button from "./utils/Button";
+import { getWavelengthHex, getWavelengthRGB } from './utils/WavelengthToHex';
+import Button from './utils/Button';
 import {RangeStepInput} from 'react-range-step-input';
 import PropTypes from 'prop-types';
 
@@ -12,7 +12,7 @@ export default class Slider extends React.Component {
     constructor(props) {
         super(props);
         this.ref = React.createRef();
-        this.bg = `linear-gradient(90deg, #00ffc0 16.5%, #d7dcdf 16.6%)`;
+        this.bg = 'linear-gradient(90deg, #00ffc0 16.5%, #d7dcdf 16.6%)';
         this.criticalPhotonEVs = [0.66, 0.97, 1.13, 1.89, 2.55, 2.86, 3.02, 10.2, 12.09, 12.75, 13.06, 13.22];
     }
 
@@ -71,7 +71,7 @@ export default class Slider extends React.Component {
     render() {
         return (
             <React.Fragment>
-                <div className={"range-slider"}>
+                <div className={'range-slider'}>
                     <RangeStepInput
                         type="range"
                         min={0.03}
@@ -79,15 +79,15 @@ export default class Slider extends React.Component {
                         step={0.01}
                         style={{background: this.bg}}
                         className="range-slider__range form-control-range mb-3"
-                        id={"slider"}
+                        id={'slider'}
                         value={this.props.photon.energyValue}
                         onChange={this.onPhotonValueChange.bind(this)}
                     />
                 </div>
 
                 <Button
-                    symbol={"Pα"}
-                    id={"Pa"}
+                    symbol={'Pα'}
+                    id={'Pa'}
                     changeSliderValue={() => {
                         this.changeSlider(0.66);
                     }}
@@ -95,69 +95,69 @@ export default class Slider extends React.Component {
 
 
                 <Button
-                    symbol={"Pᵦ"}
-                    id={"Pb"}
-                    changeSliderValue={() => { this.changeSlider(0.97)}}
+                    symbol={'Pᵦ'}
+                    id={'Pb'}
+                    changeSliderValue={() => { this.changeSlider(0.97);}}
                 />
 
                 <Button
-                    symbol={"Pᵧ"}
-                    id={"Py"}
-                    changeSliderValue={() => { this.changeSlider(1.13)}}
+                    symbol={'Pᵧ'}
+                    id={'Py'}
+                    changeSliderValue={() => { this.changeSlider(1.13);}}
                 />
 
                 <Button
-                    symbol={"Hα"}
-                    id={"Ha"}
-                    changeSliderValue={() => { this.changeSlider(1.89)}}
+                    symbol={'Hα'}
+                    id={'Ha'}
+                    changeSliderValue={() => { this.changeSlider(1.89);}}
                 />
 
                 <Button
-                    symbol={"Hᵧ"}
-                    id={"Hy"}
-                    changeSliderValue={() => { this.changeSlider(2.86)}}
+                    symbol={'Hᵧ'}
+                    id={'Hy'}
+                    changeSliderValue={() => { this.changeSlider(2.86);}}
                 />
 
                 <Button
-                    symbol={"Hᵦ"}
-                    id={"Hb"}
-                    changeSliderValue={() => { this.changeSlider(2.55)}}
+                    symbol={'Hᵦ'}
+                    id={'Hb'}
+                    changeSliderValue={() => { this.changeSlider(2.55);}}
                 />
 
                 <Button
-                    symbol={"Hδ"}
-                    id={"Hd"}
-                    changeSliderValue={() => { this.changeSlider(3.02)}}
+                    symbol={'Hδ'}
+                    id={'Hd'}
+                    changeSliderValue={() => { this.changeSlider(3.02);}}
                 />
 
                 <Button
-                    symbol={"Lα"}
-                    id={"La"}
-                    changeSliderValue={() => { this.changeSlider(10.2)}}
+                    symbol={'Lα'}
+                    id={'La'}
+                    changeSliderValue={() => { this.changeSlider(10.2);}}
                 />
 
                 <Button
-                    symbol={"Lᵦ"}
-                    id={"Lb"}
-                    changeSliderValue={() => { this.changeSlider(12.09)}}
+                    symbol={'Lᵦ'}
+                    id={'Lb'}
+                    changeSliderValue={() => { this.changeSlider(12.09);}}
                 />
 
                 <Button
-                    symbol={"Lᵧ"}
-                    id={"Ly"}
-                    changeSliderValue={() => { this.changeSlider(12.75)}}
+                    symbol={'Lᵧ'}
+                    id={'Ly'}
+                    changeSliderValue={() => { this.changeSlider(12.75);}}
                 />
 
                 <Button
-                    symbol={"Lε"}
-                    id={"Le"}
-                    changeSliderValue={() => { this.changeSlider(13.22)}}
+                    symbol={'Lε'}
+                    id={'Le'}
+                    changeSliderValue={() => { this.changeSlider(13.22);}}
                 />
 
                 <Button
-                    symbol={"Lδ"}
-                    id={"Ld"}
-                    changeSliderValue={() => { this.changeSlider(13.06)}}
+                    symbol={'Lδ'}
+                    id={'Ld'}
+                    changeSliderValue={() => { this.changeSlider(13.06);}}
                 />
             </React.Fragment>
 
@@ -168,4 +168,4 @@ export default class Slider extends React.Component {
 Slider.propTypes = {
     changePhoton: PropTypes.func.isRequired,
     photon: PropTypes.object.isRequired
-}
+};

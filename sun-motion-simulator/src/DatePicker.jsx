@@ -25,17 +25,17 @@ export default class DatePicker extends React.Component {
                 <label>
                     The day of year:
                     <input type="number"
-                           maxLength="2"
-                           value={this.state.dayField}
-                           onFocus={this.handleFocus}
-                           onChange={this.onDayFieldUpdate}
-                           onBlur={this.props.onDayUpdate}
-                           min={1} max={31}
-                           className="form-control form-control-sm ml-2" />
+                        maxLength="2"
+                        value={this.state.dayField}
+                        onFocus={this.handleFocus}
+                        onChange={this.onDayFieldUpdate}
+                        onBlur={this.props.onDayUpdate}
+                        min={1} max={31}
+                        className="form-control form-control-sm ml-2" />
                 </label>
                 <select className="form-control form-control-sm ml-2"
-                        onChange={this.props.onMonthUpdate}
-                        value={this.props.dateTime.getUTCMonth()}>
+                    onChange={this.props.onMonthUpdate}
+                    value={this.props.dateTime.getUTCMonth()}>
                     <option value={0}>January</option>
                     <option value={1}>February</option>
                     <option value={2}>March</option>
@@ -51,7 +51,7 @@ export default class DatePicker extends React.Component {
                 </select>
             </div>
             <div className="mt-2 pixi-scene astro-datepicker"
-                 ref={this.calendarPicker}></div>
+                ref={this.calendarPicker}></div>
         </React.Fragment>;
     }
     componentDidMount() {
@@ -82,7 +82,7 @@ export default class DatePicker extends React.Component {
             }
 
             const pos = this.dateToLocalPos(this.props.dateTime,
-                                            this.app);
+                this.app);
 
             this.control.position.x = pos;
         }
@@ -92,9 +92,9 @@ export default class DatePicker extends React.Component {
         // stage's onClick behavior consistent through the whole scene,
         // and really shouldn't be necessary.
         const rect = new PIXI.Graphics()
-                             .beginFill(0xffffff)
-                             .drawRect(0, 0, app.view.width, app.view.height)
-                             .endFill();
+            .beginFill(0xffffff)
+            .drawRect(0, 0, app.view.width, app.view.height)
+            .endFill();
         app.stage.addChild(rect);
 
         let months = [
@@ -115,9 +115,9 @@ export default class DatePicker extends React.Component {
             text.cacheAsBitmap = true;
 
             const line = new PIXI.Graphics()
-                                 .lineStyle(2)
-                                 .moveTo(offset - 16, 24)
-                                 .lineTo(offset - 16, 48);
+                .lineStyle(2)
+                .moveTo(offset - 16, 24)
+                .lineTo(offset - 16, 48);
             line.cacheAsBitmap = true;
 
             offset += 80;
@@ -135,18 +135,18 @@ export default class DatePicker extends React.Component {
         control.interactive = true;
         control.buttonMode = true;
         const line = new PIXI.Graphics()
-                             .lineStyle(4, 0x000000)
-                             .moveTo(0, 0)
-                             .lineTo(0, 70);
+            .lineStyle(4, 0x000000)
+            .moveTo(0, 0)
+            .lineTo(0, 70);
         control.addChild(line);
 
         const arrowhead = new PIXI.Graphics()
-                                  .beginFill(0x000000)
-                                  .drawPolygon([
-                                      -7 * 2, 0,
-                                      7 * 2, 0,
-                                      0, 10 * 2
-                                  ]);
+            .beginFill(0x000000)
+            .drawPolygon([
+                -7 * 2, 0,
+                7 * 2, 0,
+                0, 10 * 2
+            ]);
         control.addChild(arrowhead);
 
         const controlPos = this.dateToLocalPos(this.props.dateTime, app);
