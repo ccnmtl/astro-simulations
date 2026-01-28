@@ -26,7 +26,7 @@
   "homepage": "https://github.com/ccnmtl/astro-simulations#readme",
   "dependencies": {
     "@babel/cli": "^7.5.5",
-    "pixi.js": "~6.5.1",
+    "pixi.js": "~8.15.0",
     "react": "~19.2.0",
     "react-dom": "~19.2.0",
     "react-range-step-input": "^1.2.1",
