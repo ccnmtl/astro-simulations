@@ -28,7 +28,7 @@
     "babel-cli": "^6.26.0",
     "d3": "~7.9.0",
     "d3-drag": "~3.0.0",
-    "pixi.js": "~7.3.2",
+    "pixi.js": "~8.16.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-range-step-input": "github:ccnmtl/react-range-step-input"
