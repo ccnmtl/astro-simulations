@@ -39,7 +39,7 @@
         "eslint-plugin-react": "^7.37.5",
         "eslint-plugin-security": "^3.0.1",
         "globals": "^17.0.0",
-        "webpack": "^5.94.0",
+        "webpack": "^5.105.0",
         "webpack-cli": "^5.1.4",
         "webpack-dev-server": "^5.2.1"
     },
